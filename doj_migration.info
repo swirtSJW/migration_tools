@@ -1,0 +1,5 @@
+name = "DOJ Migration"
+description = "Defines migration classes for justice.gov."
+package = "DOJ Migrate"
+core = 7.x
+dependencies[] = migrate
