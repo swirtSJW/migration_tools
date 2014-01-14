@@ -1,0 +1,7 @@
+{
+    "name": "drupal/doj_migration",
+    "type": "drupal-module",
+    "require": {
+        "querypath/querypath": "3.0.0"
+    }
+}

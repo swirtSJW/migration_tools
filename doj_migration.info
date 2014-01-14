@@ -3,3 +3,8 @@ description = "Defines migration classes for justice.gov."
 package = "DOJ Migrate"
 core = 7.x
 dependencies[] = migrate
+dependencies[] = composer_manager
+
+files[] = includes/base.inc
+files[] = includes/SourceParser.php
+files[] = organizations/careers.inc
