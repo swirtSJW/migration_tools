@@ -4,6 +4,8 @@ package = "DOJ Migrate"
 core = 7.x
 dependencies[] = migrate
 dependencies[] = composer_manager
+dependencies[] = uuid
+dependencies[] = og
 
 files[] = includes/base.inc
 files[] = includes/SourceParser.php

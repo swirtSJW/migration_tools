@@ -18,7 +18,8 @@ function doj_migration_migrate_api() {
   $api = array(
     'api' => 2,
     'migrations' => array(
-      'CareersJobs' => array('class_name' => 'CareersJobsMigration'),
+      'CareersJob' => array('class_name' => 'CareersJobMigration'),
+      'CareersFile' => array('class_name' => 'CareersFileMigration'),
     ),
   );
   return $api;
