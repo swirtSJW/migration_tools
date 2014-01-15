@@ -1,6 +1,6 @@
 name = "DOJ Migration"
 description = "Defines migration classes for justice.gov."
-package = "DOJ Migrate"
+package = Department of Justice
 core = 7.x
 dependencies[] = migrate
 dependencies[] = composer_manager

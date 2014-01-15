@@ -10,3 +10,7 @@
       ->issuePriority(MigrateFieldMapping::ISSUE_PRIORITY_MEDIUM)
       ->issueNumber(770064);
     */
+
+
+Be sure to set $conf['doj_migration_base_dir'] correctly before attempting
+file-based migrations.

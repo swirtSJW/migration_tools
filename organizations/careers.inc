@@ -26,6 +26,52 @@ abstract class CareersMigration extends JusticeMigration {
   }
 }
 
+
+/**
+ * Migrates .html files from careers/legal -> page nodes.
+ */
+class CareersPageMigration extends CareersMigration {
+  public function __construct() {
+    parent::__construct();
+
+    $this->description = t('Migrates pages from Careers section.');
+
+    // Match .htm, .html files only.
+    $regex = '/.*\.htm(l)?/';
+
+    // Define the fields that will be derived from the static files.
+    $source_fields = array(
+      'title' => t('Title'),
+      'page_body' => t('Body')
+    );
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('page');
+
+    // Map fields where source field name is same as destination field name.
+    $this->addSimpleMappings(array(
+      'uid',
+      'title',
+    ));
+
+    // Define non-simple field mappings.
+    $this->addFieldMapping('page_body', 'body')
+      ->arguments(array('format' => 'wysiwyg'));
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    // Extract the relative legacy path.
+    $row->legacy_path = substr($row->sourceid, 1);
+
+    // Set to admin for now.
+    $row->uid = 1;
+  }
+}
+
 /**
  * Migrates jobs from careers/legal/jobs -> vacancy_announcement.
  */
@@ -45,7 +91,12 @@ class CareersJobMigration extends CareersMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'body' => t('Body')
+      'body' => t('Body'),
+      'field_qualifications' => t('Qualifications'),
+      'field_travel' => t('Travel'),
+      'field_salary' => t('Salary'),
+      'field_responsibilities' => t('Responsibilities'),
+      'field_job_id' => t('Job ID'),
     );
 
     // $list_files will provide migrate with a list of alls file to be migrated.
@@ -136,55 +187,25 @@ class CareersJobMigration extends CareersMigration {
 class CareersFileMigration extends CareersMigration {
   public function __construct() {
     parent::__construct();
-    $this->description = t('Migrates files (*.pdf) from the careers subdirectory.');
-    $this->map = new MigrateSQLMap($this->machineName,
-      array('fileid' => array(
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-        ),
-      ),
-      MigrateDestinationFile::getKeySchema()
-    );
 
-    // Define the directories containing files to be migrated.
-    $relative_dirs = array('careers');
-    $absolute_dirs = $this->prependJusticeFilepath($relative_dirs);
+    $this->description = t('Migrates files (*.pdf) from the careers subdirectory.');
 
     // Match .pdf files only.
+    $source_dirs = array('careers');
     $regex = '/.*\.pdf/';
+    $dest_dir = 'public://careers/docs';
 
-    // Define the fields that will be derived from the static files.
-    $source_fields = array(
-      'fileid' => t('File Location'),
-    );
-
-    // $list_files will provide migrate with a list of alls file to be migrated.
-    // $item_file provides methods for deriving a unique file identifier.
-    // $this->source define the essential data source from which to migrate.
-    $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex);
-    $item_file = new MigrateItemFile($this->base_dir);
-    $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
-    $this->destination = new MigrateDestinationFile();
-
-    $this->addFieldMapping('value', 'filepath');
-    $this->addFieldMapping('destination_dir')->defaultValue('public://careers');
-
-    // Create redirects using relative, legacy path of static file.
-    $this->addFieldMapping('migrate_redirects', 'legacy_path');
-
-    $this->addUnmigratedDestinations(array('fid', 'uid', 'timestamp', 'destination_file', 'source_dir', 'preserve_files',
-      'file_replace'));
-    $this->removeFieldMapping('path');
-    $this->removeFieldMapping('pathauto');
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    $this->prepareFileMigration($source_dirs, $dest_dir, $regex);
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $row->filepath = $this->base_dir . $row->fileid;
-    $row->legacy_path = substr($row->fileid, 1);
+    $this->prepareFileRow($row);
   }
 
 }

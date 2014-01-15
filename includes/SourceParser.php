@@ -5,6 +5,8 @@
  * Includes SourceParser class, which parses static HTML files via QueryPath.
  */
 
+// composer_manager is supposed to take care of including this library, but
+// it doesn't seem to be working.
 require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
 
 class SourceParser {
@@ -150,8 +152,8 @@ class SourceParser {
         $parent->remove('u');
         $parent->remove('strong');
 
-        // Remove leading ':'.
-        $value = $parent->innerHTML();
+        // Remove leading ':'. Double trim is intentional.
+        $value = trim($parent->innerHTML());
         if (strpos($value, ':') === 0) {
           $value = substr($value, 1);
         }
