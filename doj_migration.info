@@ -7,6 +7,10 @@ dependencies[] = composer_manager
 dependencies[] = uuid
 dependencies[] = og
 
-files[] = includes/base.inc
+files[] = includes/JusticeBaseMigration.inc
+files[] = includes/JusticeFileSourceMigration.inc
+files[] = includes/JusticeBinaryFileMigration.inc
+files[] = includes/JusticeHtmlToPageMigration.inc
 files[] = includes/SourceParser.php
+
 files[] = organizations/careers.inc
