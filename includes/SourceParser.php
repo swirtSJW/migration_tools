@@ -13,6 +13,7 @@ class SourceParser {
   protected $id;
   protected $html;
   public $qp;
+  protected $title;
 
   /**
    * Constructor.
@@ -41,8 +42,13 @@ class SourceParser {
     if (!$fragment) {
       $this->addUtf8Metatag();
     }
+    $this->setTitle();
     $this->stripComments();
+
+    // Calling $this->stripLegacyElements will remove a lot of markup, so some
+    // properties (e.g., $this->title) must be set before calling it.
     $this->stripLegacyElements();
+    $this->convertRelativeSrcsToAbsolute();
   }
 
   /**
@@ -115,13 +121,110 @@ class SourceParser {
    * Removes legacy elements from HTML that are no longer needed.
    */
   protected function stripLegacyElements() {
-    // Remove logo and containing <p>.
-    $this->qp->find('p > img[src="/gif/sealdoj.gif"]')->parent()->remove();
-    // Remove logo if there was no containing <p>.
-    $this->qp->find('img[src="/gif/sealdoj.gif"]')->remove();
 
-    // Remove <blockquote> wrapper from elements in <body>.
-    $this->qp->find('body > blockquote')->children()->unwrap();
+    // Remove elements and their children.
+    $this->qp->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
+    $this->removeElements(array(
+      'a[name="sitemap"]',
+      'a[name="maincontent"]',
+      'img[src="/gif/sealdoj.gif"]',
+      'div.skip',
+      'div.hdrwrpr',
+      'div.breadcrumbmenu',
+      'div.footer',
+      'div.clear',
+      'div.lastupdate',
+      'div.thick-bar',
+      'div.rightcolumn',
+    ));
+
+    // Remove extraneous html wrapping elements, leaving children intact.
+    $this->removeWrapperElements(array(
+      'body > blockquote',
+      '.bdywrpr',
+      '.gridwrpr',
+      '.leftcol-subpage',
+      '.leftcol-subpage-content',
+      '.bodytextbox',
+      'body > div',
+    ));
+
+    // Remove style attribute from elements.
+    $this->qp->find('.narrow-bar')->removeAttr('style');
+
+    // Remove matching elements containing only &nbsp; or nothing.
+    $this->removeEmptyElements(array(
+      'div',
+      'span',
+    ));
+  }
+
+  /**
+   * Makes relative 'src' values on <a> and <img> tags absolute.
+   */
+  public function convertRelativeSrcsToAbsolute() {
+    // A list of attributes to convert, keyed by HTML tag (NOT selector).
+    $attributes = array(
+      'img' => 'src',
+      'a' => 'href',
+    );
+
+    $elements = $this->qp->find(implode(', ', array_keys($attributes)));
+    foreach ($elements as $element) {
+      $attribute = $attributes[$element->tag()];
+
+      $url = parse_url($element->attr($attribute));
+      if ($url) {
+        $is_relative = empty($url['scheme']) && !empty($url['path']) && substr($url['path'], 0, 1) !== '/';
+
+        if ($is_relative) {
+          $dir_path = dirname($this->id);
+          $new_url = '/' . $dir_path . '/' . $url['path'];
+          $element->attr($attribute, $new_url);
+        }
+      }
+    }
+  }
+
+  /**
+   * Removes a wrapping element, leaving children intact.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   */
+  public function removeWrapperElements(array $selectors) {
+    foreach ($selectors as $selector) {
+      $this->qp->find($selector)->children()->unwrap();
+    }
+  }
+
+  /**
+   * @param array $selectors
+   *   An array of selectors to remove.
+   */
+  public function removeElements(array $selectors) {
+    foreach ($selectors as $selector) {
+      $this->qp->find($selector)->remove();
+    }
+  }
+
+  /**
+   * @param array $selectors
+   */
+  public function removeEmptyElements(array $selectors) {
+    foreach ($selectors as $selector) {
+      $elements = $this->qp->find($selector);
+      foreach ($elements as $element) {
+        $contents = trim($element->innerXHTML());
+        $empty_values = array(
+          '&nbsp;',
+          '',
+        );
+        if (in_array($contents, $empty_values)) {
+          $element->remove();
+        }
+      }
+    }
   }
 
   /**
@@ -170,6 +273,23 @@ class SourceParser {
   }
 
   /**
+   * Returns and removes last updated date from markup.
+   *
+   * @return string
+   *   The update date.
+   */
+  public function extractUpdatedDate() {
+    $element = trim($this->qp->find('.lastupdate'));
+    $contents = $element->text();
+    if ($contents) {
+      $contents = trim(str_replace('Updated:', '', $contents));
+    }
+    $element->remove();
+
+    return $contents;
+  }
+
+  /**
    * Return content of <body> element.
    */
   public function getBody() {
@@ -181,18 +301,55 @@ class SourceParser {
   }
 
   /**
-   * Return content of <title> element.
+   * Sets $this->title using breadcrumb or <title>.
    */
-  public function getTitle() {
-    $title = $this->qp->find('title')->innerHTML();
-    $title = trim($title);
+  public function setTitle() {
+    // First attempt to get the title from the breadcrumb.
+    $wrapper = $this->qp->find('.breadcrumbmenucontent');
+    $wrapper->children('a, span, font')->remove();
+    $title = $wrapper->text();
+
+    // If there was no breadcrumb title, get from <title> tag.
+    if (!$title) {
+      $title = $this->qp->find('title')->innerHTML();
+    }
+
+    // Clean string.
+    $title = $this->removeWhitespace($title);
 
     // Truncate title to max of 255 characters.
     if (strlen($title) > 255) {
       $title = substr($title, 0, 255);
     }
 
-    return $title;
+    $this->title = $title;
+  }
+
+  /**
+   * Removes various types of whitespace from a string.
+   *
+   * @param string $text
+   *   The text string from which to remove whitespace.
+   * @return string
+   */
+  public function removeWhitespace($text) {
+    $text = trim(str_replace('&nbsp;', '', $text));
+    // Remove unicode whitespace
+    // @see http://stackoverflow.com/questions/4166896/trim-unicode-whitespace-in-php-5-2
+    $text = preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $text);
+
+    return $text;
+  }
+
+  /**
+   * Return the title for this content.
+   */
+  public function getTitle() {
+    if (!isset($this->title)) {
+      $this->setTitle();
+    }
+
+    return $this->title;
   }
 
   /**

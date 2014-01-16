@@ -8,7 +8,7 @@
 /**
  * The Universally Unique Identifier for the Careers Organic Group.
  */
-const CAREERS_OG_UUID = '8a7892d3-a273-4736-acb6-dd0246c51180';
+const CAREERS_OG_UUID = 'b6437e3d-02de-4d2f-b4e9-d5002e9a4d12';
 
 
 /**
@@ -21,11 +21,16 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
     $group = MigrateGroup::getInstance('careers', array());
 
     // Define source directories.
-    $source_dirs = array('careers', 'careers/veterans');
+    $source_dirs = array(
+      'careers',
+      'careers/veterans',
+      'careers/legal',
+    );
+    $options = array('recurse' => FALSE);
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($group, $source_dirs);
+    parent::__construct($group, $source_dirs, $options);
 
     $this->description = t('Migrates pages from Careers section.');
     $this->addGroupReferenceMapping(CAREERS_OG_UUID);
@@ -52,7 +57,7 @@ class CareersJobMigration extends JusticeFileSourceMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'va_body' => t('Body'),
+      'field_va_body' => t('Body'),
       'field_qualifications' => t('Qualifications'),
       'field_va_travel' => t('Travel'),
       'field_va_salary' => t('Salary'),
@@ -82,20 +87,18 @@ class CareersJobMigration extends JusticeFileSourceMigration {
     $this->addSimpleMappings(array(
       'uid',
       'title',
-      'field_va_qualifications',
-      'field_va_travel',
       'field_va_salary',
-      'field_va_responsibilities',
       'field_va_job_id',
     ));
 
     // Define non-simple field mappings.
     $this->addFieldMapping('field_va_email', 'field_va_email')->separator('|');
-    $this->addFieldMapping('va_body', 'va_body')
-      ->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_va_body', 'field_va_body')->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_va_qualifications', 'field_va_qualifications')->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_va_travel', 'field_va_travel')->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_va_responsibilties', 'field_va_responsibilties')->arguments(array('format' => 'wysiwyg'));
 
     $this->addGroupReferenceMapping(CAREERS_OG_UUID);
-
   }
 
   /**
@@ -124,7 +127,7 @@ class CareersJobMigration extends JusticeFileSourceMigration {
       $this->queueMessage(t('No Job ID was found for @fileid.', array('@fileid' => $row->fileid)));
     }
 
-    $row->va_body = $source_parser->getBody();
+    $row->field_va_body = $source_parser->getBody();
   }
 }
 

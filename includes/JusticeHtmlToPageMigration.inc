@@ -19,8 +19,11 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
    *   A migration group returned by  MigrateGroup::getInstance().
    * @param array $source_dirs
    *   A flat array of the source directories containing html files.
+   * @param $options
+   *   Options that will be passed on to file_scan_directory(). See docs of that
+   *   core Drupal function for more information.
    */
-  public function __construct($group, $source_dirs) {
+  public function __construct($group, $source_dirs, $options = array()) {
 
     // Match .htm, .html files only.
     $regex = '/.*\.htm(l)?/';
@@ -32,7 +35,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     );
 
     // Calling parent constructor will set $this->source.
-    parent::__construct($group, $source_fields, $source_dirs, $regex);
+    parent::__construct($group, $source_fields, $source_dirs, $regex, $options);
 
     // A map of source HTML filename -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
@@ -56,7 +59,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     ));
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('page_body', 'body')
+    $this->addFieldMapping('field_page_body', 'field_page_body')
       ->arguments(array('format' => 'wysiwyg'));
   }
 
@@ -68,6 +71,11 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
 
     // Set to admin for now.
     $row->uid = 1;
-  }
 
+    // Create a new SourceParser to handle HTML content.
+    $source_parser = new SourceParser($row->legacy_path, $row->filedata);
+
+    $row->title = $source_parser->getTitle();
+    $row->field_page_body = $source_parser->getBody();
+  }
 }

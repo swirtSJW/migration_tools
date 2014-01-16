@@ -62,4 +62,21 @@ abstract class JusticeBaseMigration extends DynamicMigration {
 
     return $og_eid;
   }
+
+  /**
+   * Unsets NULL properties on a single dimensional object.
+   *
+   * @param $row
+   *   The object to iterate over.
+   */
+  public function removeEmptyProperties(&$row) {
+    foreach ($row as $key => $property) {
+      if (is_null($property)) {
+        unset($row->$key);
+      }
+      elseif (is_string($property) && !$property) {
+        unset($row->$key);
+      }
+    }
+  }
 }

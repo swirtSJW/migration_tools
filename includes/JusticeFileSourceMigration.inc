@@ -16,13 +16,13 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public $base_dir;
 
   /**
-   * Prepare a file migration.
+   * Prepare the file source.
    *
-   * This will setup $this->map, $this->destination, and $this->source.
-   * It will also add field mappings for file location and redirects.
+   * This will setup $this->source.
+   * It will also add field mappings for redirects.
    *
-   * All derived classes should define 'fileid' as the source key, as it is
-   * used to create redirects.
+   * All derived classes should define 'fileid' as the source key in
+   * MigrateSQLMap(), as it is used to create redirects.
    *
    * @param $group
    *   A migration group returned by  MigrateGroup::getInstance().
@@ -33,8 +33,11 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    *   An array of source directories, relative to $this->base_dir.
    * @param string $regex
    *   The file mask. Only filenames matching this regex will be migrated.
+   * @param $options
+   *   Options that will be passed on to file_scan_directory(). See docs of that
+   *   core Drupal function for more information.
    */
-  public function __construct($group, $source_fields, $source_dirs, $regex) {
+  public function __construct($group, $source_fields, $source_dirs, $regex, $options = array()) {
     parent::__construct($group);
 
     $this->base_dir = variable_get('doj_migration_base_dir', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
@@ -45,7 +48,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     // $list_files will provide migrate with a list of alls file to be migrated.
     // $item_file provides methods for deriving a unique file identifier.
     // $this->source define the essential data source from which to migrate.
-    $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex);
+    $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex, $options);
     $item_file = new MigrateItemFile($this->base_dir);
     $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
 

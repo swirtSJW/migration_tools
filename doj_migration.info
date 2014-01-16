@@ -6,6 +6,8 @@ dependencies[] = migrate
 dependencies[] = composer_manager
 dependencies[] = uuid
 dependencies[] = og
+dependencies[] = redirect
+dependencies[] = pathauto
 
 files[] = includes/JusticeBaseMigration.inc
 files[] = includes/JusticeFileSourceMigration.inc
