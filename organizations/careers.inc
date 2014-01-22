@@ -38,9 +38,16 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
+ *
+ */
+class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
+
+}
+
+/**
  * Migrates .html files from careers/legal/jobs to vacancy_announcement nodes.
  */
-class CareersJobMigration extends JusticeFileSourceMigration {
+class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
 
   public function __construct() {
     // Add this migration to the 'careers' group.
@@ -129,6 +136,11 @@ class CareersJobMigration extends JusticeFileSourceMigration {
 
     $row->field_va_body = $source_parser->getBody();
   }
+}
+
+
+class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
+
 }
 
 /**

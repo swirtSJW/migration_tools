@@ -13,6 +13,9 @@ files[] = includes/JusticeBaseMigration.inc
 files[] = includes/JusticeFileSourceMigration.inc
 files[] = includes/JusticeBinaryFileMigration.inc
 files[] = includes/JusticeHtmlToPageMigration.inc
+files[] = includes/JusticeCsvMigration.inc
 files[] = includes/SourceParser.php
 
+files[] = organizations/organizations.inc
 files[] = organizations/careers.inc
+

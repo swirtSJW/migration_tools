@@ -40,7 +40,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public function __construct($group, $source_fields, $source_dirs, $regex, $options = array()) {
     parent::__construct($group);
 
-    $this->base_dir = variable_get('doj_migration_base_dir', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
+    $this->base_dir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
 
     // Define the directories containing files to be migrated.
     $absolute_dirs = $this->prependJusticeFilepath($source_dirs);

@@ -5,6 +5,11 @@
  * Contains base migration class for all justice.gov migrations.
  */
 
+/**
+ * The default system path for the DOJ legacy webroot. Can be overriden via
+ * doj_migration_base_dir variable.
+ */
+define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
 
 /**
  * Abstract intermediate class holding common settings.

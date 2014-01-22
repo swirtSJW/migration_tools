@@ -15,6 +15,7 @@ function doj_migration_migrate_api() {
       'CareersJob' => array('class_name' => 'CareersJobMigration'),
       'CareersFile' => array('class_name' => 'CareersFileMigration'),
       'CareersPage' => array('class_name' => 'CareersPageMigration'),
+      'Organizations' => array('class_name' => 'OrganizationsMigration'),
     ),
   );
   return $api;
