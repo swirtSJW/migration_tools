@@ -18,7 +18,7 @@ class OrganizationsMigration extends JusticeCsvMigration {
     // Create a map object for tracking the relationships between source rows
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'Title' => array('type' => 'varchar',
+        'abbreviation' => array('type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
           'description' => 'Title',
@@ -47,7 +47,5 @@ class OrganizationsMigration extends JusticeCsvMigration {
     );
   }
 
-  function prepareRow($row) {
-    dpm($row);
-  }
+  function prepareRow($row) {}
 }
