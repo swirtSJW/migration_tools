@@ -1,0 +1,27 @@
+Home {"url":"http://www.justice.gov"}
+About {"url":"http://www.justice.gov/about/about.html"}
+- The Attorney General {"url":"http://www.justice.gov/ag/"}
+- Budget & Performance {"url":"http://www.justice.gov/about/bpp.htm"}
+- Strategic Plans {"url":"http://www.justice.gov/05publications/05_4.html"}
+Agencies {"url":"http://www.justice.gov/agencies/index-list.html"}
+Business {"url":"http://www.justice.gov/business/business-grants.html"}
+- Business Opportunities {"url":"http://www.justice.gov/business/business-opportunities.htm"}
+- Small & Disadvantaged Business {"url":"http://www.justice.gov/jmd/osdbu/"}
+- Grants {"url":"http://www.justice.gov/business/"}
+Resources {"url":"http://www.justice.gov/05publications/resources.html"}
+- Forms {"url":"http://www.justice.gov/forms/dojform.php"}
+- Publications {"url":"http://www.justice.gov/05publications/05_3_a.html"}
+- Case Highlights {"url":"http://www.justice.gov/05publications/05_2.html"}
+- Legistlative Histories {"url":"http://www.justice.gov/jmd/ls/legislative_histories/legislative-histories.html"}
+News {"url":"http://www.justice.gov/briefing-room.html"}
+- Justice News {"url":"http://www.justice.gov/opa/justicenews.php"}
+- The Justice Blog {"url":"http://blogs.justice.gov/blog/"}
+- Public Schedule {"url":"http://www.justice.gov/opa/calendar/"}
+- Videos {"url":"http://www.justice.gov/video.php"}
+- Photo Gallery {"url":"http://www.justice.gov/css-gallery/"}
+Careers {"url":"http://www.justice.gov/careers/careers.html"}
+- Legal Careers {"url":"http://www.justice.gov/careers/legal/"}
+- Interns, Recent Graduates, and Fellow {"url":"http://www.justice.gov/careers/student_programs.html"}
+- Diversity Policy {"url":"http://www.justice.gov/careers/diversity-policy.html"}
+- Veteran Recruitment {"url":"http://www.justice.gov/careers/veterans/"}
+Contact {"url":"http://www.justice.gov/contact-us.html"}
