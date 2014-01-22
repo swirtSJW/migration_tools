@@ -12,7 +12,7 @@ const CAREERS_OG_UUID = 'b6437e3d-02de-4d2f-b4e9-d5002e9a4d12';
 
 
 /**
- * Migrates .html files from careers/legal -> page nodes.
+ * Migrates .html files from /careers to page nodes.
  */
 class CareersPageMigration extends JusticeHtmlToPageMigration {
 
@@ -38,7 +38,7 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates jobs from careers/legal/jobs -> vacancy_announcement.
+ * Migrates .html files from careers/legal/jobs to vacancy_announcement nodes.
  */
 class CareersJobMigration extends JusticeFileSourceMigration {
 
@@ -132,7 +132,7 @@ class CareersJobMigration extends JusticeFileSourceMigration {
 }
 
 /**
- * Migrates files (*.pdf) from the careers subdirectory.
+ * Migrates files (*.pdf) from /careers.
  */
 class CareersFileMigration extends JusticeBinaryFileMigration {
 

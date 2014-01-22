@@ -61,6 +61,8 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    */
   public function prepareRow($row) {
     $row->legacy_path = substr($row->fileid, 1);
+    // @todo Add a check to see if $row->fileid == 'index.html'. If so,
+    // add both /path/index.html and /path as redirects.
   }
 
   /**

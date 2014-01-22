@@ -160,7 +160,7 @@ class SourceParser {
   }
 
   /**
-   * Makes relative 'src' values on <a> and <img> tags absolute.
+   * Makes relative sources values on <a> and <img> tags absolute.
    */
   public function convertRelativeSrcsToAbsolute() {
     // A list of attributes to convert, keyed by HTML tag (NOT selector).
