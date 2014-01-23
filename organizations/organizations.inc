@@ -5,7 +5,7 @@
  * Defines migration classes for importing organization nodes.
  */
 
-class OrganizationsMigration extends JusticeCsvMigration {
+class OrganizationMigration extends JusticeCsvMigration {
   public function __construct() {
     ini_set('auto_detect_line_endings', TRUE);
 
@@ -29,7 +29,8 @@ class OrganizationsMigration extends JusticeCsvMigration {
     $this->destination = new MigrateDestinationNode('organization');
 
     $this->addFieldMapping('title', 'title');
-    $this->addFieldMapping('field_og_abbreviation', 'abbreviation');
+    $this->addFieldMapping('field_org_abbreviation', 'abbreviation');
+    $this->addFieldMapping('migrate_redirects', 'abbreviation');
   }
 
   function csvcolumns() {
@@ -42,8 +43,8 @@ class OrganizationsMigration extends JusticeCsvMigration {
 
   function fields() {
     return array(
-      'Title' => 'The title',
-      'URL Prefix' => 'The organization abbreviation',
+      'title' => 'The title',
+      'abbreviation' => 'The organization abbreviation',
     );
   }
 

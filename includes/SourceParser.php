@@ -19,7 +19,7 @@ class SourceParser {
    * Constructor.
    *
    * @param $id
-   *  The filename, e.g. pm7205.html
+   *  The filepath, e.g. careers/legal/pm7205.html
    * @param $html
    *  The full HTML data as loaded from the file.
    * @param boolean $fragment

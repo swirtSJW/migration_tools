@@ -32,6 +32,7 @@ class OvwSpeechesMigration extends CareersMigration {
   public function __construct() {
     parent::__construct();
 
+    $this->dependencies = array('Organizations');
     $this->description = t('Migrates calendars from OPA CMS calendarlist table for Careers section.');
     $this->map = new MigrateSQLMap($this->machineName,
       array(

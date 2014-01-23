@@ -6,12 +6,6 @@
  */
 
 /**
- * The Universally Unique Identifier for the Careers Organic Group.
- */
-const CAREERS_OG_UUID = 'b6437e3d-02de-4d2f-b4e9-d5002e9a4d12';
-
-
-/**
  * Migrates .html files from /careers to page nodes.
  */
 class CareersPageMigration extends JusticeHtmlToPageMigration {
@@ -33,7 +27,7 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
     parent::__construct($group, $source_dirs, $options);
 
     $this->description = t('Migrates pages from Careers section.');
-    $this->addGroupReferenceMapping(CAREERS_OG_UUID);
+    $this->addFieldMapping('og_group_ref', 'abbreviation')->sourceMigration('careers');
   }
 }
 
@@ -42,24 +36,9 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
  */
 class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
-}
-
-/**
- * Migrates .html files from careers/legal/jobs to vacancy_announcement nodes.
- */
-class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
-
-  public function __construct() {
+  public function __construct($source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
     // Add this migration to the 'careers' group.
     $group = MigrateGroup::getInstance('careers', array());
-
-    $this->description = t('Migrates jobs from Careers legal subsection.');
-
-    // Define the relative directories containing files to be migrated.
-    $source_dirs = array('careers/legal/jobs');
-
-    // Match .htm, .html files only.
-    $regex = '/.*\.htm(l)?/';
 
     // Define the fields that will be derived from the static files.
     $source_fields = array(
@@ -73,7 +52,7 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     );
 
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($group, $source_fields, $source_dirs, $regex);
+    parent::__construct($group, $source_fields, $source_dirs, $regex, $options, $parser);
 
     // A map of source HTML filename -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
@@ -105,7 +84,30 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     $this->addFieldMapping('field_va_travel', 'field_va_travel')->arguments(array('format' => 'wysiwyg'));
     $this->addFieldMapping('field_va_responsibilties', 'field_va_responsibilties')->arguments(array('format' => 'wysiwyg'));
 
-    $this->addGroupReferenceMapping(CAREERS_OG_UUID);
+    // @todo Add practice area.
+    // @todo Add hiring component.
+    // @todo Add state.
+
+    $this->addFieldMapping('og_group_ref', 'abbreviation')->sourceMigration('careers');
+  }
+}
+
+/**
+ * Migrates .html files from careers/legal/jobs to vacancy_announcement nodes.
+ */
+class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
+
+  public function __construct() {
+
+    // Define the relative directories containing files to be migrated.
+    $source_dirs = array('careers/legal/jobs');
+
+    // Match .htm, .html files only.
+    $regex = '/.*\.htm(l)?/';
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($source_dirs, $regex);
+    $this->description = t('Migrates jobs from Careers legal subsection.');
   }
 
   /**
@@ -135,12 +137,73 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     }
 
     $row->field_va_body = $source_parser->getBody();
+
+    // @todo Add practice area.
+    // @todo Add hiring component.
+    // @todo Add state.
   }
 }
 
-
+/**
+ * Migrates internships from [] to vacancy_announcement nodes.
+ *
+ * @see CareersInternshipParser
+ */
 class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
+  public function __construct() {
 
+    // Define the relative directories containing files to be migrated.
+    $source_dirs = array('careers/legal');
+
+    // Expected file matches are:
+    // careers/legal/volunteer-opp.html
+    // careers/legal/volunteer-opp-usao.html
+    // careers/legal/volunteer-opp-summer.html
+    // careers/legal/volunteer-opp-usao-summer.html
+
+    // Match .htm, .html files only.
+    $regex = '/volunteer-opp.*\.htm(l)?/';
+    $options = array();
+
+    // Instantiate the parser object that will parse a single HTML file into
+    // chunks that will be translated into internship nodes.
+    $parser = new CareersInternshipParser();
+    //$parser = NULL;
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($source_dirs, $regex, $options, $parser);
+    $this->description = t('Migrates jobs from Careers legal subsection.');
+  }
+}
+
+/**
+ * Parses a single html file into a list of internship rows.
+ *
+ * @see CareersInternshipMigration
+ */
+class CareersInternshipParser extends JusticeChunkParser {
+
+  public function setChunks() {
+    // Each <table> in #rightColORAM after the first is an internship.
+   $this->chunks = $this->sourceParser->qp->find('#rightColOARM table:gt(1)')->has('a');
+  }
+
+  public function getChunkIDs() {
+    $chunks = $this->getChunks();
+
+    $ids = array();
+    foreach ($chunks as $chunk) {
+      $ids[] = $chunk->find('a:first')->attr('name');
+    }
+    return $ids;
+  }
+
+  public function getChunk($id) {
+    $chunks = $this->getChunks();
+    $chunk = $chunks->find('a[name=" '. $id. '"')->parents('table');
+
+    return $chunk;
+  }
 }
 
 /**
@@ -152,6 +215,7 @@ class CareersFileMigration extends JusticeBinaryFileMigration {
     // Add this migration to the 'careers' group.
     $group = MigrateGroup::getInstance('careers', array());
     $this->description = t('Migrates files (*.pdf) from the careers subdirectory.');
+    $this->dependencies = array('Organization');
 
     // Match .pdf files only.
     $source_dirs = array('careers');

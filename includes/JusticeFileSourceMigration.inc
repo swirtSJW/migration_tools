@@ -36,8 +36,11 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    * @param $options
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
+   * @param MigrateContentParser $parser
+   *   A parser class that will provide file chunk ids. Defaults to
+   *   MigrateSimpleContentParser in parent constructor.
    */
-  public function __construct($group, $source_fields, $source_dirs, $regex, $options = array()) {
+  public function __construct($group, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
     parent::__construct($group);
 
     $this->base_dir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
@@ -46,23 +49,26 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     $absolute_dirs = $this->prependJusticeFilepath($source_dirs);
 
     // $list_files will provide migrate with a list of alls file to be migrated.
-    // $item_file provides methods for deriving a unique file identifier.
+    // $item_file provides methods for retrieving a file given an identifier.
     // $this->source define the essential data source from which to migrate.
-    $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex, $options);
+    $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex, $options, $parser);
     $item_file = new MigrateItemFile($this->base_dir);
     $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
 
     // Create redirects using relative, legacy path of static file.
-    $this->addFieldMapping('migrate_redirects', 'legacy_path');
+    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $row->legacy_path = substr($row->fileid, 1);
-    // @todo Add a check to see if $row->fileid == 'index.html'. If so,
+    // Check to see if $row->fileid == 'index.html'. If so,
     // add both /path/index.html and /path as redirects.
+    $row->legacy_path = substr($row->fileid, 1);
+    if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
+      $row->legacy_path .= '|' . rtrim(str_replace($matches[0], $row->fileid, ''), '/');
+    }
   }
 
   /**
