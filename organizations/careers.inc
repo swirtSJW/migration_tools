@@ -11,9 +11,6 @@
 class CareersPageMigration extends JusticeHtmlToPageMigration {
 
   public function __construct($arguments) {
-    // Add this migration to the 'careers' group.
-    $group = MigrateGroup::getInstance('careers', array());
-
     // Define source directories.
     $source_dirs = array(
       'careers',
@@ -37,8 +34,6 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
 class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
   public function __construct($arguments, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
-    // Add this migration to the 'careers' group.
-    $group = MigrateGroup::getInstance('careers', array());
 
     // Define the fields that will be derived from the static files.
     $source_fields = array(
@@ -90,9 +85,6 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_location')
       ->defaultValue('US')
       ->arguments(array('administrative_area' => array('source_field' => 'state')));
-
-    // @todo Add practice area.
-    // @todo Add hiring component.
 
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
   }
@@ -277,8 +269,6 @@ class CareersChunkParser extends JusticeChunkParser {
 class CareersFileMigration extends JusticeBinaryFileMigration {
 
   public function __construct($arguments) {
-    // Add this migration to the 'careers' group.
-    $group = MigrateGroup::getInstance('careers', array());
     $this->description = t('Migrates files (*.pdf) from the careers subdirectory.');
     $this->dependencies = array('Organization');
 

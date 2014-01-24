@@ -4,15 +4,12 @@
  * @file
  * Defines migration classes for USAO organization.
  */
-
 class UsaoDistrictMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
-    // Add this migration to the 'organizations' group.
-    $group = MigrateGroup::getInstance('usao', array());
     $source_file = __DIR__ . '/../sources/usao-districts.csv';
-    parent::__construct($arguments, $source_file, $group);
+    parent::__construct($arguments, $source_file);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates USAO districts into organizations.');
 
@@ -62,10 +59,8 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
-    // Add this migration to the 'organizations' group.
-    $group = MigrateGroup::getInstance('usao', array());
     $source_file = __DIR__ . '/../sources/usao-districts.csv';
-    parent::__construct($arguments, $source_file, $group);
+    parent::__construct($arguments, $source_file);
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates USAO District Attorneys.');
 

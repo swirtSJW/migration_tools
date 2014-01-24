@@ -12,7 +12,7 @@
  */
 abstract class JusticeCsvMigration extends JusticeBaseMigration {
 
-  public function __construct($arguments, $source_file, $group) {
+  public function __construct($arguments, $source_file) {
     parent::__construct($arguments);
 
     // Create a MigrateSource object, which manages retrieving the input data.

@@ -9,10 +9,8 @@ class OrganizationMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
-    // Add this migration to the 'organizations' group.
-    $group = MigrateGroup::getInstance('organizations', array());
     $source_file = __DIR__ . '/../sources/organizations.csv';
-    parent::__construct($arguments, $source_file, $group);
+    parent::__construct($arguments, $source_file);
     $this->description = t('Migrates organization nodes.');
 
     // Create a map object for tracking the relationships between source rows
