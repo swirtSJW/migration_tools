@@ -1,0 +1,81 @@
+oarm-adminlaw|Administrative Law
+oarm-agri|Agriculture
+oarm-avi|Aviation/Admiralty
+oarm-arb|Adr/Arbitration
+oarm-antitrade|Antitrust &amp; Trade Regulation
+oarm-ap|Appellate Practice
+oarm-aplit|Appellate Litigation
+oarm-bank|Banking
+oarm-bankrupt|Bankruptcy
+oarm-bus|Business (Torts, Litigation)
+oarm-child|Children/Youth
+oarm-civilen|Civil Enforcement
+oarm-civilliti|Civil Litigation
+oarm-civilrights|Civil Rights
+oarm-complib|Civil Liberties
+oarm-compli|Complex Litigation
+oarm-compliance|Compliance
+oarm-compc|Computer Crime, Cyber Crime
+oarm-comptech|Computers/Technology
+oarm-constilaw|Constitutional Law
+oarm-construction|Construction
+oarm-consumep|Consumer Protection
+oarm-cptp|Copyrights &amp; Trademark/Patent
+oarm-corpfraud|Corporate Fraud
+oarm-counterterro|Counter-Terrorism
+oarm-crimelaw|Criminal Law
+oarm-customs|Customs/Trade
+oarm-deathpen|Death Penalty
+oarm-disability|Disability/Mental Health
+oarm-domvio|Domestic Violence
+oarm-drugen|Drug Enforcement
+oarm-edu|Education
+oarm-emin|Eminent Domain
+oarm-emdisc|Employment Discrimination
+oarm-emlaw|Employment Law
+oarm-energy|Energy
+oarm-envi|Environment
+oarm-emben|Employee Benefits
+oarm-fedemp|Federal Employees
+oarm-fislaw|Fiscal Law/Appropriations
+oarm-fipa|Freedom Of Information And Privacy Acts
+oarm-gaming|Gaming
+oarm-governcon|Government Contracts
+oarm-grantlaw|Grant Law
+oarm-health|Health/Medical
+oarm-healthcare|Healthcare
+oarm-housing|Housing
+oarm-humanrights|Human Rights
+oarm-immigration|Immigration
+oarm-indianlaw|Indian Law
+oarm-insure|Insurance
+oarm-intp|Intellectual Property
+oarm-international|International
+oarm-ic|Internet/Electronic Commerce
+oarm-juv|Juvenile
+oarm-labor|Labor
+oarm-leg|Legislation
+oarm-malprac|Malpractice
+oarm-mil|Military
+oarm-nsi|National Security &amp; Intelligence
+oarm-pomiscon|Police Misconduct
+oarm-prisonrights|Prisoners' Rights
+oarm-prodliability|Product Liability
+oarm-pri|Professional Responsibility Issues
+oarm-racialjust|Racial/Ethnic Justice
+oarm-realest|Real Estate
+oarm-relifree|Religious Freedom
+oarm-reg|Regulation
+oarm-security|Securities
+oarm-sepower|Separation of Power
+oarm-sspb|Social Security/Public Benefits
+oarm-slissues|State And Local Issues
+oarm-taxarea|Tax
+oarm-telecomm|Telecommunications
+oarm-tortlaw|Tort Law/Personal Injury
+oarm-tran|Transportation
+oarm-trialp|Trial Practice
+oarm-vet|Veterans
+oarm-voting|Voting Rights
+oarm-wissues|Women's Issues
+oarm-workcomp|Workers' Compensation

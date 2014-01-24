@@ -14,10 +14,11 @@ abstract class OvwMigration extends JusticeMigration {
   /**
    * {@inheritdoc}
    */
-  public function __construct() {
+  public function __construct($arguments) {
     // We group all sub classes of this super class under the 'OVW' group,
     // and indicate that it should appear after the 'default' group in UI.
-    parent::__construct(MigrateGroup::getInstance('ovw', array('default')));
+    $group =MigrateGroup::getInstance('ovw', array('default'));
+    parent::__construct($arguments);
   }
 }
 
@@ -29,8 +30,8 @@ class OvwSpeechesMigration extends CareersMigration {
   /**
    * {@inheritdoc}
    */
-  public function __construct() {
-    parent::__construct();
+  public function __construct($arguments) {
+    parent::__construct($arguments);
 
     $this->dependencies = array('Organizations');
     $this->description = t('Migrates calendars from OPA CMS calendarlist table for Careers section.');

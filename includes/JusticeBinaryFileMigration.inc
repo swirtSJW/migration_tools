@@ -24,13 +24,13 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
    * @param string $dest_dir
    *   The destination directory uri, with public:// or private::/ prefix.
    */
-  public function __construct($group, $source_dirs, $dest_dir, $regex) {
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'fileid' => t('File Location'),
     );
     // Parent constructor will setup $this->source.
-    parent::__construct($group, $source_fields, $source_dirs, $regex);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex);
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
@@ -62,5 +62,47 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
     $row->filepath = $this->base_dir . $row->fileid;
+  }
+
+  /**
+   * Implements Migration::complete().
+   *
+   * Creates a redirect from the legacy filepath.
+   */
+  public function complete($file, $row) {
+    if (module_exists('redirect')) {
+      // Strip leading /.
+      $src = substr($row->fileid, 1);
+      $redirect = redirect_load_by_source($src);
+      if (!$redirect) {
+        // Strip leading public://.
+        $file_public_path = variable_get('file_public_path', conf_path() . '/files/');
+        $dest = str_replace('public://', $file_public_path, $file->uri);
+        // Create redirect.
+        $redirect = new stdClass();
+        redirect_object_prepare($redirect);
+        $redirect->source = $src;
+        $redirect->redirect = $dest;
+
+        redirect_save($redirect);
+      }
+    }
+  }
+
+  /**
+   * Implements Migration::prepareRollback().
+   *
+   * Deletes redirects for entity.
+   */
+  public function prepareRollback($entity_ids) {
+    // $entity_ids is in the form of array('destid1' => [id]).
+    $entity_id = $entity_ids['destid1'];
+    $entity_type = 'file';
+    $entities = entity_load($entity_type, array($entity_id));
+    $entity = reset($entities);
+    // Strip leading public://.
+    $file_public_path = variable_get('file_public_path', conf_path() . '/files/');
+    $dest = str_replace('public://', $file_public_path, $entity->uri);
+    redirect_delete_by_path($dest);
   }
 }

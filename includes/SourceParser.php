@@ -371,4 +371,22 @@ class SourceParser {
 
     return NULL;
   }
+
+  /**
+   * Crude search for strings matching US States.
+   */
+  public function getUsState() {
+    $states_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt');
+    $states = explode("\n", $states_blob);
+    $elements = $this->qp->find('p');
+    foreach ($elements as $element) {
+      foreach ($states as $state) {
+        list($abbreviation, $state_title) = explode('|', $state);
+        if (strpos(strtolower($element->text()), strtolower($state_title)) !== FALSE) {
+          return $abbreviation;
+        }
+      }
+    }
+    return NULL;
+  }
 }

@@ -10,7 +10,7 @@
  *
  * Parent class for all migrations from static HTML to page content type.
  */
-abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
+abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
@@ -23,10 +23,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    */
-  public function __construct($group, $source_dirs, $options = array()) {
-
-    // Match .htm, .html files only.
-    $regex = '/.*\.htm(l)?/';
+  public function __construct($arguments, $source_dirs, $options = array()) {
 
     // Define the fields that will be derived from the static files.
     $source_fields = array(
@@ -34,20 +31,8 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
       'page_body' => t('Body')
     );
 
-    // Calling parent constructor will set $this->source.
-    parent::__construct($group, $source_fields, $source_dirs, $regex, $options);
-
-    // A map of source HTML filename -> destination node id.
-    $this->map = new MigrateSQLMap($this->machineName,
-      array(
-        'fileid' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => TRUE,
-        )
-      ),
-      MigrateDestinationNode::getKeySchema()
-    );
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $options);
 
     // The destination is the page content type.
     $this->destination = new MigrateDestinationNode('page');

@@ -6,13 +6,13 @@
  */
 
 class UsaoDistrictMigration extends JusticeCsvMigration {
-  public function __construct() {
+  public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
     // Add this migration to the 'organizations' group.
     $group = MigrateGroup::getInstance('usao', array());
     $source_file = __DIR__ . '/../sources/usao-districts.csv';
-    parent::__construct($source_file, $group);
+    parent::__construct($arguments, $source_file, $group);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates USAO districts into organizations.');
 
@@ -34,6 +34,8 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     $this->addFieldMapping('migrate_redirects', 'abbreviation');
     $this->addFieldMapping('field_org_type')->defaultValue('district');
     $this->addFieldMapping('og_group_ref')->defaultValue('usao')->sourceMigration('Organization');
+
+    // @todo set path to usao/districts/[abbreviation].
   }
 
   function csvcolumns() {
@@ -57,13 +59,13 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
 }
 
 class UsaoStaffProfileMigration extends JusticeCsvMigration {
-  public function __construct() {
+  public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
     // Add this migration to the 'organizations' group.
     $group = MigrateGroup::getInstance('usao', array());
     $source_file = __DIR__ . '/../sources/usao-districts.csv';
-    parent::__construct($source_file, $group);
+    parent::__construct($arguments, $source_file, $group);
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates USAO District Attorneys.');
 

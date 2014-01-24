@@ -40,8 +40,8 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    *   A parser class that will provide file chunk ids. Defaults to
    *   MigrateSimpleContentParser in parent constructor.
    */
-  public function __construct($group, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
-    parent::__construct($group);
+  public function __construct($arguments, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
+    parent::__construct($arguments);
 
     $this->base_dir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
 
@@ -54,21 +54,6 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     $list_files = new MigrateListFiles($absolute_dirs, $this->base_dir, $regex, $options, $parser);
     $item_file = new MigrateItemFile($this->base_dir);
     $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
-
-    // Create redirects using relative, legacy path of static file.
-    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    // Check to see if $row->fileid == 'index.html'. If so,
-    // add both /path/index.html and /path as redirects.
-    $row->legacy_path = substr($row->fileid, 1);
-    if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
-      $row->legacy_path .= '|' . rtrim(str_replace($matches[0], $row->fileid, ''), '/');
-    }
   }
 
   /**

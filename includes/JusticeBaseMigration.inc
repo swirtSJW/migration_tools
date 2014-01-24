@@ -14,10 +14,10 @@ define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
 /**
  * Abstract intermediate class holding common settings.
  */
-abstract class JusticeBaseMigration extends DynamicMigration {
+abstract class JusticeBaseMigration extends Migration {
 
-  public function __construct($group) {
-    parent::__construct($group);
+  public function __construct($arguments) {
+    parent::__construct($arguments);
 
     $this->team = array(
       new MigrateTeamMember('Matthew Grasmick', 'matthew.grasmick@acquia.com', t('Architect')),
