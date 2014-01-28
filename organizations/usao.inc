@@ -3,6 +3,13 @@
 /**
  * @file
  * Defines migration classes for USAO organization.
+ *
+ * Migrates US Attorneys District home pages from CSV.
+ *
+ * @todo Refactor this to pull data from relevant HTML files. This was written
+ * as a proof-of-concept for source migration ids, to verify that 1) parent
+ * groups could be set for these districts, and 2) staff profiles for each
+ * district could be migrated.
  */
 class UsaoDistrictMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
@@ -28,11 +35,14 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
 
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('field_org_abbreviation', 'abbreviation');
-    $this->addFieldMapping('migrate_redirects', 'abbreviation');
+    $this->addFieldMapping('migrate_redirects', 'legacy_path');
     $this->addFieldMapping('field_org_type')->defaultValue('district');
     $this->addFieldMapping('og_group_ref')->defaultValue('usao')->sourceMigration('Organization');
 
-    // @todo set path to usao/districts/[abbreviation].
+    $this->removeFieldMapping('pathauto');
+    $this->removeFieldMapping('path');
+    $this->addFieldMapping('pathauto')->defaultValue(FALSE);
+    $this->addFieldMapping('path', 'path');
   }
 
   function csvcolumns() {
@@ -52,9 +62,18 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     );
   }
 
-  function prepareRow($row) {}
+  function prepareRow($row) {
+    $url_prefix = 'usao/districts/';
+    $row->path = $url_prefix . $row->abbreviation;
+    $row->legacy_path = $url_prefix . $row->abbreviation . '.html';
+  }
 }
 
+/**
+ * Class UsaoStaffProfileMigration
+ *
+ * Migrates US Attorneys staff profiles from CSV.
+ */
 class UsaoStaffProfileMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
