@@ -39,8 +39,6 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     $this->addFieldMapping('field_org_type')->defaultValue('district');
     $this->addFieldMapping('og_group_ref')->defaultValue('usao')->sourceMigration('Organization');
 
-    $this->removeFieldMapping('pathauto');
-    $this->removeFieldMapping('path');
     $this->addFieldMapping('pathauto')->defaultValue(FALSE);
     $this->addFieldMapping('path', 'path');
   }

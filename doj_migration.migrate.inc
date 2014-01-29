@@ -12,6 +12,9 @@ function doj_migration_migrate_api() {
   $api = array(
     'api' => 2,
     'groups' => array(
+      'ag' => array(
+        'title' => t('Office of the Attorney General'),
+      ),
       'core' => array(
         'title' => t('Core Entities'),
       ),
@@ -27,6 +30,10 @@ function doj_migration_migrate_api() {
 
     ),
     'migrations' => array(
+      'AgPressRelease' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgPressReleaseMigration'
+      ),
       'Organization' => array(
         'group_name' => 'core',
         'class_name' => 'OrganizationMigration'

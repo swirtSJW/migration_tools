@@ -28,7 +28,8 @@ class OrganizationMigration extends JusticeCsvMigration {
 
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('field_org_abbreviation', 'abbreviation');
-    $this->addFieldMapping('migrate_redirects', 'abbreviation');
+    $this->addFieldMapping('pathauto')->defaultValue(FALSE);
+    $this->addFieldMapping('path', 'abbreviation');
   }
 
   function csvcolumns() {

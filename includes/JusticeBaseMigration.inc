@@ -23,16 +23,6 @@ abstract class JusticeBaseMigration extends Migration {
       new MigrateTeamMember('Matthew Grasmick', 'matthew.grasmick@acquia.com', t('Architect')),
     );
     $this->issuePattern = 'https://acquiadojo.atlassian.net/browse/:id:';
-
-    // Map path and pathauto fields to NULL, assigning to DNM.
-    if (module_exists('path')) {
-      $this->addFieldMapping('path')
-        ->issueGroup(t('DNM'));
-      if (module_exists('pathauto')) {
-        $this->addFieldMapping('pathauto')
-          ->issueGroup(t('DNM'));
-      }
-    }
   }
 
   /**
@@ -81,6 +71,21 @@ abstract class JusticeBaseMigration extends Migration {
       }
       elseif (is_string($property) && !$property) {
         unset($row->$key);
+      }
+    }
+  }
+
+  /**
+   * Adds path and path auto field mapping to 'Do not migrate' issue group.
+   */
+  public function addPathDnmMapping() {
+    // Map path and pathauto fields to NULL, assigning to DNM.
+    if (module_exists('path')) {
+      $this->addFieldMapping('path')
+        ->issueGroup(t('DNM'));
+      if (module_exists('pathauto')) {
+        $this->addFieldMapping('pathauto')
+          ->issueGroup(t('DNM'));
       }
     }
   }
