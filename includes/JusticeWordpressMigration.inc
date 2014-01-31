@@ -85,6 +85,9 @@ function doj_migrate_wordpress_prepare_file($filename) {
 
   // Preprocess source file and store in sites/default/private/wordpress.
   if (file_exists($source_filepath) && !file_exists($dest_filepath)) {
+    if (!variable_get('file_private_path')) {
+      throw new Exception('You must specify a private file system path at admin/config/media/file-system');
+    }
     WordPressBlog::preprocessFile($source_filepath, $dest_filepath, FALSE);
   }
 
