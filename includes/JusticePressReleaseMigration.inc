@@ -85,10 +85,10 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('promote', 'onHomepage');
     $this->addFieldMapping('migrate_redirects', 'legacy_url');
 
-    $this->addFieldMapping('field_pr_body', 'documentBody')
-      ->arguments(array('format' => 'wysiwyg'));
-    $this->addFieldMapping('field_pr_teaser', 'documentTeaser')
-      ->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_pr_body', 'documentBody');
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_teaser', 'documentTeaser');
+    $this->addFieldMapping('field_pr_teaser:format')->defaultValue('wysiwyg');
 
     $this->addFieldMapping('og_group_ref')->defaultValue($org_abbreviation)->sourceMigration('Organization');
     $this->addPathDnmMapping();

@@ -1,0 +1,38 @@
+The majority of content to be migrated is contained in 3 tables:
+* cms_opa_prs
+* cms_opa_speeches
+
+mysql> select mc.compAbbrev, count(id) from cms_opa_prs c left join mainComponents mc on c.componentID = mc.cid group by compAbbrev;
++------------+-----------+
+| compAbbrev | count(id) |
++------------+-----------+
+| NULL       |         5 |
+| afp        |         1 |
+| ag         |       531 |
+| asg        |        23 |
+| at         |       626 |
+| atj        |         6 |
+| cdr        |         1 |
+| civ        |       579 |
+| cops       |         1 |
+| crm        |      2420 |
+| crs        |         2 |
+| crt        |      1795 |
+| dag        |        37 |
+| doj        |         2 |
+| enrd       |       666 |
+| eoir       |         2 |
+| eousa      |         1 |
+| jmd        |         4 |
+| nsd        |       277 |
+| ojp        |        10 |
+| ola        |         2 |
+| opa        |       162 |
+| osg        |         1 |
+| otj        |         2 |
+| ovw        |         9 |
+| tax        |      1113 |
+| usao       |         4 |
+| usncb      |         2 |
++------------+-----------+
+28 rows in set (0.03 sec)

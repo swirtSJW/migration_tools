@@ -44,8 +44,8 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
     ));
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_page_body', 'field_page_body')
-      ->arguments(array('format' => 'wysiwyg'));
+    $this->addFieldMapping('field_page_body', 'field_page_body');
+    $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
   }
 
   /**

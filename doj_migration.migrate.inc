@@ -21,6 +21,9 @@ function doj_migration_migrate_api() {
       'careers' => array(
         'title' => t('Careers'),
       ),
+      'opa' => array(
+        'title' => t('OPA - Office of Public Affairs'),
+      ),
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
@@ -33,10 +36,6 @@ function doj_migration_migrate_api() {
       'AgPressRelease' => array(
         'group_name' => 'ag',
         'class_name' => 'AgPressReleaseMigration'
-      ),
-      'Organization' => array(
-        'group_name' => 'core',
-        'class_name' => 'OrganizationMigration'
       ),
       'CareersFile' => array(
         'group_name' => 'careers',
@@ -53,6 +52,22 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration'
+      ),
+      'Organization' => array(
+        'group_name' => 'core',
+        'class_name' => 'OrganizationMigration'
+      ),
+      'OpaBlogEntry' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaBlogEntryMigration'
+      ),
+      'OpaAuthor' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaAuthorMigration'
+      ),
+      'OpaAttachment' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaAttachmentMigration'
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
