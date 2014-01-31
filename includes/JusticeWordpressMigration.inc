@@ -55,6 +55,15 @@ abstract class JusticeWordpressAttachment extends WordPressAttachment {
   public function __construct($arguments) {
     parent::__construct($arguments);
   }
+
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Replace https with http for URLs point to blogs.justice.gov.
+    if (str_pos($row->attachment_url, 'blogs.justice.gov') !== FALSE) {
+      $row->attachment_url = str_replace('https://', 'http://', $row->attachment_url);
+    }
+  }
 }
 
 /**
