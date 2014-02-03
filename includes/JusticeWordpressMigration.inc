@@ -31,7 +31,16 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
 
   public function prepareRow($row) {
     if (trim($row->content) == '') {
-      $row->status = 0;
+      $row->status = NODE_UNPUBLISHED;
+    }
+    else {
+      $row->status = NODE_PUBLISHED;
+    }
+
+    // Trim title.
+    if (strlen($row->title) > 255) {
+      $row->title = substr(trim($row->title), 0, 255);
+      $this->queueMessage(t('Title was too long. It has been truncated to @title.', array('@title' => $row->title)));
     }
   }
 }
