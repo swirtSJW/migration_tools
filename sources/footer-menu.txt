@@ -1,0 +1,9 @@
+Site Map {"url":"http://www.justice.gov/sitemap"}
+A to Z Index {"url":"http://www.justice.gov/a-z-index.html"}
+Archive {"url":"http://www.justice.gov/archive"}
+Accessibility {"url":"http://www.justice.gov/01whatsnew/accessibility_info.htm"}
+FOIA {"url":"http://www.justice.gov/oip"}
+Justice.gov {"url":"http://www.justice.gov"}
+USA.gov {"url":"http://usa.gov"}
+For Employees {"url":"http://www.justice.gov/employees/index.html"}
+Office of the Inspector General {"url":"http://www.justice.gov/oig"}
