@@ -35,25 +35,6 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
         'prRightExtra',
       ));
     $query->leftJoin('cmsopa.mainComponents', 'mc', 'c.componentID = mc.cid');
-      /*
-      ->fields('mc', array(
-        'cid',
-        'compAbbrev',
-        'compLongName',
-        'opapr',
-        'opaspeech',
-        'opatestimony',
-        'opacalendar',
-        'opaCmsPost',
-        'compURL',
-        'contentManager',
-        'compPhone',
-        'compTDD',
-        'docroot',
-        'rssTitle',
-        'rssLink',
-      ))
-      */
     $query->condition('mc.compAbbrev', $org_abbreviation)
       ->orderBy('id', 'ASC');
 

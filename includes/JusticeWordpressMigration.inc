@@ -30,6 +30,15 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
   }
 
   public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      if ($row->post_type == $this->postType) {
+        if (isset($row->status) && $row->status == 'trash') {
+          $this->queueMessage(t('Item has status "trash." Not migrating.'));
+        }
+      }
+      return FALSE;
+    }
+
     if (trim($row->content) == '') {
       $row->status = NODE_UNPUBLISHED;
     }

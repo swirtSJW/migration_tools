@@ -15,8 +15,8 @@ abstract class JusticeHtmlFileMigration extends JusticeFileSourceMigration {
   /**
    * Prepare a file migration.
    *
-   * @param $group
-   *   A migration group returned by  MigrateGroup::getInstance().
+   * @param array $arguments
+   *   Arguments provided by migrate module.
    * @param array $source_fields
    *   An associative aray of fields contained in the source data, in the form
    *   of array('machine_name' => t('Human Readable')).
@@ -32,7 +32,7 @@ abstract class JusticeHtmlFileMigration extends JusticeFileSourceMigration {
     $regex = '/.*\.htm(l)?/';
 
     // Calling parent constructor will set $this->source.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
     // A map of source HTML filename -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,

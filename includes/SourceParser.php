@@ -157,6 +157,24 @@ class SourceParser {
       'div',
       'span',
     ));
+
+    // Empty anchors without name attribute will be stripped by ckEditor.
+    $this->fixNamedAnchors();
+  }
+
+  /**
+   * Empty anchors without name attribute will be stripped by ckEditor.
+   */
+  public function fixNamedAnchors() {
+    $elements = $this->qp->find('a');
+    foreach ($elements as $element) {
+      $contents = trim($element->innerXHTML());
+      if ($contents == '') {
+        if ($id = $element->attr('id')) {
+          $element->attr('name', $id);
+        }
+      }
+    }
   }
 
   /**

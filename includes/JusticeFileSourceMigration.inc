@@ -24,8 +24,8 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    * All derived classes should define 'fileid' as the source key in
    * MigrateSQLMap(), as it is used to create redirects.
    *
-   * @param $group
-   *   A migration group returned by  MigrateGroup::getInstance().
+   * @param array $arguments
+   *   Arguments provided by migrate module.
    * @param array $source_fields
    *   An associative aray of fields contained in the source data, in the form
    *   of array('machine_name' => t('Human Readable')).
