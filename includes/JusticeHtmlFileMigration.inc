@@ -57,9 +57,13 @@ abstract class JusticeHtmlFileMigration extends JusticeFileSourceMigration {
   public function prepareRow($row) {
     // Check to see if $row->fileid == 'index.html'. If so,
     // add both /path/index.html and /path as redirects.
-    $row->legacy_path = substr($row->fileid, 1);
+    $row->url_path = substr($row->fileid, 1);
+    $row->legacy_path = $row->url_path;
     if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
-      $row->legacy_path .= '|' . rtrim(str_replace($matches[0], $row->fileid, ''), '/');
+      $additional_path = rtrim(str_replace($matches[0], '', $row->fileid), '/');
+      if (!drupal_lookup_path('alias', $additional_path)) {
+        $row->legacy_path .= '|' . $additional_path;
+      }
     }
   }
 }

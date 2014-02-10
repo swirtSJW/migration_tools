@@ -59,7 +59,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    $source_parser = new SourceParser($row->legacy_path, $row->filedata);
+    $source_parser = new SourceParser($row->url_path, $row->filedata);
 
     $row->title = $source_parser->getTitle();
     $row->field_page_body = $source_parser->getBody();
