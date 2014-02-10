@@ -2,32 +2,32 @@
 
 /**
  * @file
- * Includes SourceParser class, which parses static HTML files via QueryPath.
+ * Includes SourceParser class, which parses static HTML files via queryPath.
  */
 
 // composer_manager is supposed to take care of including this library, but
 // it doesn't seem to be working.
-require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
+require DRUPAL_ROOT . '/sites/all/vendor/queryPath/queryPath/src/qp.php';
 
 class SourceParser {
-  protected $id;
+  protected $file_id;
   protected $html;
-  public $qp;
+  public $queryPath;
   protected $title;
 
   /**
    * Constructor.
    *
-   * @param $id
-   *  The filepath, e.g. careers/legal/pm7205.html
+   * @param $file_id
+   *  The file id, e.g. careers/legal/pm7205.html
    * @param $html
    *  The full HTML data as loaded from the file.
    * @param boolean $fragment
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    *
    */
-  public function __construct($id, $html, $fragment = FALSE) {
-    $this->id = $id;
+  public function __construct($file_id, $html, $fragment = FALSE) {
+    $this->file_id = $file_id;
     $this->html = $html;
 
     $this->charTransform();
@@ -37,7 +37,7 @@ class SourceParser {
       $this->wrapHTML();
     }
 
-    $this->initQP();
+    $this->initQueryPath();
 
     if (!$fragment) {
       $this->addUtf8Metatag();
@@ -57,7 +57,7 @@ class SourceParser {
   protected function charTransform() {
     // We need to strip the Windows CR characters, because otherwise we end up
     // with &#13; in the output.
-    // http://technosophos.com/content/querypath-whats-13-end-every-line
+    // http://technosophos.com/content/queryPath-whats-13-end-every-line
     $this->html = str_replace(chr(13), '', $this->html);
   }
 
@@ -93,26 +93,26 @@ class SourceParser {
    */
   protected function addUtf8Metatag() {
     $metatag = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $this->qp->find('head')->append($metatag);
+    $this->queryPath->find('head')->append($metatag);
   }
 
   /**
-   * Create the QueryPath object.
+   * Create the queryPath object.
    */
-  protected function initQP() {
+  protected function initQueryPath() {
     $qp_options = array(
       'convert_to_encoding' => 'utf-8',
       'convert_from_encoding' => 'utf-8',
       'strip_low_ascii' => FALSE,
     );
-    $this->qp = htmlqp($this->html, NULL, $qp_options);
+    $this->queryPath = htmlqp($this->html, NULL, $qp_options);
   }
 
   /**
    * Remove the comments from the HTML.
    */
   protected function stripComments() {
-    foreach ($this->qp->top()->xpath('//comment()')->get() as $comment) {
+    foreach ($this->queryPath->top()->xpath('//comment()')->get() as $comment) {
       $comment->parentNode->removeChild($comment);
     }
   }
@@ -123,7 +123,7 @@ class SourceParser {
   protected function stripLegacyElements() {
 
     // Remove elements and their children.
-    $this->qp->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
+    $this->queryPath->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
     $this->removeElements(array(
       'a[name="sitemap"]',
       'a[name="maincontent"]',
@@ -150,7 +150,7 @@ class SourceParser {
     ));
 
     // Remove style attribute from elements.
-    $this->qp->find('.narrow-bar')->removeAttr('style');
+    $this->queryPath->find('.narrow-bar')->removeAttr('style');
 
     // Remove matching elements containing only &nbsp; or nothing.
     $this->removeEmptyElements(array(
@@ -166,12 +166,12 @@ class SourceParser {
    * Empty anchors without name attribute will be stripped by ckEditor.
    */
   public function fixNamedAnchors() {
-    $elements = $this->qp->find('a');
+    $elements = $this->queryPath->find('a');
     foreach ($elements as $element) {
       $contents = trim($element->innerXHTML());
       if ($contents == '') {
-        if ($id = $element->attr('id')) {
-          $element->attr('name', $id);
+        if ($anchor_id = $element->attr('id')) {
+          $element->attr('name', $anchor_id);
         }
       }
     }
@@ -187,7 +187,7 @@ class SourceParser {
       'a' => 'href',
     );
 
-    $elements = $this->qp->find(implode(', ', array_keys($attributes)));
+    $elements = $this->queryPath->find(implode(', ', array_keys($attributes)));
     foreach ($elements as $element) {
       $attribute = $attributes[$element->tag()];
 
@@ -196,7 +196,7 @@ class SourceParser {
         $is_relative = empty($url['scheme']) && !empty($url['path']) && substr($url['path'], 0, 1) !== '/';
 
         if ($is_relative) {
-          $dir_path = dirname($this->id);
+          $dir_path = dirname($this->file_id);
           $new_url = '/' . $dir_path . '/' . $url['path'];
           $element->attr($attribute, $new_url);
         }
@@ -212,7 +212,7 @@ class SourceParser {
    */
   public function removeWrapperElements(array $selectors) {
     foreach ($selectors as $selector) {
-      $this->qp->find($selector)->children()->unwrap();
+      $this->queryPath->find($selector)->children()->unwrap();
     }
   }
 
@@ -222,7 +222,7 @@ class SourceParser {
    */
   public function removeElements(array $selectors) {
     foreach ($selectors as $selector) {
-      $this->qp->find($selector)->remove();
+      $this->queryPath->find($selector)->remove();
     }
   }
 
@@ -231,7 +231,7 @@ class SourceParser {
    */
   public function removeEmptyElements(array $selectors) {
     foreach ($selectors as $selector) {
-      $elements = $this->qp->find($selector);
+      $elements = $this->queryPath->find($selector);
       foreach ($elements as $element) {
         $contents = trim($element->innerXHTML());
         $empty_values = array(
@@ -266,7 +266,7 @@ class SourceParser {
 
     foreach ($labels as $label) {
       // Process body markup.
-      $parent = $this->qp
+      $parent = $this->queryPath
         ->xpath("//strong[contains(text(), '$label')] | //u[contains(text(), '$label')]")
         ->parent('p');
       if ($parent) {
@@ -297,7 +297,7 @@ class SourceParser {
    *   The update date.
    */
   public function extractUpdatedDate() {
-    $element = trim($this->qp->find('.lastupdate'));
+    $element = trim($this->queryPath->find('.lastupdate'));
     $contents = $element->text();
     if ($contents) {
       $contents = trim(str_replace('Updated:', '', $contents));
@@ -311,7 +311,7 @@ class SourceParser {
    * Return content of <body> element.
    */
   public function getBody() {
-    $body = $this->qp
+    $body = $this->queryPath
       ->top('body')
       ->innerHTML();
     $body = trim($body);
@@ -323,13 +323,13 @@ class SourceParser {
    */
   public function setTitle() {
     // First attempt to get the title from the breadcrumb.
-    $wrapper = $this->qp->find('.breadcrumbmenucontent');
+    $wrapper = $this->queryPath->find('.breadcrumbmenucontent');
     $wrapper->children('a, span, font')->remove();
     $title = $wrapper->text();
 
     // If there was no breadcrumb title, get from <title> tag.
     if (!$title) {
-      $title = $this->qp->find('title')->innerHTML();
+      $title = $this->queryPath->find('title')->innerHTML();
     }
 
     // Clean string.
@@ -377,7 +377,7 @@ class SourceParser {
    *   A string of email addresses separated by pipes.
    */
   public function getEmailAddresses() {
-    $anchors = $this->qp->find('a[href^="mailto:"]');
+    $anchors = $this->queryPath->find('a[href^="mailto:"]');
     if ($anchors) {
       $email_addresses = array();
       foreach ($anchors as $anchor) {
@@ -396,7 +396,7 @@ class SourceParser {
   public function getUsState() {
     $states_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt');
     $states = explode("\n", $states_blob);
-    $elements = $this->qp->find('p');
+    $elements = $this->queryPath->find('p');
     foreach ($elements as $element) {
       foreach ($states as $state) {
         list($abbreviation, $state_title) = explode('|', $state);

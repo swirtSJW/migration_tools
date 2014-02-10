@@ -157,11 +157,11 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
   }
 
   public function getHiringComponent($parser) {
-    $hiring_component_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-hiring-components.txt');
-    $hiring_compontents = explode("\n", $hiring_component_blob);
+    $hiring_comp_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-hiring-components.txt');
+    $hiring_comps = explode("\n", $hiring_comp_blob);
     $page_text = $parser->qp->top()->html();
-    foreach ($hiring_compontents as $hiring_compontent) {
-      list($key, $label) = explode('|', $hiring_compontent);
+    foreach ($hiring_comps as $hiring_comp) {
+      list($key, $label) = explode('|', $hiring_comp);
       if (strpos($page_text, $label) !== FALSE) {
         return $key;
       }
@@ -258,9 +258,9 @@ class CareersChunkParser extends JusticeChunkParser {
     return $ids;
   }
 
-  public function getChunk($id) {
+  public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
-    $chunk = $chunks->find('a[name=" '. $id. '"')->parents('table');
+    $chunk = $chunks->find('a[name=" '. $chunk_id. '"')->parents('table');
 
     return $chunk;
   }
