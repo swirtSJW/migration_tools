@@ -74,4 +74,26 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
 
     return $absolute_paths;
   }
+
+  /**
+   * Generates a legacy file path based on a row's file id.
+   *
+   * @param object $row
+   *   The row being imported.
+   */
+  public function generateLegacyPath($row) {
+    // $row->url_path can be used as an identifer, whereas $row->legacy_path
+    // may have multiple values.
+    $row->url_path = substr($row->fileid, 1);
+    $row->legacy_path = $row->url_path;
+
+    // Check to see if $row->fileid == 'index.html'. If so,
+    // add both /path/index.html and /path as redirects.
+    if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
+      $additional_path = rtrim(str_replace($matches[0], '', $row->fileid), '/');
+      if (!drupal_lookup_path('alias', $additional_path)) {
+        $row->legacy_path .= '|' . $additional_path;
+      }
+    }
+  }
 }

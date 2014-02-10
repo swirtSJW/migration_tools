@@ -14,7 +14,6 @@ files[] = includes/JusticeBaseMigration.inc
 files[] = includes/JusticeChunkParser.inc
 files[] = includes/JusticeFileSourceMigration.inc
 files[] = includes/JusticeBinaryFileMigration.inc
-files[] = includes/JusticeHtmlFileMigration.inc
 files[] = includes/JusticeHtmlToPageMigration.inc
 files[] = includes/JusticePressReleaseMigration.inc
 files[] = includes/JusticeWordpressMigration.inc

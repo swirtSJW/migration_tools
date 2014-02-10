@@ -10,13 +10,13 @@
  *
  * Parent class for all migrations from static HTML to page content type.
  */
-abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
+abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
    *
-   * @param $group
-   *   A migration group returned by  MigrateGroup::getInstance().
+   * @param array $arguments
+   *   Arguments provided by migrate module.
    * @param array $source_dirs
    *   A flat array of the source directories containing html files.
    * @param $options
@@ -31,8 +31,11 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
       'page_body' => t('Body')
     );
 
+    // Match .htm, .html files only.
+    $regex = '/.*\.htm(l)?/';
+
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $options);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
     // The destination is the page content type.
     $this->destination = new MigrateDestinationNode('page');
@@ -43,10 +46,25 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
       'title',
     ));
 
+    // A map of source HTML filename -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'fileid' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        )
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
     // Define non-simple field mappings.
     $this->addFieldMapping('field_page_body', 'field_page_body');
     $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+
+    // Create redirects using relative, legacy path of static file.
+    $this->addFieldMapping('migrate_redirects', 'legacy_paths')->separator('|');
   }
 
   /**
@@ -54,6 +72,9 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlFileMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
+
+    // Sets $row->legacy_path and $row->url_path.
+    $this->generateLegacyPath($row);
 
     // Set to admin for now.
     $row->uid = 1;
