@@ -15,8 +15,8 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
   /**
    * Prepare a file migration.
    *
-   * @param $group
-   *   A migration group returned by MigrateGroup::getInstance().
+   * @param array $arguments
+   *   Arguments provided by migrate module.
    * @param array $source_dirs
    *   An array of source directories, relative to $this->base_dir.
    * @param string $regex
