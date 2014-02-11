@@ -7,8 +7,6 @@
 
 /**
  * Class JusticeBinaryFileMigration.
- *
-
  */
 abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
 
@@ -18,11 +16,11 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
    * @param array $arguments
    *   Arguments provided by migrate module.
    * @param array $source_dirs
-   *   An array of source directories, relative to $this->base_dir.
-   * @param string $regex
-   *   The file mask. Only filenames matching this regex will be migrated.
+   *   An array of source directories, relative to $this->baseDir.
    * @param string $dest_dir
    *   The destination directory uri, with public:// or private::/ prefix.
+   * @param string $regex
+   *   The file mask. Only filenames matching this regex will be migrated.
    */
   public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
     // Define the fields that will be derived from the static files.
@@ -61,7 +59,7 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $row->filepath = $this->base_dir . $row->fileid;
+    $row->filepath = $this->baseDir . $row->fileid;
   }
 
   /**

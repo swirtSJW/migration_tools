@@ -15,6 +15,9 @@ define('OPA_WORDPRESS_SOURCE', 'officeofpublicaffairs.wordpress.2014-01-30.xml')
  * Class OpaBlogEntryMigration.
  */
 class OpaBlogEntryMigration extends JusticeWordpressBlogEntry {
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OPA_WORDPRESS_SOURCE);
     parent::__construct($arguments);
@@ -25,6 +28,9 @@ class OpaBlogEntryMigration extends JusticeWordpressBlogEntry {
  * Class OpaAuthorMigration
  */
 class OpaAuthorMigration extends JusticeWordpressAuthor {
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OPA_WORDPRESS_SOURCE);
     parent::__construct($arguments);
@@ -35,6 +41,9 @@ class OpaAuthorMigration extends JusticeWordpressAuthor {
  * Class OpaAttachmentMigration.
  */
 class OpaAttachmentMigration extends JusticeWordpressAttachment {
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OPA_WORDPRESS_SOURCE);
     parent::__construct($arguments);

@@ -19,7 +19,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
    *   Arguments provided by migrate module.
    * @param array $source_dirs
    *   A flat array of the source directories containing html files.
-   * @param $options
+   * @param array $options
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    */
@@ -28,7 +28,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'page_body' => t('Body')
+      'page_body' => t('Body'),
     );
 
     // Match .htm, .html files only.
@@ -53,7 +53,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
           'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
-        )
+        ),
       ),
       MigrateDestinationNode::getKeySchema()
     );

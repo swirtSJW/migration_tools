@@ -16,6 +16,9 @@ define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
  */
 abstract class JusticeBaseMigration extends Migration {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     parent::__construct($arguments);
 
@@ -31,8 +34,8 @@ abstract class JusticeBaseMigration extends Migration {
    * @param array $mappings
    *   An array of field mappings in the form of source_key => dest_key.
    *
-   * @param boolean $warn_on_override
-   *  Set to FALSE to prevent warnings when there's an existing mapping.
+   * @param bool $warn_on_override
+   *   Set to FALSE to prevent warnings when there's an existing mapping.
    */
   public function addFieldMappings(array $mappings, $warn_on_override = TRUE) {
     foreach ($mappings as $source => $destination) {
@@ -61,7 +64,7 @@ abstract class JusticeBaseMigration extends Migration {
   /**
    * Unsets NULL properties on a single dimensional object.
    *
-   * @param $row
+   * @param obj $row
    *   The object to iterate over.
    */
   public function removeEmptyProperties(&$row) {

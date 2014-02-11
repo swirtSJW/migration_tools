@@ -5,7 +5,14 @@
  * Defines migration classes for importing organization nodes.
  */
 
+/**
+ * Class OrganizationMigration.
+ */
 class OrganizationMigration extends JusticeCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
@@ -13,10 +20,11 @@ class OrganizationMigration extends JusticeCsvMigration {
     parent::__construct($arguments, $source_file);
     $this->description = t('Migrates organization nodes.');
 
-    // Create a map object for tracking the relationships between source rows
+    // Create a map object for tracking the relationships between source rows.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'abbreviation' => array('type' => 'varchar',
+        'abbreviation' => array(
+          'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
           'description' => 'Title',
@@ -32,7 +40,10 @@ class OrganizationMigration extends JusticeCsvMigration {
     $this->addFieldMapping('path', 'abbreviation');
   }
 
-  function csvcolumns() {
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
     // Note: Remember to subtract 1 from column number.
     $columns[0] = array('title', 'Title');
     $columns[1] = array('abbreviation', 'Abbreviation');
@@ -40,12 +51,13 @@ class OrganizationMigration extends JusticeCsvMigration {
     return $columns;
   }
 
-  function fields() {
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
     return array(
       'title' => 'The title',
       'abbreviation' => 'The organization abbreviation',
     );
   }
-
-  function prepareRow($row) {}
 }

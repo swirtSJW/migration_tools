@@ -6,6 +6,9 @@
  */
 
 class AgPressReleaseMigration extends JusticePressReleaseMigration {
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $org_abbreviation = 'ag';
 

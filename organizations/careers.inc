@@ -10,6 +10,9 @@
  */
 class CareersPageMigration extends JusticeHtmlToPageMigration {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     // Define source directories.
     $source_dirs = array(
@@ -29,12 +32,14 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- *
+ * Class JusticeVacancyAnnouncementMigration.
  */
 class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
-
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
@@ -56,7 +61,7 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
           'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
-        )
+        ),
       ),
       MigrateDestinationNode::getKeySchema()
     );
@@ -98,6 +103,9 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
  */
 class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
 
     // Define the relative directories containing files to be migrated.
@@ -118,11 +126,11 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     parent::prepareRow($row);
 
     // Create a new SourceParser to handle HTML content.
-    $source_parser = new SourceParser($row->legacy_path, $row->filedata);
+    $source_parser = new CareersSourceParser($row->legacy_path, $row->filedata);
 
     $row->title = $source_parser->getTitle();
     $row->field_va_travel = $source_parser->extractInlineTitle('Travel');
-    $row->field_va_qualifications = $source_parser->extractInlineTitle(array('Required qualifications','Required and Preferred Qualifications'));
+    $row->field_va_qualifications = $source_parser->extractInlineTitle(array('Required qualifications', 'Required and Preferred Qualifications'));
     $row->field_va_salary = $source_parser->extractInlineTitle('Salary Information');
     $row->field_va_responsibilities = $source_parser->extractInlineTitle('Responsibilities and Opportunity Offered');
     $row->field_va_email = $source_parser->getEmailAddresses();
@@ -143,6 +151,9 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     $row->field_va_body = $source_parser->getBody();
   }
 
+  /**
+   * Gets value for practice area field from HTML.
+   */
   public function getPracticeArea($parser) {
     $practice_areas_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-practice-areas.txt');
     $practice_areas = explode("\n", $practice_areas_blob);
@@ -156,6 +167,9 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     return NULL;
   }
 
+  /**
+   * Gets value for hiring component field from HTML.
+   */
   public function getHiringComponent($parser) {
     $hiring_comp_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-hiring-components.txt');
     $hiring_comps = explode("\n", $hiring_comp_blob);
@@ -176,25 +190,26 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
  * @see CareersInternshipParser
  */
 class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
-  public function __construct($arguments) {
 
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
     // Define the relative directories containing files to be migrated.
     $source_dirs = array('careers/legal');
 
-    // Expected file matches are:
-    // careers/legal/volunteer-opp.html
-    // careers/legal/volunteer-opp-usao.html
-    // careers/legal/volunteer-opp-summer.html
-    // careers/legal/volunteer-opp-usao-summer.html
-
     // Match .htm, .html files only.
+    // Expected file matches are:
+    // careers/legal/volunteer-opp.html.
+    // careers/legal/volunteer-opp-usao.html.
+    // careers/legal/volunteer-opp-summer.html.
+    // careers/legal/volunteer-opp-usao-summer.html.
     $regex = '/volunteer-opp.*\.htm(l)?/';
     $options = array();
 
     // Instantiate the parser object that will parse a single HTML file into
     // chunks that will be translated into internship nodes.
     $parser = new CareersChunkParser();
-    //$parser = NULL;
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_dirs, $regex, $options, $parser);
@@ -208,7 +223,7 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     parent::prepareRow($row);
 
     // Create a new SourceParser to handle HTML content.
-    $source_parser = new SourceParser($row->legacy_path, $row->filedata);
+    $source_parser = new CareersSourceParser($row->legacy_path, $row->filedata);
 
     // Extract title.
     $title_element = $source_parser->qp->find('td:first a');
@@ -243,11 +258,17 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
  */
 class CareersChunkParser extends JusticeChunkParser {
 
+  /**
+   * Sets $this->chunks.
+   */
   public function setChunks() {
     // Each <table> in #rightColORAM after the first is an internship.
-   $this->chunks = $this->sourceParser->qp->find('#rightColOARM table:gt(1)')->has('a');
+    $this->chunks = $this->sourceParser->qp->find('#rightColOARM table:gt(1)')->has('a');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getChunkIDs() {
     $chunks = $this->getChunks();
 
@@ -258,9 +279,12 @@ class CareersChunkParser extends JusticeChunkParser {
     return $ids;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
-    $chunk = $chunks->find('a[name=" '. $chunk_id. '"')->parents('table');
+    $chunk = $chunks->find('a[name=" ' . $chunk_id . '"')->parents('table');
 
     return $chunk;
   }
@@ -271,6 +295,9 @@ class CareersChunkParser extends JusticeChunkParser {
  */
 class CareersFileMigration extends JusticeBinaryFileMigration {
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $this->description = t('Migrates files (*.pdf) from the careers subdirectory.');
     $this->dependencies = array('Organization');

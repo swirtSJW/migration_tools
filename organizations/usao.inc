@@ -11,7 +11,15 @@
  * groups could be set for these districts, and 2) staff profiles for each
  * district could be migrated.
  */
+
+/**
+ * Class UsaoDistrictMigration.
+ */
 class UsaoDistrictMigration extends JusticeCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
@@ -20,10 +28,11 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates USAO districts into organizations.');
 
-    // Create a map object for tracking the relationships between source rows
+    // Create a map object for tracking the relationships between source rows.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'abbreviation' => array('type' => 'varchar',
+        'abbreviation' => array(
+          'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
           'description' => 'Title',
@@ -43,7 +52,10 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     $this->addFieldMapping('path', 'path');
   }
 
-  function csvcolumns() {
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
     // Note: Remember to subtract 1 from column number.
     $columns[0] = array('abbreviation', 'Abbreviation');
     $columns[1] = array('title', 'Title');
@@ -52,7 +64,10 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     return $columns;
   }
 
-  function fields() {
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
     return array(
       'title' => 'The title',
       'abbreviation' => 'The organization abbreviation',
@@ -60,7 +75,10 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     );
   }
 
-  function prepareRow($row) {
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
     $url_prefix = 'usao/districts/';
     $row->path = $url_prefix . $row->abbreviation;
     $row->legacy_path = $url_prefix . $row->abbreviation . '.html';
@@ -73,6 +91,10 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
  * Migrates US Attorneys staff profiles from CSV.
  */
 class UsaoStaffProfileMigration extends JusticeCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     ini_set('auto_detect_line_endings', TRUE);
 
@@ -81,10 +103,11 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates USAO District Attorneys.');
 
-    // Create a map object for tracking the relationships between source rows
+    // Create a map object for tracking the relationships between source rows.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'abbreviation' => array('type' => 'varchar',
+        'abbreviation' => array(
+          'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
           'description' => 'Title',
@@ -97,7 +120,10 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
     $this->addFieldMapping('og_group_ref', 'abbreviation')->sourceMigration('UsaoDistrict');
   }
 
-  function csvcolumns() {
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
     // Note: Remember to subtract 1 from column number.
     $columns[0] = array('abbreviation', 'Abbreviation');
     $columns[1] = array('title', 'Title');
@@ -106,7 +132,10 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
     return $columns;
   }
 
-  function fields() {
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
     return array(
       'title' => 'The title',
       'abbreviation' => 'The organization abbreviation',
@@ -114,5 +143,8 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
     );
   }
 
-  function prepareRow($row) {}
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {}
 }

@@ -11,8 +11,11 @@ define('DOJ_LEGACY_WORDPRESS_DIR', DRUPAL_ROOT . '/../../legacy/wordpress_export
  * Implementation of WordPressMigration, for blog entries.
  */
 abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
-  public function __construct($arguments) {
 
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
     $arguments['post_type'] = 'blog_entry';
     $arguments['path_action'] = 2;
     $arguments['generate_redirects'] = 1;
@@ -29,6 +32,9 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
     $this->addFieldMapping('field_blog_body:format')->defaultValue($arguments['text_format']);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function prepareRow($row) {
     if (parent::prepareRow($row) === FALSE) {
       if ($row->post_type == $this->postType) {
@@ -58,6 +64,10 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
  * Class JusticeWordpressAuthor.
  */
 abstract class JusticeWordpressAuthor extends WordPressAuthor {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $arguments['import_users'] = 0;
     $arguments['default_author_uid'] = 1;
@@ -70,10 +80,17 @@ abstract class JusticeWordpressAuthor extends WordPressAuthor {
  * Class JusticeWordpressAttachment.
  */
 abstract class JusticeWordpressAttachment extends WordPressAttachment {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     parent::__construct($arguments);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function prepareRow($row) {
     parent::prepareRow($row);
 

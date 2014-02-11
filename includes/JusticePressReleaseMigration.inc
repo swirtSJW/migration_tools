@@ -1,9 +1,18 @@
 <?php
 
 /**
- * Migrates Press Releases from OPACMS.
+ * @file
+ * Migration class for Press Releases stored in OPA CMS.
+ */
+
+/**
+ * Class JusticePressReleaseMigration.
  */
 abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments, $org_abbreviation) {
     parent::__construct($arguments);
 
@@ -45,7 +54,7 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
           'type' => 'int',
           'length' => 11,
           'not null' => TRUE,
-        )
+        ),
       ),
       MigrateDestinationNode::getKeySchema()
     );
@@ -96,6 +105,6 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
     $row->tag = trim($row->tagSubject, ' ,');
-    $row->legacy_path = trim($row->documentLocation,'/');
+    $row->legacy_path = trim($row->documentLocation, '/');
   }
 }

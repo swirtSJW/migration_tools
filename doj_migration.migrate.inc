@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains definitions of migrations.
+ * Contains definitions of doj migrations.
  */
 
-/*
+/**
  * Implements hook_migrate_api().
  */
 function doj_migration_migrate_api() {
@@ -35,47 +35,47 @@ function doj_migration_migrate_api() {
     'migrations' => array(
       'AgPressRelease' => array(
         'group_name' => 'ag',
-        'class_name' => 'AgPressReleaseMigration'
+        'class_name' => 'AgPressReleaseMigration',
       ),
       'CareersFile' => array(
         'group_name' => 'careers',
-        'class_name' => 'CareersFileMigration'
+        'class_name' => 'CareersFileMigration',
       ),
       'CareersInternship' => array(
         'group_name' => 'careers',
-        'class_name' => 'CareersInternshipMigration'
+        'class_name' => 'CareersInternshipMigration',
       ),
       'CareersJob' => array(
         'group_name' => 'careers',
-        'class_name' => 'CareersJobMigration'
+        'class_name' => 'CareersJobMigration',
       ),
       'CareersPage' => array(
         'group_name' => 'careers',
-        'class_name' => 'CareersPageMigration'
+        'class_name' => 'CareersPageMigration',
       ),
       'Organization' => array(
         'group_name' => 'core',
-        'class_name' => 'OrganizationMigration'
+        'class_name' => 'OrganizationMigration',
       ),
       'OpaBlogEntry' => array(
         'group_name' => 'opa',
-        'class_name' => 'OpaBlogEntryMigration'
+        'class_name' => 'OpaBlogEntryMigration',
       ),
       'OpaAuthor' => array(
         'group_name' => 'opa',
-        'class_name' => 'OpaAuthorMigration'
+        'class_name' => 'OpaAuthorMigration',
       ),
       'OpaAttachment' => array(
         'group_name' => 'opa',
-        'class_name' => 'OpaAttachmentMigration'
+        'class_name' => 'OpaAttachmentMigration',
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
-        'class_name' => 'UsaoDistrictMigration'
+        'class_name' => 'UsaoDistrictMigration',
       ),
       'UsaoStaffProfile' => array(
         'group_name' => 'usao',
-        'class_name' => 'UsaoStaffProfileMigration'
+        'class_name' => 'UsaoStaffProfileMigration',
       ),
     ),
   );

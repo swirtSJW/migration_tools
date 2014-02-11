@@ -10,7 +10,8 @@
 require DRUPAL_ROOT . '/sites/all/vendor/queryPath/queryPath/src/qp.php';
 
 class SourceParser {
-  protected $file_id;
+
+  protected $fileId;
   protected $html;
   public $queryPath;
   protected $title;
@@ -18,82 +19,28 @@ class SourceParser {
   /**
    * Constructor.
    *
-   * @param $file_id
-   *  The file id, e.g. careers/legal/pm7205.html
-   * @param $html
-   *  The full HTML data as loaded from the file.
-   * @param boolean $fragment
+   * @param string $file_id
+   *   The file id, e.g. careers/legal/pm7205.html
+   * @param string $html
+   *   The full HTML data as loaded from the file.
+   * @param bool $fragment
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
-   *
    */
   public function __construct($file_id, $html, $fragment = FALSE) {
-    $this->file_id = $file_id;
+    $this->fileId = $file_id;
     $this->html = $html;
 
-    $this->charTransform();
-    //$this->fixEncoding();
-
-    if ($fragment) {
-      $this->wrapHTML();
-    }
-
     $this->initQueryPath();
-
-    if (!$fragment) {
-      $this->addUtf8Metatag();
-    }
     $this->setTitle();
     $this->stripComments();
 
     // Calling $this->stripLegacyElements will remove a lot of markup, so some
     // properties (e.g., $this->title) must be set before calling it.
     $this->stripLegacyElements();
+
+    // Empty anchors without name attribute will be stripped by ckEditor.
+    $this->fixNamedAnchors();
     $this->convertRelativeSrcsToAbsolute();
-  }
-
-  /**
-   * Replace characters.
-   */
-  protected function charTransform() {
-    // We need to strip the Windows CR characters, because otherwise we end up
-    // with &#13; in the output.
-    // http://technosophos.com/content/queryPath-whats-13-end-every-line
-    $this->html = str_replace(chr(13), '', $this->html);
-  }
-
-  /**
-   * Deal with encodings.
-   */
-  protected function fixEncoding() {
-    // If the content is not UTF8, we assume it's WINDOWS-1252. This fixes
-    // bogus character issues. Technically it could be ISO-8859-1 but it's safe
-    // to convert this way.
-    // http://en.wikipedia.org/wiki/Windows-1252
-    $enc = mb_detect_encoding($this->html, 'UTF-8', TRUE);
-    if (!$enc) {
-      $this->html = mb_convert_encoding($this->html, 'UTF-8', 'WINDOWS-1252');
-    }
-  }
-
-  /**
-   * Wrap an HTML fragment in the correct head/meta tags so that UTF-8 is
-   * correctly detected, and for the parsers and tidiers.
-   */
-  protected function wrapHTML() {
-    // We add surrounding <html> and <head> tags.
-    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-    $html .= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>';
-    $html .= $this->html;
-    $html .= '</body></html>';
-    $this->html = $html;
-  }
-
-  /**
-   * Adds an <meta> tag setting charset to UTF-8 for a full HTML page.
-   */
-  protected function addUtf8Metatag() {
-    $metatag = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $this->queryPath->find('head')->append($metatag);
   }
 
   /**
@@ -157,9 +104,6 @@ class SourceParser {
       'div',
       'span',
     ));
-
-    // Empty anchors without name attribute will be stripped by ckEditor.
-    $this->fixNamedAnchors();
   }
 
   /**
@@ -196,7 +140,7 @@ class SourceParser {
         $is_relative = empty($url['scheme']) && !empty($url['path']) && substr($url['path'], 0, 1) !== '/';
 
         if ($is_relative) {
-          $dir_path = dirname($this->file_id);
+          $dir_path = dirname($this->fileId);
           $new_url = '/' . $dir_path . '/' . $url['path'];
           $element->attr($attribute, $new_url);
         }
@@ -217,6 +161,8 @@ class SourceParser {
   }
 
   /**
+   * Removes elements matching CSS selectors.
+   *
    * @param array $selectors
    *   An array of selectors to remove.
    */
@@ -227,7 +173,10 @@ class SourceParser {
   }
 
   /**
+   * Removes empty elements matching selectors.
+   *
    * @param array $selectors
+   *   An array of selectors to remove.
    */
   public function removeEmptyElements(array $selectors) {
     foreach ($selectors as $selector) {
@@ -243,51 +192,6 @@ class SourceParser {
         }
       }
     }
-  }
-
-  /**
-   * Returns and removes an inline title from the <body>.
-   *
-   * Matches only <p><u><strong>Label</strong></u> Text</p> or
-   * <p><strong><u>Label</u></strong>: Text</p>.
-   *
-   * @param mixed $labels
-   *   The label text for which to search, or a flat array of labels. The first
-   *   label matched will be used.
-   *
-   * @return mixed
-   *   FALSE if no match was found, otherwise, value of labeled <p>.
-   */
-  public function extractInlineTitle($labels) {
-
-    if (is_string($labels)) {
-      $labels = array($labels);
-    }
-
-    foreach ($labels as $label) {
-      // Process body markup.
-      $parent = $this->queryPath
-        ->xpath("//strong[contains(text(), '$label')] | //u[contains(text(), '$label')]")
-        ->parent('p');
-      if ($parent) {
-        $parent->remove('u');
-        $parent->remove('strong');
-
-        // Remove leading ':'. Double trim is intentional.
-        $value = trim($parent->innerHTML());
-        if (strpos($value, ':') === 0) {
-          $value = substr($value, 1);
-        }
-        $value = trim($value);
-
-        // Remove parent element from <body>.
-        $parent->remove();
-
-        return $value;
-      }
-    }
-
-    return NULL;
   }
 
   /**
@@ -348,7 +252,9 @@ class SourceParser {
    *
    * @param string $text
    *   The text string from which to remove whitespace.
+   *
    * @return string
+   *   The trimmed string.
    */
   public function removeWhitespace($text) {
     $text = trim(str_replace('&nbsp;', '', $text));
