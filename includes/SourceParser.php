@@ -9,6 +9,11 @@
 // it doesn't seem to be working.
 require DRUPAL_ROOT . '/sites/all/vendor/queryPath/queryPath/src/qp.php';
 
+/**
+ * Class SourceParser.
+ *
+ * @package doj_migration
+ */
 class SourceParser {
 
   protected $fileId;
@@ -32,7 +37,6 @@ class SourceParser {
 
     $this->initQueryPath();
     $this->setTitle();
-    $this->stripComments();
 
     // Calling $this->stripLegacyElements will remove a lot of markup, so some
     // properties (e.g., $this->title) must be set before calling it.
@@ -56,18 +60,14 @@ class SourceParser {
   }
 
   /**
-   * Remove the comments from the HTML.
-   */
-  protected function stripComments() {
-    foreach ($this->queryPath->top()->xpath('//comment()')->get() as $comment) {
-      $comment->parentNode->removeChild($comment);
-    }
-  }
-
-  /**
    * Removes legacy elements from HTML that are no longer needed.
    */
   protected function stripLegacyElements() {
+
+    // Strip comments.
+    foreach ($this->queryPath->top()->xpath('//comment()')->get() as $comment) {
+      $comment->parentNode->removeChild($comment);
+    }
 
     // Remove elements and their children.
     $this->queryPath->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();

@@ -3,6 +3,8 @@
 /**
  * @file
  * Contains definitions of doj migrations.
+ *
+ * @package doj_migration
  */
 
 /**

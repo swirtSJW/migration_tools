@@ -3,6 +3,9 @@
 /**
  * @file
  * Defines migration classes for OVW group.
+ *
+ * @package doj_migration
+ * @subpackage ovw
  */
 
 /**
@@ -13,6 +16,9 @@ define('OPA_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-01-30.xml');
 
 /**
  * Class OvwBlogEntryMigration.
+ *
+ * @package doj_migration
+ * @subpackage ovw
  */
 class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
 

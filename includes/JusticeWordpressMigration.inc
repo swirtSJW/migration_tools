@@ -9,6 +9,8 @@ define('DOJ_LEGACY_WORDPRESS_DIR', DRUPAL_ROOT . '/../../legacy/wordpress_export
 
 /**
  * Implementation of WordPressMigration, for blog entries.
+ *
+ * @package doj_migration
  */
 abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
 

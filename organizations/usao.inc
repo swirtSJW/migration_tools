@@ -14,6 +14,9 @@
 
 /**
  * Class UsaoDistrictMigration.
+ *
+ * @package doj_migration
+ * @subpackage usao
  */
 class UsaoDistrictMigration extends JusticeCsvMigration {
 
@@ -86,9 +89,12 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
 }
 
 /**
- * Class UsaoStaffProfileMigration
+ * Class UsaoStaffProfileMigration.
  *
  * Migrates US Attorneys staff profiles from CSV.
+ *
+ * @package doj_migration
+ * @subpackage usao
  */
 class UsaoStaffProfileMigration extends JusticeCsvMigration {
 

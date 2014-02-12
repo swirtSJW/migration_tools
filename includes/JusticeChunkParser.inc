@@ -11,6 +11,8 @@
  * Parses a single HTML file into many chunks, each of which is mapped to a
  * separate destination node. Used for 'many to many' migrations where
  * each file contains content for more than one destination.
+ *
+ * @package doj_migration
  */
 abstract class JusticeChunkParser extends MigrateContentParser {
   /**

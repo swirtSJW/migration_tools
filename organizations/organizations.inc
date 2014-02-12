@@ -7,6 +7,8 @@
 
 /**
  * Class OrganizationMigration.
+ *
+ * @package doj_migration
  */
 class OrganizationMigration extends JusticeCsvMigration {
 

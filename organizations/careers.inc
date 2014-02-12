@@ -7,6 +7,9 @@
 
 /**
  * Migrates .html files from /careers to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage careers
  */
 class CareersPageMigration extends JusticeHtmlToPageMigration {
 
@@ -33,6 +36,9 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
 
 /**
  * Class JusticeVacancyAnnouncementMigration.
+ *
+ * @package doj_migration
+ * @subpackage careers
  */
 class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
@@ -100,6 +106,9 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
 /**
  * Migrates .html files from careers/legal/jobs to vacancy_announcement nodes.
+ *
+ * @package doj_migration
+ * @subpackage careers
  */
 class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
 
@@ -187,6 +196,8 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
 /**
  * Migrates internships from [] to vacancy_announcement nodes.
  *
+ * @package doj_migration
+ * @subpackage careers
  * @see CareersInternshipParser
  */
 class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
@@ -254,6 +265,8 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
 /**
  * Parses a single html file into a list of internship rows.
  *
+ * @package doj_migration
+ * @subpackage careers
  * @see CareersInternshipMigration
  */
 class CareersChunkParser extends JusticeChunkParser {
@@ -292,6 +305,9 @@ class CareersChunkParser extends JusticeChunkParser {
 
 /**
  * Migrates files (*.pdf) from /careers.
+ *
+ * @package doj_migration
+ * @subpackage careers
  */
 class CareersFileMigration extends JusticeBinaryFileMigration {
 

@@ -7,6 +7,8 @@
 
 /**
  * Class JusticePressReleaseMigration.
+ *
+ * @package doj_migration
  */
 abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
 

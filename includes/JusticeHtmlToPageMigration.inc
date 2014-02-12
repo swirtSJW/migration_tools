@@ -9,6 +9,8 @@
  * Class JusticeStaticToPageMigration.
  *
  * Parent class for all migrations from static HTML to page content type.
+ *
+ * @package doj_migration
  */
 abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
 

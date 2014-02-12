@@ -6,9 +6,11 @@
  */
 
 /**
- * Class JusticeCsveMigration
+ * Class JusticeCsveMigration.
  *
  * Parent class for all migrations with CSV data source.
+ *
+ * @package doj_migration
  */
 abstract class JusticeCsvMigration extends JusticeBaseMigration {
 

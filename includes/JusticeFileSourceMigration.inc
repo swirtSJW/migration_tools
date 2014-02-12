@@ -6,9 +6,11 @@
  */
 
 /**
- * Class JusticeFileSourceMigration
+ * Class JusticeFileSourceMigration.
  *
  * Parent class for all migrations with source data stored in files.
+ *
+ * @package doj_migration
  */
 abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
 

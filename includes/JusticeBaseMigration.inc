@@ -13,6 +13,8 @@ define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
 
 /**
  * Abstract intermediate class holding common settings.
+ *
+ * @package doj_migration
  */
 abstract class JusticeBaseMigration extends Migration {
 

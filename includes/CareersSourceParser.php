@@ -5,6 +5,11 @@
  * Includes CareersSourceParser, which parses static HTML for careers section.
  */
 
+/**
+ * Class CareersSourceParser.
+ *
+ * @package doj_migration
+ */
 class CareersSourceParser extends SourceParser {
 
   /**
