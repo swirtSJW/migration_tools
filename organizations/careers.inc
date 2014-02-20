@@ -166,7 +166,7 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
   public function getPracticeArea($parser) {
     $practice_areas_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-practice-areas.txt');
     $practice_areas = explode("\n", $practice_areas_blob);
-    $page_text = $parser->qp->top()->html();
+    $page_text = $parser->queryPath->top()->html();
     foreach ($practice_areas as $practice_area) {
       list($key, $label) = explode('|', $practice_area);
       if (strpos($page_text, $label) !== FALSE) {
@@ -182,7 +182,7 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
   public function getHiringComponent($parser) {
     $hiring_comp_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/careers-hiring-components.txt');
     $hiring_comps = explode("\n", $hiring_comp_blob);
-    $page_text = $parser->qp->top()->html();
+    $page_text = $parser->queryPath->top()->html();
     foreach ($hiring_comps as $hiring_comp) {
       list($key, $label) = explode('|', $hiring_comp);
       if (strpos($page_text, $label) !== FALSE) {
@@ -237,7 +237,7 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     $source_parser = new CareersSourceParser($row->legacy_path, $row->filedata);
 
     // Extract title.
-    $title_element = $source_parser->qp->find('td:first a');
+    $title_element = $source_parser->queryPath->find('td:first a');
     $row->title = $title_element->text();
     $title_element->remove();
 
@@ -245,14 +245,14 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     $row->field_va_email = $this->extractTableRow($source_parser, 'Email:');
 
     // Assign leftovers to body field.
-    $row->field_va_body = $source_parser->qp->find('table')->html();
+    $row->field_va_body = $source_parser->queryPath->find('table')->html();
   }
 
   /**
    * Extracts the value of a row and removes from a table.
    */
   public function extractTableRow($parser, $label) {
-    $element = $parser->qp
+    $element = $parser->queryPath
       ->xpath("//td[contains(text(), '$label')]")
       ->next('td');
     $value = $element->text();
@@ -276,7 +276,7 @@ class CareersChunkParser extends JusticeChunkParser {
    */
   public function setChunks() {
     // Each <table> in #rightColORAM after the first is an internship.
-    $this->chunks = $this->sourceParser->qp->find('#rightColOARM table:gt(1)')->has('a');
+    $this->chunks = $this->sourceParser->queryPath->find('#rightColOARM table:gt(1)')->has('a');
   }
 
   /**
