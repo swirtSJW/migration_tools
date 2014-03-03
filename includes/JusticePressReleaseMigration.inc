@@ -18,6 +18,8 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
   public function __construct($arguments, $org_abbreviation) {
     parent::__construct($arguments);
 
+    $this->dependencies = array('Organization');
+
     global $databases;
     $cmsopa_db_name = $databases['cmsopa']['default']['database'];
 
