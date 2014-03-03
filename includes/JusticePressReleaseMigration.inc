@@ -18,7 +18,10 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
   public function __construct($arguments, $org_abbreviation) {
     parent::__construct($arguments);
 
-    $query = db_select('cmsopa.cms_opa_prs', 'c')
+    global $databases;
+    $cmsopa_db_name = $databases['cmsopa']['default']['database'];
+
+    $query = db_select("$cmsopa_db_name.cms_opa_prs", 'c')
       ->fields('c', array(
         'id',
         'creationDate',
@@ -45,7 +48,7 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
         'prLeftExtra',
         'prRightExtra',
       ));
-    $query->leftJoin('cmsopa.mainComponents', 'mc', 'c.componentID = mc.cid');
+    $query->leftJoin("$cmsopa_db_name.mainComponents", 'mc', 'c.componentID = mc.cid');
     $query->condition('mc.compAbbrev', $org_abbreviation)
       ->orderBy('id', 'ASC');
 
