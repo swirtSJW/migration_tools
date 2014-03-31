@@ -86,20 +86,19 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     // Define non-simple field mappings.
     $this->addFieldMapping('field_va_email', 'field_va_email')->separator('|');
     $this->addFieldMapping('field_va_body', 'field_va_body');
-    $this->addFieldMapping('field_va_body:format', 'field_va_body')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_va_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_qualifications', 'field_va_qualifications');
-    $this->addFieldMapping('field_va_qualifications:format', 'field_va_qualifications')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_va_qualifications:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_travel', 'field_va_travel');
-    $this->addFieldMapping('field_va_travel:format', 'field_va_travel')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_va_travel:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_responsibilities', 'field_va_responsibilities');
-    $this->addFieldMapping('field_va_responsibilities:format', 'field_va_responsibilities')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_va_responsibilities:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_practice_area', 'field_va_practice_area');
     $this->addFieldMapping('field_va_hiring_component', 'field_va_hiring_component');
     $this->addFieldMapping('field_va_vacancy_type')->defaultValue('employment');
+    $this->addFieldMapping('field_va_state' ,'state');
 
-    $this->addFieldMapping('field_va_location')->defaultValue('US');
-    $this->addFieldMapping('field_va_location:administrative_area', 'state');
-
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
   }
 }

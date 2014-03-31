@@ -121,6 +121,7 @@ function doj_migrate_wordpress_prepare_file($filename) {
   $dest_filepath = $dest_directory . str_replace(' ', '%20', $filename);
 
   // Preprocess source file and store in sites/default/private/wordpress.
+  // The destination directory must exist!
   if (file_exists($source_filepath) && !file_exists($dest_filepath)) {
     if (!variable_get('file_private_path')) {
       throw new Exception('You must specify a private file system path at admin/config/media/file-system');

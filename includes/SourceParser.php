@@ -300,7 +300,7 @@ class SourceParser {
    * Crude search for strings matching US States.
    */
   public function getUsState() {
-    $states_blob = file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt');
+    $states_blob = trim(file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt'));
     $states = explode("\n", $states_blob);
     $elements = $this->queryPath->find('p');
     foreach ($elements as $element) {
