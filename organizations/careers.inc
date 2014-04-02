@@ -98,6 +98,7 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_vacancy_type')->defaultValue('employment');
     $this->addFieldMapping('field_va_state' ,'state');
 
+    $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
   }
