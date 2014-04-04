@@ -50,11 +50,16 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $source_fields = array(
       'title' => t('Title'),
       'field_va_body' => t('Body'),
-      'field_qualifications' => t('Qualifications'),
+      'field_va_qualifications' => t('Qualifications'),
       'field_va_travel' => t('Travel'),
       'field_va_salary' => t('Salary'),
       'field_va_responsibilities' => t('Responsibilities'),
       'field_va_job_id' => t('Job ID'),
+      'field_va_email' => t('Email Address'),
+      'field_va_hiring_component' => t('Hiring Component'),
+      'field_va_practice_area' => t('Practice Area'),
+      'state' => t('State'),
+      'uid' => t('UID'),
     );
 
     // Calling parent constructor will set $this->source and $this->map.
@@ -95,12 +100,56 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_responsibilities:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_practice_area', 'field_va_practice_area');
     $this->addFieldMapping('field_va_hiring_component', 'field_va_hiring_component');
-    $this->addFieldMapping('field_va_vacancy_type')->defaultValue('employment');
     $this->addFieldMapping('field_va_state' ,'state');
 
     $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
+
+    $this->addUnmigratedDestinations(array(
+      'created',
+      'changed',
+      'status',
+      'promote',
+      'sticky',
+      'revision',
+      'log',
+      'tnid',
+      'translate',
+      'revision_uid',
+      'is_new',
+      'field_va_close_date',
+      'field_va_fax',
+      'field_va_link',
+      'field_va_link:title',
+      'field_va_link:attributes',
+      'field_va_link:language',
+      'field_va_body:language',
+      'field_va_close_date:timezone',
+      'field_va_close_date:rrule',
+      'field_va_close_date:to',
+      'field_va_fax:language',
+      'field_va_job_id:language',
+      'field_va_num_positions',
+      'field_va_num_positions:language',
+      'field_va_open_date',
+      'field_va_open_date:timezone',
+      'field_va_open_date:rrule',
+      'field_va_open_date:to',
+      'field_va_phone',
+      'field_va_phone:language',
+      'field_va_qualifications:language',
+      'field_va_responsibilities:language',
+      'field_va_salary:language',
+      'field_va_teaser',
+      'field_va_teaser:format',
+      'field_va_teaser:language',
+      'field_va_travel:language',
+      'path',
+      'migrate_redirects',
+      'comment',
+      'pathauto',
+    ));
   }
 
   /**
@@ -139,6 +188,8 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_dirs, $regex);
     $this->description = t('Migrates jobs from Careers legal subsection.');
+
+    $this->addFieldMapping('field_va_vacancy_type')->defaultValue('employment');
   }
 
   /**
@@ -253,6 +304,10 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
 
     // Extract title.
     $title_element = $source_parser->queryPath->find('td:first a');
+    if (!$title_element) {
+      $title_element = $source_parser->queryPath->find('td:first');
+    }
+
     $row->title = $title_element->text();
     $title_element->remove();
 
@@ -320,6 +375,9 @@ class CareersChunkParser extends JusticeChunkParser {
   public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
     $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent('table')->html();
+    if (!$chunk) {
+      $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent()->html();
+    }
 
     return $chunk;
   }
