@@ -54,7 +54,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     // $item_file provides methods for retrieving a file given an identifier.
     // $this->source define the essential data source from which to migrate.
     $list_files = new MigrateListFiles($absolute_dirs, $this->baseDir, $regex, $options, $parser);
-    $item_file = new MigrateItemFile($this->baseDir);
+    $item_file = new MigrateItemFile($this->baseDir, TRUE, $parser);
     $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
   }
 

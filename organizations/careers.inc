@@ -102,6 +102,19 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Sets $row->legacy_path and $row->url_path.
+    $this->generateLegacyPath($row);
+
+    // Set to admin for now.
+    $row->uid = 1;
+  }
 }
 
 /**
@@ -225,6 +238,8 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_dirs, $regex, $options, $parser);
     $this->description = t('Migrates jobs from Careers legal subsection.');
+
+    $this->addFieldMapping('field_va_vacancy_type')->defaultValue('legal_internship');
   }
 
   /**
@@ -275,7 +290,8 @@ class CareersChunkParser extends JusticeChunkParser {
    * Sets $this->chunks.
    */
   public function setChunks() {
-    // Each <table> in #rightColORAM after the first is an internship.
+    // Each <table> in #rightColORAM after the first is an internship, which
+    // constitutes a single chunk.
     $this->chunks = $this->sourceParser->queryPath->find('#rightColOARM table:gt(1)')->has('a');
   }
 
@@ -287,7 +303,13 @@ class CareersChunkParser extends JusticeChunkParser {
 
     $ids = array();
     foreach ($chunks as $chunk) {
-      $ids[] = $chunk->find('a:first')->attr('name');
+      // Each table begins with a named anchor. The name attribute of this
+      // anchor will server as the chunk id.
+      $id = $chunk->find('a:first')->attr('name');
+      // Filter out empty strings.
+      if ($id) {
+        $ids[] = $id;
+      }
     }
     return $ids;
   }
@@ -297,7 +319,7 @@ class CareersChunkParser extends JusticeChunkParser {
    */
   public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
-    $chunk = $chunks->find('a[name=" ' . $chunk_id . '"')->parents('table');
+    $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent('table')->html();
 
     return $chunk;
   }
