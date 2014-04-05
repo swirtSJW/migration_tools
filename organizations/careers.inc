@@ -304,11 +304,11 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
 
     // Extract title.
     $title_element = $source_parser->queryPath->find('td:first a');
-    if (!$title_element) {
+    if (!$title_element->text()) {
       $title_element = $source_parser->queryPath->find('td:first');
     }
 
-    $row->title = $title_element->text();
+    $row->title = substr($title_element->text(), 0, 255);
     $title_element->remove();
 
     $row->field_va_qualifications = $this->extractTableRow($source_parser, 'Qualifications:');
