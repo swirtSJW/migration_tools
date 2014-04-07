@@ -33,4 +33,17 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from Office of Attorney Recruitment & Management section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oarm')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Let's clean up the titles from ».
+    $title = str_replace("»   » ", "", $row->title);
+    $title = trim($title);
+
+    $row->title = $title;
+  }
 }
