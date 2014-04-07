@@ -22,6 +22,7 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       'oarm',
+      'oarm/aslrp',
     );
     $options = array('recurse' => FALSE);
 
