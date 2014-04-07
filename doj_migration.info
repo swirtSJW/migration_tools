@@ -24,6 +24,7 @@ files[] = includes/SourceParser.php
 files[] = organizations/ag.inc
 files[] = organizations/careers.inc
 files[] = organizations/organizations.inc
+files[] = organizations/oarm.inc
 files[] = organizations/opa.inc
 files[] = organizations/ovw.inc
 files[] = organizations/usao.inc

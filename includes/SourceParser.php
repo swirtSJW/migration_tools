@@ -7,7 +7,7 @@
 
 // composer_manager is supposed to take care of including this library, but
 // it doesn't seem to be working.
-require DRUPAL_ROOT . '/sites/all/vendor/queryPath/queryPath/src/qp.php';
+require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
 
 /**
  * Class SourceParser.
