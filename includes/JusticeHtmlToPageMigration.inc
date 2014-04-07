@@ -66,7 +66,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     // Create redirects using relative, legacy path of static file.
-    $this->addFieldMapping('migrate_redirects', 'legacy_paths')->separator('|');
+    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
   }
 
   /**
