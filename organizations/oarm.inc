@@ -23,6 +23,7 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       'oarm',
       'oarm/aslrp',
+      'oarm/wb',
     );
     $options = array('recurse' => FALSE);
 
@@ -40,9 +41,16 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    // Let's clean up the titles from ».
-    $title = str_replace("»   » ", "", $row->title);
-    $title = trim($title);
+    $title = $row->title;
+    // Let's clean up the titles from » and the weird blank char also.
+    $count = 1;
+    while ($count > 0) {
+      $title = str_replace("»", "", $title, $count);
+    }
+    $count = 1;
+    while ($count > 0) {
+      $title = str_replace(" ", "", $title, $count);
+    }
 
     $row->title = $title;
   }
