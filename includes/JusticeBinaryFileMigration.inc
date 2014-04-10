@@ -77,7 +77,7 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
       if (!$redirect) {
         // Strip leading public://.
         $file_public_path = variable_get('file_public_path', conf_path() . '/files/');
-        $dest = str_replace('public://', $file_public_path, $file->uri);
+        $dest = str_replace('public:/', $file_public_path, $file->uri);
         // Create redirect.
         $redirect = new stdClass();
         redirect_object_prepare($redirect);

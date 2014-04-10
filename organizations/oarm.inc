@@ -55,3 +55,34 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
     $row->title = $title;
   }
 }
+
+/**
+ * Migrates files (*.pdf) from /oarm.
+ *
+ * @package doj_migration
+ * @subpackage oarm
+ */
+class OARMFileMigration extends JusticeBinaryFileMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->description = t('Migrates files (*.pdf) from the oarm subdirectory.');
+    $this->dependencies = array('Organization');
+
+    // Match .pdf files only.
+    $source_dirs = array(
+      'oarm',
+      'oarm/aslrp',
+      'oarm/wb',
+    );
+    $regex = '/.*\.pdf/';
+    $dest_dir = 'public://oarm/docs';
+
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+  }
+}

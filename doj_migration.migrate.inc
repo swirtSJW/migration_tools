@@ -62,6 +62,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'core',
         'class_name' => 'OrganizationMigration',
       ),
+      'OARMFile' => array(
+        'group_name' => 'oarm',
+        'class_name' => 'OARMFileMigration',
+      ),
       'OARMPage' => array(
         'group_name' => 'oarm',
         'class_name' => 'OARMPageMigration',
