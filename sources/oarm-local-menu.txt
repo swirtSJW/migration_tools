@@ -1,9 +1,0 @@
-About the Office {"url":"https://dojlocal.prod.acquia-sites.com/oarm/about-office.html"}
-Meet the Director {"url":"https://dojlocal.prod.acquia-sites.com/oarm/meet-director.html"}
-Legal Careers at Justice {"url":"careers/legal/index.html"}
-Employment-Related Forms {"url":"https://dojlocal.prod.acquia-sites.com/oarm/employment-forms.html"}
-Suitability & Background Investigation {"url":"https://dojlocal.prod.acquia-sites.com/oarm/background-investigation.html"}
-FBI Whistleblowers {"url":"https://dojlocal.prod.acquia-sites.com/oarm/wb/whistleblowers.htm"}
-Attorney Student Loan Repayment Program {"url":"https://dojlocal.prod.acquia-sites.com/oarm/aslrp.html"}
-OARM FOIA {"url":"https://dojlocal.prod.acquia-sites.com/oarm/foia.html"}
-Contact the Office {"url":"https://dojlocal.prod.acquia-sites.com/oarm/contact-office.html"}
