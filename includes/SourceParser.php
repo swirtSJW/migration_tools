@@ -41,6 +41,7 @@ class SourceParser {
       $this->wrapHTML();
     }
     $this->initQueryPath();
+    $this->setTitle();
 
     // Calling $this->stripLegacyElements will remove a lot of markup, so some
     // properties (e.g., $this->title) must be set before calling it.
