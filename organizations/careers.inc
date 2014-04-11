@@ -56,7 +56,7 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
       'field_va_responsibilities' => t('Responsibilities'),
       'field_va_job_id' => t('Job ID'),
       'field_va_email' => t('Email Address'),
-      'field_va_hiring_component' => t('Hiring Component'),
+      'field_va_hiring_org' => t('Hiring Organization'),
       'field_va_practice_area' => t('Practice Area'),
       'state' => t('State'),
       'uid' => t('UID'),
@@ -99,17 +99,17 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_responsibilities', 'field_va_responsibilities');
     $this->addFieldMapping('field_va_responsibilities:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_practice_area', 'field_va_practice_area');
-    $this->addFieldMapping('field_va_hiring_component', 'field_va_hiring_component');
+    $this->addFieldMapping('field_va_hiring_org', 'field_va_hiring_org');
     $this->addFieldMapping('field_va_state' ,'state');
 
     $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+    $this->addFieldMapping('status')->defaultValue('1');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
 
     $this->addUnmigratedDestinations(array(
       'created',
       'changed',
-      'status',
       'promote',
       'sticky',
       'revision',
@@ -189,7 +189,7 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     parent::__construct($arguments, $source_dirs, $regex);
     $this->description = t('Migrates jobs from Careers legal subsection.');
 
-    $this->addFieldMapping('field_va_vacancy_type')->defaultValue('employment');
+    $this->addFieldMapping('field_va_position')->defaultValue('attorney');
   }
 
   /**
@@ -209,7 +209,7 @@ class CareersJobMigration extends JusticeVacancyAnnouncementMigration {
     $row->field_va_email = $source_parser->getEmailAddresses();
     $row->state = $source_parser->getUsState();
     $row->field_va_practice_area = $this->getPracticeArea($source_parser);
-    $row->field_va_hiring_component = $this->getHiringComponent($source_parser);
+    $row->field_va_hiring_org = $this->getHiringComponent($source_parser);
 
     // Extract Job ID from title.
     if (preg_match('|[A-Z0-9]{1,4}(-[A-Z0-9()\/]+){2,}|', $row->title, $matches)) {
@@ -290,7 +290,7 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     parent::__construct($arguments, $source_dirs, $regex, $options, $parser);
     $this->description = t('Migrates jobs from Careers legal subsection.');
 
-    $this->addFieldMapping('field_va_vacancy_type')->defaultValue('legal_internship');
+    $this->addFieldMapping('field_va_position', 'field_va_position');
   }
 
   /**
@@ -300,33 +300,46 @@ class CareersInternshipMigration extends JusticeVacancyAnnouncementMigration {
     parent::prepareRow($row);
 
     // Create a new SourceParser to handle HTML content.
-    $source_parser = new CareersSourceParser($row->legacy_path, $row->filedata);
+    $source_parser = new CareersSourceParser($row->legacy_path, (string) $row->filedata, TRUE);
 
     // Extract title.
     $title_element = $source_parser->queryPath->find('td:first a');
-    if (!$title_element->text()) {
+    if ($title_element && !$title_element->text()) {
       $title_element = $source_parser->queryPath->find('td:first');
     }
+    if ($title_element) {
+      $title = $title_element->text();
+      // $title_element->remove();
+    }
+    else {
+      $title = 'Title could not be found';
+    }
 
-    $row->title = substr($title_element->text(), 0, 255);
-    $title_element->remove();
+    $row->title = substr($title, 0, 255);
 
     $row->field_va_qualifications = $this->extractTableRow($source_parser, 'Qualifications:');
     $row->field_va_email = $this->extractTableRow($source_parser, 'Email:');
 
     // Assign leftovers to body field.
     $row->field_va_body = $source_parser->queryPath->find('table')->html();
+
+    if (strstr($row->fileid, 'summer')) {
+      $row->field_va_position = 'law_student_volunteer_summer';
+    }
   }
 
   /**
    * Extracts the value of a row and removes from a table.
    */
   public function extractTableRow($parser, $label) {
+    $value = '';
     $element = $parser->queryPath
       ->xpath("//td[contains(text(), '$label')]")
       ->next('td');
-    $value = $element->text();
-    $element->parents('tr')->remove();
+    if ($element) {
+      $value = $element->text();
+      $element->remove();
+    }
 
     return $value;
   }
@@ -347,7 +360,7 @@ class CareersChunkParser extends JusticeChunkParser {
   public function setChunks() {
     // Each <table> in #rightColORAM after the first is an internship, which
     // constitutes a single chunk.
-    $this->chunks = $this->sourceParser->queryPath->find('#rightColOARM table:gt(1)')->has('a');
+    $this->chunks = $this->sourceParser->queryPath->find('#rightColOARM table:gt(1)');
   }
 
   /**
@@ -366,6 +379,7 @@ class CareersChunkParser extends JusticeChunkParser {
         $ids[] = $id;
       }
     }
+
     return $ids;
   }
 
@@ -374,9 +388,14 @@ class CareersChunkParser extends JusticeChunkParser {
    */
   public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
+
+
     $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent('table')->html();
     if (!$chunk) {
       $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent()->html();
+    }
+    if (!$chunk) {
+      $chunk = 'Data could not be migrated';
     }
 
     return $chunk;

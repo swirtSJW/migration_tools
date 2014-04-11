@@ -35,8 +35,12 @@ class SourceParser {
     $this->fileId = $file_id;
     $this->html = $html;
 
+    $this->charTransform();
+    $this->fixEncoding();
+    if ($fragment) {
+      $this->wrapHTML();
+    }
     $this->initQueryPath();
-    $this->setTitle();
 
     // Calling $this->stripLegacyElements will remove a lot of markup, so some
     // properties (e.g., $this->title) must be set before calling it.
@@ -57,6 +61,43 @@ class SourceParser {
       'strip_low_ascii' => FALSE,
     );
     $this->queryPath = htmlqp($this->html, NULL, $qp_options);
+  }
+
+  /**
+   * Deal with encodings.
+   */
+  protected function fixEncoding() {
+    // If the content is not UTF8, we assume it's WINDOWS-1252. This fixes
+    // bogus character issues. Technically it could be ISO-8859-1 but it's safe
+    // to convert this way.
+    // http://en.wikipedia.org/wiki/Windows-1252
+    $enc = mb_detect_encoding($this->html, 'UTF-8', TRUE);
+    if (!$enc) {
+      $this->html = mb_convert_encoding($this->html, 'UTF-8', 'WINDOWS-1252');
+    }
+  }
+
+  /**
+   * Replace characters.
+   */
+  protected function charTransform() {
+    // We need to strip the Windows CR characters, because otherwise we end up
+    // with &#13; in the output.
+    // http://technosophos.com/content/querypath-whats-13-end-every-line
+    $this->html = str_replace(chr(13), '', $this->html);
+  }
+
+  /**
+   * Wrap an HTML fragment in the correct head/meta tags so that UTF-8 is
+   * correctly detected, and for the parsers and tidiers.
+   */
+  protected function wrapHTML() {
+    // We add surrounding <html> and <head> tags.
+    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+    $html .= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>';
+    $html .= $this->html;
+    $html .= '</body></html>';
+    $this->html = $html;
   }
 
   /**
