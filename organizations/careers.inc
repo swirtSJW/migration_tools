@@ -100,8 +100,8 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_responsibilities:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_va_practice_area', 'field_va_practice_area');
     $this->addFieldMapping('field_va_hiring_org', 'field_va_hiring_org');
-    $this->addFieldMapping('field_va_state' ,'state');
-
+    $this->addFieldMapping('field_va_location')->defaultValue('US');
+    $this->addFieldMapping('field_va_location:administrative_area', 'state');
     $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('status')->defaultValue('1');
