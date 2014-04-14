@@ -104,6 +104,7 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('field_va_location:administrative_area', 'state');
     $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+    $this->addFieldMapping('workbench_moderation_state_current')->defaultValue('published');
     $this->addFieldMapping('status')->defaultValue('1');
     $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
 
@@ -163,6 +164,16 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
 
     // Set to admin for now.
     $row->uid = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    $entity->revision = FALSE;
+    $entity->is_new = !(isset($entity->nid) && ($entity->nid));
+    $entity->workbench_moderation_state_current = 'published';
+    $entity->workbench_moderation_state_new = 'published';
   }
 }
 
