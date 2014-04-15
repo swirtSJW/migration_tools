@@ -6,6 +6,11 @@
  */
 
 /**
+ * Node id of legal careers organization.
+ */
+define('LEGAL_CAREERS_NID', 3643);
+
+/**
  * Migrates .html files from /careers to page nodes.
  *
  * @package doj_migration
@@ -106,7 +111,7 @@ class JusticeVacancyAnnouncementMigration extends JusticeFileSourceMigration {
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('workbench_moderation_state_current')->defaultValue('published');
     $this->addFieldMapping('status')->defaultValue('1');
-    $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue(LEGAL_CAREERS_NID);
 
     $this->addUnmigratedDestinations(array(
       'created',
