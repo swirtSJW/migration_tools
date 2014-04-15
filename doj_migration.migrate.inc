@@ -35,7 +35,6 @@ function doj_migration_migrate_api() {
       'usao' => array(
         'title' => t('USAO - United States Attorneys Office'),
       ),
-
     ),
     'migrations' => array(
       'AgPressRelease' => array(
@@ -69,6 +68,10 @@ function doj_migration_migrate_api() {
       'OARMPage' => array(
         'group_name' => 'oarm',
         'class_name' => 'OARMPageMigration',
+      ),
+      'OARMUsers' => array(
+        'group_name' => 'oarm',
+        'class_name' => 'OARMUsersMigration',
       ),
       'OpaBlogEntry' => array(
         'group_name' => 'opa',
