@@ -63,15 +63,15 @@ function doj_migration_migrate_api() {
       ),
       'OARMFile' => array(
         'group_name' => 'oarm',
-        'class_name' => 'OARMFileMigration',
+        'class_name' => 'OarmFileMigration',
       ),
       'OARMPage' => array(
         'group_name' => 'oarm',
-        'class_name' => 'OARMPageMigration',
+        'class_name' => 'OarmPageMigration',
       ),
-      'OARMUsers' => array(
+      'OARMUser' => array(
         'group_name' => 'oarm',
-        'class_name' => 'OARMUsersMigration',
+        'class_name' => 'OarmUserMigration',
       ),
       'OpaBlogEntry' => array(
         'group_name' => 'opa',

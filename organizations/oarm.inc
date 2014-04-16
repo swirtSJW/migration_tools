@@ -13,7 +13,7 @@
  * @package doj_migration
  * @subpackage oarm
  */
-class OARMPageMigration extends JusticeHtmlToPageMigration {
+class OarmPageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -62,7 +62,7 @@ class OARMPageMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage oarm
  */
-class OARMFileMigration extends JusticeBinaryFileMigration {
+class OarmFileMigration extends JusticeBinaryFileMigration {
 
   /**
    * {@inheritdoc}
@@ -92,7 +92,7 @@ class OARMFileMigration extends JusticeBinaryFileMigration {
  *
  * @package doj_migration
  */
-class OARMUsersMigration extends JusticeCsvMigration {
+class OarmUserMigration extends JusticeCsvMigration {
 
   /**
    * {@inheritdoc}
