@@ -19,6 +19,7 @@ abstract class JusticeCsvMigration extends JusticeBaseMigration {
    */
   public function __construct($arguments, $source_file) {
     parent::__construct($arguments);
+    ini_set('auto_detect_line_endings', TRUE);
 
     // Create a MigrateSource object, which manages retrieving the input data.
     $this->source = new MigrateSourceCSV($source_file, $this->csvcolumns(), array(), $this->fields());

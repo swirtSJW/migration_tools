@@ -98,8 +98,6 @@ class OarmUserMigration extends JusticeCsvMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    ini_set('auto_detect_line_endings', TRUE);
-
     $source_file = __DIR__ . '/../sources/oarm-users.csv';
     parent::__construct($arguments, $source_file);
     $this->description = t('Migrates OARM users.');
