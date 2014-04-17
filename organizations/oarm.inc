@@ -116,7 +116,7 @@ class OarmUserMigration extends JusticeCsvMigration {
     );
     $this->destination = new MigrateDestinationUser();
 
-    $this->addSimpleMappings(array('name'));
+    $this->addFieldMapping("name", "email");
     $this->addFieldMapping("mail", "email");
     $this->addFieldMapping("role_names", "roles")->separator("|");
     $this->addFieldMapping("og_user_node")->defaultValue('oarm')->sourceMigration('Organization');
@@ -142,14 +142,6 @@ class OarmUserMigration extends JusticeCsvMigration {
    */
   public function fields() {
     return array();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    parent::prepareRow($row);
-    $row->name = "{$row->first_name} {$row->last_name}";
   }
 
   /**
