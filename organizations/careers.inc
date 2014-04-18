@@ -405,7 +405,6 @@ class CareersChunkParser extends JusticeChunkParser {
   public function getChunk($chunk_id) {
     $chunks = $this->getChunks();
 
-
     $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent('table')->html();
     if (!$chunk) {
       $chunk = $chunks->find('a[name="' . $chunk_id . '"]')->parent()->html();

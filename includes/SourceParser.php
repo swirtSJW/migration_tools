@@ -89,8 +89,9 @@ class SourceParser {
   }
 
   /**
-   * Wrap an HTML fragment in the correct head/meta tags so that UTF-8 is
-   * correctly detected, and for the parsers and tidiers.
+   * Wrap an HTML fragment in the correct head/meta tags.
+   *
+   * This ensures that that UTF-8 is correctly detected.
    */
   protected function wrapHTML() {
     // We add surrounding <html> and <head> tags.
