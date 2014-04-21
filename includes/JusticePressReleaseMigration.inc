@@ -88,6 +88,7 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_pr_teaser:format')->defaultValue('wysiwyg');
 
     $this->addFieldMapping('og_group_ref')->defaultValue($org_abbreviation)->sourceMigration('Organization');
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addPathDnmMapping();
 
     $this->addUnmigratedSources(array(
