@@ -94,4 +94,17 @@ abstract class JusticeBaseMigration extends Migration {
       }
     }
   }
+
+  /**
+   * Set workbench configration for entity.
+   *
+   * This fixes a number of bugs that result from worbench revisions failing
+   * to be created or updated when entities are created or updated.
+   */
+  public function prepareWorkbenchSettings($entity, $row) {
+    $entity->is_new = !isset($row->migrate_map_needs_update);
+    $entity->revision = TRUE;
+    $entity->workbench_moderation_state_current = 'published';
+    $entity->workbench_moderation_state_new = 'published';
+  }
 }

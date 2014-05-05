@@ -88,4 +88,10 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     $row->field_page_body = $source_parser->getBody();
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    $this->prepareWorkbenchSettings($entity, $row);
+  }
 }
