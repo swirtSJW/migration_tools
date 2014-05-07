@@ -35,7 +35,7 @@ class CareersPageMigration extends JusticeHtmlToPageMigration {
     parent::__construct($arguments, $source_dirs, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Careers section.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('careers')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue(LEGAL_CAREERS_NID);
   }
 }
 
