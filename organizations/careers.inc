@@ -420,7 +420,7 @@ class CareersChunkParser extends JusticeChunkParser {
  * @package doj_migration
  * @subpackage careers
  */
-class CareersFileMigration extends JusticeBinaryFileMigration {
+class CareersFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
@@ -439,4 +439,12 @@ class CareersFileMigration extends JusticeBinaryFileMigration {
     // relies on prepareRow() defining $row->filepath and $row->legacy_path.
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "careers";
+  }
+
 }

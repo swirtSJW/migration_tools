@@ -62,7 +62,7 @@ class OarmPageMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage oarm
  */
-class OarmFileMigration extends JusticeBinaryFileMigration {
+class OarmFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
@@ -84,6 +84,13 @@ class OarmFileMigration extends JusticeBinaryFileMigration {
     // It will also add field mappings for file location and redirects, which
     // relies on prepareRow() defining $row->filepath and $row->legacy_path.
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "oarm";
   }
 }
 

@@ -106,3 +106,40 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
     redirect_delete_by_path($dest);
   }
 }
+
+/**
+ * Adding functionality that allows files to be added to a deployment plan
+ */
+abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMigration {
+
+  protected $deployment_plan;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+    $abbrev = $this->getOrganizationAbbreviation();
+    $this->deployment_plan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($file, $row) {
+    parent::complete($file, $row);
+
+    // Let's add files to a deployment plan.
+    if ($this->deployment_plan) {
+      deploy_manager_add_to_plan($this->deployment_plan, "file", $file);
+    }
+  }
+
+  /**
+   * Get the abbreviation of an organization.
+   * 
+   * @return string
+   *   The abbreviation.
+   */
+  abstract public function getOrganizationAbbreviation();
+}
