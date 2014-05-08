@@ -112,7 +112,7 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
  */
 abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMigration {
 
-  protected $deployment_plan;
+  protected $deploymentPlan;
 
   /**
    * {@inheritdoc}
@@ -120,7 +120,7 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
   public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
     $abbrev = $this->getOrganizationAbbreviation();
-    $this->deployment_plan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
+    $this->deploymentPlan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
   }
 
   /**
@@ -130,8 +130,8 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
     parent::complete($file, $row);
 
     // Let's add files to a deployment plan.
-    if ($this->deployment_plan) {
-      deploy_manager_add_to_plan($this->deployment_plan, "file", $file);
+    if ($this->deploymentPlan) {
+      deploy_manager_add_to_plan($this->deploymentPlan, "file", $file);
     }
   }
 
