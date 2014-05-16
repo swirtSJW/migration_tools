@@ -3,7 +3,7 @@
 /**
  * @file
  * Office of Attorney Recruitment & Management OARM.
- * 
+ *
  * Defines migration classes for the OARM section of justice.gov.
  */
 
@@ -78,7 +78,7 @@ class OarmFileMigration extends JusticeDeployableBinaryFileMigration {
       'oarm/wb',
     );
     $regex = '/.*\.pdf/';
-    $dest_dir = 'public://oarm/docs';
+    $dest_dir = 'public:///oarm/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
@@ -182,7 +182,7 @@ class OarmUserMigration extends JusticeCsvMigration {
 
   /**
    * Get the group id from a user.
-   * 
+   *
    * @param object $user
    *   A user entity.
    */
