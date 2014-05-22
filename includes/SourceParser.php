@@ -50,6 +50,7 @@ class SourceParser {
     // Empty anchors without name attribute will be stripped by ckEditor.
     $this->fixNamedAnchors();
     $this->convertRelativeSrcsToAbsolute();
+    $this->removeExtLinkJS();
   }
 
   /**
@@ -186,6 +187,27 @@ class SourceParser {
           $dir_path = dirname($this->fileId);
           $new_url = '/' . $dir_path . '/' . $url['path'];
           $element->attr($attribute, $new_url);
+        }
+      }
+    }
+  }
+
+  /**
+   * Removes legacy usage of javascript:exitWinOpen() for external links.
+   */
+  public function removeExtLinkJS() {
+    // This should replace tags matching
+    // <a href="javascript:exitWinOpen('http://example.com');">Example</a>
+    // with <a href="http://example.com">Example</a>.
+    $elements = $this->queryPath->find('a');
+    $pattern = "|javascript:exitWinOpen\('([^']+)'\);|";
+    foreach ($elements as $element) {
+      $href = $element->attr('href');
+      if ($href) {
+        preg_match($pattern, $href, $matches);
+        if (isset($matches) && !empty($matches[1])) {
+          $new_url = $matches[1];
+          $element->attr('href', $new_url);
         }
       }
     }
