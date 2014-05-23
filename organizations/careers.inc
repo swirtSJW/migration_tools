@@ -431,7 +431,7 @@ class CareersFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = array('careers');
-    $regex = '/.*\.pdf/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///careers/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
