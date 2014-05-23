@@ -77,7 +77,7 @@ class OarmFileMigration extends JusticeDeployableBinaryFileMigration {
       'oarm/aslrp',
       'oarm/wb',
     );
-    $regex = '/.*\.pdf/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///oarm/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
