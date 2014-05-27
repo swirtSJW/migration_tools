@@ -29,6 +29,9 @@ function doj_migration_migrate_api() {
       'opa' => array(
         'title' => t('OPA - Office of Public Affairs'),
       ),
+      'opcl' => array(
+        'title' => t('OPCL - Office of Privacy and Civil Liberties'),
+      ),
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
@@ -84,6 +87,10 @@ function doj_migration_migrate_api() {
       'OpaAttachment' => array(
         'group_name' => 'opa',
         'class_name' => 'OpaAttachmentMigration',
+      ),
+      'OpclPage' => array(
+        'group_name' => 'opcl',
+        'class_name' => 'OpclPageMigration',
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
