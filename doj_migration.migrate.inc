@@ -23,6 +23,9 @@ function doj_migration_migrate_api() {
       'careers' => array(
         'title' => t('Careers'),
       ),
+      'interpol' => array(
+        'title' => t('INTERPOL'),
+      ),
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
       ),
@@ -59,6 +62,10 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
+      ),
+      'InterpolPage' => array(
+        'group_name' => 'interpol',
+        'class_name' => 'InterpolPageMigration',
       ),
       'Organization' => array(
         'group_name' => 'core',
