@@ -292,7 +292,7 @@ class SourceParser {
    */
   public function setTitle() {
     // First attempt to get the title from the breadcrumb.
-    $wrapper = $this->queryPath->find('.breadcrumbmenucontent');
+    $wrapper = $this->queryPath->find('.breadcrumbmenucontent')->first();
     $wrapper->children('a, span, font')->remove();
     $title = $wrapper->text();
 
