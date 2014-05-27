@@ -34,7 +34,7 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     );
 
     // Match .htm, .html files only.
-    $regex = '/.*\.htm(l)?/';
+    $regex = '/.*\.htm(l)?$/';
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
