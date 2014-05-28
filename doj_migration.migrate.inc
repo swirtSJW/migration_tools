@@ -99,6 +99,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'opcl',
         'class_name' => 'OpclPageMigration',
       ),
+      'OpclFile' => array(
+        'group_name' => 'opcl',
+        'class_name' => 'OpclFileMigration',
+      ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoDistrictMigration',
