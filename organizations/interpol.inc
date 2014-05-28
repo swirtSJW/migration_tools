@@ -39,4 +39,31 @@ class InterpolPageMigration extends JusticeHtmlToPageMigration {
     $this->addFieldMapping('og_group_ref')->defaultValue('interpol-washington')->sourceMigration('Organization');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Create a new SourceParser to handle HTML content.
+    $source_parser = new SourceParser($row->legacy_path, (string) $row->filedata, TRUE);
+
+    // Extract title.
+    if ($title_element = $source_parser->queryPath->find('.presscontenttitle')->text()) {
+      $title = $title_element;
+      // Clean string.
+      $title = $source_parser->removeWhitespace($title);
+
+      // Truncate title to max of 255 characters.
+      if (strlen($title) > 255) {
+        $title = substr($title, 0, 255);
+      }
+    }
+    else {
+      $title = $source_parser->getTitle();
+    }
+
+    $row->title = $title;
+  }
+
 }
