@@ -67,6 +67,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'interpol',
         'class_name' => 'InterpolPageMigration',
       ),
+      'InterpolFile' => array(
+        'group_name' => 'interpol',
+        'class_name' => 'InterpolFileMigration',
+      ),
       'Organization' => array(
         'group_name' => 'core',
         'class_name' => 'OrganizationMigration',

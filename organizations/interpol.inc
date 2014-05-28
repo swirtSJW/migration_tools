@@ -67,3 +67,41 @@ class InterpolPageMigration extends JusticeHtmlToPageMigration {
   }
 
 }
+
+
+/**
+ * Migrates files (*.pdf) from /interpol-washington.
+ *
+ * @package doj_migration
+ * @subpackage interpol
+ */
+class InterpolFileMigration extends JusticeDeployableBinaryFileMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->description = t('Migrates files (*.pdf) from the interpol-washington subdirectory.');
+    $this->dependencies = array('Organization');
+
+    // Match .pdf files only.
+    $source_dirs = array(
+      'interpol-washington',
+      'interpol-washington/foia',
+    );
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $dest_dir = 'public:///interpol-washington/docs';
+
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "interpol-washington";
+  }
+}
