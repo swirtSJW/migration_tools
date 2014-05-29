@@ -22,7 +22,6 @@ class InterpolPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       'interpol-washington',
-      'interpol-washington/news',
     );
     // Assemble a regular expression of files to ignore.
     $nomask = '|usncb-rightcol\\.html';
@@ -37,6 +36,39 @@ class InterpolPageMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from INTERPOL section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('interpol-washington')->sourceMigration('Organization');
+  }
+}
+
+/**
+ * Migrates .html files from /interpol-washington/news to press release nodes.
+ *
+ * @package doj_migration
+ * @subpackage interpol
+ */
+class InterpolNewsMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'interpol-washington/news',
+    );
+    $options = array(
+      'recurse' => FALSE,
+    );
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->destination = new MigrateDestinationNode('press_release');
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates pages from INTERPOL section.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('interpol-washington')->sourceMigration('Organization');
+    $this->addFieldMapping('created', 'created');
+    $this->addFieldMapping('field_pr_body', 'field_pr_body');
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
   }
 
   /**
@@ -64,6 +96,12 @@ class InterpolPageMigration extends JusticeHtmlToPageMigration {
     }
 
     $row->title = $title;
+
+    // Map the date.
+    $created = strtotime($source_parser->queryPath->find('.news_date')->text());
+    $row->created = $created;
+    // Map the body.
+    $row->field_pr_body = $source_parser->getBody();
   }
 
 }
