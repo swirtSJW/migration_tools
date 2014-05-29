@@ -18,6 +18,7 @@ files[] = includes/JusticeHtmlToPageMigration.inc
 files[] = includes/JusticePressReleaseMigration.inc
 files[] = includes/JusticeWordpressMigration.inc
 files[] = includes/JusticeCsvMigration.inc
+files[] = includes/JusticeUserMigration.inc
 files[] = includes/CareersSourceParser.php
 files[] = includes/SourceParser.php
 
