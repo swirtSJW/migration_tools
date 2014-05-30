@@ -108,7 +108,7 @@ class InterpolNewsMigration extends JusticeHtmlToPageMigration {
 
 
 /**
- * Migrates files (*.pdf) from /interpol-washington.
+ * Migrates binary files from /interpol-washington.
  *
  * @package doj_migration
  * @subpackage interpol
@@ -119,10 +119,10 @@ class InterpolFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates files (*.pdf) from the interpol-washington subdirectory.');
+    $this->description = t('Migrates binary files from the interpol-washington subdirectory.');
     $this->dependencies = array('Organization');
 
-    // Match .pdf files only.
+    // Match binary files only.
     $source_dirs = array(
       'interpol-washington',
       'interpol-washington/foia',
