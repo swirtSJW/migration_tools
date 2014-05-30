@@ -98,7 +98,7 @@ class InterpolNewsMigration extends JusticeHtmlToPageMigration {
     $row->title = $title;
 
     // Map the date.
-    $created = strtotime($source_parser->queryPath->find('.news_date')->text());
+    $created = strtotime($source_parser->queryPath->find('.date')->text());
     $row->created = $created;
     // Map the body.
     $row->field_pr_body = $source_parser->getBody();
