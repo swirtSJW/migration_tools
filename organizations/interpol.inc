@@ -66,7 +66,7 @@ class InterpolNewsMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from INTERPOL section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('interpol-washington')->sourceMigration('Organization');
-    $this->addFieldMapping('created', 'created');
+    $this->addFieldMapping('field_pr_date', 'field_pr_date');
     $this->addFieldMapping('field_pr_body', 'field_pr_body');
     $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
   }
@@ -99,7 +99,7 @@ class InterpolNewsMigration extends JusticeHtmlToPageMigration {
 
     // Map the date.
     $created = strtotime($source_parser->queryPath->find('.date')->text());
-    $row->created = $created;
+    $row->field_pr_date = $created;
     // Map the body.
     $row->field_pr_body = $source_parser->getBody();
   }
