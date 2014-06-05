@@ -23,6 +23,9 @@ function doj_migration_migrate_api() {
       'careers' => array(
         'title' => t('Careers'),
       ),
+      'fcsc' => array(
+        'title' => t('FCSC - Foreign Claims Settlement Commission'),
+      ),
       'interpol' => array(
         'title' => t('INTERPOL'),
       ),
@@ -62,6 +65,14 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
+      ),
+      'FcscPage' => array(
+        'group_name' => 'fcsc',
+        'class_name' => 'FcscPageMigration',
+      ),
+      'FcscFile' => array(
+        'group_name' => 'fcsc',
+        'class_name' => 'FcscFileMigration',
       ),
       'InterpolPage' => array(
         'group_name' => 'interpol',
