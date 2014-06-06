@@ -29,6 +29,7 @@ files[] = organizations/organizations.inc
 files[] = organizations/oarm.inc
 files[] = organizations/opa.inc
 files[] = organizations/opcl.inc
+files[] = organizations/otj.inc
 files[] = organizations/ovw.inc
 files[] = organizations/usao.inc
 

@@ -38,6 +38,9 @@ function doj_migration_migrate_api() {
       'opcl' => array(
         'title' => t('OPCL - Office of Privacy and Civil Liberties'),
       ),
+      'otj' => array(
+        'title' => t('OTJ - Office of Tribal Justice'),
+      ),
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
@@ -121,6 +124,14 @@ function doj_migration_migrate_api() {
       'OpclFile' => array(
         'group_name' => 'opcl',
         'class_name' => 'OpclFileMigration',
+      ),
+      'OtjPage' => array(
+        'group_name' => 'otj',
+        'class_name' => 'OtjPageMigration',
+      ),
+      'OtjFile' => array(
+        'group_name' => 'otj',
+        'class_name' => 'OtjFileMigration',
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
