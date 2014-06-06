@@ -57,7 +57,7 @@ class FcscFileMigration extends JusticeDeployableBinaryFileMigration {
       'fcsc/readingroom',
     );
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///otj/docs';
+    $dest_dir = 'public:///fcsc/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
