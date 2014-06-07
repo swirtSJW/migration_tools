@@ -22,6 +22,7 @@ class FcscPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       'fcsc',
+      'fcsc/readingroom',
     );
     $options = array(
       'recurse' => FALSE,

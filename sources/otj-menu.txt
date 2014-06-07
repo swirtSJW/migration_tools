@@ -1,0 +1,20 @@
+Office of Tribal Justice Home {"url":"otj"}
+About the Office {"url":"otj/about-office"}
+-OTJ Staff {"url":"otj/otj-staff"}
+-Frequently Asked Questions {"url":"otj/frequently-asked-questions"}
+-Native American Policies {"url":"otj/native-american-policies"}
+Meet the Director {"url":"otj/meet-director"}
+Internship Opportunities {"url":"otj/internship-opportunities"}
+Selected Resources {"url":"otj/federal-resources-0"}
+-Federal Resources {"url":"otj/federal-resources-0"}
+-DOJ Resources {"url":"otj/federal-resources"}
+-Corrections and Detention {"url":"otj/corrections-and-detention"}
+-Crime in Indian Country {"url":"otj/crime-indian-country"}
+-Crime Prevention {"url":"otj/crime-prevention"}
+-Law Enforcement {"url":"otj/law-enforcement"}
+-Tribal Courts {"url":"otj/tribal-courts"}
+-Victims of Crime {"url":"otj/victims-crime"}
+-Native American Organizations {"url":"otj/native-american-organizations"}
+-About Native Americans {"url":"otj/about-native-americans"}
+OTJ FOIA {"url":"usao/resources/foiarequests"}
+Contact the Office {"url":"otj/contact-office"}
