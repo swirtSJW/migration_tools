@@ -32,6 +32,9 @@ function doj_migration_migrate_api() {
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
       ),
+      'olp' => array(
+        'title' => t('OLP - Office of Legal Policy'),
+      ),
       'opa' => array(
         'title' => t('OPA - Office of Public Affairs'),
       ),
@@ -104,6 +107,10 @@ function doj_migration_migrate_api() {
       'OARMUser' => array(
         'group_name' => 'oarm',
         'class_name' => 'OarmUserMigration',
+      ),
+      'OlpPage' => array(
+        'group_name' => 'olp',
+        'class_name' => 'OlpPageMigration',
       ),
       'OpaBlogEntry' => array(
         'group_name' => 'opa',
