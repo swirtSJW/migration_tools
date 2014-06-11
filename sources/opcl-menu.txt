@@ -1,13 +1,13 @@
-About the Office {"url":"http://www.justice.gov/opcl/about-us.htm"}
-Meet the Chief {"url":"http://www.justice.gov/opcl/meet-chief.html"}
-Privacy Act of 1974 {"url":"http://www.justice.gov/opcl/privacyact1974.htm"}
-- Overview {"url":"http://www.justice.gov/opcl/1974privacyact-overview.htm"}
-DOJ System of Records Notices {"url":"http://www.justice.gov/opcl/privacyact.html"}
-E-Government Act of 2002 {"url":"http://www.justice.gov/opcl/e-govt-act-2002.html"}
-DOJ Privacy Impact Assessments {"url":"http://www.justice.gov/opcl/pia.htm"}
-Privacy Compliance Process {"url":"http://www.justice.gov/opcl/privacy-compliance-process.html"}
-Resources {"url":"http://www.justice.gov/opcl/prr.htm"}
-Reports {"url":"http://www.justice.gov/opcl/reports.htm"}
-Training Opportunities {"url":"http://www.justice.gov/opcl/training.html"}
-OPCL FOIA {"url":"http://www.justice.gov/opcl/foia.html"}
-Contact the Office {"url":"http://www.justice.gov/opcl/contact-us.htm"}
+About the Office {"url":"opcl/about-office"}
+Meet the Chief {"url":"opcl/meet-chief"}
+Privacy Act of 1974 {"url":"opcl/privacy-act-1974"}
+- Overview {"url":"opcl/overview-privacy-act-1974-2012-edition"}
+DOJ System of Records Notices {"url":"opcl/doj-systems-records"}
+E-Government Act of 2002 {"url":"opcl/e-government-act-2002"}
+DOJ Privacy Impact Assessments {"url":"opcl/doj-privacy-impact-assessments"}
+Privacy Compliance Process {"url":"opcl/privacy-compliance-process"}
+Resources {"url":"opcl/resources"}
+Reports {"url":"opcl/reports"}
+Training Opportunities {"url":"opcl/training-opportunities"}
+OPCL FOIA {"url":"opcl/opcl-freedome-information-act"}
+Contact the Office {"url":"opcl/contact-office"}
