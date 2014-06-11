@@ -33,4 +33,42 @@ class OlpPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from Office of Legal Policy section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('olp')->sourceMigration('Organization');
   }
+
+}
+
+/**
+ * Migrates files (*.pdf) from /olp.
+ *
+ * @package doj_migration
+ * @subpackage olp
+ */
+class OlpFileMigration extends JusticeDeployableBinaryFileMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->description = t('Migrates non-image files from the olp subdirectory.');
+    $this->dependencies = array('Organization');
+
+    // Match .pdf files only.
+    $source_dirs = array(
+      'olp',
+      'olp/pdf',
+    );
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $dest_dir = 'public:///olp/docs';
+
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "olp";
+  }
 }

@@ -108,6 +108,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'oarm',
         'class_name' => 'OarmUserMigration',
       ),
+      'OlpFile' => array(
+        'group_name' => 'olp',
+        'class_name' => 'OlpFileMigration',
+      ),
       'OlpPage' => array(
         'group_name' => 'olp',
         'class_name' => 'OlpPageMigration',
