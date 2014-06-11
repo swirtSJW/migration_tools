@@ -23,6 +23,9 @@ function doj_migration_migrate_api() {
       'careers' => array(
         'title' => t('Careers'),
       ),
+      'crs' => array(
+        'title' => t('CRS - Community Relations Service'),
+      ),
       'fcsc' => array(
         'title' => t('FCSC - Foreign Claims Settlement Commission'),
       ),
@@ -71,6 +74,18 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
+      ),
+      'CrsFile' => array(
+        'group_name' => 'crs',
+        'class_name' => 'CrsFileMigration',
+      ),
+      'CrsPage' => array(
+        'group_name' => 'crs',
+        'class_name' => 'CrsPageMigration',
+      ),
+      'CrsUser' => array(
+        'group_name' => 'crs',
+        'class_name' => 'CrsUserMigration',
       ),
       'FcscPage' => array(
         'group_name' => 'fcsc',

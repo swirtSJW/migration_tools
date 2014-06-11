@@ -1,16 +1,12 @@
-    // Done
-    // DNM (do not migrate)
-    // Client Issues
-    // Implementor Issues
+### Setup
+* Set $conf['doj_migration_base_dir'] correctly for your local machine
+* Rsync down private://wordpress
 
-    /*
-    $this->addFieldMapping(NULL, 'region')
-      ->description('Will a field be added to the vocabulary for this?')
-      ->issueGroup(t('Client Issues'))
-      ->issuePriority(MigrateFieldMapping::ISSUE_PRIORITY_MEDIUM)
-      ->issueNumber(770064);
-    */
-
-
-Be sure to set $conf['doj_migration_base_dir'] correctly before attempting
-file-based migrations.
+### Copying unmanaged images:
+To recursively copy image files from the current directory to a destination:
+````
+cd path/to/source/dir
+find -E . -iregex '.*\.(jpg|png|gif)' | cpio --pass-through \
+ --preserve-modification-time \
+ --make-directories --verbose path/to/dest/dir
+````

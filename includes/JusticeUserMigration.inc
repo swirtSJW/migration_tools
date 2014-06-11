@@ -30,7 +30,6 @@ abstract class JusticeUserMigration extends JusticeCsvMigration {
     $this->addFieldMapping("name", "email");
     $this->addFieldMapping("mail", "email");
     $this->addFieldMapping("role_names", "roles")->separator("|");
-    //$this->addFieldMapping("og_user_node")->defaultValue('oarm')->sourceMigration('Organization');
     $this->addFieldMapping("status")->defaultValue(1);
   }
 
