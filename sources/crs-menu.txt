@@ -1,0 +1,7 @@
+Community Relations Service Home {"url":"crs"}
+About the Office {"url":"crs/about-crs"}
+Meet the Director {"url":"crs/meet-dir"}
+Publications and Resources {"url":"crs/publist"}
+Internship Opportunities {"url":"crs/crsinternship-opp"}
+CRS FOIA {"url":"crs/foia","description":"Community Relations Service Freedom of Information Act"}
+Contact the Office {"url":"crs/crs_off"}
