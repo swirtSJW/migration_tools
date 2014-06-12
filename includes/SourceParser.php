@@ -196,18 +196,27 @@ class SourceParser {
    * Removes legacy usage of javascript:exitWinOpen() for external links.
    */
   public function removeExtLinkJS() {
+    $elements = $this->queryPath->find('a');
+
     // This should replace tags matching
     // <a href="javascript:exitWinOpen('http://example.com');">Example</a>
     // with <a href="http://example.com">Example</a>.
-    $elements = $this->queryPath->find('a');
-    $pattern = "|javascript:exitWinOpen\('([^']+)'\);|";
+    $patterns[] = "|javascript:exitWinOpen\('([^']+)'\);|";
+
+    // This should replace tags matching
+    // <a href="/cgi-bin/outside.cgi?http://nccic.org/tribal/">Tribal</a>
+    // with <a href="http://nccic.org/tribal/">Tribal</a>
+    $patterns[] = "|/cgi-bin/outside.cgi\?([^']+)|";
+
     foreach ($elements as $element) {
       $href = $element->attr('href');
       if ($href) {
-        preg_match($pattern, $href, $matches);
-        if (isset($matches) && !empty($matches[1])) {
-          $new_url = $matches[1];
-          $element->attr('href', $new_url);
+        foreach ($patterns as $pattern) {
+          preg_match($pattern, $href, $matches);
+          if (isset($matches) && !empty($matches[1])) {
+            $new_url = $matches[1];
+            $element->attr('href', $new_url);
+          }
         }
       }
     }
