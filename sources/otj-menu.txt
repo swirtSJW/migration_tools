@@ -4,10 +4,10 @@ About the Office {"url":"otj/about-office"}
 -Frequently Asked Questions {"url":"otj/frequently-asked-questions"}
 -Native American Policies {"url":"otj/native-american-policies"}
 Meet the Director {"url":"otj/meet-director"}
-Internship Opportunities {"url":"otj/internship-opportunities"}
-Selected Resources {"url":"otj/federal-resources-0"}
--Federal Resources {"url":"otj/federal-resources-0"}
--DOJ Resources {"url":"otj/federal-resources"}
+Internship Opportunities {"url":"otj/white-house"}
+Selected Resources {"url":"otj/federal-resources"}
+-Federal Resources {"url":"otj/federal-resources"}
+-DOJ Resources {"url":"otj/federal-resources-0"}
 -Corrections and Detention {"url":"otj/corrections-and-detention"}
 -Crime in Indian Country {"url":"otj/crime-indian-country"}
 -Crime Prevention {"url":"otj/crime-prevention"}
