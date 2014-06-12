@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Defines JusticeUserMigration class.
+ */
+
+/**
  * Class JusticeUserMigration.
  *
  * @package doj_migration

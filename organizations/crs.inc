@@ -77,6 +77,10 @@ class CrsFileMigration extends JusticeDeployableBinaryFileMigration {
  * Migrates users for CRS organization.
  */
 class CrsUserMigration extends JusticeUserMigration {
+
+  /**
+   * {@inheritdoc}
+   */
   public function __construct($arguments) {
     $source_file = __DIR__ . '/../sources/crs-users.csv';
     $this->description = t('Migrates CRS users.');
