@@ -23,6 +23,7 @@ class CrsPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       'crs',
       'crs/pubs',
+      'crs/pubs/pamp',
     );
     $options = array('recurse' => FALSE);
 
