@@ -50,6 +50,9 @@ function doj_migration_migrate_api() {
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
+      'psc' => array(
+        'title' => t('PSC - Project Safe Childhood'),
+      ),
       'usao' => array(
         'title' => t('USAO - United States Attorneys Office'),
       ),
@@ -158,6 +161,14 @@ function doj_migration_migrate_api() {
       'OtjFile' => array(
         'group_name' => 'otj',
         'class_name' => 'OtjFileMigration',
+      ),
+      'PscPage' => array(
+        'group_name' => 'psc',
+        'class_name' => 'PscPageMigration',
+      ),
+      'PscFile' => array(
+        'group_name' => 'psc',
+        'class_name' => 'PscFileMigration',
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
