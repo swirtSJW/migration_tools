@@ -49,8 +49,8 @@ class SourceParser {
 
     // Empty anchors without name attribute will be stripped by ckEditor.
     $this->fixNamedAnchors();
-    $this->convertRelativeSrcsToAbsolute();
     $this->removeExtLinkJS();
+    $this->convertRelativeSrcsToAbsolute();
   }
 
   /**
