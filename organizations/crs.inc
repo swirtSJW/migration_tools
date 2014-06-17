@@ -38,10 +38,10 @@ class CrsPageMigration extends JusticeHtmlToPageMigration {
 
 
 /**
- * Migrates files (*.pdf) from /oarm.
+ * Migrates non-image files from the /crs.
  *
  * @package doj_migration
- * @subpackage oarm
+ * @subpackage crs
  */
 class CrsFileMigration extends JusticeDeployableBinaryFileMigration {
 
@@ -49,7 +49,7 @@ class CrsFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates files (*.pdf) from the crs subdirectory.');
+    $this->description = t('Migrates non-image files from the crs subdirectory.');
     $this->dependencies = array('Organization');
 
     // Match .pdf files only.
