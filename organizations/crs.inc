@@ -52,12 +52,17 @@ class CrsFileMigration extends JusticeDeployableBinaryFileMigration {
     $this->description = t('Migrates non-image files from the crs subdirectory.');
     $this->dependencies = array('Organization');
 
-    // Match .pdf files only.
+    // Match non-image files.
     $source_dirs = array(
       'crs',
       'crs/pubs',
+      'crs/video',
+      'crs/training_video/3to5_100k',
+      'crs/training_video/3to5_300k',
+      'crs/training_video/3to5_56k',
+      'crs/training_video/3to5_lan',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/';
     $dest_dir = 'public:///crs/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
