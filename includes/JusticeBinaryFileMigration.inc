@@ -48,7 +48,7 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
 
     // Set up field mappings.
     $this->addFieldMapping('value', 'filepath');
-    $this->addFieldMapping('destination_dir')->defaultValue($dest_dir);
+    $this->addFieldMapping('destination_dir', 'destination_dir')->defaultValue($dest_dir);
 
     $this->addUnmigratedDestinations(array('fid', 'uid', 'timestamp', 'destination_file', 'source_dir', 'preserve_files',
       'file_replace'));
@@ -62,6 +62,16 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
     $row->filepath = $this->baseDir . $row->fileid;
+
+    // Nest migrated files deeply in directories. This will help to avoid
+    // the gluster file system limitation caused by having too many files in a
+    // single directory.
+    $org_abbr = $this->getOrganizationAbbreviation();
+    $file_created = filemtime($row->filepath);
+    $year_created = date('Y', $file_created);
+    $month_created = date('m', $file_created);
+    $date_created = date('d', $file_created);
+    $row->destination_dir = "public:///$org_abbr/legacy/$year_created/$month_created/$date_created";
   }
 
   /**
@@ -137,7 +147,7 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
 
   /**
    * Get the abbreviation of an organization.
-   * 
+   *
    * @return string
    *   The abbreviation.
    */
