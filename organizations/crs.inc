@@ -23,7 +23,11 @@ class CrsPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       'crs',
       'crs/pubs',
-      'crs/pubs/pamp',
+      'crs/video',
+      'crs/training_video/3to5_100k',
+      'crs/training_video/3to5_300k',
+      'crs/training_video/3to5_56k',
+      'crs/training_video/3to5_lan',
     );
     $options = array('recurse' => FALSE);
 
