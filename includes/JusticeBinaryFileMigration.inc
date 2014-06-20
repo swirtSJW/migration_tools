@@ -24,13 +24,13 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
    * @param string $regex
    *   The file mask. Only filenames matching this regex will be migrated.
    */
-  public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex, $options = array()) {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'fileid' => t('File Location'),
     );
     // Parent constructor will setup $this->source.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
@@ -127,8 +127,8 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments, $source_dirs, $dest_dir, $regex) {
-    parent::__construct($arguments, $source_dirs, $dest_dir, $regex);
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex, $options = array()) {
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
     $abbrev = $this->getOrganizationAbbreviation();
     $this->deploymentPlan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
   }

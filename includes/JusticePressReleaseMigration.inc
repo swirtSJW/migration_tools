@@ -54,7 +54,7 @@ abstract class JusticePressReleaseMigration extends JusticeBaseMigration {
     $query->condition('mc.compAbbrev', $org_abbreviation)
       ->orderBy('id', 'ASC');
 
-    // A map of source HTML filename -> destination node id.
+    // A map of source MySQL row -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
         'id' => array(
