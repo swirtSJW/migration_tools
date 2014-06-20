@@ -45,12 +45,11 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public function __construct($arguments, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
     parent::__construct($arguments);
 
-    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
 
     // Define the directories containing files to be migrated.
     $absolute_dirs = $this->prependJusticeFilepath($source_dirs);
 
-    // $list_files will provide migrate with a list of alls file to be migrated.
+    // $list_files will provide migrate with a list of all files to be migrated.
     // $item_file provides methods for retrieving a file given an identifier.
     // $this->source define the essential data source from which to migrate.
     $list_files = new MigrateListFiles($absolute_dirs, $this->baseDir, $regex, $options, $parser);

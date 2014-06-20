@@ -29,6 +29,7 @@ files[] = organizations/fcsc.inc
 files[] = organizations/interpol.inc
 files[] = organizations/organizations.inc
 files[] = organizations/oarm.inc
+files[] = organizations/olc.inc
 files[] = organizations/olp.inc
 files[] = organizations/opa.inc
 files[] = organizations/opcl.inc

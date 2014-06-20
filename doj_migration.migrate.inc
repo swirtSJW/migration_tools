@@ -35,6 +35,9 @@ function doj_migration_migrate_api() {
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
       ),
+      'olc' => array(
+        'title' => t('OLC - Office of Legal Counsel'),
+      ),
       'olp' => array(
         'title' => t('OLP - Office of Legal Policy'),
       ),
@@ -125,6 +128,18 @@ function doj_migration_migrate_api() {
       'OARMUser' => array(
         'group_name' => 'oarm',
         'class_name' => 'OarmUserMigration',
+      ),
+      'OlcPage' => array(
+        'group_name' => 'olc',
+        'class_name' => 'OlcPageMigration',
+      ),
+      'OlcOpinion' => array(
+        'group_name' => 'olc',
+        'class_name' => 'OlcOpinionMigration',
+      ),
+      'OlcFile' => array(
+        'group_name' => 'olc',
+        'class_name' => 'OlcFileMigration',
       ),
       'OlpFile' => array(
         'group_name' => 'olp',
