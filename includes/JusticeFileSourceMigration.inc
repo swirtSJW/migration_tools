@@ -45,7 +45,6 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public function __construct($arguments, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
     parent::__construct($arguments);
 
-
     // Define the directories containing files to be migrated.
     $absolute_dirs = $this->prependJusticeFilepath($source_dirs);
 

@@ -142,8 +142,8 @@ class OlcOpinionMigration extends JusticeBaseMigration {
     if (preg_match('/.*\.htm(l)?$/', $source_link)) {
       $source_link = ltrim($source_link, ' /');
       $base = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
-      if (file_exists('$base' . '/' . $source_link)) {
-        $source_content = file_get_contents('$base' . '/' . $source_link);
+      if (file_exists($base . '/' . $source_link)) {
+        $source_content = file_get_contents($base . '/' . $source_link);
         // Create a new SourceParser to handle HTML content.
         $source_parser = new SourceParser($source_link, $source_content);
         return $source_parser->getBody();
