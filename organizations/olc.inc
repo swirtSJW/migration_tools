@@ -75,7 +75,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments, $org_abbreviation) {
+  public function __construct($arguments) {
     parent::__construct($arguments);
 
     global $databases;

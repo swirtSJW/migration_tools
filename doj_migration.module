@@ -14,3 +14,14 @@
  *
  * @package doj_migration
  */
+
+/**
+ * Implements hook_menu_alter().
+ */
+function doj_migration_menu_alter(&$items) {
+  // Viewing this page calls the contstructors for all registered migration
+  // classes, overwhelming PHP memory limit. We cannot disable migrate_ui
+  // due to wordpress_migrate dependency on it, so we will instead unset this
+  // menu router item.
+  unset($items['admin/content/migrate']);
+}
