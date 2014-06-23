@@ -89,10 +89,6 @@ function doj_migration_migrate_api() {
         'group_name' => 'crs',
         'class_name' => 'CrsPageMigration',
       ),
-      'CrsUser' => array(
-        'group_name' => 'crs',
-        'class_name' => 'CrsUserMigration',
-      ),
       'FcscPage' => array(
         'group_name' => 'fcsc',
         'class_name' => 'FcscPageMigration',
