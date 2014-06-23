@@ -70,6 +70,17 @@ abstract class JusticeUserMigration extends JusticeCsvMigration {
       $rid = array_search($row->group_role, $roles);
       og_role_grant("node", $gid, $uid, $rid);
     }
+
+    // Assumes that all migrated users will authenticate via SAML.
+    db_merge('authmap')
+      ->key(array(
+        'uid' => $entity->uid,
+        'module' => 'simplesamlphp_auth',
+      ))
+      ->fields(array(
+        'authname' => $entity->mail,
+      ))
+      ->execute();
   }
 
   /**
