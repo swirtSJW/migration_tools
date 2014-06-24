@@ -111,8 +111,9 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
     $entities = entity_load($entity_type, array($entity_id));
     $entity = reset($entities);
     // Strip leading public://.
-    $file_public_path = variable_get('file_public_path', conf_path() . '/files/');
+    $file_public_path = variable_get('file_public_path', conf_path() . '/files') . '/';
     $dest = str_replace('public://', $file_public_path, $entity->uri);
+
     redirect_delete_by_path($dest);
   }
 }
