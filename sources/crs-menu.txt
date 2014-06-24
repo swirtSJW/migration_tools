@@ -1,5 +1,8 @@
 Community Relations Service Home {"url":"crs"}
 About the Office {"url":"crs/about-office"}
+- Regional and Field Offices {"url":"crs/regional-and-field-offices"}
+- Legislative Mandate {"url":"crs/legislative-mandate"}
+- Frequently Asked Questions {"url":"crs/frequently-asked-questions"}
 Meet the Director {"url":"crs/meet-director"}
 Publications and Resources {"url":"crs/publications-and-resources"}
 Internship Opportunities {"url":"crs/internship-opportunities"}
