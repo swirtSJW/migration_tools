@@ -128,6 +128,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
       ->defaultValue('public://olc/opinions');
     $this->addFieldMapping('og_group_ref')->defaultValue('olc')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+    $this->addFieldMapping('status')->defaultValue(NODE_PUBLISHED);
   }
 
   /**
