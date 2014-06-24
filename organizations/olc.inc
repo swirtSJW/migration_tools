@@ -109,7 +109,8 @@ class OlcOpinionMigration extends JusticeBaseMigration {
     $this->destination = new MigrateDestinationNode('opinion');
     // Field Mappings.
     $this->addFieldMapping('field_opinion_date', 'articledate');
-    $this->addFieldMapping('title', 'title');
+    $this->addFieldMapping('title', 'title')
+      ->callbacks(array($this, 'sanitizeTitle'), array($this, 'trimTitle'));
     $this->addFieldMapping('created', 'postdate');
     $this->addFieldMapping('field_opinion_link', 'link')
       ->callbacks(array($this, 'sanitizeLink'));
@@ -123,8 +124,39 @@ class OlcOpinionMigration extends JusticeBaseMigration {
       ->defaultValue('MigrateFileUri');
     $this->addFieldMapping('field_opinion_attachment:source_dir')
       ->defaultValue(variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT) . '/olc/opiniondocs');
-    $this->addFieldMapping('og_group_ref')->defaultValue($org_abbreviation)->sourceMigration('Organization');
+    $this->addFieldMapping('field_opinion_attachment:destination_dir')
+      ->defaultValue('public://olc/opinions');
+    $this->addFieldMapping('og_group_ref')->defaultValue('olc')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    $this->prepareWorkbenchSettings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function sanitizeTitle($title) {
+    // Create a new SourceParser to handle HTML content.
+    $source_parser = new SourceParser(md5($title), $title, TRUE);
+    if ($source_parser->queryPath->find('p')->text() != '') {
+      return $source_parser->queryPath->find('p')->text();
+    }
+    else {
+      return $title;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function trimTitle($title) {
+    $trimmed_title = trim($title);
+    return mb_strimwidth($trimmed_title, 0, 255, "...");
   }
 
   /**
