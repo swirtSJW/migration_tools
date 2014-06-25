@@ -112,8 +112,6 @@ class OlcOpinionMigration extends JusticeBaseMigration {
     $this->addFieldMapping('title', 'title')
       ->callbacks(array($this, 'sanitizeTitle'), array($this, 'trimTitle'));
     $this->addFieldMapping('created', 'postdate');
-    $this->addFieldMapping('field_opinion_link', 'link')
-      ->callbacks(array($this, 'sanitizeLink'));
     $this->addFieldMapping('field_opinion_overview', 'overview');
     $this->addFieldMapping('field_opinion_overview:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_opinion_body', 'link')
@@ -134,8 +132,52 @@ class OlcOpinionMigration extends JusticeBaseMigration {
   /**
    * {@inheritdoc}
    */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Set to admin for now.
+    $row->uid = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function prepare($entity, $row) {
     $this->prepareWorkbenchSettings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->field_opinion_attachment['und'][0]['fid']) && $entity->field_opinion_attachment['und'][0]['fid']) {
+      if (module_exists('redirect')) {
+        // Strip the filename from the link.
+        $regex = '/[^*\/]*\.*\z/';
+        $filename = array();
+        preg_match($regex, $row->link, $filename);
+        $filepath = 'olc/opiniondocs/';
+
+        // Construct the source link and check for an existing redirect.
+        $src = $filepath . $filename[0];
+        $redirect = redirect_load_by_source($src);
+        if (!$redirect) {
+          // Load the migrated file entity.
+          $file = file_load($entity->field_opinion_attachment['und'][0]['fid']);
+          $uri = $file->uri;
+          // Strip leading public://.
+          $file_public_path = variable_get('file_public_path', conf_path() . '/files/');
+          $dest = str_replace('public:/', $file_public_path, $uri);
+          // Create redirect.
+          $redirect = new stdClass();
+          redirect_object_prepare($redirect);
+          $redirect->source = $src;
+          $redirect->redirect = $dest;
+
+          redirect_save($redirect);
+        }
+      }
+    }
   }
 
   /**
@@ -158,14 +200,6 @@ class OlcOpinionMigration extends JusticeBaseMigration {
   protected function trimTitle($title) {
     $trimmed_title = trim($title);
     return mb_strimwidth($trimmed_title, 0, 255, "...");
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function sanitizeLink($source_link) {
-    $trimmed_link = ltrim($source_link);
-    return $trimmed_link;
   }
 
   /**
