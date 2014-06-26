@@ -122,8 +122,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
       ->defaultValue('MigrateFileUri');
     $this->addFieldMapping('field_opinion_attachment:source_dir')
       ->defaultValue(variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT) . '/olc/opiniondocs');
-    $this->addFieldMapping('field_opinion_attachment:destination_dir')
-      ->defaultValue('public://olc/opinions');
+    $this->addFieldMapping('field_opinion_attachment:destination_dir', 'destination_dir');
     $this->addFieldMapping('og_group_ref')->defaultValue('olc')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('status')->defaultValue(NODE_PUBLISHED);
@@ -137,6 +136,12 @@ class OlcOpinionMigration extends JusticeBaseMigration {
 
     // Set to admin for now.
     $row->uid = 1;
+
+    // Generate filepath based on article date.
+    $year_created = date('Y', $row->articledate);
+    $month_created = date('m', $row->articledate);
+    $date_created = date('d', $row->articledated);
+    $row->destination_dir = "public:///olc/opinions/$year_created/$month_created/$date_created";
   }
 
   /**
@@ -177,6 +182,29 @@ class OlcOpinionMigration extends JusticeBaseMigration {
           redirect_save($redirect);
         }
       }
+    }
+  }
+
+  /**
+   * Implements Migration::prepareRollback().
+   *
+   * Deletes redirects for entity.
+   */
+  public function prepareRollback($entity_ids) {
+    $entity_id = reset($entity_ids);
+    $entity_type = 'node';
+    $entities = entity_load($entity_type, array($entity_id));
+    $entity = reset($entities);
+
+    if (isset($entity->field_opinion_attachment['und'][0]['fid']) && $entity->field_opinion_attachment['und'][0]['fid']) {
+      // Load the migrated file entity.
+      $file = file_load($entity->field_opinion_attachment['und'][0]['fid']);
+
+      // Strip leading public://.
+      $file_public_path = variable_get('file_public_path', conf_path() . '/files') . '/';
+      $dest = str_replace('public://', $file_public_path, $file->uri);
+
+      redirect_delete_by_path($dest);
     }
   }
 
