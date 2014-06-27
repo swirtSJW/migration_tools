@@ -209,21 +209,22 @@ class OlcOpinionMigration extends JusticeBaseMigration {
   }
 
   /**
-   * {@inheritdoc}
+   * Remove wrapping HTML elements from title a decode HTML entities.
    */
   protected function sanitizeTitle($title) {
     // Create a new SourceParser to handle HTML content.
     $source_parser = new SourceParser(md5($title), $title, TRUE);
     if ($source_parser->queryPath->find('p')->text() != '') {
-      return $source_parser->queryPath->find('p')->text();
+      $title = $source_parser->queryPath->find('p')->text();
     }
-    else {
-      return $title;
-    }
+
+    $title = html_entity_decode($title);
+
+    return $title;
   }
 
   /**
-   * {@inheritdoc}
+   * Trim title to 255 chars.
    */
   protected function trimTitle($title) {
     $trimmed_title = trim($title);
@@ -231,7 +232,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
   }
 
   /**
-   * {@inheritdoc}
+   * Parse HTML for body field on applicable opinions.
    */
   protected function attachHtml($source_link) {
     if (preg_match('/.*\.htm(l)?$/', $source_link)) {
