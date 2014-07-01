@@ -32,6 +32,9 @@ function doj_migration_migrate_api() {
       'interpol' => array(
         'title' => t('INTERPOL'),
       ),
+      'nsd' => array(
+        'title' => t('NSD - National Security Division'),
+      ),
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
       ),
@@ -108,6 +111,10 @@ function doj_migration_migrate_api() {
       'InterpolFile' => array(
         'group_name' => 'interpol',
         'class_name' => 'InterpolFileMigration',
+      ),
+      'NsdPage' => array(
+        'group_name' => 'nsd',
+        'class_name' => 'NsdPageMigration',
       ),
       'Organization' => array(
         'group_name' => 'core',
