@@ -109,6 +109,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
     $this->destination = new MigrateDestinationNode('opinion');
     // Field Mappings.
     $this->addFieldMapping('field_opinion_date', 'articledate');
+    $this->addFieldMapping('field_opinion_post_date', 'articledate');
     $this->addFieldMapping('title', 'title')
       ->callbacks(array($this, 'sanitizeTitle'), array($this, 'trimTitle'));
     $this->addFieldMapping('created', 'postdate');
