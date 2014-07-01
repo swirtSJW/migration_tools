@@ -24,6 +24,7 @@ function doj_migration_menu_alter(&$items) {
   // due to wordpress_migrate dependency on it, so we will instead unset this
   // menu router item.
   unset($items['admin/content/migrate']);
+}
 /**
  * Move all the images from a directory tree to an output directory.
  * 
