@@ -28,7 +28,7 @@ class NsdPageMigration extends JusticeHtmlToPageMigration {
       'nsd/opa/pr/speeches/2010',
       'nsd/opa/pr/speeches/2011',
       'nsd/opa/pr/speeches/2012',
-      'nsd/opa/pr/speeches/2013', 
+      'nsd/opa/pr/speeches/2013',
       'nsd/opa/pr/testimony/2011',
       'nsd/ovtuganda',
       'nsd/newemployee',
