@@ -116,6 +116,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'nsd',
         'class_name' => 'NsdPageMigration',
       ),
+      'NsdOvtPage' => array(
+        'group_name' => 'nsd',
+        'class_name' => 'NsdOvtPageMigration',
+      ),
+      'NsdNewemployeePage' => array(
+        'group_name' => 'nsd',
+        'class_name' => 'NsdNewemployeePageMigration',
+      ),
       'NsdFile' => array(
         'group_name' => 'nsd',
         'class_name' => 'NsdFileMigration',
