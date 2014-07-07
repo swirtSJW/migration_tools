@@ -192,6 +192,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'otj',
         'class_name' => 'OtjFileMigration',
       ),
+      'OvwPage' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwPageMigration',
+      ),
+      'OvwFile' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwFileMigration',
+      ),
       'PscPage' => array(
         'group_name' => 'psc',
         'class_name' => 'PscPageMigration',
