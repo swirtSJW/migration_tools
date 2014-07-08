@@ -129,6 +129,9 @@ class SourceParser {
       'div.rightcolumn',
     ));
 
+    // Remove black title bars with eagle image.
+    $this->removeTitleBarImages();
+
     // Remove extraneous html wrapping elements, leaving children intact.
     $this->removeWrapperElements(array(
       'body > blockquote',
@@ -162,6 +165,16 @@ class SourceParser {
           $element->attr('name', $anchor_id);
         }
       }
+    }
+  }
+
+  /**
+   * Eagle image title bars are inside '<div style="margin-bottom:20px">'.
+   */
+  public function removeTitleBarImages() {
+    $div = $this->queryPath->find('div > img')->parent();
+    if (preg_match('/style=\"margin-bottom: ?20px/', $div->html())) {
+      $div->remove();
     }
   }
 
