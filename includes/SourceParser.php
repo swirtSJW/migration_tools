@@ -129,8 +129,8 @@ class SourceParser {
       'div.rightcolumn',
     ));
 
-    // Remove black title bars with eagle image.
-    $this->removeTitleBarImages();
+    // Remove black title bar with eagle image (if present).
+    $this->removeTitleBarImage();
 
     // Remove extraneous html wrapping elements, leaving children intact.
     $this->removeWrapperElements(array(
@@ -165,16 +165,6 @@ class SourceParser {
           $element->attr('name', $anchor_id);
         }
       }
-    }
-  }
-
-  /**
-   * Eagle image title bars are inside '<div style="margin-bottom:20px">'.
-   */
-  public function removeTitleBarImages() {
-    $div = $this->queryPath->find('div > img')->parent();
-    if (preg_match('/style=\"margin-bottom: ?20px/', $div->html())) {
-      $div->remove();
     }
   }
 
@@ -244,6 +234,25 @@ class SourceParser {
   public function removeWrapperElements(array $selectors) {
     foreach ($selectors as $selector) {
       $this->queryPath->find($selector)->children()->unwrap();
+    }
+  }
+
+  /**
+   * Remove eagle image title bar divs.
+   *
+   * Eagle image bars are always inside '<div style="margin-bottom:20px">'.
+   * It appears that they are the only elements with this style applied.
+   * Nonetheless, if more than one match, remove only the first.
+   */
+  public function removeTitleBarImage() {
+    // Find divs that are immediately followed by img tags.
+    $elements = $this->queryPath->find('div > img')->parent();
+    foreach ($elements as $element) {
+      if (preg_match('/style=\"margin-bottom: ?20px/', $element->html())) {
+        // We found an eagle image title bar: remove it and we're done.
+        $element->remove();
+        break;
+      }
     }
   }
 
