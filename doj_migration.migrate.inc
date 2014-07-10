@@ -56,6 +56,9 @@ function doj_migration_migrate_api() {
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
+      'prao' => array(
+        'title' => t('PRAO - Professional Responsibility Advisory Office'),
+      ),
       'psc' => array(
         'title' => t('PSC - Project Safe Childhood'),
       ),
@@ -199,6 +202,10 @@ function doj_migration_migrate_api() {
       'OvwFile' => array(
         'group_name' => 'ovw',
         'class_name' => 'OvwFileMigration',
+      ),
+      'PraoPage' => array(
+        'group_name' => 'prao',
+        'class_name' => 'PraoPageMigration',
       ),
       'PscPage' => array(
         'group_name' => 'psc',
