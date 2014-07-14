@@ -104,6 +104,20 @@ abstract class JusticeWordpressAttachment extends WordPressAttachment {
 }
 
 /**
+ * Class JusticeWordpressAttachment.
+ */
+abstract class JusticeWordpressCategory extends WordPressCategory {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['category_vocabulary'] = "topic";
+    parent::__construct($arguments);
+  }
+}
+
+/**
  * Copies and preprocesses raw Wordpress XML file to wordpress:// directory.
  *
  * @param string $filename

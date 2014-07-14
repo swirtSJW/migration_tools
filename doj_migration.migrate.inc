@@ -195,6 +195,22 @@ function doj_migration_migrate_api() {
         'group_name' => 'otj',
         'class_name' => 'OtjFileMigration',
       ),
+      'OvwBlogEntry' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwBlogEntryMigration',
+      ),
+      'OvwAuthor' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwAuthorMigration',
+      ),
+      'OvwAttachment' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwAttachmentMigration',
+      ),
+      'OvwCategory' => array(
+        'group_name' => 'ovw',
+        'class_name' => 'OvwCategoryMigration',
+      ),
       'OvwPage' => array(
         'group_name' => 'ovw',
         'class_name' => 'OvwPageMigration',

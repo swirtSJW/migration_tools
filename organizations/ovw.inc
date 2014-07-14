@@ -12,7 +12,7 @@
  * This file should reside in wordpress://, which is generally
  * sites/default/private/wordpress.
  */
-define('OPA_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-01-30.xml');
+define('OVW_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-07-10.xml');
 
 /**
  * Class OvwBlogEntryMigration.
@@ -21,7 +21,75 @@ define('OPA_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-01-30.xml');
  * @subpackage ovw
  */
 class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OVW_WORDPRESS_SOURCE);
+    parent::__construct($arguments);
+    $this->addHardDependencies(array("OvwCategory"));
 
+    $this->addFieldMapping("field_blog_topic", 'category_value');
+
+    // Let's get the right taxonomy_term to set as default.
+    $ovw = "Office on Violence Against Women";
+    $tts = taxonomy_get_term_by_name($ovw, "component");
+    $tt = reset($tts);
+    if (isset($tt)) {
+      $this->addFieldMapping("field_blog_component")->defaultValue($tt->name);
+    }
+    else {
+      throw new Exception("Taxonomy Term '{$ovw}' does not exist. Create it and re-run the migration");
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($node, stdClass $row) {
+    $node->context = array("no_right_sidebar");
+  }
+}
+
+/**
+ * Class OvwAuthorMigration
+ *
+ * @package doj_migration
+ * @subpackage ovw
+ */
+class OvwAuthorMigration extends JusticeWordpressAuthor {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OVW_WORDPRESS_SOURCE);
+    parent::__construct($arguments);
+  }
+}
+
+/**
+ * Class OvwAttachmentMigration.
+ *
+ * @package doj_migration
+ * @subpackage ovw
+ */
+class OvwAttachmentMigration extends JusticeWordpressAttachment {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OVW_WORDPRESS_SOURCE);
+    parent::__construct($arguments);
+  }
+}
+
+/**
+ * Class OvwAttachmentMigration.
+ *
+ * @package doj_migration
+ * @subpackage ovw
+ */
+class OvwCategoryMigration extends JusticeWordpressCategory {
   /**
    * {@inheritdoc}
    */
