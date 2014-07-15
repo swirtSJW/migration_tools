@@ -38,6 +38,9 @@ function doj_migration_migrate_api() {
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
       ),
+      'oip' => array(
+        'title' => t('OIP - Office of Information Policy'),
+      ),
       'olc' => array(
         'title' => t('OLC - Office of Legal Counsel'),
       ),
@@ -146,6 +149,10 @@ function doj_migration_migrate_api() {
       'OARMUser' => array(
         'group_name' => 'oarm',
         'class_name' => 'OarmUserMigration',
+      ),
+      'OipFile' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFileMigration',
       ),
       'OlcPage' => array(
         'group_name' => 'olc',
