@@ -240,7 +240,7 @@ class SourceParser {
   /**
    * Remove eagle image title bar divs.
    *
-   * Eagle image bars are always inside '<div style="margin-bottom:20px">'.
+   * Eagle image bars are always inside '<div style="margin-bottom:(15|20)px">'.
    * It appears that they are the only elements with this style applied.
    * Nonetheless, if more than one match, remove only the first.
    */
@@ -248,7 +248,11 @@ class SourceParser {
     // Find divs that are immediately followed by img tags.
     $elements = $this->queryPath->find('div > img')->parent();
     foreach ($elements as $element) {
-      if (preg_match('/style=\"margin-bottom: ?20px/', $element->html())) {
+      // Eagle banner bars always preceed headlines.
+      if (preg_match('/class=\"headline/', $element->html())) {
+        break;
+      }
+      if (preg_match('/style=\"margin-bottom: ?(15|20)px/', $element->html())) {
         // We found an eagle image title bar: remove it and we're done.
         $element->remove();
         break;
