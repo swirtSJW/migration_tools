@@ -51,6 +51,9 @@ class SourceParser {
     $this->fixNamedAnchors();
     $this->removeExtLinkJS();
     $this->convertRelativeSrcsToAbsolute();
+
+    // Some pages have images as subtitles. Turn those into html.
+    $this->changeSubTitleImagesForHtml();
   }
 
   /**
@@ -257,6 +260,20 @@ class SourceParser {
         $element->remove();
         break;
       }
+    }
+  }
+
+  /**
+   * Change sub-header images to <h2> html titles.
+   */
+  public function changeSubTitleImagesForHtml() {
+    // Find all headline divs with an image inside.
+    $elements = $this->queryPath->find('div.headline > img')->parent();
+
+    foreach ($elements as $element) {
+      $image = $element->find('img');
+      $alt = $image->attr('alt');
+      $element->html("<h2>{$alt}</h2>");
     }
   }
 
