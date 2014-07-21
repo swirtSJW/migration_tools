@@ -37,6 +37,8 @@ class SourceParser {
 
     $this->charTransform();
     $this->fixEncoding();
+    $this->changeSmartforRegularQuotes();
+
     if ($fragment) {
       $this->wrapHTML();
     }
@@ -275,6 +277,13 @@ class SourceParser {
       $alt = $image->attr('alt');
       $element->html("<h2>{$alt}</h2>");
     }
+  }
+
+  /**
+   * Replace smart quotes with regular quotes.
+   */
+  public function changeSmartforRegularQuotes() {
+    $this->html = str_replace(array("“", "”", "<93>", "<94>"), '"', $this->html);
   }
 
   /**
