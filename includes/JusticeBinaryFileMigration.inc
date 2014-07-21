@@ -130,8 +130,10 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
    */
   public function __construct($arguments, $source_dirs, $dest_dir, $regex, $options = array()) {
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
-    $abbrev = $this->getOrganizationAbbreviation();
-    $this->deploymentPlan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
+    if (module_exists("doj_deploy")) {
+      $abbrev = $this->getOrganizationAbbreviation();
+      $this->deploymentPlan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
+    }
   }
 
   /**
