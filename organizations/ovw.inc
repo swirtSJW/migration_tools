@@ -30,9 +30,10 @@ class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
     $this->addHardDependencies(array("OvwCategory"));
 
     $this->addFieldMapping("field_blog_topic", 'category_value');
+    $this->addFieldMapping("field_blog_date", 'pubDate');
 
     // Let's get the right taxonomy_term to set as default.
-    $ovw = "Office on Violence Against Women";
+    $ovw = "Office on VIolence Against Women";
     $tts = taxonomy_get_term_by_name($ovw, "component");
     $tt = reset($tts);
     if (isset($tt)) {
@@ -101,7 +102,7 @@ class OvwCategoryMigration extends JusticeWordpressCategory {
 
 /**
  * Migrates .html files from /ovw to page nodes.
- * 
+ *
  * @package doj_migration
  * @subpackage nsd
  */
