@@ -143,7 +143,7 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
     parent::complete($file, $row);
 
     // Let's add files to a deployment plan.
-    if ($this->deploymentPlan) {
+    if (module_exists("doj_deploy") && $this->deploymentPlan) {
       deploy_manager_add_to_plan($this->deploymentPlan, "file", $file);
     }
   }
