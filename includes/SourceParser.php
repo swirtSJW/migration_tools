@@ -287,6 +287,30 @@ class SourceParser {
   }
 
   /**
+   * Replace special HTML chars.
+   *
+   * @param string $text
+   *   The string where the special chars might be.
+   *
+   * @return string
+   *   The string with the special chars replaced.
+   */
+  public function changeHTLMSpecialChars($text) {
+    $special_chars = array(
+      "&rsquo;" => "'",
+      "&lsquo;" => "'",
+      "&ldquo;" => '"',
+      "&rdquo;" =>	'"',
+    );
+
+    foreach ($special_chars as $char => $replacement) {
+      $text = str_replace($char, $replacement, $text);
+    }
+
+    return $text;
+  }
+
+  /**
    * Removes elements matching CSS selectors.
    *
    * @param array $selectors
@@ -363,7 +387,9 @@ class SourceParser {
     }
 
     // Clean string.
+    $title = $this->removeUndesirableChars($title);
     $title = $this->removeWhitespace($title);
+    $title = $this->changeHTLMSpecialChars($title);
 
     // Truncate title to max of 255 characters.
     if (strlen($title) > 255) {
@@ -389,6 +415,13 @@ class SourceParser {
     $text = preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $text);
 
     return $text;
+  }
+
+  /**
+   * Remove undesirable chars from a string.
+   */
+  public function removeUndesirableChars($text) {
+    return str_replace(array("»", "Â"), "", $text);
   }
 
   /**
