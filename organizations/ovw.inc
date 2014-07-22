@@ -27,7 +27,8 @@ class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OVW_WORDPRESS_SOURCE);
     parent::__construct($arguments);
-    $this->addHardDependencies(array("OvwCategory"));
+
+    $this->addSoftDependencies(array("OvwCategory"));
 
     $this->addFieldMapping("field_blog_topic", 'category_value');
     $this->addFieldMapping("field_blog_date", 'pubDate');
@@ -36,7 +37,7 @@ class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
     $ovw = "Office on Violence Against Women";
     $tts = taxonomy_get_term_by_name($ovw, "component");
     $tt = reset($tts);
-    if (isset($tt)) {
+    if ($tt) {
       $this->addFieldMapping("field_blog_component")->defaultValue($tt->name);
     }
     else {
@@ -90,6 +91,21 @@ class OvwCategoryMigration extends JusticeWordpressCategory {
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OVW_WORDPRESS_SOURCE);
     parent::__construct($arguments);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    // If the category that is being migrated from wordpress, already exists
+    // in the component vocabulary, then we do not need to save it as a
+    // topic.
+    $taxonomy_term_name = $row->cat_name;
+    $tts = taxonomy_get_term_by_name($taxonomy_term_name, "component");
+    $tt = reset($tts);
+    if ($tt) {
+      return FALSE;
+    }
   }
 }
 
