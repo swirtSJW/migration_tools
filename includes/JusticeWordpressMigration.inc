@@ -76,6 +76,61 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
 }
 
 /**
+ * Implementation of WordPressMigration, for court decisions.
+ *
+ * @package doj_migration
+ */
+abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['post_type'] = 'court_decision';
+    $arguments['path_action'] = 2;
+    $arguments['generate_redirects'] = 1;
+    $arguments['tag_vocabulary'] = 'tags';
+    $arguments['category_vocabulary'] = 'court_decision_topic';
+    $arguments['text_format'] = 'wysiwyg';
+    $arguments['podcast_field'] = '';
+    $arguments['attachment_field'] = 'cd_attachments';
+
+    parent::__construct($arguments);
+
+    $this->addFieldMapping('og_group_ref')->defaultValue($arguments['group_name'])->sourceMigration('Organization');
+    $this->addFieldMapping('field_cd_body', 'content');
+    $this->addFieldMapping('field_cd_body:format')->defaultValue($arguments['text_format']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      if ($row->post_type == $this->postType) {
+        if (isset($row->status) && $row->status == 'trash') {
+          $this->queueMessage(t('Item has status "trash." Not migrating.'));
+        }
+      }
+      return FALSE;
+    }
+
+    if (trim($row->content) == '') {
+      $row->status = NODE_UNPUBLISHED;
+    }
+    else {
+      $row->status = NODE_PUBLISHED;
+    }
+
+    // Trim title.
+    if (strlen($row->title) > 255) {
+      $row->title = substr(trim($row->title), 0, 255);
+      $this->queueMessage(t('Title was too long. It has been truncated to @title.', array('@title' => $row->title)));
+    }
+  }
+}
+
+/**
  * Class JusticeWordpressAuthor.
  */
 abstract class JusticeWordpressAuthor extends WordPressAuthor {
@@ -125,7 +180,9 @@ abstract class JusticeWordpressCategory extends WordPressCategory {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['category_vocabulary'] = "topic";
+    if (!isset($arguments['category_vocabulary'])) {
+      $arguments['category_vocabulary'] = "topic";
+    }
     parent::__construct($arguments);
   }
 }

@@ -150,6 +150,46 @@ function doj_migration_migrate_api() {
         'group_name' => 'oarm',
         'class_name' => 'OarmUserMigration',
       ),
+      'OipFoiaPost' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaPostMigration',
+      ),
+      'OipFoiaPostAuthor' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaPostAuthorMigration',
+      ),
+      'OipFoiaPostCategory' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaPostCategoryMigration',
+      ),
+      'OipFoiaUpdate' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaUpdateMigration',
+      ),
+      'OipFoiaUpdateAuthor' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaUpdateAuthorMigration',
+      ),
+      'OipFoiaUpdateCategory' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaUpdateCategoryMigration',
+      ),
+      'OipCourtDecision' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipCourtMigration',
+      ),
+      'OipCourtDecisionAuthor' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipCourtAuthorMigration',
+      ),
+      'OipCourtDecisionCategory' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipCourtCategoryMigration',
+      ),
+      'OipPage' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipPageMigration',
+      ),
       'OipFile' => array(
         'group_name' => 'oip',
         'class_name' => 'OipFileMigration',
