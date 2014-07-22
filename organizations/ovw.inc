@@ -33,7 +33,7 @@ class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
     $this->addFieldMapping("field_blog_date", 'pubDate');
 
     // Let's get the right taxonomy_term to set as default.
-    $ovw = "Office on VIolence Against Women";
+    $ovw = "Office on Violence Against Women";
     $tts = taxonomy_get_term_by_name($ovw, "component");
     $tt = reset($tts);
     if (isset($tt)) {
@@ -42,13 +42,6 @@ class OvwBlogEntryMigration extends JusticeWordpressBlogEntry {
     else {
       throw new Exception("Taxonomy Term '{$ovw}' does not exist. Create it and re-run the migration");
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepare($node, stdClass $row) {
-    $node->context = array("no_right_sidebar");
   }
 }
 

@@ -60,6 +60,19 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
       $this->queueMessage(t('Title was too long. It has been truncated to @title.', array('@title' => $row->title)));
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($node, stdClass $row) {
+    parent::prepare($node, $row);
+
+    $node->context = array("no_right_sidebar");
+    $node->is_new = !isset($row->migrate_map_needs_update);
+    $node->revision = TRUE;
+    $node->workbench_moderation_state_current = 'published';
+    $node->workbench_moderation_state_new = 'published';
+  }
 }
 
 /**
