@@ -82,21 +82,3 @@ class CrsFileMigration extends JusticeDeployableBinaryFileMigration {
     return 'crs';
   }
 }
-
-/**
- * Migrates users for CRS organization.
- */
-class CrsUserMigration extends JusticeUserMigration {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($arguments) {
-    $source_file = __DIR__ . '/../sources/crs-users.csv';
-    $this->description = t('Migrates CRS users.');
-
-    parent::__construct($arguments, $source_file);
-
-    $this->addFieldMapping("og_user_node")->defaultValue('crs')->sourceMigration('Organization');
-  }
-}
