@@ -89,12 +89,39 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     $row->url_path = substr($row->fileid, 1);
     $row->legacy_path = $row->url_path;
 
-    // Check to see if $row->fileid == 'index.html'. If so,
-    // add both /path/index.html and /path as redirects.
+    // Check to see if $row->fileid == 'index.html' or 'index.php'.
     if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
-      $additional_path = rtrim(str_replace($matches[0], '', $row->fileid), '/');
-      if (!drupal_lookup_path('alias', $additional_path)) {
-        $row->legacy_path .= '|' . $additional_path;
+
+      // Determine root path. E.g., oip/index.html would have the root path
+      // /oip.
+      $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileid), '/'), '/');
+
+      // Check to see if this alias already exists. E.g., if we are migrating
+      // oip/index.html, see if an alias exists for /oip.
+      if ($system_path = drupal_lookup_path('source', $root_path)) {
+        // Continuing /oip example: if an alias does exist for /oip, see if
+        // the system path points to an organization node.
+        $node = menu_get_object($type = 'node', $position = 1, $system_path);
+        if ($node->type == 'organization') {
+          // Check to see if a redirect already exists for this path.
+          $redirect = redirect_load_by_source($row->legacy_path);
+          if (!$redirect) {
+            // Create a redirect from /oip/index.html to the organization node.
+            $redirect = new stdClass();
+            redirect_object_prepare($redirect);
+            $redirect->source = $row->legacy_path;
+            $redirect->redirect = $system_path;
+
+            redirect_save($redirect);
+
+            // Remove legacy_patch from this node.
+            $row->legacy_path = '';
+            $this->removeFieldMapping('migrate_redirects');
+          }
+        }
+      }
+      else {
+        $row->legacy_path .= '|' . $root_path;
       }
     }
   }
