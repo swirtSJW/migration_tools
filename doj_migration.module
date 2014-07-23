@@ -27,10 +27,10 @@ function doj_migration_menu_alter(&$items) {
 }
 /**
  * Move all the images from a directory tree to an output directory.
- * 
+ *
  * The directory strucuture in the output directory will be an exact match of
  * the directory structury from the source directory.
- * 
+ *
  * @param string $parent_input_directory
  *   The parent directory where anothe directory with images is located.
  * @param string $directory
@@ -57,13 +57,13 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
         mkdir($final_output_directory, 0777, TRUE);
       }
 
-      watchdog("doj_migration", "FILE: $file EXT: $ext \n");
+      watchdog("doj_migration", "FILE: @file EXT: @ext \n", array('@file' => $file, 'ext' => $ext));
 
       if (copy("$final_input_directory/$file", "$final_output_directory/$file")) {
-        watchdog("doj_migration", "File {$file} was copied to $final_output_directory \n");
+        watchdog("doj_migration", "File @file was copied to $final_output_directory \n", array('@file' => $file));
       }
       else {
-        watchdog("doj_migration", "There was an error copying {$file} \n");
+        watchdog("doj_migration", "There was an error copying @file \n", array('@file' => $file), WATCHDOG_ERROR);
       }
     }
     // If we are dealing with a directory, let's recurse.
