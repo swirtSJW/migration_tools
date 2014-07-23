@@ -162,17 +162,9 @@ function doj_migration_migrate_api() {
         'group_name' => 'oip',
         'class_name' => 'OipFoiaPostCategoryMigration',
       ),
-      'OipFoiaUpdate' => array(
+      'OipFoiaUpdatePage' => array(
         'group_name' => 'oip',
-        'class_name' => 'OipFoiaUpdateMigration',
-      ),
-      'OipFoiaUpdateAuthor' => array(
-        'group_name' => 'oip',
-        'class_name' => 'OipFoiaUpdateAuthorMigration',
-      ),
-      'OipFoiaUpdateCategory' => array(
-        'group_name' => 'oip',
-        'class_name' => 'OipFoiaUpdateCategoryMigration',
+        'class_name' => 'OipFoiaUpdatePageMigration',
       ),
       'OipCourtDecision' => array(
         'group_name' => 'oip',

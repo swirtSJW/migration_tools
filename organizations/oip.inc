@@ -12,7 +12,6 @@
  * sites/default/private/wordpress.
  */
 define('OIP_FOIA_POST_WORDPRESS_SOURCE', 'thefoiapost.wordpress.2014-07-10.xml');
-define('OIP_FOIA_UPDATE_WORDPRESS_SOURCE', 'thefoiapost.wordpress.2014-07-10.xml');
 define('OIP_COURT_WORDPRESS_SOURCE', 'courtdecisions.wordpress.2014-07-10.xml');
 
 
@@ -81,66 +80,153 @@ class OipFoiaPostCategoryMigration extends JusticeWordpressCategory {
 }
 
 /**
- * Class OipFoiaUpdateMigration.
+ * Migrates .html files from /olc to page nodes.
  *
  * @package doj_migration
- * @subpackage oip
+ * @subpackage olc
  */
-class OipFoiaUpdateMigration extends JusticeWordpressBlogEntry {
+class OipFoiaUpdatePageMigration extends JusticeHtmlToBlogEntryMigration {
+
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OIP_FOIA_UPDATE_WORDPRESS_SOURCE);
-    $arguments['author_migration'] = "OipFoiaUpdateAuthor";
-    parent::__construct($arguments);
-    $this->addHardDependencies(array("OipFoiaUpdateCategory"));
+    // Define source directories.
+    $source_dirs = array(
+      "oip/foia_updates/Vol_I_1",
+      "oip/foia_updates/Vol_I_2",
+      "oip/foia_updates/Vol_I_3",
+      "oip/foia_updates/Vol_I_4",
+      "oip/foia_updates/Vol_II_1",
+      "oip/foia_updates/Vol_II_2",
+      "oip/foia_updates/Vol_II_3",
+      "oip/foia_updates/Vol_II_4",
+      "oip/foia_updates/Vol_III_1",
+      "oip/foia_updates/Vol_III_2",
+      "oip/foia_updates/Vol_III_3",
+      "oip/foia_updates/Vol_III_4",
+      "oip/foia_updates/Vol_IV_1",
+      "oip/foia_updates/Vol_IV_2",
+      "oip/foia_updates/Vol_IV_3",
+      "oip/foia_updates/Vol_IV_4",
+      "oip/foia_updates/Vol_V_1",
+      "oip/foia_updates/Vol_V_2",
+      "oip/foia_updates/Vol_V_3",
+      "oip/foia_updates/Vol_V_4",
+      "oip/foia_updates/Vol_VI_1",
+      "oip/foia_updates/Vol_VI_2",
+      "oip/foia_updates/Vol_VI_3",
+      "oip/foia_updates/Vol_VI_4",
+      "oip/foia_updates/Vol_VII_1",
+      "oip/foia_updates/Vol_VII_2",
+      "oip/foia_updates/Vol_VII_3",
+      "oip/foia_updates/Vol_VII_4",
+      "oip/foia_updates/Vol_VIII_1",
+      "oip/foia_updates/Vol_VIII_2",
+      "oip/foia_updates/Vol_VIII_3",
+      "oip/foia_updates/Vol_IX_1",
+      "oip/foia_updates/Vol_IX_2",
+      "oip/foia_updates/Vol_IX_3",
+      "oip/foia_updates/Vol_IX_4",
+      "oip/foia_updates/Vol_X_1",
+      "oip/foia_updates/Vol_X_2",
+      "oip/foia_updates/Vol_X_3",
+      "oip/foia_updates/Vol_X_4",
+      "oip/foia_updates/Vol_XI_1",
+      "oip/foia_updates/Vol_XI_2",
+      "oip/foia_updates/Vol_XI_3",
+      "oip/foia_updates/Vol_XII_1",
+      "oip/foia_updates/Vol_XII_2",
+      "oip/foia_updates/Vol_XII_3",
+      "oip/foia_updates/Vol_XII_4",
+      "oip/foia_updates/Vol_XIII_1",
+      "oip/foia_updates/Vol_XIII_2",
+      "oip/foia_updates/Vol_XIII_3",
+      "oip/foia_updates/Vol_XIII_4",
+      "oip/foia_updates/Vol_XIV_1",
+      "oip/foia_updates/Vol_XIV_2",
+      "oip/foia_updates/Vol_XIV_3",
+      "oip/foia_updates/Vol_XV_1",
+      "oip/foia_updates/Vol_XV_2",
+      "oip/foia_updates/Vol_XV_3",
+      "oip/foia_updates/Vol_XV_4",
+      "oip/foia_updates/Vol_XVI_1",
+      "oip/foia_updates/Vol_XVI_2",
+      "oip/foia_updates/Vol_XVI_3",
+      "oip/foia_updates/Vol_XVII_1",
+      "oip/foia_updates/Vol_XVII_2",
+      "oip/foia_updates/Vol_XVII_3",
+      "oip/foia_updates/Vol_XVII_4",
+      "oip/foia_updates/Vol_XVIII_1",
+      "oip/foia_updates/Vol_XVIII_2",
+      "oip/foia_updates/Vol_XVIII_3",
+      "oip/foia_updates/Vol_XVIII_4",
+      "oip/foia_updates/Vol_XIX_1",
+      "oip/foia_updates/Vol_XIX_2",
+      "oip/foia_updates/Vol_XIX_3",
+      "oip/foia_updates/Vol_XIX_4",
+      "oip/foia_updates/Vol_XX_1",
+    );
 
-    $this->addFieldMapping("field_blog_topic", 'category_value');
-    $this->addFieldMapping("field_blog_date", 'pubDate');
+    $options = array('recurse' => FALSE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates pages from OIP FOIA Update section.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
+
+    $this->addFieldMapping("field_blog_date", 'date');
 
     // Let's get the right taxonomy_term to set as default.
-    $oip = "Office of Information Policy";
-    $tts = taxonomy_get_term_by_name($oip, "component");
-    $tt = reset($tts);
-    if (isset($tt)) {
-      $this->addFieldMapping("field_blog_component")->defaultValue($tt->name);
-    }
-    else {
-      throw new Exception("Taxonomy Term '{$oip}' does not exist. Create it and re-run the migration");
+    $terms = array(
+      "FOIA Update" => "field_blog_topic",
+      "Office of Information Policy" => "field_blog_component",
+    );
+
+    foreach ($terms as $term_name => $field_name) {
+      $vocab = "topic";
+      if ($field_name == "field_blog_component") {
+        $vocab = "component";
+      }
+      $tts = taxonomy_get_term_by_name($term_name, $vocab);
+      $tt = reset($tts);
+      if ($tt) {
+        $this->addFieldMapping($field_name)->defaultValue($tt->name);
+      }
+      else {
+        throw new Exception("Taxonomy Term '{$term_name}' does not exist. Create it and re-run the migration");
+      }
     }
   }
-}
 
-/**
- * Class OipFoiaUpdateAuthorMigration
- *
- * @package doj_migration
- * @subpackage oip
- */
-class OipFoiaUpdateAuthorMigration extends JusticeWordpressAuthor {
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments) {
-    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OIP_FOIA_UPDATE_WORDPRESS_SOURCE);
-    parent::__construct($arguments);
+  public function prepareRow(stdClass $row) {
+    parent::prepareRow($row);
+    $row->date = $this->getDateFromBody($row->field_page_body);
   }
-}
 
-/**
- * Class OipFoiaUpdateCategoryMigration.
- *
- * @package doj_migration
- * @subpackage oip
- */
-class OipFoiaUpdateCategoryMigration extends JusticeWordpressCategory {
   /**
-   * {@inheritdoc}
+   * Find years (4 digits together) and return the date January 1, year.
+   *
+   * @param string $body
+   *   String with dates.
+   *
+   * @return string
+   *   A date formatted correctly to work with date field migrations.
    */
-  public function __construct($arguments) {
-    $arguments['filename'] = doj_migrate_wordpress_prepare_file(OIP_FOIA_UPDATE_WORDPRESS_SOURCE);
-    parent::__construct($arguments);
+  protected function getDateFromBody($body) {
+    preg_match('/(\d{4})/i', $body, $matches);
+    $date = "1946-2-14 00:00:00";
+    if (!empty($matches)) {
+      $year = $matches[0];
+      $year = trim($year);
+      $date = "{$year}-1-1 00:00:00";
+    }
+    return $date;
   }
 }
 
