@@ -94,32 +94,4 @@ abstract class JusticeBaseMigration extends Migration {
       }
     }
   }
-
-  /**
-   * Set workbench configration for entity.
-   *
-   * This fixes a number of bugs that result from worbench revisions failing
-   * to be created or updated when entities are created or updated.
-   */
-  public function prepareWorkbenchSettings($entity, $row) {
-    $entity->is_new = !isset($row->migrate_map_needs_update);
-    $entity->revision = TRUE;
-    $entity->workbench_moderation_state_current = 'published';
-    $entity->workbench_moderation_state_new = 'published';
-  }
-
-  /**
-   * Ensure imported node revision is marked published (status = 1).
-   *
-   * This fixes a migrate/workbench issue where imported
-   * published nodes have node_revision.status == 0.
-   *
-   * Must use db_query() as db_update() doesn't implement join().
-   */
-  public function completeWorkbenchSettings($entity, $row) {
-    db_query("UPDATE {node_revision} nr
-JOIN {node} n ON (n.vid = nr.vid AND n.nid = :nid)
-SET nr.status = 1 WHERE n.status = 1 AND nr.status = 0",
-      array(':nid' => $entity->nid));
-  }
 }

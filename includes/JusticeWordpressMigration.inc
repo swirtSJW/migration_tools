@@ -64,14 +64,20 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
   /**
    * {@inheritdoc}
    */
-  public function prepare($node, stdClass $row) {
+  public function prepare($node, $row) {
     parent::prepare($node, $row);
 
     $node->context = array("no_right_sidebar");
-    $node->is_new = !isset($row->migrate_map_needs_update);
-    $node->revision = TRUE;
-    $node->workbench_moderation_state_current = 'published';
-    $node->workbench_moderation_state_new = 'published';
+    doj_migration_prepare_workbench_settings($node, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
   }
 }
 
@@ -126,6 +132,25 @@ abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
     if (strlen($row->title) > 255) {
       $row->title = substr(trim($row->title), 0, 255);
       $this->queueMessage(t('Title was too long. It has been truncated to @title.', array('@title' => $row->title)));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+
+    $node->context = array("no_right_sidebar");
+    doj_migration_prepare_workbench_settings($node, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
     }
   }
 }

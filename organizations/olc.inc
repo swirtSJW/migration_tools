@@ -149,7 +149,7 @@ class OlcOpinionMigration extends JusticeBaseMigration {
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    $this->prepareWorkbenchSettings($entity, $row);
+    doj_migration_prepare_workbench_settings($entity, $row);
   }
 
   /**
