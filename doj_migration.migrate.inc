@@ -178,6 +178,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'oip',
         'class_name' => 'OipCourtCategoryMigration',
       ),
+      'OipFoiaPostPage' => array(
+        'group_name' => 'oip',
+        'class_name' => 'OipFoiaPostPageMigration',
+      ),
       'OipPage' => array(
         'group_name' => 'oip',
         'class_name' => 'OipPageMigration',

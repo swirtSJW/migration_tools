@@ -325,7 +325,6 @@ class OipPageMigration extends JusticeHtmlToPageMigration {
       'oip/foia-guide09',
       'oip/foia-updates',
       'oip/foiacontact',
-      'oip/foiapost',
       'oip/forms',
       'oip/images',
       'oip/lc-rpt-2011',
@@ -345,6 +344,71 @@ class OipPageMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Information Policy section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
+  }
+}
+
+/**
+ * Migrates .html files from /oip to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage oip
+ */
+class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'oip/foiapost',
+    );
+    $options = array('recurse' => FALSE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates pages from Office of Information Policy section.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
+    // The destination is the blog_entry content type.
+    $this->destination = new MigrateDestinationNode('blog_entry');
+    // Define non-simple field mappings.
+    $this->addFieldMapping('field_blog_body', 'field_page_body');
+    $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_blog_date', 'field_blog_date');
+    // Let's get the right taxonomy_term to set as default.
+    $terms = array(
+      "FOIA Post" => "field_blog_topic",
+      "Office of Information Policy" => "field_blog_component",
+    );
+
+    foreach ($terms as $term_name => $field_name) {
+      $vocab = "topic";
+      if ($field_name == "field_blog_component") {
+        $vocab = "component";
+      }
+      $tts = taxonomy_get_term_by_name($term_name, $vocab);
+      $tt = reset($tts);
+      if ($tt) {
+        $this->addFieldMapping($field_name)->defaultValue($tt->name);
+      }
+      else {
+        throw new Exception("Taxonomy Term '{$term_name}' does not exist. Create it and re-run the migration");
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    // Extract the post date.
+    preg_match('/\d(\d)\/\d(\d)\/\d\d(\d(\d))/', $row->field_page_body, $results);
+    if (!empty($results)) {
+      $row->field_blog_date = $results[0];
+    }
   }
 }
 
