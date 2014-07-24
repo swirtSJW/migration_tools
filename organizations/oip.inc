@@ -45,6 +45,21 @@ class OipFoiaPostMigration extends JusticeWordpressBlogEntry {
       throw new Exception("Taxonomy Term '{$oip}' does not exist. Create it and re-run the migration");
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    // Don't add components as topics.
+    if (is_array($row->category_value)) {
+      foreach ($row->category_value as $key => $term) {
+        if (taxonomy_get_term_by_name($term, "component")) {
+          unset($row->category_value[$key]);
+        }
+      }
+    }
+  }
 }
 
 /**
