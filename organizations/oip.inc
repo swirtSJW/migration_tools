@@ -262,6 +262,20 @@ class OipCourtMigration extends JusticeWordpressCourtDecision {
     $this->addHardDependencies(array("OipCourtDecisionCategory"));
 
     $this->addFieldMapping("field_cd_topic", 'category_value');
+    $this->addFieldMapping("field_cd_date", 'field_cd_date');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    // Extract the post date.
+    preg_match('/[A-Za-z]{3,4}\. (\d{1,2}), \d{4}/', $row->title, $results);
+    if (!empty($results)) {
+      $date = $results[0];
+      $row->field_cd_date = $date;
+    }
   }
 }
 
