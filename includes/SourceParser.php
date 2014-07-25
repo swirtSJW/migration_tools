@@ -297,18 +297,7 @@ class SourceParser {
    *   The string with the special chars replaced.
    */
   public function changeHTLMSpecialChars($text) {
-    $special_chars = array(
-      "&rsquo;" => "'",
-      "&lsquo;" => "'",
-      "&ldquo;" => '"',
-      "&rdquo;" =>	'"',
-    );
-
-    foreach ($special_chars as $char => $replacement) {
-      $text = str_replace($char, $replacement, $text);
-    }
-
-    return $text;
+    return htmlspecialchars_decode($text);
   }
 
   /**
