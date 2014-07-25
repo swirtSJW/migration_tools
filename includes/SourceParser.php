@@ -413,7 +413,7 @@ class SourceParser {
     $text = trim(str_replace('&nbsp;', '', $text));
     // Remove unicode whitespace
     // @see http://stackoverflow.com/questions/4166896/trim-unicode-whitespace-in-php-5-2
-    $text = preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $text);
+    $text = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u', '', $text);
 
     return $text;
   }
