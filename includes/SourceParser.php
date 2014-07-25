@@ -284,6 +284,7 @@ class SourceParser {
    */
   public function changeSmartforRegularQuotes() {
     $this->html = str_replace(array("“", "”", "<93>", "<94>"), '"', $this->html);
+    $this->html = str_replace(array("’", "‘", "<27>", "<91>", "<92>"), "'", $this->html);
   }
 
   /**
