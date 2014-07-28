@@ -93,7 +93,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    $this->prepareWorkbenchSettings($entity, $row);
+    doj_migration_prepare_workbench_settings($entity, $row);
   }
 
   /**
@@ -101,7 +101,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
    */
   public function complete($entity, $row) {
     if (isset($entity->nid) && $entity->nid) {
-      $this->completeWorkbenchSettings($entity, $row);
+      doj_migration_complete_workbench_settings($entity, $row);
     }
   }
 }
