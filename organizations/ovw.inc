@@ -12,7 +12,7 @@
  * This file should reside in wordpress://, which is generally
  * sites/default/private/wordpress.
  */
-define('OVW_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-07-10.xml');
+define('OVW_WORDPRESS_SOURCE', 'ovwblog.wordpress.2014-07-29.xml');
 
 /**
  * Class OvwBlogEntryMigration.
