@@ -122,7 +122,7 @@ class SourceParser {
     $this->queryPath->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
     $this->removeElements(array(
       'a[name="sitemap"]',
-      'a[name="maincontent"]',
+      'a[name="maincontent"]',  
       'img[src="/gif/sealdoj.gif"]',
       'div.skip',
       'div.hdrwrpr',
@@ -132,6 +132,7 @@ class SourceParser {
       'div.lastupdate',
       'div.thick-bar',
       'div.rightcolumn',
+      'img[src="/oip/foiapost/file_transfer.gif"]',
     ));
 
     // Remove black title bar with eagle image (if present).
