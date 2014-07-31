@@ -122,7 +122,7 @@ class SourceParser {
     $this->queryPath->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
     $this->removeElements(array(
       'a[name="sitemap"]',
-      'a[name="maincontent"]',  
+      'a[name="maincontent"]',
       'img[src="/gif/sealdoj.gif"]',
       'div.skip',
       'div.hdrwrpr',
