@@ -37,7 +37,7 @@ class SourceParser {
 
     $this->charTransform();
     $this->fixEncoding();
-    $this->changeSmartforRegularQuotes();
+    $this->html = $this->changeSpecialforRegularChars($this->html);
 
     if ($fragment) {
       $this->wrapHTML();
@@ -281,11 +281,14 @@ class SourceParser {
   }
 
   /**
-   * Replace smart quotes with regular quotes.
+   * Replace special chars with regular chars.
    */
-  public function changeSmartforRegularQuotes() {
-    $this->html = str_replace(array("“", "”", "<93>", "<94>"), '"', $this->html);
-    $this->html = str_replace(array("’", "‘", "<27>", "<91>", "<92>"), "'", $this->html);
+  public function changeSpecialforRegularChars($text) {
+    $text = str_replace(array("“", "”", "<93>", "<94>"), '"', $text);
+    $text = str_replace(array("’", "‘", "<27>", "<91>", "<92>"), "'", $text);
+    $text = str_replace("–", "-", $text);
+
+    return $text;
   }
 
   /**
@@ -380,6 +383,7 @@ class SourceParser {
     // Clean string.
     $title = $this->removeUndesirableChars($title);
     $title = $this->removeWhitespace($title);
+    $title = $this->changeSpecialforRegularChars($title);
     $title = $this->changeHTLMSpecialChars($title);
 
     // Truncate title to max of 255 characters.
