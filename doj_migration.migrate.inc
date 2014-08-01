@@ -32,6 +32,9 @@ function doj_migration_migrate_api() {
       'interpol' => array(
         'title' => t('INTERPOL'),
       ),
+      'jmd' => array(
+        'title' => t('JMD - Justice Management Division'),
+      ),
       'nsd' => array(
         'title' => t('NSD - National Security Division'),
       ),
@@ -125,6 +128,14 @@ function doj_migration_migrate_api() {
       'InterpolFile' => array(
         'group_name' => 'interpol',
         'class_name' => 'InterpolFileMigration',
+      ),
+      'JmdPage' => array(
+        'group_name' => 'jmd',
+        'class_name' => 'JmdPageMigration',
+      ),
+      'JmdFile' => array(
+        'group_name' => 'jmd',
+        'class_name' => 'JmdFileMigration',
       ),
       'NsdPage' => array(
         'group_name' => 'nsd',
