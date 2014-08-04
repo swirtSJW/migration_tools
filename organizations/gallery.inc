@@ -69,8 +69,6 @@ class GalleryMigration extends JusticeFileSourceMigration {
     $doj_nid = 752;
     $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
 
-    // field_gallery_images
-
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
   }
@@ -194,7 +192,7 @@ class GalleryImagesMigration extends JusticeFileSourceMigration {
       array('host_entity_type' => 'node')
     );
 
-    // fileid is the file name of the source gallery.
+    // The gallery_id is the file name of the source gallery.
     $this->addFieldMapping('host_entity_id', 'gallery_id')
       ->sourceMigration('Gallery');
 
@@ -272,13 +270,11 @@ class GalleryChunkParser extends JusticeChunkParser {
 
     foreach ($chunks as $chunk) {
       // The ID of each gallery image will be the href of the image file.
-
       $id = $chunk->find('.download a')->attr('href');
       // Filter out empty strings.
       if ($id) {
         $ids[] = $id;
       }
-
     }
 
     return $ids;
