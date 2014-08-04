@@ -106,6 +106,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'fcsc',
         'class_name' => 'FcscFileMigration',
       ),
+      'Gallery' => array(
+        'group_name' => 'core',
+        'class_name' => 'GalleryMigration',
+      ),
+      'GalleryImages' => array(
+        'group_name' => 'core',
+        'class_name' => 'GalleryImagesMigration',
+      ),
       'InterpolPage' => array(
         'group_name' => 'interpol',
         'class_name' => 'InterpolPageMigration',
