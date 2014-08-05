@@ -220,7 +220,12 @@ class OipFoiaUpdatePageMigration extends JusticeHtmlToBlogEntryMigration {
    * {@inheritdoc}
    */
   public function prepareRow(stdClass $row) {
-    parent::prepareRow($row);
+
+    // Replace <h4> tags with <strong> tags.
+    $source_parser = new SourceParser($row->url_path, $row->filedata);
+    $source_parser->changeElementTag(array('h4' => 'strong'));
+
+    parent::prepareRow($row, $source_parser);
     $row->date = $this->getDateFromBody($row->field_page_body);
   }
 
@@ -432,11 +437,28 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    parent::prepareRow($row);
+
+    // Create a new SourceParser to handle HTML content.
+    $source_parser = new SourceParser($row->url_path, $row->filedata);
+
+    // Remove table containing header image.
+    $source_parser->queryPath->find('img[src="//foiapost-1.jpg"]')->parent('table')->remove();
+
+    // Remove <font> tags.
+    $font_tags = $source_parser->queryPath->find('font');
+    foreach ($font_tags as $font_tag) {
+      $font_tag->textBefore($font_tag->text());
+      $font_tag->remove();
+    }
+
+    parent::prepareRow($row, $source_parser);
+
     // Extract the post date.
-    preg_match('/\d(\d)\/\d(\d)\/\d\d(\d(\d))/', $row->field_page_body, $results);
-    if (!empty($results)) {
-      $row->field_blog_date = $results[0];
+    if (preg_match('/posted (\d{1,2}\/\d{1,2}\/\d{2,4})/', $row->field_page_body, $results)) {
+      $row->field_blog_date = end($results);
+    }
+    else if (preg_match('/\d{1,2}\/\d{1,2}\/\d{2,4}/', $row->field_page_body, $results)) {
+      $row->field_blog_date = end($results);
     }
   }
 }

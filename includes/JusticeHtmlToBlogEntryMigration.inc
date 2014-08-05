@@ -73,7 +73,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row) {
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
     parent::prepareRow($row);
 
     // Sets $row->legacy_path and $row->url_path.
@@ -82,8 +82,10 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
     // Set to admin for now.
     $row->uid = 1;
 
-    // Create a new SourceParser to handle HTML content.
-    $source_parser = new SourceParser($row->url_path, $row->filedata);
+    if (!$source_parser) {
+      // Create a new SourceParser to handle HTML content.
+      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    }
 
     $row->title = $source_parser->getTitle();
     $row->field_page_body = $source_parser->getBody();
