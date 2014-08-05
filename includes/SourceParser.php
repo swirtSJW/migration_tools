@@ -132,7 +132,6 @@ class SourceParser {
       'div.lastupdate',
       'div.thick-bar',
       'div.rightcolumn',
-      'img[src="/oip/foiapost/file_transfer.gif"]',
     ));
 
     // Remove black title bar with eagle image (if present).
@@ -232,14 +231,34 @@ class SourceParser {
   }
 
   /**
-   * Removes a wrapping element, leaving children intact.
+   * Removes a wrapping element, leaving child elements intact.
    *
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    */
   public function removeWrapperElements(array $selectors) {
     foreach ($selectors as $selector) {
-      $this->queryPath->find($selector)->children()->unwrap();
+      $children = $this->queryPath->find($selector)->children();
+      $children->unwrap();
+    }
+  }
+
+  /**
+   * Replaces an element tag with another element.
+   *
+   * changeElementTag(array('h4' => 'strong')) would replace all <h4> tags with
+   * <strong> tags.
+   *
+   * @param array $selectors
+   *   An associative array of selectors for the wrapping element(s).
+   */
+  public function changeElementTag($selectors) {
+    foreach ($selectors as $old_selector => $new_selector) {
+      $elements = $this->queryPath->find($old_selector);
+      foreach ($elements as $element) {
+        $element->wrapInner('<' . $new_selector . '></' . $new_selector . '>');
+        $element->children($new_selector)->first()->unwrap($old_selector);
+      }
     }
   }
 
