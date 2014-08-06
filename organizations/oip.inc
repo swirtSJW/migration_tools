@@ -457,7 +457,7 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
     if (preg_match('/posted (\d{1,2}\/\d{1,2}\/\d{2,4})/', $row->field_page_body, $results)) {
       $row->field_blog_date = end($results);
     }
-    else if (preg_match('/\d{1,2}\/\d{1,2}\/\d{2,4}/', $row->field_page_body, $results)) {
+    elseif (preg_match('/\d{1,2}\/\d{1,2}\/\d{2,4}/', $row->field_page_body, $results)) {
       $row->field_blog_date = end($results);
     }
   }
