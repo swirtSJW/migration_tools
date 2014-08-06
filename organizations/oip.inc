@@ -225,7 +225,7 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
     $source_parser->removeElements(array('br'));
 
     parent::prepareRow($row, $source_parser);
-    $row->date = $this->getDateFromBody($row->field_blog_body);
+    $row->field_blog_date = $this->getDateFromBody($row->field_blog_body);
 
     // Remove blank lines.
     // @see http://stackoverflow.com/a/709684
