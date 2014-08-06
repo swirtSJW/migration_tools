@@ -64,6 +64,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
     // Define non-simple field mappings.
     $this->addFieldMapping('field_blog_body', 'field_blog_body');
     $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_blog_date', 'field_blog_date');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     // Create redirects using relative, legacy path of static file.

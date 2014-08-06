@@ -392,7 +392,7 @@ class OipPageMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage oip
  */
-class OipFoiaPostBlogEntryMigration extends JusticeHtmlToPageMigration {
+class OipFoiaPostBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
 
   /**
    * {@inheritdoc}
@@ -410,12 +410,7 @@ class OipFoiaPostBlogEntryMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Information Policy section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
-    // The destination is the blog_entry content type.
-    $this->destination = new MigrateDestinationNode('blog_entry');
-    // Define non-simple field mappings.
-    $this->addFieldMapping('field_blog_body', 'field_blog_body');
-    $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_blog_date', 'field_blog_date');
+
     // Let's get the right taxonomy_term to set as default.
     $terms = array(
       "FOIA Post" => "field_blog_topic",
