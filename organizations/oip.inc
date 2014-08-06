@@ -231,11 +231,7 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
 
     // New line is required to split non-blank lines
     // @see http://stackoverflow.com/a/709684
-
-    print $row->field_blog_body;
     $row->field_blog_body = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $row->field_blog_body);
-
-    print $row->field_blog_body;
   }
 
   /**
