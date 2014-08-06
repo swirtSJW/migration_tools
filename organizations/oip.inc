@@ -442,7 +442,10 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
     $source_parser = new SourceParser($row->url_path, $row->filedata);
 
     // Remove table containing header image.
-    $source_parser->queryPath->find('img[src="//foiapost-1.jpg"]')->parent('table')->remove();
+    $source_parser->queryPath
+      ->find('img[src="//foiapost-1.jpg"], img[src="//foiapost-2.jpg"]')
+      ->parent('table')
+      ->replaceWith('<img src="/sites/default/files/oip/images/foiapost.jpg" alt="FOIA Post" />');
 
     // Remove <font> tags.
     $font_tags = $source_parser->queryPath->find('font');

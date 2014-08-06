@@ -67,7 +67,6 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
   public function prepare($node, $row) {
     parent::prepare($node, $row);
 
-    $node->context = array("no_right_sidebar");
     doj_migration_prepare_workbench_settings($node, $row);
   }
 
