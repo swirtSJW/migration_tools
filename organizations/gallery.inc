@@ -60,14 +60,12 @@ class GalleryMigration extends JusticeFileSourceMigration {
       'uid',
       'title',
       'field_gallery_date',
+      'field_gallery_body',
     ));
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_gallery_body', 'field_gallery_body');
     $this->addFieldMapping('field_gallery_body:format')->defaultValue('wysiwyg');
-
-    $doj_nid = 752;
-    $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
+    $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('organizations');
 
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
@@ -96,7 +94,7 @@ class GalleryMigration extends JusticeFileSourceMigration {
     $row->title = $title_element->text();
     $title_element->remove();
 
-    // Set date field and then remove markup.
+    // Set date field and then remove date markup.
     $date_element = $source_parser->queryPath->find('.gallerydatetext')->first();
     $date = html_entity_decode($date_element->text());
     // Do not migrate dates like July 28 - Aug. 2, 2012 and April 25 & 26, 2012.

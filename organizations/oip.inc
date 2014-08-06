@@ -227,7 +227,7 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
     parent::prepareRow($row, $source_parser);
     $row->date = $this->getDateFromBody($row->field_blog_body);
 
-    // New line is required to split non-blank lines
+    // Remove blank lines.
     // @see http://stackoverflow.com/a/709684
     $row->field_blog_body = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $row->field_blog_body);
   }
