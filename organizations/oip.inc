@@ -192,8 +192,6 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
     $this->description = t('Migrates pages from OIP FOIA Update section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
 
-    $this->addFieldMapping("field_blog_date", 'date');
-
     // Let's get the right taxonomy_term to set as default.
     $terms = array(
       "FOIA Update" => "field_blog_topic",
