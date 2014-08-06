@@ -30,7 +30,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'field_page_body' => t('Body'),
+      'field_blog_body' => t('Body'),
       'date' => t('Date'),
     );
 
@@ -62,7 +62,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
     );
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_blog_body', 'field_page_body');
+    $this->addFieldMapping('field_blog_body', 'field_blog_body');
     $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
@@ -88,7 +88,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeFileSourceMigratio
     }
 
     $row->title = $source_parser->getTitle();
-    $row->field_page_body = $source_parser->getBody();
+    $row->field_blog_body = $source_parser->getBody();
   }
 
   /**

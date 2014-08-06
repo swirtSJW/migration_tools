@@ -100,7 +100,7 @@ class OipFoiaPostCategoryMigration extends JusticeWordpressCategory {
  * @package doj_migration
  * @subpackage olc
  */
-class OipFoiaUpdatePageMigration extends JusticeHtmlToBlogEntryMigration {
+class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
 
   /**
    * {@inheritdoc}
@@ -224,9 +224,18 @@ class OipFoiaUpdatePageMigration extends JusticeHtmlToBlogEntryMigration {
     // Replace <h4> tags with <strong> tags.
     $source_parser = new SourceParser($row->url_path, $row->filedata);
     $source_parser->changeElementTag(array('h4' => 'strong'));
+    $source_parser->removeElements(array('br'));
 
     parent::prepareRow($row, $source_parser);
-    $row->date = $this->getDateFromBody($row->field_page_body);
+    $row->date = $this->getDateFromBody($row->field_blog_body);
+
+    // New line is required to split non-blank lines
+    // @see http://stackoverflow.com/a/709684
+
+    print $row->field_blog_body;
+    $row->field_blog_body = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $row->field_blog_body);
+
+    print $row->field_blog_body;
   }
 
   /**
@@ -387,7 +396,7 @@ class OipPageMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage oip
  */
-class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
+class OipFoiaPostBlogEntryMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -408,7 +417,7 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
     // The destination is the blog_entry content type.
     $this->destination = new MigrateDestinationNode('blog_entry');
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_blog_body', 'field_page_body');
+    $this->addFieldMapping('field_blog_body', 'field_blog_body');
     $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_blog_date', 'field_blog_date');
     // Let's get the right taxonomy_term to set as default.
@@ -445,7 +454,7 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
     $source_parser->queryPath
       ->find('img[src="//foiapost-1.jpg"], img[src="//foiapost-2.jpg"]')
       ->parent('table')
-      ->replaceWith('<img src="/sites/default/files/oip/images/foiapost.jpg" alt="FOIA Post" />');
+      ->replaceWith('<img src="/sites/default/files/oip/images/foiapost.jpg" class="foiapost-banner" alt="FOIA Post" />');
 
     // Remove <font> tags.
     $font_tags = $source_parser->queryPath->find('font');
@@ -457,10 +466,10 @@ class OipFoiaPostPageMigration extends JusticeHtmlToPageMigration {
     parent::prepareRow($row, $source_parser);
 
     // Extract the post date.
-    if (preg_match('/posted (\d{1,2}\/\d{1,2}\/\d{2,4})/', $row->field_page_body, $results)) {
+    if (preg_match('/posted (\d{1,2}\/\d{1,2}\/\d{2,4})/', $row->field_blog_body, $results)) {
       $row->field_blog_date = end($results);
     }
-    elseif (preg_match('/\d{1,2}\/\d{1,2}\/\d{2,4}/', $row->field_page_body, $results)) {
+    elseif (preg_match('/\d{1,2}\/\d{1,2}\/\d{2,4}/', $row->field_blog_body, $results)) {
       $row->field_blog_date = end($results);
     }
   }

@@ -170,9 +170,9 @@ function doj_migration_migrate_api() {
         'group_name' => 'oip',
         'class_name' => 'OipFoiaPostCategoryMigration',
       ),
-      'OipFoiaUpdatePage' => array(
+      'OipFoiaUpdateBlogEntry' => array(
         'group_name' => 'oip',
-        'class_name' => 'OipFoiaUpdatePageMigration',
+        'class_name' => 'OipFoiaUpdateBlogEntryMigration',
       ),
       'OipCourtDecision' => array(
         'group_name' => 'oip',
@@ -186,9 +186,9 @@ function doj_migration_migrate_api() {
         'group_name' => 'oip',
         'class_name' => 'OipCourtCategoryMigration',
       ),
-      'OipFoiaPostPage' => array(
+      'OipFoiaPostBlogEntry' => array(
         'group_name' => 'oip',
-        'class_name' => 'OipFoiaPostPageMigration',
+        'class_name' => 'OipFoiaPostPostBlogEntryMigration',
       ),
       'OipPage' => array(
         'group_name' => 'oip',
