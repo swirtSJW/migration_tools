@@ -188,7 +188,7 @@ function doj_migration_migrate_api() {
       ),
       'OipFoiaPostBlogEntry' => array(
         'group_name' => 'oip',
-        'class_name' => 'OipFoiaPostPostBlogEntryMigration',
+        'class_name' => 'OipFoiaPostBlogEntryMigration',
       ),
       'OipPage' => array(
         'group_name' => 'oip',
