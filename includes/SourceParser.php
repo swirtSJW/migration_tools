@@ -382,6 +382,8 @@ class SourceParser {
       ->top('body')
       ->innerHTML();
     $body = trim($body);
+    $body = $this->removeUndesirableChars($body);
+
     return $body;
   }
 
