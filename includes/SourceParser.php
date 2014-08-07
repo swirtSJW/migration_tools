@@ -37,6 +37,7 @@ class SourceParser {
 
     $this->charTransform();
     $this->fixEncoding();
+    $this->html = $this->changeSpecialForHtmlSpecialChars($this->html);
     $this->html = $this->changeSpecialforRegularChars($this->html);
 
     if ($fragment) {
@@ -311,6 +312,25 @@ class SourceParser {
   }
 
   /**
+   * Change special chars, for html special chars.
+   *
+   * @param string $text
+   *   Any string.
+   *
+   * @return string
+   *   A string with the replacements.
+   */
+  public function changeSpecialForHtmlSpecialChars($text) {
+    $special = array("»" => "&raquo;");
+
+    foreach ($special as $find => $replace) {
+      $text = str_replace($find, $replace, $text);
+    }
+
+    return $text;
+  }
+
+  /**
    * Replace special HTML chars.
    *
    * @param string $text
@@ -382,7 +402,7 @@ class SourceParser {
       ->top('body')
       ->innerHTML();
     $body = trim($body);
-    $body = $this->removeUndesirableChars($body);
+    $body = $this->removeUndesirableChars($body, array("»"));
 
     return $body;
   }
@@ -436,8 +456,16 @@ class SourceParser {
   /**
    * Remove undesirable chars from a string.
    */
-  public function removeUndesirableChars($text) {
-    return str_replace(array("»", "Â"), "", $text);
+  public function removeUndesirableChars($text, $exclusions = array()) {
+    $undesirables = array("»", "Â");
+
+    $undesirables = array_diff($undesirables, $exclusions);
+
+    foreach ($undesirables as $remove_char) {
+      $text = str_replace($remove_char, "", $text);
+    }
+
+    return $text;
   }
 
   /**
