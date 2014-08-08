@@ -1,0 +1,8 @@
+Justice Management Division{"url":"jmd"}
+About the Division {"url":"jmd/about-division"}
+Meet the Assistant Attorney General {"url":"jmd/meet-assistant-attorney-general"}
+- JMD Leadership {"url":"jmd/jmd-leadership"}
+Services and Initiatives {"url":"jmd/services-and-initiatives"}
+Publications and Resources {"url":"jmd/publications-and-resources"}
+JMD FOIA {"url":"jmd/jmd-foia"}
+Contact the Division {"url":"jmd/contact-division"}
