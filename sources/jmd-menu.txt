@@ -1,5 +1,38 @@
 Justice Management Division{"url":"jmd"}
 About the Division {"url":"jmd/about-division"}
+- Equal Employment Opportunity Staff {"url":"jmd/equal-employment-opportunity-staff"}
+-- EEO Policy {"url":"jmd/policy"}
+-- Complaint Processing {"url":"jmd/complaint-processing"}
+-- Alternative Dispute Resolution {"url":"jmd/alternative-dispute-resolution"}
+-- DOJ Mediator Corps {"url":"jmd/doj-mediator-corps"}
+-- Data Posted Pursuant to the No FEAR Act {"url":"jmd/eeo-program-status-report"}
+-- Special Emphasis Programs {"url":"jmd/affirmative-employment-special-emphasis-programs"}
+-- Contacts {"url":"jmd/eeos-contacts"}
+- Human Resources {"url":"jmd/human-resources"}
+-- Employee Assistance {"url":"jmd/employee-assistance-program"}
+-- Orders, Policy Memos and Guidance {"url":"jmd/orders-policy-memos-and-guidance"}
+-- Executive and Political Personnel {"url":"jmd/executive-and-political-personnel"}
+-- Workforce Surveys {"url":"jmd/workforce-surveys"}
+- Library Staff {"url":"jmd/library"}
+-- Research Guides {"url":"jmd"}
+-- Internships for Library Students {"url":"jmd/internships-library-students"}
+- Departmental Ethics Office {"url":"jmd/departmental-ethics-office"}
+-- Gifts and Entertainment {"url":"jmd/gifts-and-entertainment"}
+-- Travel {"url":"jmd/travel"}
+-- Conflicts {"url":"jmd/conflicts"}
+-- Financial Disclosure {"url":"jmd/financial-disclosure"}
+-- Outside Employment and Activities {"url":"jmd/outside-employment-and-activities"}
+-- Political Activities {"url":"jmd/political-activities"}
+-- Procurement Integrity {"url":"jmd/procurement-integrity"}
+-- Misuse of Position and Government Resources {"url":"jmd/misuse-position-and-government-resources"}
+-- Leaving Government {"url":"jmd/leaving-government"}
+-- Regulations, Authorities and Reference Materials {"url":"jmd/regulations-authorities-and-reference-materials"}
+-- Ethics Pledge, Executive Order 13490 {"url":"jmd/ethics-pledge-executive-order-13490"}
+-- Sample Documents {"url":"jmd/sample-documents"}
+- Procurement Services Staff {"url":"jmd/procurement-services-staff"}
+-- Doing Business with the Offices, Boards and Divisions {"url":"jmd/doing-business-offices-boards-and-divisions"}
+-- Contact and Directions {"url":"jmd/contact-and-directions"}
+- Debt Collection Management Staff {"url":"jmd/debt-collection-management-staff"}
 Meet the Assistant Attorney General {"url":"jmd/meet-assistant-attorney-general"}
 - JMD Leadership {"url":"jmd/jmd-leadership"}
 Services and Initiatives {"url":"jmd/services-and-initiatives"}
