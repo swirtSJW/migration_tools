@@ -65,7 +65,7 @@ class GalleryMigration extends JusticeFileSourceMigration {
 
     // Define non-simple field mappings.
     $this->addFieldMapping('field_gallery_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('organizations');
+    $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
 
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
