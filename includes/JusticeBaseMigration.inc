@@ -94,4 +94,16 @@ abstract class JusticeBaseMigration extends Migration {
       }
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    if (!empty($row->title)) {
+      $row->title = mb_strimwidth($row->title, 0, 255, "...");
+      $row->title = html_entity_decode($row->title);
+    }
+  }
 }
