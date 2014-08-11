@@ -73,10 +73,6 @@ function doj_migration_migrate_api() {
       ),
     ),
     'migrations' => array(
-      'AgPressRelease' => array(
-        'group_name' => 'ag',
-        'class_name' => 'AgPressReleaseMigration',
-      ),
       'CareersFile' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersFileMigration',
@@ -240,6 +236,10 @@ function doj_migration_migrate_api() {
       'OpaAttachment' => array(
         'group_name' => 'opa',
         'class_name' => 'OpaAttachmentMigration',
+      ),
+      'OpaPressRelease' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaPressReleaseMigration',
       ),
       'OpclPage' => array(
         'group_name' => 'opcl',
