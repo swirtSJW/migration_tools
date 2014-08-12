@@ -304,6 +304,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_speech_location:administrative_area', 'state');
 
     $this->addPathDnmMapping();
+    $this->addUnmigratedSources(array());
   }
 
   /**
@@ -387,8 +388,89 @@ class OpaSpeechMigration extends JusticeBaseMigration {
  *
  * @package doj_migration
  */
-class OpaEventMigration extends JusticeFileSourceMigration {
-  // Migrate events from {cms_doj_calendar} in cmsopa table.
+class OpaEventMigration extends JusticeBaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $cmsopa_db_name = $databases['cmsopa']['default']['database'];
+
+    $query = db_select("$cmsopa_db_name.cms_doj_calendar", 'c')
+      ->fields('c', array(
+        'id',
+        'creationDate',
+        'modificationDate',
+        'publishStatus',
+        'componentID',
+        'sensitiveData',
+        'documentDate',
+        'documentTitle',
+        'documentBody',
+        'eventTime',
+        'eventPeriod',
+        'documentTeaser',
+        'onHomepage',
+        'documentLocation',
+        'eventState',
+      ));
+    $query->leftJoin("$cmsopa_db_name.mainComponents", 'mc', 'c.componentID = mc.cid');
+    $query->orderBy('id', 'ASC');
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('event');
+
+    // Field Mappings.
+    $this->addFieldMapping('title', 'documentTitle');
+    $this->addFieldMapping('status', 'publishStatus');
+    $this->addFieldMapping('created', 'creationDate');
+    $this->addFieldMapping('changed', 'modificationDate');
+    $this->addFieldMapping('promote', 'onHomepage');
+    $this->addFieldMapping('migrate_redirects', 'legacy_url');
+    $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+
+    $this->addFieldMapping('field_event_body', 'documentBody');
+    $this->addFieldMapping('field_event_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_event_datetime', 'builtDate');
+
+    // Clean up.
+    $this->addPathDnmMapping();
+    $this->addUnmigratedSources(array());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    $title = $row->documentTitle;
+    $title = doj_migration_html_entity_decode_numeric($title);
+    $title = substr($title, 0, 255);
+    $row->documentTitle = $title;
+
+    // $row->builtDate = "{$row->documentDate} {$row->eventTime}";
+  }
 }
 
 /**
