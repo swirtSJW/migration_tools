@@ -464,6 +464,7 @@ class OpaEventMigration extends JusticeBaseMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $title = $row->documentTitle;
     $title = doj_migration_html_entity_decode_numeric($title);
     $title = substr($title, 0, 255);
