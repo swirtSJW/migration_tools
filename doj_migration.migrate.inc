@@ -256,6 +256,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'opa',
         'class_name' => 'OpaSpeechMigration',
       ),
+      'OpaEvent' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaEventMigration',
+      ),
       'OpclPage' => array(
         'group_name' => 'opcl',
         'class_name' => 'OpclPageMigration',
