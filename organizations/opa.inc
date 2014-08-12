@@ -174,25 +174,21 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+    if (!$row->publishStatus) {
+      return FALSE;
+    }
+
     $row->title = $row->documentTitle;
 
     parent::prepareRow($row);
-    $row->tag = trim($row->tagSubject, ' ,');
+    $row->tag = trim($row->tagSubject, ',');
     $row->legacy_url = trim($row->documentLocation, '/');
     $row->uid = 1;
 
-    $row->topic = trim($row->tagSubject, ',');
-    if (!empty($row->topic)
-        && !taxonomy_get_term_by_name($row->topic, 'topic')
-        && !taxonomy_get_term_by_name($row->topic, 'component')) {
-      // print $row->topic . "\n";
-      $this->queueMessage(t('Creating new topic term "@topic".', array('@topic' => $row->topic)));
-      $vocab = taxonomy_vocabulary_machine_name_load('topic');
-      $term = new stdClass();
-      $term->name = $row->topic;
-      $term->vid = $vocab->vid;
-      taxonomy_term_save($term);
-    }
+    // If the term does not exist in topic or component vocabularies, create
+    // a new topic term.
+    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+    $row->topic = doj_migrate_prepare_topic_term($row->tagSubject);
 
     // The values of 1 and 2 for onHomepage can be considered synonymous.
     if ($row->onHomepage == 2) {
@@ -241,6 +237,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
 
     $query = db_select("$cmsopa_db_name.cms_opa_speeches", 'c')
       ->fields('c', array(
+        'id',
         'creationDate',
         'modificationDate',
         'publishStatus',
@@ -259,6 +256,10 @@ class OpaSpeechMigration extends JusticeBaseMigration {
         'speechTime',
       ));
     $query->leftJoin("$cmsopa_db_name.mainComponents", 'mc', 'c.componentID = mc.cid');
+    $query->fields('mc', array(
+      'compLongName',
+      'compAbbrev',
+    ));
     $query->orderBy('id', 'ASC');
 
     // A map of source MySQL row -> destination node id.
@@ -285,16 +286,84 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('created', 'creationDate');
     $this->addFieldMapping('updated', 'modificationDate');
     $this->addFieldMapping('promote', 'onHomepage');
+    $this->addFieldMapping('uid', 'uid');
     $this->addFieldMapping('migrate_redirects', 'legacy_url');
     $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
-    $this->addPathDnmMapping();
 
+
+    $this->addFieldMapping('field_speech_teaser', 'teaser');
+    $this->addFieldMapping('field_speech_body', 'body');
+    $this->addFieldMapping('field_speech_date', 'documentDate');
+    $this->addFieldMapping('field_speech_component', 'component');
+    $this->addFieldMapping('field_speech_topic', 'topic');
+
+    $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
+    $this->addFieldMapping('field_speech_location:locality', 'city');
+    $this->addFieldMapping('field_speech_location:administrative_area', 'state');
+
+    $this->addPathDnmMapping();
     $this->addUnmigratedSources(array(
 
     ));
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (!$row->publishStatus) {
+      return FALSE;
+    }
+
+    // Decode html entities in body.
+    $row->body = html_entity_decode($row->documentBody);
+    $row->teaser = html_entity_decode($row->documentTeaser);
+
+    // Define title and pass to parent for trimming.
+    $row->title = $row->documentTitle;
+    parent::prepareRow($row);
+
+    $row->tag = trim($row->tagSubject, ',');
+    $row->legacy_url = trim($row->documentLocation, '/');
+    $row->uid = 1;
+
+    // If the term does not exist in topic or component vocabularies, create
+    // a new topic term.
+    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+    $row->topic = doj_migrate_prepare_topic_term($row->tagSubject);
+
+    // The values of 1 and 2 for onHomepage can be considered synonymous.
+    if ($row->onHomepage == 2) {
+      $row->onHomepage = 1;
+    }
+
+    $row->component = $row->compLongName;
+
+    // Geocode the location and parse into structured data for migration.
+    // The geocoder module is not an explicit dependency because most migrations
+    // do not rely on it. It should be disabled after use.
+    if (!empty($row->speechLocation)) {
+      if (module_exists('geocoder')) {
+        // Note that calling this too many times (as in very large migrations)
+        // may exceed the API request limit for geocoder's source data.
+        $point = geocoder('google', $row->speechLocation);
+        $address = doj_migrate_convert_geocoded_point_to_address($point);
+
+        if ($address) {
+          $row->city = $address['locality'];
+          $row->state = $address['administrative_area_level_1'];
+          $row->country = $address['country'];
+        }
+        else {
+          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
+        }
+      }
+      else {
+        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
+      }
+    }
+  }
 }
 
 /**
