@@ -222,7 +222,6 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
  * Migrates speeches from {cms_opa_speeches} in cmsopa table.
  */
 class OpaSpeechMigration extends JusticeBaseMigration {
-  // Soin to cms_opa_doclinks, tagsubjectindex, and cms_opa_homepage ?
 
   /**
    * {@inheritdoc}
@@ -282,7 +281,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
 
     // Field Mappings.
     $this->addFieldMapping('title', 'documentTitle');
-        $this->addFieldMapping('status', 'publishStatus');
+    $this->addFieldMapping('status', 'publishStatus');
     $this->addFieldMapping('created', 'creationDate');
     $this->addFieldMapping('updated', 'modificationDate');
     $this->addFieldMapping('promote', 'onHomepage');
@@ -290,7 +289,6 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('migrate_redirects', 'legacy_url');
     $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
-
 
     $this->addFieldMapping('field_speech_teaser', 'teaser');
     $this->addFieldMapping('field_speech_body', 'body');
@@ -303,9 +301,6 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_speech_location:administrative_area', 'state');
 
     $this->addPathDnmMapping();
-    $this->addUnmigratedSources(array(
-
-    ));
   }
 
   /**
