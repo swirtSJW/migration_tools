@@ -63,7 +63,7 @@ class OpaAttachmentMigration extends JusticeWordpressAttachment {
 }
 
 /**
- * Class JusticePressReleaseMigration.
+ * Class OpaPressReleaseMigration.
  *
  * @package doj_migration
  */
@@ -110,6 +110,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $query->leftJoin("$cmsopa_db_name.mainComponents", 'mc', 'c.componentID = mc.cid');
     $query->fields('mc', array(
       'compLongName',
+      'compAbbrev',
     ));
     $query->orderBy('id', 'ASC');
 
@@ -149,6 +150,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_pr_topic', 'topic');
     $this->addFieldMapping('field_pr_component', 'component');
     $this->addFieldMapping('field_pr_number', 'prNumber');
+    $this->addFieldMapping('field_pr_subtitle', 'prSubtitle');
 
     $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
@@ -157,9 +159,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $this->addUnmigratedSources(array(
       'spanishContent',
       'sensitiveData',
-      'documentDate',
       'imageID',
-      'prSubtitle',
       'prMediaAdvisory',
       'prURL',
       'prPurpose',
@@ -181,11 +181,17 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $row->legacy_url = trim($row->documentLocation, '/');
     $row->uid = 1;
 
-    // If the tag already exists in the component vocabulary, then add
-    // as component term. Otherwise, add as topic.
-    $tag = $row->tagSubject;
-    if (!taxonomy_get_term_by_name($tag, "component")) {
-      $row->topic = $tag;
+    $row->topic = trim($row->tagSubject, ',');
+    if (!empty($row->topic)
+        && !taxonomy_get_term_by_name($row->topic, 'topic')
+        && !taxonomy_get_term_by_name($row->topic, 'component')) {
+      // print $row->topic . "\n";
+      $this->queueMessage(t('Creating new topic term "@topic".', array('@topic' => $row->topic)));
+      $vocab = taxonomy_vocabulary_machine_name_load('topic');
+      $term = new stdClass();
+      $term->name = $row->topic;
+      $term->vid = $vocab->vid;
+      taxonomy_term_save($term);
     }
 
     // The values of 1 and 2 for onHomepage can be considered synonymous.
@@ -299,15 +305,3 @@ class OpaSpeechMigration extends JusticeBaseMigration {
 class OpaEventMigration extends JusticeFileSourceMigration {
   // Migrate events from {cms_doj_calendar} in cmsopa table.
 }
-
-class OpaTestiomonyMigration extends JusticeFileSourceMigration {
-  // Migrate from {cms_opa_testimony} in cmsopa table.
-  // Join to cms_opa_doclinks, tagsubjectindex, and cms_opa_homepage.
-}
-
-class OlaTestimonyMigration extends JusticeFileSourceMigration {
-  // Migration from {cms_ola_testimony} in cmsopa table.
-  // Join to cms_ola_doclinks to import attachments!
-}
-
-
