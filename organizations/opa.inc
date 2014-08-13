@@ -291,7 +291,9 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     $this->addFieldMapping('field_speech_teaser', 'teaser');
+    $this->addFieldMapping('field_speech_teaser:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_speech_body', 'body');
+    $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_speech_date', 'documentDate');
     $this->addFieldMapping('field_speech_component', 'component')->separator('|');
     $this->addFieldMapping('field_speech_topic', 'topic')->separator('|');
@@ -312,8 +314,8 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     }
 
     // Decode html entities in body.
-    $row->body = html_entity_decode($row->documentBody);
-    $row->teaser = html_entity_decode($row->documentTeaser);
+    $row->body = html_entity_decode($row->documentBody, ENT_QUOTES, 'UTF-8');
+    $row->teaser = html_entity_decode($row->documentTeaser, ENT_QUOTES, 'UTF-8');
 
     // Define title and pass to parent for trimming.
     $row->title = $row->documentTitle;

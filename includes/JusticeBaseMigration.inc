@@ -103,7 +103,7 @@ abstract class JusticeBaseMigration extends Migration {
 
     if (!empty($row->title)) {
       $row->title = mb_strimwidth($row->title, 0, 255, "...");
-      $row->title = html_entity_decode($row->title);
+      $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
     }
   }
 }

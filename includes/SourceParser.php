@@ -340,7 +340,7 @@ class SourceParser {
    *   The string with the special chars replaced.
    */
   public function changeHTLMSpecialChars($text) {
-    return htmlspecialchars_decode($text);
+    return html_entity_decode($text, ENT_COMPAT, 'UTF-8');
   }
 
   /**
