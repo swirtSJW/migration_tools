@@ -321,6 +321,22 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $row->title = $row->documentTitle;
     parent::prepareRow($row);
 
+    // Remove all \r and \n instances.
+    $row->body = preg_replace("/\r|\n/", " ", $row->body);
+
+    // Remove all empty span tags. This will remove the following:
+    // <span style="mso-spacerun: yes;"> &nbsp; </span>.
+    $row->body = preg_replace("/<span[^>]*mso[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $row->body);
+
+    // Remove empty p tags. We are not removing p tags containing &nbsp;
+    $row->body = preg_replace("/<p[^>]*>(?:\W)*<\/p>/i", "", $row->body);
+
+    // Remove empty strong tags. We are not removing p tags containing &nbsp;
+    $row->body = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/i", "", $row->body);
+
+    // Replace <p> tags containing styling with non-descript p tags.
+    $row->body = preg_replace("/<p class=\"Mso[^>]*\" style=\"[^>]*\">/i", "<p>", $row->body);
+
     $row->tag = trim($row->tagSubject, ',');
     $row->legacy_url = trim($row->documentLocation, '/');
     $row->uid = 1;

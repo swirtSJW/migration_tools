@@ -32,7 +32,7 @@ function doj_migrate_prepare_topic_term($legacy_term) {
         if (!taxonomy_get_term_by_name($term, 'topic')
           && !taxonomy_get_term_by_name($term, 'component')) {
 
-          watchdog('doj_migration', t('Creating new topic term "@topic".', array('@topic' => $term)));
+          watchdog('doj_migration', 'Creating new topic term "@topic".', array('@topic' => $term));
           $vocab = taxonomy_vocabulary_machine_name_load('topic');
           $term_obj = new stdClass();
           $term_obj->name = $term;
