@@ -470,7 +470,8 @@ class OpaEventMigration extends JusticeBaseMigration {
     $title = substr($title, 0, 255);
     $row->documentTitle = $title;
 
-    // $row->builtDate = "{$row->documentDate} {$row->eventTime}";
+    // Drupal dates contain both date and time.
+    $row->builtDate = "{$row->documentDate} {$row->eventTime}";
   }
 }
 
