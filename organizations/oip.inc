@@ -222,14 +222,17 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
     // Replace <h4> tags with <strong> tags.
     $source_parser = new SourceParser($row->url_path, $row->filedata);
     $source_parser->changeElementTag(array('h4' => 'strong'));
-    $source_parser->removeElements(array('br'));
 
     parent::prepareRow($row, $source_parser);
     $row->field_blog_date = $this->getDateFromBody($row->field_blog_body);
 
-    // Remove blank lines.
+    // Remove blank lines. This removes only an entire line that is blank,
+    // not all \n or \r instances.
     // @see http://stackoverflow.com/a/709684
     $row->field_blog_body = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $row->field_blog_body);
+
+    // Remove all \r and \n instances.
+    $row->field_blog_body = preg_replace("/\r|\n/", " ", $row->field_blog_body);
   }
 
   /**
