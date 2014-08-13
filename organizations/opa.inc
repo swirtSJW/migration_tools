@@ -418,7 +418,7 @@ class OpaEventMigration extends JusticeBaseMigration {
         'documentLocation',
         'eventState',
       ));
-    $query->leftJoin("$cmsopa_db_name.mainComponents", 'mc', 'c.componentID = mc.cid');
+
     $query->orderBy('id', 'ASC');
 
     // A map of source MySQL row -> destination node id.
@@ -442,6 +442,7 @@ class OpaEventMigration extends JusticeBaseMigration {
     // Field Mappings.
     $this->addFieldMapping('title', 'documentTitle');
     $this->addFieldMapping('status', 'publishStatus');
+    $this->addFieldMapping('uid', 'uid');
     $this->addFieldMapping('created', 'creationDate');
     $this->addFieldMapping('changed', 'modificationDate');
     $this->addFieldMapping('promote', 'onHomepage');
@@ -452,6 +453,11 @@ class OpaEventMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_event_body', 'documentBody');
     $this->addFieldMapping('field_event_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_event_datetime', 'builtDate');
+    $this->addFieldMapping('field_event_location', 'country')->defaultValue('US');
+    $this->addFieldMapping('field_event_location:locality', 'city');
+    $this->addFieldMapping('field_event_location:administrative_area', 'state');
+    $this->addFieldMapping('field_event_type')->defaultValue("external_event");
+    $this->addFieldMapping('field_event_audience')->defaultValue("public");
 
     // Clean up.
     $this->addPathDnmMapping();
@@ -464,14 +470,42 @@ class OpaEventMigration extends JusticeBaseMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    $row->uid = 1;
+
+    if (!$row->publishStatus) {
+      return FALSE;
+    }
+
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $title = $row->documentTitle;
     $title = doj_migration_html_entity_decode_numeric($title);
     $title = substr($title, 0, 255);
     $row->documentTitle = $title;
 
-    // Drupal dates contain both date and time.
     $row->builtDate = "{$row->documentDate} {$row->eventTime}";
+
+    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+
+    if (!empty($row->documentLocation)) {
+      if (module_exists('geocoder')) {
+        // Note that calling this too many times (as in very large migrations)
+        // may exceed the API request limit for geocoder's source data.
+        $point = geocoder('google', $row->documentLocation);
+        $address = doj_migrate_convert_geocoded_point_to_address($point);
+
+        if ($address) {
+          $row->city = $address['locality'];
+          $row->state = $address['administrative_area_level_1'];
+          $row->country = $address['country'];
+        }
+        else {
+          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
+        }
+      }
+      else {
+        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
+      }
+    }
   }
 }
 
