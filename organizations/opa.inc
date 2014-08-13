@@ -148,7 +148,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_pr_promote', 'onHomepage');
     $this->addFieldMapping('field_pr_date', 'documentDate');
     $this->addFieldMapping('field_pr_topic', 'topic')->separator('|');
-    $this->addFieldMapping('field_pr_component', 'component');
+    $this->addFieldMapping('field_pr_component', 'component')->separator('|');
     $this->addFieldMapping('field_pr_number', 'prNumber');
     $this->addFieldMapping('field_pr_subtitle', 'prSubtitle');
 
@@ -195,7 +195,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
       $row->onHomepage = 1;
     }
 
-    $row->component = $row->compLongName;
+    $row->component = doj_migrate_standardize_component_terms($row->compLongName);
   }
 
   /**
@@ -293,7 +293,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_speech_teaser', 'teaser');
     $this->addFieldMapping('field_speech_body', 'body');
     $this->addFieldMapping('field_speech_date', 'documentDate');
-    $this->addFieldMapping('field_speech_component', 'component');
+    $this->addFieldMapping('field_speech_component', 'component')->separator('|');
     $this->addFieldMapping('field_speech_topic', 'topic')->separator('|');
 
     $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
@@ -333,7 +333,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
       $row->onHomepage = 1;
     }
 
-    $row->component = $row->compLongName;
+    $row->component = doj_migrate_standardize_component_terms($row->compLongName);
 
     // Geocode the location and parse into structured data for migration.
     // The geocoder module is not an explicit dependency because most migrations
