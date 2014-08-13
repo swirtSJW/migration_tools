@@ -537,3 +537,75 @@ function doj_migrate_strip_cmsopa_legacy_markup($markup) {
 
   return $markup;
 }
+
+/**
+ * Migrates .html files from /opa to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage opa
+ */
+class OpaPageMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'opa',
+    );
+
+    $options = array(
+      'recurse' => TRUE,
+      'nomask' => '/(\.\.?|CVS' . $nomask . ')$/',
+    );
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates pages from OPA section.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
+  }
+}
+
+/**
+ * Migrates binary files from /opa.
+ *
+ * @package doj_migration
+ * @subpackage opa
+ */
+class OpaFileMigration extends JusticeDeployableBinaryFileMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->description = t('Migrates files (*.pdf) from the opa subdirectory.');
+    $this->dependencies = array('Organization');
+
+    // Match .pdf files only.
+    $source_dirs = array(
+      'opa',
+    );
+
+    $options = array(
+      'recurse' => TRUE,
+    );
+
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $dest_dir = 'public:///opa/docs';
+
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "opa";
+  }
+}
