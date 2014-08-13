@@ -77,6 +77,9 @@ function doj_migration_migrate_api() {
       'psc' => array(
         'title' => t('PSC - Project Safe Childhood'),
       ),
+      'tribal' => array(
+        'title' => t('Tribal Justice and Safety'),
+      ),
       'usao' => array(
         'title' => t('USAO - United States Attorneys Office'),
       ),
@@ -333,6 +336,14 @@ function doj_migration_migrate_api() {
       'PscFile' => array(
         'group_name' => 'psc',
         'class_name' => 'PscFileMigration',
+      ),
+      'TribalPage' => array(
+        'group_name' => 'tribal',
+        'class_name' => 'TribalPageMigration',
+      ),
+      'TribalFile' => array(
+        'group_name' => 'tribal',
+        'class_name' => 'TribalFileMigration',
       ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
