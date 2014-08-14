@@ -196,16 +196,23 @@ function doj_migration_redirect_check($org_id, $print_redirects = FALSE) {
  */
 function doj_migration_html_entity_decode_numeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
   $string = html_entity_decode($string, $quote_style, $charset);
-  $string = preg_replace_callback('~&#x([0-9a-fA-F]+);~i', "doj_migration_chr_utf8_callback", $string);
-  $string = preg_replace('~&#([0-9]+);~e', 'doj_migration_chr_utf8("\\1")', $string);
+  $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', 'doj_migration_hex_chr_utf8_callback', $string);
+  $string = preg_replace_callback('/&#([0-9]+)/', 'doj_migration_chr_utf8_callback', $string);
   return $string;
 }
 
 /**
  * Callback helper.
  */
-function doj_migration_chr_utf8_callback($matches) {
+function doj_migration_hex_chr_utf8_callback($matches = array()) {
   return doj_migration_chr_utf8(hexdec($matches[1]));
+}
+
+/**
+ * Callback helper.
+ */
+function doj_migration_chr_utf8_callback($matches = array()) {
+  return doj_migration_chr_utf8($matches[1]);
 }
 
 /**
