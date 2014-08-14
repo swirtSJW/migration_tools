@@ -140,7 +140,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('uid', 'uid');
     $this->addFieldMapping('migrate_redirects', 'legacy_url');
 
-    $this->addFieldMapping('field_pr_body', 'documentBody');
+    $this->addFieldMapping('field_pr_body', 'body');
     $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_pr_teaser', 'documentTeaser');
     $this->addFieldMapping('field_pr_teaser:format')->defaultValue('wysiwyg');
@@ -179,6 +179,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     }
 
     $row->title = $row->documentTitle;
+    $row->body = doj_migrate_strip_cmsopa_legacy_markup($row->documentBody);
 
     parent::prepareRow($row);
     $row->tag = trim($row->tagSubject, ',');
@@ -321,21 +322,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $row->title = $row->documentTitle;
     parent::prepareRow($row);
 
-    // Remove all \r and \n instances.
-    $row->body = preg_replace("/\r|\n/", " ", $row->body);
-
-    // Remove all empty span tags. This will remove the following:
-    // <span style="mso-spacerun: yes;"> &nbsp; </span>.
-    $row->body = preg_replace("/<span[^>]*mso[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $row->body);
-
-    // Remove empty p tags. We are not removing p tags containing &nbsp;
-    $row->body = preg_replace("/<p[^>]*>(?:\W)*<\/p>/i", "", $row->body);
-
-    // Remove empty strong tags. We are not removing p tags containing &nbsp;
-    $row->body = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/i", "", $row->body);
-
-    // Replace <p> tags containing styling with non-descript p tags.
-    $row->body = preg_replace("/<p class=\"Mso[^>]*\" style=\"[^>]*\">/i", "<p>", $row->body);
+    $row->body = doj_migrate_strip_cmsopa_legacy_markup($row->body);
 
     $row->tag = trim($row->tagSubject, ',');
     $row->legacy_url = trim($row->documentLocation, '/');
@@ -402,4 +389,33 @@ class OpaSpeechMigration extends JusticeBaseMigration {
  */
 class OpaEventMigration extends JusticeFileSourceMigration {
   // Migrate events from {cms_doj_calendar} in cmsopa table.
+}
+
+/**
+ * Strips legacy markup from content originating in CMS OPA.
+ *
+ * @param string $markup
+ *   Markup to be cleaned.
+ *
+ * @return string
+ *   Cleaned markup.
+ */
+function doj_migrate_strip_cmsopa_legacy_markup($markup) {
+  // Remove all \r and \n instances.
+  $markup = preg_replace("/\r|\n/", " ", $markup);
+
+  // Remove all empty <span>s with mso* style. This will remove the following:
+  // <span style="mso-spacerun: yes;"> &nbsp; </span>.
+  $markup = preg_replace("/<span[^>]*mso[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $markup);
+
+  // Remove empty p tags. We are not removing p tags containing &nbsp;
+  $markup = preg_replace("/<p[^>]*>(?:\W)*<\/p>/i", "", $markup);
+
+  // Remove empty strong tags. We are not removing p tags containing &nbsp;
+  $markup = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/i", "", $markup);
+
+  // Replace <p> tags containing styling with non-descript p tags.
+  $markup = preg_replace("/<p class=\"Mso[^>]*\" style=\"[^>]*\">/i", "<p>", $markup);
+
+  return $markup;
 }
