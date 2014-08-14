@@ -14,6 +14,9 @@ function doj_migration_migrate_api() {
   $api = array(
     'api' => 2,
     'groups' => array(
+      'aag' => array(
+        'title' => t('Office of the Associate Attorney General'),
+      ),
       'ag' => array(
         'title' => t('Office of the Attorney General'),
       ),
@@ -73,6 +76,14 @@ function doj_migration_migrate_api() {
       ),
     ),
     'migrations' => array(
+      'AagPage' => array(
+        'group_name' => 'aag',
+        'class_name' => 'AagPageMigration',
+      ),
+      'AagFile' => array(
+        'group_name' => 'aag',
+        'class_name' => 'AagFileMigration',
+      ),
       'CareersFile' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersFileMigration',
