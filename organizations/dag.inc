@@ -36,6 +36,24 @@ class DagPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from DAG section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('dag')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
+    parent::prepareRow($row, $source_parser);
+    $title = $row->title;
+    // Some of this titles are inside of the first h2 tag.
+    if (empty($title) || strcmp($title, "Justice News") == 0) {
+      $query_body = htmlqp($row->field_page_body);
+      $elements = $query_body->find("div.presscontenttitle");
+      foreach ($elements as $element) {
+        $title = $element->text();
+        break;
+      }
+    }
+    $row->title = $title;
+  }
 }
 
 /**
