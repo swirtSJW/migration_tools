@@ -62,6 +62,9 @@ function doj_migration_migrate_api() {
       'otj' => array(
         'title' => t('OTJ - Office of Tribal Justice'),
       ),
+      'osdbu' => array(
+        'title' => t('OSDBU - Office of Small and Disadvantaged Business Utilization'),
+      ),
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
       ),
@@ -267,6 +270,14 @@ function doj_migration_migrate_api() {
       'OpclFile' => array(
         'group_name' => 'opcl',
         'class_name' => 'OpclFileMigration',
+      ),
+      'OsdbuPage' => array(
+        'group_name' => 'osdbu',
+        'class_name' => 'OsdbuPageMigration',
+      ),
+      'OsdbuFile' => array(
+        'group_name' => 'osdbu',
+        'class_name' => 'OsdbuFileMigration',
       ),
       'OtjPage' => array(
         'group_name' => 'otj',
