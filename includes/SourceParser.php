@@ -278,7 +278,7 @@ class SourceParser {
       if (preg_match('/class=\"headline/', $element->html())) {
         break;
       }
-      if (preg_match('/style=\"margin-bottom: ?(15|20)px/', $element->html())) {
+      if (preg_match('/style=\"(margin|padding)-bottom:(\s)*(15|20)px/i', $element->html())) {
         // We found an eagle image title bar: remove it and we're done.
         $element->remove();
         break;
