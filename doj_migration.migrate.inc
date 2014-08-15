@@ -29,6 +29,9 @@ function doj_migration_migrate_api() {
       'crs' => array(
         'title' => t('CRS - Community Relations Service'),
       ),
+      'dag' => array(
+        'title' => t('DAG - Office of the Deputy Attorney General'),
+      ),
       'fcsc' => array(
         'title' => t('FCSC - Foreign Claims Settlement Commission'),
       ),
@@ -102,6 +105,14 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
+      ),
+      'DagPage' => array(
+        'group_name' => 'dag',
+        'class_name' => 'DagPageMigration',
+      ),
+      'DagFile' => array(
+        'group_name' => 'dag',
+        'class_name' => 'DagFileMigration',
       ),
       'CrsFile' => array(
         'group_name' => 'crs',
