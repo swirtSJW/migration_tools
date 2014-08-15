@@ -1,8 +1,0 @@
-Small and Disadvantaged Business Utilization Home {"url":"osdbu"}
-Doing business with the Department of Justice {"url":"osdbu\/doing-business-department-justice"}
-Find Contracting Opportunities {"url":"osdbu\/find-contracting-opportunities"}
-Register to do Business with the Department {"url":"osdbu\/register-do-business-department"}
-Contact a DOJ Representative {"url":"osdbu\/contact-doj-representative"}
-Meet with a Small Business Specialist {"url":"osdbu\/meet-small-business-specialist"}
-Comply with Regulations {"url":"osdbu\/comply-regulations"}
-DOJ's Small Business Goals and Accomplishments {"url":"osdbu\/dojs-small-business-goals-and-accomplishments"}
