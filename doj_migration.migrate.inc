@@ -32,6 +32,9 @@ function doj_migration_migrate_api() {
       'dag' => array(
         'title' => t('DAG - Office of the Deputy Attorney General'),
       ),
+      'ej' => array(
+        'title' => t('EJ - Environmental Justice'),
+      ),
       'fcsc' => array(
         'title' => t('FCSC - Foreign Claims Settlement Commission'),
       ),
@@ -124,6 +127,14 @@ function doj_migration_migrate_api() {
       'CrsPage' => array(
         'group_name' => 'crs',
         'class_name' => 'CrsPageMigration',
+      ),
+      'EjFile' => array(
+        'group_name' => 'ej',
+        'class_name' => 'EjFileMigration',
+      ),
+      'EjPage' => array(
+        'group_name' => 'ej',
+        'class_name' => 'EjPageMigration',
       ),
       'FcscPage' => array(
         'group_name' => 'fcsc',
