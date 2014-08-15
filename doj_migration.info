@@ -33,6 +33,7 @@ files[] = organizations/fcsc.inc
 files[] = organizations/gallery.inc
 files[] = organizations/interpol.inc
 files[] = organizations/jmd.inc
+files[] = organizations/ncfs.inc
 files[] = organizations/nsd.inc
 files[] = organizations/organizations.inc
 files[] = organizations/oarm.inc

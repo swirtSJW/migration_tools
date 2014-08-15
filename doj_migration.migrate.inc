@@ -44,6 +44,9 @@ function doj_migration_migrate_api() {
       'jmd' => array(
         'title' => t('JMD - Justice Management Division'),
       ),
+      'ncfs' => array(
+        'title' => t('NCFS - National Commission on Forensic Science'),
+      ),
       'nsd' => array(
         'title' => t('NSD - National Security Division'),
       ),
@@ -171,6 +174,14 @@ function doj_migration_migrate_api() {
       'JmdFile' => array(
         'group_name' => 'jmd',
         'class_name' => 'JmdFileMigration',
+      ),
+      'NcfsPage' => array(
+        'group_name' => 'ncfs',
+        'class_name' => 'NcfsPageMigration',
+      ),
+      'NcfsFile' => array(
+        'group_name' => 'ncfs',
+        'class_name' => 'NcfsFileMigration',
       ),
       'NsdPage' => array(
         'group_name' => 'nsd',
