@@ -41,7 +41,11 @@ class DagPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row, SourceParser $source_parser = NULL) {
-    parent::prepareRow($row, $source_parser);
+    $bool = parent::prepareRow($row, $source_parser);
+    if (isset($bool)) {
+      return $bool;
+    }
+
     $title = $row->title;
     // Some of this titles are inside of the first h2 tag.
     if (empty($title) || strcmp($title, "Justice News") == 0) {
