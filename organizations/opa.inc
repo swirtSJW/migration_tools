@@ -587,6 +587,7 @@ class OpaFileMigration extends JusticeDeployableBinaryFileMigration {
     // Match .pdf files only.
     $source_dirs = array(
       'opa',
+      'resources',
     );
 
     $options = array(
