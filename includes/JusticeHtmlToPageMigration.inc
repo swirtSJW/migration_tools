@@ -88,6 +88,12 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
 
     $row->title = $source_parser->getTitle();
     $row->field_page_body = $source_parser->getBody();
+
+    // Check whether a redirect to this page already exists, if so, do not
+    // migrate the "duplicate" content.
+    if ($this->isDuplicateByRedirect($row)) {
+      return FALSE;
+    }
   }
 
   /**
@@ -104,5 +110,32 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
     }
+  }
+
+  /**
+   * Is this document a duplicate? Determine this by using redirect objects.
+   *
+   * Legacy paths from justice, should not be pointing to more than one node,
+   * If this is happening, it is a good sign that we are bringing in duplicate
+   * content.
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   *
+   * @return bool
+   *   Whether this row is a duplicate or not.
+   */
+  protected function isDuplicateByRedirect($row) {
+    $parsed = redirect_parse_url($row->legacy_path);
+    $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
+    $redirect = redirect_load_by_source($source);
+
+    if ($redirect) {
+      $message = "The source path '{$source}' is already being redirected." .
+        " The redirect is to {$redirect->redirect}. The document was not migrated";
+      watchdog("doj_migrate", $message, array(), WATCHDOG_ALERT);
+      return TRUE;
+    }
+    return FALSE;
   }
 }
