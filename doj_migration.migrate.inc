@@ -299,6 +299,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'opa',
         'class_name' => 'OpaEventMigration',
       ),
+      'OpaPage' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaPageMigration',
+      ),
+      'OpaFile' => array(
+        'group_name' => 'opa',
+        'class_name' => 'OpaFileMigration',
+      ),
       'OpclPage' => array(
         'group_name' => 'opcl',
         'class_name' => 'OpclPageMigration',
