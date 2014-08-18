@@ -131,9 +131,10 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     $redirect = redirect_load_by_source($source);
 
     if ($redirect) {
-      $message = "The source path '{$source}' is already being redirected." .
-        " The redirect is to {$redirect->redirect}. The document was not migrated";
-      watchdog("doj_migrate", $message, array(), WATCHDOG_ALERT);
+      $this->queueMessage(
+        t("The source path '@source' is already being redirected. The redirect is to '@redirect'. The document was not migrated.",
+        array('@source' => $source, '@redirect' => $redirect->redirect))
+      );
       return TRUE;
     }
     return FALSE;
