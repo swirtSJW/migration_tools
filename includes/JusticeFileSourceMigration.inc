@@ -89,9 +89,15 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     $row->url_path = substr($row->fileid, 1);
     $row->legacy_path = $row->url_path;
 
+    $this->handleIndexRedirect($row);
+  }
+
+  /**
+   * Handles generation of redirects for index.php or index.html pages.
+   */
+  public function handleIndexRedirect($row) {
     // Check to see if $row->fileid == 'index.html' or 'index.php'.
     if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
-
       // Determine root path. E.g., oip/index.html would have the root path
       // /oip.
       $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileid), '/'), '/');
@@ -116,7 +122,6 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
 
             // Remove legacy_patch from this node.
             $row->legacy_path = '';
-            $this->removeFieldMapping('migrate_redirects');
           }
         }
       }
