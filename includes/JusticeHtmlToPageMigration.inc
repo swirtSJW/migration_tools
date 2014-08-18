@@ -78,6 +78,12 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     // Sets $row->legacy_path and $row->url_path.
     $this->generateLegacyPath($row);
 
+    // Check whether a redirect to this page already exists, if so, do not
+    // migrate the "duplicate" content.
+    if ($this->isDuplicateByRedirect($row)) {
+      return FALSE;
+    }
+
     // Set to admin for now.
     $row->uid = 1;
 
@@ -88,12 +94,6 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
 
     $row->title = $source_parser->getTitle();
     $row->field_page_body = $source_parser->getBody();
-
-    // Check whether a redirect to this page already exists, if so, do not
-    // migrate the "duplicate" content.
-    if ($this->isDuplicateByRedirect($row)) {
-      return FALSE;
-    }
   }
 
   /**
