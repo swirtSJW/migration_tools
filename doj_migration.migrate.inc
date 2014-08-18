@@ -35,6 +35,9 @@ function doj_migration_migrate_api() {
       'ej' => array(
         'title' => t('EJ - Environmental Justice'),
       ),
+      'espanol' => array(
+        'title' => t('espanol - Justice.gov en Espanol'),
+      ),
       'fcsc' => array(
         'title' => t('FCSC - Foreign Claims Settlement Commission'),
       ),
@@ -141,6 +144,14 @@ function doj_migration_migrate_api() {
       'EjPage' => array(
         'group_name' => 'ej',
         'class_name' => 'EjPageMigration',
+      ),
+      'EspanolFile' => array(
+        'group_name' => 'espanol',
+        'class_name' => 'EspanolFileMigration',
+      ),
+      'EspanolPage' => array(
+        'group_name' => 'espanol',
+        'class_name' => 'EspanolPageMigration',
       ),
       'FcscPage' => array(
         'group_name' => 'fcsc',
