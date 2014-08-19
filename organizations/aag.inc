@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Office of Associate Attorney General AAG.
+ * Office of Associate Attorney General ASG.
  *
- * Defines migration classes for the AAG section of justice.gov.
+ * Defines migration classes for the ASG section of justice.gov.
  */
 
 /**
- * Migrates .html files from /aag to page nodes.
+ * Migrates .html files from /asg to page nodes.
  *
  * @package doj_migration
- * @subpackage aag
+ * @subpackage asg
  */
 class AagPageMigration extends JusticeHtmlToPageMigration {
 
@@ -38,15 +38,15 @@ class AagPageMigration extends JusticeHtmlToPageMigration {
     parent::__construct($arguments, $source_dirs, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('aag')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
   }
 }
 
 /**
- * Migrates files (*.pdf) from /aag.
+ * Migrates files (*.pdf) from /asg.
  *
  * @package doj_migration
- * @subpackage aag
+ * @subpackage asg
  */
 class AagFileMigration extends JusticeDeployableBinaryFileMigration {
 
@@ -54,7 +54,7 @@ class AagFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the aag subdirectory.');
+    $this->description = t('Migrates non-image files from the asg subdirectory.');
     $this->dependencies = array('Organization');
 
     // Match .pdf files only.
@@ -63,7 +63,7 @@ class AagFileMigration extends JusticeDeployableBinaryFileMigration {
       'asg/readingroom',
     );
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///aag/docs';
+    $dest_dir = 'public:///asg/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
@@ -75,6 +75,6 @@ class AagFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "aag";
+    return "asg";
   }
 }
