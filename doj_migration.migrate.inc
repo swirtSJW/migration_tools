@@ -68,6 +68,9 @@ function doj_migration_migrate_api() {
       'opcl' => array(
         'title' => t('OPCL - Office of Privacy and Civil Liberties'),
       ),
+      'open' => array(
+        'title' => t('Open - Open Government'),
+      ),
       'otj' => array(
         'title' => t('OTJ - Office of Tribal Justice'),
       ),
@@ -314,6 +317,14 @@ function doj_migration_migrate_api() {
       'OpclFile' => array(
         'group_name' => 'opcl',
         'class_name' => 'OpclFileMigration',
+      ),
+      'OpenPage' => array(
+        'group_name' => 'open',
+        'class_name' => 'OpenPageMigration',
+      ),
+      'OpenFile' => array(
+        'group_name' => 'open',
+        'class_name' => 'OpenFileMigration',
       ),
       'OsdbuPage' => array(
         'group_name' => 'osdbu',
