@@ -239,3 +239,103 @@ function doj_migration_chr_utf8($num) {
   }
   return '';
 }
+
+/**
+ * Generate a file to import a menu for an org, by parsing html.
+ *
+ * The html is acquired from www.justice.gov/org.
+ *
+ * @param string $organization
+ *   The abbreviation of the organization.
+ */
+function doj_migration_create_menu_file($organization) {
+  // Get html from the organization in justice.
+  $base = "http://www.justice.gov";
+  $url = "{$base}/{$organization}";
+  $content = file_get_contents($url);
+
+  // Get the html for the left navbar, and parse the menu.
+  require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
+  $menu = htmlqp($content);
+  $content = doj_migration_generate_menu_file_content($organization, $menu, "div.leftnav>ul");
+
+  // Generate the file.
+  $file = DRUPAL_ROOT . "/sites/all/modules/custom/doj_migration/sources/{$organization}-menu.txt";
+  $fh = fopen($file, 'w') or die("can't open file");
+  fwrite($fh, $content);
+  fclose($fh);
+}
+
+/**
+ * Take a ul and parse it to generate a string.
+ *
+ * The string generated maps to the format needed to import a menu into
+ * Drupal.
+ *
+ * @param string $organization
+ *   The organization that this menu will belong to.
+ * @param object $tier
+ *   An object as returned by htmlqp() that contains a ul representing a menu.
+ * @param string $root
+ *   The root selector to the outermost ul of the menu.
+ * @param string $prefix
+ *   This is use during the recursive call to keep track of which level we are
+ *   in.
+ *
+ * @return string
+ *   A string with the menu to import.
+ */
+function doj_migration_generate_menu_file_content($organization, $tier, $root, $prefix = '') {
+  $content = "";
+  // Get all the li.
+  $elements = $tier->find("{$root}>*");
+  foreach ($elements as $elem) {
+    if ($elem->is("div")) {
+      $class = $elem->attr('class');
+      $content .= doj_migration_generate_menu_file_content($organization, $tier,
+        "{$root}>div.{$class}>ul", "{$prefix}-");
+    }
+    elseif ($elem->is("li")) {
+      $li = $elem;
+      $anchors = $li->find('a:nth-child(1)');
+      foreach ($anchors as $a) {
+        $al = $a->text();
+        $legacy_uri = "{$organization}/{$a->attr("href")}";
+
+        // The index.(html|htm) pages are aliased to the org name.
+        if (strcmp($legacy_uri, "{$organization}/index.html") == 0 ||
+          strcmp($legacy_uri, "{$organization}/index.htm") == 0) {
+
+          $uri = $organization;
+        }
+        else {
+          $uri = doj_migration_legacy_to_uri($legacy_uri);
+        }
+        $content .= "{$prefix} {$al} {\"url\":\"{$uri}\"}\n";
+      }
+    }
+  }
+  return $content;
+}
+
+/**
+ * Take a legacy uri, and map it to an alias.
+ *
+ * @param string $legacy_uri
+ *   A legacy uri gets redirected to a node.
+ *
+ * @return string
+ *   The alias matching the legacy uri, or an empty sting.
+ */
+function doj_migration_legacy_to_uri($legacy_uri) {
+  $redirect = redirect_load_by_source($legacy_uri);
+  if ($redirect) {
+    $nid = str_replace("node/", "", $redirect->redirect);
+    $node = node_load($nid);
+    if ($node && array_key_exists('alias', $node->path)) {
+      return $node->path['alias'];
+    }
+  }
+  watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
+  return "";
+}

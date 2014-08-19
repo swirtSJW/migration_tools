@@ -28,8 +28,16 @@ function doj_migration_drush_command() {
   );
 
   $items['doj-migrate-file-folders'] = array(
-    'description' => "Migrate all image files from a source directory to the public files directory.",
+    'description' => "Find all folders that contain binary/not-image files.",
     'aliases' => array('dmff'),
+    'arguments' => array(
+      'organization' => 'The organization to migrate',
+    ),
+  );
+
+  $items['doj-migrate-menu'] = array(
+    'description' => "Generate a file to import a menu for an organization.",
+    'aliases' => array('dmm'),
     'arguments' => array(
       'organization' => 'The organization to migrate',
     ),
@@ -167,4 +175,12 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
       doj_migration_move_images($final_input_directory, $file, $final_output_directory);
     }
   }
+}
+
+/**
+ * Drush command callback.
+ */
+function drush_doj_migration_doj_migrate_menu($organization) {
+  module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+  doj_migration_create_menu_file($organization);
 }
