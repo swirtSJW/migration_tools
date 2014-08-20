@@ -33,6 +33,32 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from Open Government section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('open')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
+
+    // Create a new SourceParser to handle HTML content.
+    if (!$source_parser) {
+      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    }
+
+    $images = $source_parser->queryPath->find('img');
+
+    foreach ($images as $image) {
+      $src = $image->attr('src');
+      if (substr_count($src, "banner") > 0) {
+        $image->remove();
+      }
+      break;
+    }
+
+    $bool = parent::prepareRow($row, $source_parser);
+    if (isset($bool)) {
+      return $bool;
+    }
+  }
 }
 
 /**
