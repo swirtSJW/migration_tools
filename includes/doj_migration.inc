@@ -300,7 +300,22 @@ function doj_migration_generate_menu_file_content($organization, $tier, $root, $
       $anchors = $li->find('a:nth-child(1)');
       foreach ($anchors as $a) {
         $al = $a->text();
-        $legacy_uri = "{$organization}/{$a->attr("href")}";
+
+        $legacy_uri = $a->attr("href");
+
+        // If this is an absolute uri, let's fix that.
+        if (strcmp(substr($legacy_uri, 0, 1), "/") == 0) {
+          $legacy_uri = substr($legacy_uri, 1);
+        }
+        else {
+          $legacy_uri = "{$organization}/{$legacy_uri}";
+        }
+
+        // If the url is pointing to a directory and no an html doc,
+        // let's fix that.
+        if (strcmp(substr($legacy_uri, -1), "/") == 0) {
+          $legacy_uri = "{$legacy_uri}index.html";
+        }
 
         // The index.(html|htm) pages are aliased to the org name.
         if (strcmp($legacy_uri, "{$organization}/index.html") == 0 ||
@@ -332,8 +347,15 @@ function doj_migration_legacy_to_uri($legacy_uri) {
   if ($redirect) {
     $nid = str_replace("node/", "", $redirect->redirect);
     $node = node_load($nid);
-    if ($node && array_key_exists('alias', $node->path)) {
+    if ($node && array_key_exists('alias', $node->path) && !empty($node->path['alias'])) {
       return $node->path['alias'];
+    }
+
+    if ($node) {
+      $uri = entity_uri("node", $node);
+      if (array_key_exists('path', $uri)) {
+        return $uri['path'];
+      }
     }
   }
   watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
