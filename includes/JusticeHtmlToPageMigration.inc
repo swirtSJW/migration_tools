@@ -116,6 +116,9 @@ abstract class JusticeHtmlToPageMigration extends JusticeFileSourceMigration {
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
     }
+
+    // Change the language back if it was sidestepped in prepare().
+    parent::languageReturnStep($entity);
   }
 
   /**
