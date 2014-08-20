@@ -121,7 +121,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
             redirect_save($redirect);
 
             // Remove legacy_patch from this node.
-            $row->legacy_path = '';
+            unset($row->legacy_path);
           }
         }
       }

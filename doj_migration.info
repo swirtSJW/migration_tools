@@ -12,6 +12,7 @@ dependencies[] = pathauto
 
 files[] = includes/JusticeBaseMigration.inc
 files[] = includes/JusticeChunkParser.inc
+files[] = includes/JusticeHtmlToNodeMigration.inc
 files[] = includes/JusticeFileSourceMigration.inc
 files[] = includes/JusticeBinaryFileMigration.inc
 files[] = includes/JusticeHtmlToPageMigration.inc

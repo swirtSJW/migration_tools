@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Defines JusticeStaticToPageMigration class.
+ * Defines JusticeHtmlToSpeechMigration class.
  */
 
 /**
- * Class JusticeStaticToPageMigration.
+ * Class JusticeHtmlToSpeechMigration.
  *
- * Parent class for all migrations from static HTML to blog_entry content type.
+ * Parent class for all migrations from static HTML to page content type.
  *
  * @package doj_migration
  */
-abstract class JusticeHtmlToBlogEntryMigration extends JusticeHtmlToNodeMigration {
+abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
@@ -30,32 +30,29 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeHtmlToNodeMigratio
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'field_blog_body' => t('Body'),
-      'field_blog_date' => t('Date'),
     );
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $options);
 
-    // The destination is the blog_entry content type.
-    $this->destination = new MigrateDestinationNode('blog_entry');
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('speech');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_blog_body', 'field_blog_body');
-    $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_blog_date', 'field_blog_date');
+    $this->addFieldMapping('field_speech_body', 'field_speech_body');
+    $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row, SourceParser $source_parser = NULL) {
+    // Create a new SourceParser to handle HTML content.
     if (!$source_parser) {
-      // Create a new SourceParser to handle HTML content.
       $source_parser = new SourceParser($row->url_path, $row->filedata);
     }
     parent::prepareRow($row, $source_parser);
 
-    $row->field_blog_body = $source_parser->getBody();
+    $row->field_speech_body = $source_parser->getBody();
   }
 }
