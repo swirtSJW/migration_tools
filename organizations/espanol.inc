@@ -45,6 +45,112 @@ class EspanolPageMigration extends JusticeHtmlToPageMigration {
 
 
 /**
+ * Migrates  press_release .html files from /spanish to press_release nodes.
+ *
+ * @package doj_migration
+ * @subpackage espanol
+ */
+class EspanolPressReleaseMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'spanish/pr/2010',
+      'spanish/pr/2011',
+      'spanish/pr/2012',
+      'spanish/pr/2013',
+      'spanish/pr/2014',
+    );
+    $options = array(
+      'recurse' => TRUE,
+    );
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates Press Releases from the Spanish section into Espanol.');
+    $this->destination = new MigrateDestinationNode('press_release');
+    $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
+    $this->addFieldMapping('language')->defaultValue('es');
+    $this->addFieldMapping('field_pr_date', 'field_pr_date');
+    $this->addFieldMapping('title', 'title', FALSE);
+    $this->addFieldMapping('field_pr_body', 'field_pr_body', FALSE);
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_number', 'field_pr_number');
+    $this->addFieldMapping('field_pr_component', 'field_pr_component');
+    $this->addFieldMapping('field_pr_subtitle', 'field_pr_subtitle');
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
+    parent::prepareRow($row);
+    // Process the date.
+    // Format: < div class="date">jueves, 19 de junio de 2014</div>
+    // Create a new SourceParser to handle HTML content.
+    if (!$source_parser) {
+      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    }
+
+    // Get title from .presscontenttitle.
+    $row->title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    // Get body from .presscontenttext.
+    $row->field_pr_body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    // Get pr number from .prnumber.
+    $row->field_pr_number = $source_parser->queryPath->find('.prnumber')->first()->text();
+    // Get pr component from .prcomponent are these spanish translations?
+    $row->field_pr_component = $source_parser->queryPath->find('.prcomponent')->first()->text();
+    // Perhaps get .presscontentsubhdr
+    $row->field_pr_subtitle = $source_parser->queryPath->find('.presscontentsubhdr')->first()->text();
+
+    // Process release_date from spanish, into numeric.
+    $date_string = $source_parser->queryPath->find('.presscontentdate .date')->first()->text();
+    // Date_string looks like   miércoles, 28 de febrero de 2014.
+    // Parse out the date.
+    $date_string = str_ireplace('de', ',', $date_string);
+    $date_string = preg_replace('/\s+/', '', $date_string);
+    $date_array = explode(',', $date_string);
+    // Properly formed should have 4 elements of which we need 3.
+    if (count($date_array) == 4) {
+      // Convert spanish months to numeric.
+      $months = array(
+        'enero' => '01',
+        'febrero' => '02',
+        'marzo' => '03',
+        'abril' => '04',
+        'mayo' => '05',
+        'junio' => '06',
+        'julio' => '07',
+        'agosto' => '08',
+        'septiembre' => '09',
+        'octubre' => '10',
+        'noviembre' => '11',
+        'diciembre' => '12',
+      );
+      $date_array[2] = $months[$date_array[2]];
+      // Convert date to time and put into $row.
+      $row->field_pr_date = $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1];
+    }
+    else {
+      // Date failed.  Throw a notice.
+      $msgvars = array(
+        '@date_string' => $date_string,
+        '@row' => $row->url_path,
+      );
+      $this->queueMessage(t("Date import went horribly wrong with: @date_string from @row.", $msgvars));
+    }
+
+  }
+}
+
+
+/**
  * Migrates binary files from /spanish.
  *
  * @package doj_migration
