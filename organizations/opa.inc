@@ -12,8 +12,7 @@
  * This file should reside in wordpress://, which is generally
  * sites/default/private/wordpress.
  */
-define('OPA_WORDPRESS_SOURCE', 'officeofpublicaffairs.wordpress.2014-01-30.xml');
-
+define('OPA_WORDPRESS_SOURCE', 'officeofpublicaffairs.wordpress.2014-08-20.xml');
 /**
  * Class OpaBlogEntryMigration.
  *
