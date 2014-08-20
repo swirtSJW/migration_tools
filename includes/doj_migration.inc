@@ -130,13 +130,13 @@ function doj_migrate_standardize_component_terms($legacy_term) {
  * @param bool $print_redirects
  *   Whether we want to show the redirects or not.
  */
-function doj_migration_redirect_check($org_id, $print_redirects = FALSE) {
+function doj_migration_redirect_check($org_id, $print_redirects = FALSE, $content_type = 'page') {
   // @todo Integrate this kind of functionality with the migrate message
   // system.
   // Get all org nodes.
   $query = new EntityFieldQuery();
   $query->entityCondition("entity_type", "node");
-  $query->entityCondition("bundle", "page");
+  $query->entityCondition("bundle", $content_type);
   $query->fieldCondition("og_group_ref", "target_id", $org_id);
   $results = $query->execute();
 
