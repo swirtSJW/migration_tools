@@ -106,4 +106,40 @@ abstract class JusticeBaseMigration extends Migration {
       $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
     }
   }
+
+  /**
+   * Alters language to LANGUAGE_NONE if used in prepare().
+   *
+   * This is to correct issues with redirects and aliases having languages.
+   *
+   * @param object $entity
+   *   Fully loaded entity.
+   */
+  public function languageSideStep($entity) {
+    // Check language, if other than LANGUAGE_NONE, sidestep it.
+    if ($entity->language !== LANGUAGE_NONE) {
+      // Save the original langage for processing in the complete().
+      $entity->original_language = $entity->language;
+      $entity->language = LANGUAGE_NONE;
+    }
+  }
+
+
+  /**
+   * Alters language on node back to originally specified if used in complete().
+   *
+   * This is to correct issues with redirects and aliases having languages.
+   *
+   * @param object $entity
+   *   Fully loaded entity.
+   */
+  public function languageReturnStep($entity) {
+    // Check to see if language was sidestepped in prepare().
+    if (!empty($entity->original_language)) {
+      // Language was sidestepped, so put it back and resave.
+      $entity->language = $entity->original_language;
+      unset($entity->original_language);
+      entity_save('node', $entity);
+    }
+  }
 }
