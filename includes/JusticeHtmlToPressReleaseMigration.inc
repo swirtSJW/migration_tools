@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Defines JusticeHtmlToPageMigration class.
+ * Defines JusticeHtmlToPressReleaseMigration class.
  */
 
 /**
- * Class JusticeHtmlToPageMigration.
+ * Class JusticeHtmlToPressReleaseMigration.
  *
  * Parent class for all migrations from static HTML to page content type.
  *
  * @package doj_migration
  */
-abstract class JusticeHtmlToPageMigration extends JusticeHtmlToNodeMigration {
+abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
@@ -30,18 +30,22 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlToNodeMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'field_page_body' => t('Body'),
+      'field_pr_body' => t('Body'),
     );
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $options);
 
     // The destination is the page content type.
-    $this->destination = new MigrateDestinationNode('page');
+    $this->destination = new MigrateDestinationNode('press_release');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_page_body', 'field_page_body');
-    $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_body', 'field_pr_body');
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_number', 'field_pr_number');
+    $this->addFieldMapping('field_pr_component', 'field_pr_component');
+    $this->addFieldMapping('field_pr_subtitle', 'field_pr_subtitle');
+    $this->addFieldMapping('field_pr_date', 'field_pr_date');
 
   }
 
@@ -55,6 +59,6 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlToNodeMigration {
     }
     parent::prepareRow($row, $source_parser);
 
-    $row->field_page_body = $source_parser->getBody();
+    $row->field_pr_body = $source_parser->getBody();
   }
 }
