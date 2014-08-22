@@ -127,7 +127,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * @return bool
    *   Whether this row is a duplicate or not.
    */
-  protected function isDuplicateByRedirect($row) {
+  public function isDuplicateByRedirect($row) {
     $parsed = redirect_parse_url($row->legacy_path);
     $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
     $redirect = redirect_load_by_source($source);

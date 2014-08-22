@@ -109,6 +109,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'asg',
         'class_name' => 'AsgSpeechMigration',
       ),
+      'AsgSpeechEspanol' => array(
+        'group_name' => 'asg',
+        'class_name' => 'AsgSpeechEspanolMigration',
+      ),
       'CareersFile' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersFileMigration',
