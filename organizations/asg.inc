@@ -13,7 +13,7 @@
  * @package doj_migration
  * @subpackage asg
  */
-class AagPageMigration extends JusticeHtmlToPageMigration {
+class AsgPageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -25,9 +25,6 @@ class AagPageMigration extends JusticeHtmlToPageMigration {
       'asg/testimony/2009',
       'asg/testimony/2010',
       'asg/testimony',
-      'asg/speeches/2008',
-      'asg/speeches/2009',
-      'asg/speeches/2010',
       'asg/readingroom',
 
     );
@@ -48,7 +45,7 @@ class AagPageMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage asg
  */
-class AagFileMigration extends JusticeDeployableBinaryFileMigration {
+class AsgFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
@@ -76,5 +73,34 @@ class AagFileMigration extends JusticeDeployableBinaryFileMigration {
    */
   public function getOrganizationAbbreviation() {
     return "asg";
+  }
+}
+
+/**
+ * Migrates speeches from /asg.
+ *
+ * @package doj_migration
+ * @subpackage asg
+ */
+class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'asg/speeches/2008',
+      'asg/speeches/2009',
+      'asg/speeches/2010',
+    );
+    $options = array('recurse' => FALSE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Office of the Associate Attorney General.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
   }
 }
