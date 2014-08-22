@@ -6,6 +6,60 @@
  */
 
 /**
+ * Prepares taxonomy term(s) for the specified vocabulary and adds new ones.
+ *
+ * @param string $legacy_term
+ *   The legacy term(s) from the migration source comma delimited if multiple.
+ *
+ * @param string $vocabulary
+ *   The machine name of the vocabulary to save the term to.
+ *
+ * @return string
+ *   The term to be saved at the destination. Multiple terms are separated by
+ *   "|" characters.
+ */
+function doj_migrate_prepare_vocab_terms($legacy_term = '', $vocabulary = '') {
+  $new_terms = '';
+  $vocabulary = trim($vocabulary);
+
+  if ($legacy_term && $vocabulary) {
+    $terms = explode(',', $legacy_term);
+
+    foreach ($terms as $key => $term) {
+      // If the term does not exist in $vocabulary, create the new term.
+      // Clean the term.
+      $term = trim($term);
+      $term = html_entity_decode($term, ENT_QUOTES, 'UTF-8');
+      // Replace multiple spaces with a space.
+      $term = preg_replace('!\s+!', ' ', $term);
+      $term = preg_replace('/Ã³/', 'ó', $term);
+      $term = mb_convert_encoding($term, "UTF-8", mb_detect_encoding($term, "UTF-8, ISO-8859-1, ISO-8859-15", TRUE));
+
+      if (!empty($term)) {
+        if ($vocabulary == 'component') {
+          $term = doj_migrate_standardize_component_terms($term);
+        }
+
+        if (!taxonomy_get_term_by_name($term, $vocabulary)) {
+          watchdog('doj_migration', 'Creating new topic term "@topic" in vocabulary: @vocabulary.', array('@topic' => $term, '@vocabulary' => $vocabulary));
+          $vocab = taxonomy_vocabulary_machine_name_load($vocabulary);
+          $term_obj = new stdClass();
+          $term_obj->name = $term;
+          $term_obj->vid = $vocab->vid;
+          taxonomy_term_save($term_obj);
+
+          $terms[$key] = $term;
+        }
+      }
+    }
+
+    $new_terms = implode('|', $terms);
+  }
+
+  return $new_terms;
+}
+
+/**
  * Prepares a taxonomy term for the topic vocabulary.
  *
  * @param string $legacy_term
