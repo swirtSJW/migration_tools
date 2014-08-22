@@ -94,7 +94,11 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
       'asg/speeches/2009',
       'asg/speeches/2010',
     );
-    $options = array('recurse' => FALSE);
+
+    $options = array(
+      'recurse' => FALSE,
+      'nomask' => '/(\.\.?|CVS|.*-spanish.html?)$/',
+    );
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -102,5 +106,66 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
     $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
+    // Create a new SourceParser to handle HTML content.
+    if (!$source_parser) {
+      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    }
+
+    // Get title from .presscontenttitle.
+    $row->title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $row->title = mb_strimwidth($row->title, 0, 255, "...");
+    $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
+
+    $body = '';
+    $body = $source_parser->queryPath->find('em')->remove();
+    $body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+
+    $body = doj_migrate_strip_cmsopa_legacy_markup($body);
+
+    $row->field_speech_body = $body;
+
+    $row->field_speech_date = $source_parser->queryPath->find('.speechdate')->text();
+
+    // This data is a mess.
+    $location = '';
+    $city = '';
+    $state = '';
+
+    $location = strtolower($source_parser->queryPath->find('.speechlocation')->text());
+
+    list($city, $state) = explode(', ', $location);
+
+    $state = strtoupper(strtr($state, array('.' => '')));
+
+    if (strlen($state) > 2) {
+      switch ($state) {
+        case 'MASS':
+          $state = 'MA';
+          break;
+
+        case 'WASH':
+          $state = 'WA';
+          break;
+
+        case 'MICH':
+          $state = 'MI';
+          break;
+
+        case 'MINN':
+          $state = 'MN';
+          break;
+
+      }
+    }
+
+    $row->state = $state;
+    $row->city = ucwords($city);
+    parent::prepareRow($row, $source_parser);
   }
 }

@@ -40,13 +40,16 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     $this->destination = new MigrateDestinationNode('speech');
 
     // Define non-simple field mappings.
+    $this->addFieldMapping('field_speech_date', 'field_speech_date');
     $this->addFieldMapping('field_speech_body', 'field_speech_body');
     $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_speech_number', 'field_speech_number');
+    $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
+    $this->addFieldMapping('field_speech_location:locality', 'city');
+    $this->addFieldMapping('field_speech_location:administrative_area', 'state');
+    $this->addFieldMapping('field_speech_image', 'field_speech_image');
+    $this->addFieldMapping('field_speech_attachment', 'field_speech_attachment');
+    $this->addFieldMapping('field_speech_topic', 'field_speech_topic');
     $this->addFieldMapping('field_speech_component', 'field_speech_component');
-    $this->addFieldMapping('field_speech_subtitle', 'field_speech_subtitle');
-    $this->addFieldMapping('field_speech_date', 'field_speech_date');
-
   }
 
   /**
@@ -58,7 +61,5 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
       $source_parser = new SourceParser($row->url_path, $row->filedata);
     }
     parent::prepareRow($row, $source_parser);
-
-    $row->field_pr_body = $source_parser->getBody();
   }
 }
