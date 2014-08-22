@@ -205,3 +205,38 @@ class EspanolFileMigration extends JusticeDeployableBinaryFileMigration {
     return "espanol";
   }
 }
+
+
+/**
+ * Migrates  speeches .html files from /spanish to speech nodes.
+ *
+ * @package doj_migration
+ * @subpackage espanol
+ */
+class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    // Define source directories.
+    $source_dirs = array(
+      'spanish/speeches/2010',
+      'spanish/speeches/2011',
+      'spanish/speeches/2012',
+      'spanish/speeches/2013',
+      'spanish/speeches/2014',
+    );
+    $options = array(
+      'recurse' => TRUE,
+    );
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
+    $this->addFieldMapping('language')->defaultValue('es');
+  }
+}

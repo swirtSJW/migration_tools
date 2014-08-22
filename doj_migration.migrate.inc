@@ -157,6 +157,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'espanol',
         'class_name' => 'EspanolPressReleaseMigration',
       ),
+      'EspanolSpeech' => array(
+        'group_name' => 'espanol',
+        'class_name' => 'EspanolSpeechMigration',
+      ),
       'FcscPage' => array(
         'group_name' => 'fcsc',
         'class_name' => 'FcscPageMigration',
