@@ -8,7 +8,7 @@
 /**
  * Class JusticeHtmlToSpeechMigration.
  *
- * Parent class for all migrations from static HTML to page content type.
+ * Parent class for all migrations from static HTML to speech content type.
  *
  * @package doj_migration
  */
@@ -30,6 +30,7 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
+      'field_speech_body' => t('Body'),
     );
 
     // Calling parent constructor will set $this->source and $this->map.
@@ -41,6 +42,11 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     // Define non-simple field mappings.
     $this->addFieldMapping('field_speech_body', 'field_speech_body');
     $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_speech_number', 'field_speech_number');
+    $this->addFieldMapping('field_speech_component', 'field_speech_component');
+    $this->addFieldMapping('field_speech_subtitle', 'field_speech_subtitle');
+    $this->addFieldMapping('field_speech_date', 'field_speech_date');
+
   }
 
   /**
@@ -53,6 +59,6 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     }
     parent::prepareRow($row, $source_parser);
 
-    $row->field_speech_body = $source_parser->getBody();
+    $row->field_pr_body = $source_parser->getBody();
   }
 }
