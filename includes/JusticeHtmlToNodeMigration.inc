@@ -30,6 +30,10 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    */
   public function __construct($arguments, $source_fields, $source_dirs, $regex = '/.*\.htm(l)?$/', $options = array()) {
 
+    if ($regex === NULL) {
+      $regex = '/.*\.htm(l)?$/';
+    }
+
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
@@ -124,7 +128,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * @return bool
    *   Whether this row is a duplicate or not.
    */
-  public function isDuplicateByRedirect($row) {
+  protected function isDuplicateByRedirect($row) {
     $parsed = redirect_parse_url($row->legacy_path);
     $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
     $redirect = redirect_load_by_source($source);

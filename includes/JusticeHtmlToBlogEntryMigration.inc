@@ -25,7 +25,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeHtmlToNodeMigratio
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    */
-  public function __construct($arguments, $source_dirs, $options = array()) {
+  public function __construct($arguments, $source_dirs, $regex, $options = array()) {
 
     // Define the fields that will be derived from the static files.
     $source_fields = array(
