@@ -35,7 +35,7 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeHtmlToNodeMigratio
     );
 
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $options);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
     // The destination is the blog_entry content type.
     $this->destination = new MigrateDestinationNode('blog_entry');

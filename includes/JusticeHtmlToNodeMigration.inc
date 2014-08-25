@@ -28,10 +28,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    */
-  public function __construct($arguments, $source_fields, $source_dirs, $options = array()) {
-
-    // Match .htm, .html files only.
-    $regex = '/.*\.htm(l)?$/';
+  public function __construct($arguments, $source_fields, $source_dirs, $regex = '/.*\.htm(l)?$/', $options = array()) {
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
