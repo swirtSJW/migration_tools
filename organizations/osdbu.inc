@@ -27,7 +27,7 @@ class OsdbuPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Small and Disadvantaged Business Utilization');
     $this->addFieldMapping('og_group_ref')->defaultValue('osdbu')->sourceMigration('Organization');

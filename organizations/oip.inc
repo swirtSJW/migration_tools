@@ -187,7 +187,7 @@ class OipFoiaUpdateBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from OIP FOIA Update section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
@@ -380,7 +380,7 @@ class OipPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Information Policy section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');
@@ -407,7 +407,7 @@ class OipFoiaPostBlogEntryMigration extends JusticeHtmlToBlogEntryMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Information Policy section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('oip')->sourceMigration('Organization');

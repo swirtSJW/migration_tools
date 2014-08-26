@@ -28,7 +28,7 @@ class OpclPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Privacy and Civil Liberties section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('opcl')->sourceMigration('Organization');

@@ -35,7 +35,7 @@ class EspanolPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
@@ -233,7 +233,7 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');

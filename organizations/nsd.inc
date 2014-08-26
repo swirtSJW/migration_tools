@@ -36,7 +36,7 @@ class NsdPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the National Security Division section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('nsd')->sourceMigration('Organization');
@@ -67,7 +67,7 @@ class NsdOvtPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the National Security Division Office of Justice for Victims of Overseas Terrorism section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('nsd-ovt')->sourceMigration('Organization');
@@ -94,7 +94,7 @@ class NsdNewemployeePageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the National Security Division New Employee Orientation section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('nsd-new-employee')->sourceMigration('Organization');
