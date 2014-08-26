@@ -35,7 +35,7 @@ class AsgPageMigration extends JusticeHtmlToPageMigration {
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('aag')->sourceMigration('Organization');
   }
 }
 
@@ -105,7 +105,7 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('aag')->sourceMigration('Organization');
   }
 
   /**
@@ -193,7 +193,7 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
     $this->addFieldMapping('language')->defaultValue('es');
-    $this->addFieldMapping('og_group_ref')->defaultValue('asg')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('aag')->sourceMigration('Organization');
   }
 
   /**
