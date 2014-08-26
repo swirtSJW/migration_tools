@@ -96,7 +96,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
 
     // Get body from .presscontenttext.
-    $row->field_pr_body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
     // Get pr number from .prnumber.
     $row->field_pr_number = $source_parser->queryPath->find('.prnumber')->first()->text();
     // Get pr component from .prcomponent are these spanish translations?

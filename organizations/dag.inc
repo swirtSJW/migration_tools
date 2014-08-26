@@ -49,7 +49,7 @@ class DagPageMigration extends JusticeHtmlToPageMigration {
     $title = $row->title;
     // Some of this titles are inside of the first h2 tag.
     if (empty($title) || strcmp($title, "Justice News") == 0) {
-      $query_body = htmlqp($row->field_page_body);
+      $query_body = htmlqp($row->body);
       $elements = $query_body->find("div.presscontenttitle");
       foreach ($elements as $element) {
         $title = $element->text();

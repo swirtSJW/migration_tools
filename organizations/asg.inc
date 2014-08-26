@@ -130,7 +130,7 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
 
     $body = doj_migrate_strip_cmsopa_legacy_markup($body);
 
-    $row->field_speech_body = $body;
+    $row->body = $body;
 
     $row->field_speech_date = $source_parser->queryPath->find('.speechdate')->text();
 
@@ -218,7 +218,7 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
 
     $body = doj_migrate_strip_cmsopa_legacy_markup($body);
 
-    $row->field_speech_body = $body;
+    $row->body = $body;
 
     $date = '';
     $date = $source_parser->queryPath->find('.speechdate')->text();

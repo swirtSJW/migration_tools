@@ -54,7 +54,7 @@ class JmdPageMigration extends JusticeHtmlToPageMigration {
 
     // Some of this titles are inside of the first h2 tag.
     if (empty($title)) {
-      $query_body = htmlqp($row->field_page_body);
+      $query_body = htmlqp($row->body);
       $elements = $query_body->find("h2");
       foreach ($elements as $element) {
         $title = $element->text();
@@ -64,7 +64,7 @@ class JmdPageMigration extends JusticeHtmlToPageMigration {
 
     // Some others are inside of a strong tag.
     if (empty($title)) {
-      $query_body = htmlqp($row->field_page_body);
+      $query_body = htmlqp($row->body);
       $elements = $query_body->find("p>strong");
       foreach ($elements as $element) {
         $title = $element->text();

@@ -40,21 +40,8 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlToNodeMigration {
     $this->destination = new MigrateDestinationNode('page');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_page_body', 'field_page_body');
+    $this->addFieldMapping('field_page_body', 'body');
     $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
 
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-    parent::prepareRow($row, $source_parser);
-
-    $row->field_page_body = $source_parser->getBody();
   }
 }

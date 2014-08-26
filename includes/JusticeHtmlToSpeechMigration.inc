@@ -41,7 +41,7 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
 
     // Define non-simple field mappings.
     $this->addFieldMapping('field_speech_date', 'field_speech_date');
-    $this->addFieldMapping('field_speech_body', 'field_speech_body');
+    $this->addFieldMapping('field_speech_body', 'body');
     $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
     $this->addFieldMapping('field_speech_location:locality', 'city');
@@ -50,16 +50,5 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_speech_attachment', 'field_speech_attachment');
     $this->addFieldMapping('field_speech_topic', 'field_speech_topic');
     $this->addFieldMapping('field_speech_component', 'field_speech_component');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-    parent::prepareRow($row, $source_parser);
   }
 }

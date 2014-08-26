@@ -41,21 +41,8 @@ abstract class JusticeHtmlToBlogEntryMigration extends JusticeHtmlToNodeMigratio
     $this->destination = new MigrateDestinationNode('blog_entry');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_blog_body', 'field_blog_body');
+    $this->addFieldMapping('field_blog_body', 'body');
     $this->addFieldMapping('field_blog_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_blog_date', 'field_blog_date');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    if (!$source_parser) {
-      // Create a new SourceParser to handle HTML content.
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-    parent::prepareRow($row, $source_parser);
-
-    $row->field_blog_body = $source_parser->getBody();
   }
 }
