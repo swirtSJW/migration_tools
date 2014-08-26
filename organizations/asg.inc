@@ -128,7 +128,7 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
     $body = $source_parser->queryPath->find('em')->remove();
     $body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
 
-    $body = doj_migrate_strip_cmsopa_legacy_markup($body);
+    $body = parent::dojMigrateStripCmsLegacyMarkup($body);
 
     $row->body = $body;
 
@@ -216,7 +216,7 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
     $body = $source_parser->queryPath->find('em')->remove();
     $body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
 
-    $body = doj_migrate_strip_cmsopa_legacy_markup($body);
+    $body = parent::dojMigrateStripCmsLegacyMarkup($body);
 
     $row->body = $body;
 

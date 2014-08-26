@@ -95,6 +95,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     // Get body from .presscontenttext.
     $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
     // Get pr number from .prnumber.
     $row->field_pr_number = $source_parser->queryPath->find('.prnumber')->first()->text();
     // Get pr component from .prcomponent are these spanish translations?
@@ -213,6 +214,7 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
 
     // Get body from .presscontenttext.
     $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
     // Get the location from .speechlocation.
     $row->field_speech_location = trim($source_parser->queryPath->find('.speechlocation')->first()->text());
 
