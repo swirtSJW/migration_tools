@@ -35,11 +35,23 @@ function doj_migration_drush_command() {
     ),
   );
 
-  $items['doj-migrate-menu'] = array(
+  $items['doj-generate-menu'] = array(
     'description' => "Generate a file to import a menu for an organization.",
-    'aliases' => array('dmm'),
+    'aliases' => array('dgm'),
     'arguments' => array(
       'organization' => 'The organization to migrate',
+    ),
+  );
+
+  $items['doj-import-group-menu'] = array(
+    'description' => "Imports a menu for a specific organic group.",
+    'aliases' => array('digm'),
+    'arguments' => array(
+      'file' => 'Required. menu text file name. Assumed that file exists in sites/all/module/custom/doj_migration/sources',
+      'organization' => 'The organization to migrate',
+    ),
+    'examples' => array(
+      'drush digm oip-menu.txt oip' => 'Import menu for organic group with group abbreviation oip',
     ),
   );
 
@@ -180,7 +192,20 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_menu($organization) {
+function drush_doj_migration_doj_generate_menu($organization) {
   module_load_include('inc', 'doj_migration', 'includes/doj_migration');
   doj_migration_create_menu_file($organization);
+}
+
+/**
+ * Drush command callback.
+ */
+function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
+  module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+
+  $group = doj_sitewide_load_org_by_abbrev($group_abbrev);
+  $group_menu_name = 'menu-og-' . $group->nid;
+  $file_path = DRUPAL_ROOT . '/' . drupal_get_path('module', 'doj_migration') . '/sources/' . $file_name;
+
+  drush_menu_import_import($file_path, $group_menu_name);
 }
