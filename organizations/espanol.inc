@@ -83,8 +83,6 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
    */
   public function prepareRow($row, SourceParser $source_parser = NULL) {
     parent::prepareRow($row);
-    // Process the date.
-    // Format: < div class="date">jueves, 19 de junio de 2014</div>
     // Create a new SourceParser to handle HTML content.
     if (!$source_parser) {
       $source_parser = new SourceParser($row->url_path, $row->filedata);
@@ -110,56 +108,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     // Process release_date from spanish, into numeric.
     $date_string = $source_parser->queryPath->find('.presscontentdate .date')->first()->text();
     // Date_string looks like   miércoles, 28 de febrero de 2014.
-    // Clean up the string.
-    $date_modified = trim(strtolower($date_string));
-    $date_modified = str_ireplace('de', ' ', $date_modified);
-    // Replace commas with a space.
-    $date_modified = preg_replace('/,/', ' ', $date_modified);
-    // Replace multiple spaces with a space.
-    $date_modified = preg_replace('!\s+!', ' ', $date_modified);
-    // Parse out the date.
-    $date_array = explode(' ', $date_modified);
-    // Make sure only digits in day $date_array[1] and year $date_array[3].
-    $date_array[1] = preg_replace('/[^0-9]/', '', trim($date_array[1]));
-    $date_array[3] = preg_replace('/[^0-9]/', '', trim($date_array[3]));
-
-    // Properly formed should have 4 elements of which we need 3.
-    if (count($date_array) == 4) {
-      $error = TRUE;
-      // Convert spanish months to numeric.
-      $months = array(
-        'enero' => '01',
-        'febrero' => '02',
-        'marzo' => '03',
-        'abril' => '04',
-        'mayo' => '05',
-        'junio' => '06',
-        'julio' => '07',
-        'agosto' => '08',
-        'septiembre' => '09',
-        'octubre' => '10',
-        'noviembre' => '11',
-        'diciembre' => '12',
-      );
-
-      // If the spanish month name is present in the array, use the number.
-      $date_array[2] = (array_key_exists($date_array[2], $months)) ? $months[$date_array[2]] : '';
-      // Convert date to time and put into $row.
-      if ((!empty($date_array[1])) && (!empty($date_array[2])) && (!empty($date_array[3]))) {
-        $row->field_pr_date = $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1];
-        $error = FALSE;
-      }
-
-    }
-    if ($error) {
-      // Date failed, throw a migrate message.
-      $msgvars = array(
-        '@date_string' => $date_string,
-        '@date_modified' => $date_modified,
-        '@processed_date' => $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1],
-      );
-      $this->queueMessage(t("Date import went wrong when: '@date_string'  modified to '@date_modified' became'@processed_date'.", $msgvars));
-    }
+    $row->field_pr_date = parent::dojMigrationESDateConvertWDMY($date_string);
   }
 
 
@@ -238,5 +187,68 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
     $this->addFieldMapping('language')->defaultValue('es');
+
+    $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
+    $this->addFieldMapping('field_speech_location:locality', 'city');
+    $this->addFieldMapping('field_speech_location:administrative_area', 'state');
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row, SourceParser $source_parser = NULL) {
+    parent::prepareRow($row);
+    // Process the date.
+    // Format: < div class="date">jueves, 19 de junio de 2014</div>
+    // Create a new SourceParser to handle HTML content.
+    if (!$source_parser) {
+      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    }
+
+    // Get title from .presscontenttitle.
+    $row->title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $row->title = mb_strimwidth($row->title, 0, 255, "...");
+    $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
+
+    // Get body from .presscontenttext.
+    $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    // Get the location from .speechlocation.
+    $row->field_speech_location = trim($source_parser->queryPath->find('.speechlocation')->first()->text());
+
+    // Geocode the location and parse into structured data for migration.
+    // Geocoder module is not an explicit dependency because most migrations
+    // do not rely on it. It should be disabled after use.
+    if (!empty($row->field_speech_location)) {
+      if ($row->field_speech_location == 'Washington, D.C.') {
+        // The most common entry, so skip geocoding.
+        $row->city = 'Washington';
+        $row->state = 'DC';
+      }
+      elseif (module_exists('geocoder')) {
+        // Note that calling this too many times (as in very large migrations)
+        // may exceed the API request limit for geocoder's source data.
+        $point = geocoder('google', $row->field_speech_location);
+        module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+        $address = doj_migrate_convert_geocoded_point_to_address($point);
+
+        if ($address) {
+          $row->city = $address['locality'];
+          $row->state = $address['administrative_area_level_1'];
+          $row->country = $address['country'];
+        }
+        else {
+          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
+        }
+      }
+      else {
+        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
+      }
+    }
+
+    // Process release_date from spanish, into numeric.
+    $date_string = $source_parser->queryPath->find('.speechdate')->first()->text();
+    // Date_string looks like   miércoles, 28 de febrero de 2014.
+    $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date_string);
   }
 }

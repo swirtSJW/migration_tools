@@ -142,4 +142,71 @@ abstract class JusticeBaseMigration extends Migration {
       entity_save('node', $entity);
     }
   }
+
+  /**
+   * Converts es date text of the form w m d y to numerical Y-M-D.
+   *
+   * @param string $date_string
+   *   Should look like miércoles, 28 de febrero de 2014
+   *
+   * @return string
+   *   Date in the form of 2014-02-21
+   */
+  public function dojMigrationESDateConvertWDMY($date_string = '') {
+    $processed_date = '';
+    // Date_string looks like   miércoles, 28 de febrero de 2014.
+    // Clean up the string.
+    $date_modified = trim(strtolower($date_string));
+    $date_modified = str_ireplace('de', ' ', $date_modified);
+    // Replace commas with a space.
+    $date_modified = preg_replace('/,/', ' ', $date_modified);
+    // Replace multiple spaces with a space.
+    $date_modified = preg_replace('!\s+!', ' ', $date_modified);
+    // Parse out the date.
+    $date_array = explode(' ', $date_modified);
+    // Make sure only digits in day $date_array[1] and year $date_array[3].
+    $date_array[1] = preg_replace('/[^0-9]/', '', trim($date_array[1]));
+    $date_array[3] = preg_replace('/[^0-9]/', '', trim($date_array[3]));
+
+    // Properly formed should have 4 elements of which we need 3.
+    if (count($date_array) == 4) {
+      $error = TRUE;
+      // Convert spanish months to numeric.
+      $months = array(
+        'enero' => '01',
+        'febrero' => '02',
+        'marzo' => '03',
+        'abril' => '04',
+        'mayo' => '05',
+        'junio' => '06',
+        'julio' => '07',
+        'agosto' => '08',
+        'septiembre' => '09',
+        'octubre' => '10',
+        'noviembre' => '11',
+        'diciembre' => '12',
+      );
+
+      // If the spanish month name is present in the array, use the number.
+      $date_array[2] = (array_key_exists($date_array[2], $months)) ? $months[$date_array[2]] : '';
+      // Convert date to time and put into $row.
+      if ((!empty($date_array[1])) && (!empty($date_array[2])) && (!empty($date_array[3]))) {
+        $processed_date = $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1];
+        $error = FALSE;
+      }
+
+    }
+    if ($error) {
+      // Date failed, throw a migrate message.
+      $msgvars = array(
+        '@date_string' => $date_string,
+        '@date_modified' => $date_modified,
+        '@processed_date' => $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1],
+      );
+      $this->queueMessage(t("Date import went wrong when: '@date_string'  modified to '@date_modified' became'@processed_date'.", $msgvars));
+    }
+
+    return $processed_date;
+  }
+
 }
