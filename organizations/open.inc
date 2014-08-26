@@ -38,24 +38,16 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-
     $bool = parent::prepareRow($row);
     if (isset($bool)) {
       return $bool;
     }
 
-    $images = $this->sourceParser->queryPath->find('img');
+    // Create a new SourceParser to handle HTML content.
+    $id = isset($row->url_path) ? $row->url_path : $row->fileid;
+    $source_parser = new OpenSourceParser($id, $row->filedata);
 
-    foreach ($images as $image) {
-      $src = $image->attr('src');
-      if (substr_count($src, "banner") > 0) {
-        $image->remove();
-      }
-      break;
-    }
-
-    $row->body = $this->sourceParser->getBody();
-
+    $row->body = $source_parser->getBody();
   }
 }
 
@@ -89,5 +81,31 @@ class OpenFileMigration extends JusticeDeployableBinaryFileMigration {
    */
   public function getOrganizationAbbreviation() {
     return "open";
+  }
+}
+
+/**
+ * Override SourceParser to add extras body clean up.
+ */
+class OpenSourceParser extends SourceParser {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBody() {
+    $body = parent::getBody();
+    $query_path = HTMLCleanUp::initQueryPath($body);
+    $images = $query_path->find('img');
+
+    foreach ($images as $image) {
+      $src = $image->attr('src');
+      if (substr_count($src, "banner") > 0 || substr_count($src, "language") > 0
+        || substr_count($src, "before") > 0) {
+        $image->remove();
+      }
+      break;
+    }
+    $body = $query_path->top('body')->innerHTML();
+    return $body;
   }
 }
