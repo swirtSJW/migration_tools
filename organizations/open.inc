@@ -44,7 +44,7 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
       return $bool;
     }
 
-    $images = $this->source_parser->queryPath->find('img');
+    $images = $this->sourceParser->queryPath->find('img');
 
     foreach ($images as $image) {
       $src = $image->attr('src');
@@ -54,7 +54,7 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
       break;
     }
 
-    $row->body = $this->source_parser->getBody();
+    $row->body = $this->sourceParser->getBody();
 
   }
 }

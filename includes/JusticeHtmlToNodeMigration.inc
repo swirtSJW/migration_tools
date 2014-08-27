@@ -18,7 +18,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * @var SourceParser $source_parser
    *   The source parser object for a given row.
    */
-  protected $source_parser;
+  protected $sourceParser;
 
   /**
    * Define $this->source, $this->map, and simple mappings.
@@ -95,10 +95,10 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    $this->source_parser = new SourceParser($row->url_path, $row->filedata);
+    $this->sourceParser = new SourceParser($row->url_path, $row->filedata);
 
-    $row->title = $this->source_parser->getTitle();
-    $row->body = $this->source_parser->getBody();
+    $row->title = $this->sourceParser->getTitle();
+    $row->body = $this->sourceParser->getBody();
   }
 
   /**
