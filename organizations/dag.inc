@@ -40,8 +40,8 @@ class DagPageMigration extends JusticeHtmlToPageMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    $bool = parent::prepareRow($row, $source_parser);
+  public function prepareRow($row) {
+    $bool = parent::prepareRow($row);
     if (isset($bool)) {
       return $bool;
     }

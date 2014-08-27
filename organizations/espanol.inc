@@ -81,33 +81,29 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
+  public function prepareRow($row) {
     parent::prepareRow($row);
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
 
     // Get title from .presscontenttitle.
-    $row->title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $row->title = $this->source_parser->queryPath->find('.presscontenttitle')->first()->text();
     $row->title = mb_strimwidth($row->title, 0, 255, "...");
     $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
 
     // Get body from .presscontenttext.
-    $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $row->body = $this->source_parser->queryPath->find('.presscontenttext')->first()->html();
     $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
     // Get pr number from .prnumber.
-    $row->field_pr_number = $source_parser->queryPath->find('.prnumber')->first()->text();
+    $row->field_pr_number = $this->source_parser->queryPath->find('.prnumber')->first()->text();
     // Get pr component from .prcomponent are these spanish translations?
-    $row->field_pr_component = $source_parser->queryPath->find('.prcomponent')->first()->text();
+    $row->field_pr_component = $this->source_parser->queryPath->find('.prcomponent')->first()->text();
     // Build the terms for component vocabulary if they don't exist.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $row->field_pr_component = doj_migrate_prepare_vocab_terms($row->field_pr_component, 'component');
     // Perhaps get .presscontentsubhdr
-    $row->field_pr_subtitle = $source_parser->queryPath->find('.presscontentsubhdr')->first()->text();
+    $row->field_pr_subtitle = $this->source_parser->queryPath->find('.presscontentsubhdr')->first()->text();
 
     // Process release_date from spanish, into numeric.
-    $date_string = $source_parser->queryPath->find('.presscontentdate .date')->first()->text();
+    $date_string = $this->source_parser->queryPath->find('.presscontentdate .date')->first()->text();
     // Date_string looks like   miércoles, 28 de febrero de 2014.
     $row->field_pr_date = parent::dojMigrationESDateConvertWDMY($date_string);
   }
@@ -198,25 +194,20 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
+  public function prepareRow($row) {
     parent::prepareRow($row);
     // Process the date.
     // Format: < div class="date">jueves, 19 de junio de 2014</div>
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-
     // Get title from .presscontenttitle.
-    $row->title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $row->title = $this->source_parser->queryPath->find('.presscontenttitle')->first()->text();
     $row->title = mb_strimwidth($row->title, 0, 255, "...");
     $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
 
     // Get body from .presscontenttext.
-    $row->body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $row->body = $this->source_parser->queryPath->find('.presscontenttext')->first()->html();
     $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
     // Get the location from .speechlocation.
-    $row->field_speech_location = trim($source_parser->queryPath->find('.speechlocation')->first()->text());
+    $row->field_speech_location = trim($this->source_parser->queryPath->find('.speechlocation')->first()->text());
 
     // Geocode the location and parse into structured data for migration.
     // Geocoder module is not an explicit dependency because most migrations
@@ -249,7 +240,7 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     }
 
     // Process release_date from spanish, into numeric.
-    $date_string = $source_parser->queryPath->find('.speechdate')->first()->text();
+    $date_string = $this->source_parser->queryPath->find('.speechdate')->first()->text();
     // Date_string looks like   miércoles, 28 de febrero de 2014.
     $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date_string);
   }

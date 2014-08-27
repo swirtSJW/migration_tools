@@ -37,14 +37,14 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
+  public function prepareRow($row) {
 
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
+    $bool = parent::prepareRow($row);
+    if (isset($bool)) {
+      return $bool;
     }
 
-    $images = $source_parser->queryPath->find('img');
+    $images = $this->source_parser->queryPath->find('img');
 
     foreach ($images as $image) {
       $src = $image->attr('src');
@@ -54,10 +54,8 @@ class OpenPageMigration extends JusticeHtmlToPageMigration {
       break;
     }
 
-    $bool = parent::prepareRow($row, $source_parser);
-    if (isset($bool)) {
-      return $bool;
-    }
+    $row->body = $this->source_parser->getBody();
+
   }
 }
 

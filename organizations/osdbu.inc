@@ -32,7 +32,6 @@ class OsdbuPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from Office of Small and Disadvantaged Business Utilization');
     $this->addFieldMapping('og_group_ref')->defaultValue('osdbu')->sourceMigration('Organization');
   }
-
 }
 
 /**

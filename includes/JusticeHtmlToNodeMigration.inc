@@ -15,6 +15,12 @@
 abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
   /**
+   * @var SourceParser $source_parser
+   *   The source parser object for a given row.
+   */
+  protected $source_parser;
+
+  /**
    * Define $this->source, $this->map, and simple mappings.
    *
    * @param array $arguments
@@ -24,6 +30,9 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    *   of array('machine_name' => t('Human Readable')).
    * @param array $source_dirs
    *   A flat array of the source directories containing html files.
+   * @param string $regex
+   *   The file mask. Only filenames matching this regex will be migrated.
+   *   This will default to '/.*\.htm(l)?$/' if NULL is passed in.
    * @param array $options
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
@@ -68,7 +77,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
+  public function prepareRow($row) {
     parent::prepareRow($row);
 
     // Sets $row->legacy_path and $row->url_path.
@@ -86,12 +95,10 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
+    $this->source_parser = new SourceParser($row->url_path, $row->filedata);
 
-    $row->title = $source_parser->getTitle();
-    $row->body = $source_parser->getBody();
+    $row->title = $this->source_parser->getTitle();
+    $row->body = $this->source_parser->getBody();
   }
 
   /**

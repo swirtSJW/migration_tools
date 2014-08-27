@@ -111,33 +111,29 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-    parent::prepareRow($row, $source_parser);
+  public function prepareRow($row) {
+    parent::prepareRow($row);
 
     // Get title from .presscontenttitle.
     $title = '';
-    $title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $title = $this->source_parser->queryPath->find('.presscontenttitle')->first()->text();
     $title = mb_strimwidth($title, 0, 255, "...");
     $row->title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
 
     $body = '';
-    $body = $source_parser->queryPath->find('em')->remove();
-    $body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $body = $this->source_parser->queryPath->find('em')->remove();
+    $body = $this->source_parser->queryPath->find('.presscontenttext')->first()->html();
 
     $body = parent::dojMigrateStripCmsLegacyMarkup($body);
 
     $row->body = $body;
 
-    $row->field_speech_date = $source_parser->queryPath->find('.speechdate')->text();
+    $row->field_speech_date = $this->source_parser->queryPath->find('.speechdate')->text();
 
     $row->field_speech_component = "Office of the Associate Attorney General";
 
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $location = $source_parser->queryPath->find('.speechlocation')->text();
+    $location = $this->source_parser->queryPath->find('.speechlocation')->text();
 
     if (module_exists('geocoder') && $location !== '') {
       // Note that calling this too many times (as in very large migrations)
@@ -201,35 +197,31 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row, SourceParser $source_parser = NULL) {
-    // Create a new SourceParser to handle HTML content.
-    if (!$source_parser) {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
-    }
-    parent::prepareRow($row, $source_parser);
+  public function prepareRow($row) {
+    parent::prepareRow($row);
 
     // Get title from .presscontenttitle.
     $title = '';
-    $title = $source_parser->queryPath->find('.presscontenttitle')->first()->text();
+    $title = $this->source_parser->queryPath->find('.presscontenttitle')->first()->text();
     $title = mb_strimwidth($title, 0, 255, "...");
     $row->title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
 
     $body = '';
-    $body = $source_parser->queryPath->find('em')->remove();
-    $body = $source_parser->queryPath->find('.presscontenttext')->first()->html();
+    $body = $this->source_parser->queryPath->find('em')->remove();
+    $body = $this->source_parser->queryPath->find('.presscontenttext')->first()->html();
 
     $body = parent::dojMigrateStripCmsLegacyMarkup($body);
 
     $row->body = $body;
 
     $date = '';
-    $date = $source_parser->queryPath->find('.speechdate')->text();
+    $date = $this->source_parser->queryPath->find('.speechdate')->text();
     $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date);
 
     $row->field_speech_component = "Office of the Associate Attorney General";
 
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $location = $source_parser->queryPath->find('.speechlocation')->text();
+    $location = $this->source_parser->queryPath->find('.speechlocation')->text();
 
     if (module_exists('geocoder') && $location !== '') {
       // Note that calling this too many times (as in very large migrations)
