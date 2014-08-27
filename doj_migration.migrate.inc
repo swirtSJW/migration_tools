@@ -32,6 +32,9 @@ function doj_migration_migrate_api() {
       'dag' => array(
         'title' => t('DAG - Office of the Deputy Attorney General'),
       ),
+      'doj' => array(
+        'title' => t('DOJ - Department of Justice'),
+      ),
       'ej' => array(
         'title' => t('EJ - Environmental Justice'),
       ),
@@ -137,6 +140,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
       ),
+      'CrsFile' => array(
+        'group_name' => 'crs',
+        'class_name' => 'CrsFileMigration',
+      ),
+      'CrsPage' => array(
+        'group_name' => 'crs',
+        'class_name' => 'CrsPageMigration',
+      ),
       'DagPage' => array(
         'group_name' => 'dag',
         'class_name' => 'DagPageMigration',
@@ -145,13 +156,13 @@ function doj_migration_migrate_api() {
         'group_name' => 'dag',
         'class_name' => 'DagFileMigration',
       ),
-      'CrsFile' => array(
-        'group_name' => 'crs',
-        'class_name' => 'CrsFileMigration',
+      'DojFile' => array(
+        'group_name' => 'doj',
+        'class_name' => 'DojFileMigration',
       ),
-      'CrsPage' => array(
-        'group_name' => 'crs',
-        'class_name' => 'CrsPageMigration',
+      'DojPage' => array(
+        'group_name' => 'doj',
+        'class_name' => 'DojPageMigration',
       ),
       'EjFile' => array(
         'group_name' => 'ej',
