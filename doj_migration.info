@@ -10,6 +10,8 @@ dependencies[] = og
 dependencies[] = redirect
 dependencies[] = pathauto
 
+files[] = includes/HtmlCleanUp.php
+files[] = includes/StringCleanUp.php
 files[] = includes/JusticeBaseMigration.inc
 files[] = includes/JusticeChunkParser.inc
 files[] = includes/JusticeHtmlToNodeMigration.inc
