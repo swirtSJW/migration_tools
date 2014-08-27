@@ -134,6 +134,8 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
 
     $row->field_speech_date = $source_parser->queryPath->find('.speechdate')->text();
 
+    $row->field_speech_component = "Office of the Associate Attorney General";
+
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $location = $source_parser->queryPath->find('.speechlocation')->text();
 
