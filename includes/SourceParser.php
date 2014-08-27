@@ -133,6 +133,13 @@ class SourceParser {
   protected function setBody() {
     $query_path = HTMLCleanUp::initQueryPath($this->html);
     $body = $query_path->top('body')->innerHTML();
+
+    $enc = mb_detect_encoding($body, 'UTF-8', TRUE);
+    if (!$enc) {
+      watchdog("doj_migration", "%file body needed its encoding fixed!!!", array('%file' => $this->fileId), WATCHDOG_NOTICE);
+    }
+
+    $body = StringCleanUp::fixEncoding($body);
     $this->body = $body;
   }
 
