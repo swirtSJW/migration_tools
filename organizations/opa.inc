@@ -25,7 +25,64 @@ class OpaBlogEntryMigration extends JusticeWordpressBlogEntry {
    */
   public function __construct($arguments) {
     $arguments['filename'] = doj_migrate_wordpress_prepare_file(OPA_WORDPRESS_SOURCE);
+    $arguments['group_name'] = "opa";
     parent::__construct($arguments);
+    $this->addFieldMapping('field_blog_date', 'pubDate');
+    $this->addFieldMapping('field_blog_component', 'component');
+    $this->addFieldMapping('field_blog_topic', 'topics');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    if (strlen($row->title) > 255) {
+      $row->title = substr($row->title, 0, 255);
+    }
+
+    $categories = $row->category_value;
+    $row->topics = array();
+    $component_set = FALSE;
+
+    $terms = $this->getTaxonomyTerms($categories);
+    foreach ($terms as $term) {
+      $vocab = $term->vocabulary_machine_name;
+
+      // If this term is a component, and component has not been set.
+      if (!$component_set && $vocab == "component") {
+        $row->component = $term->name;
+        $component_set = TRUE;
+      }
+      // If the term is a topic.
+      elseif ($vocab == "topic") {
+        $row->topics[] = $term->name;
+      }
+    }
+  }
+
+  /**
+   * Get the taxonomy terms maching the categories.
+   *
+   * @param array $categories
+   *   An array of possible term names.
+   *
+   * @return array
+   *   An array full of terms.
+   */
+  protected function getTaxonomyTerms($categories) {
+    if (!isset($categories) || !is_array($categories) || empty($categories)) {
+      return array();
+    }
+    $all_terms = array();
+    foreach ($categories as $cat) {
+      $terms = taxonomy_get_term_by_name($cat);
+      if (!empty($terms)) {
+        $all_terms = array_merge($all_terms, $terms);
+      }
+    }
+    return $all_terms;
   }
 }
 
