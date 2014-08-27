@@ -184,10 +184,6 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
     $this->addFieldMapping('language')->defaultValue('es');
-
-    $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
-    $this->addFieldMapping('field_speech_location:locality', 'city');
-    $this->addFieldMapping('field_speech_location:administrative_area', 'state');
   }
 
 
