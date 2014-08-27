@@ -222,18 +222,9 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
 
     $date = '';
     $date = $source_parser->queryPath->find('.speechdate')->text();
-    $date = str_ireplace('de', '', $date);
+    $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date);
 
-    $fmt = new IntlDateFormatter(
-      'es_ES',
-      IntlDateFormatter::FULL,
-      IntlDateFormatter::FULL,
-      'America/New_York',
-      IntlDateFormatter::GREGORIAN,
-      'eeee, dd MMMM y'
-    );
-
-    $row->field_speech_date = $fmt->parse($date);
+    $row->field_speech_component = "Office of the Associate Attorney General";
 
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $location = $source_parser->queryPath->find('.speechlocation')->text();
