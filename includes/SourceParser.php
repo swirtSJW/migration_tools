@@ -61,57 +61,75 @@ class SourceParser {
    * Set the html var after some cleaning.
    */
   protected function setCleanHtml($html, $fragment = FALSE) {
+    try {
+      $html = StringCleanUp::fixEncoding($html);
 
-    $html = StringCleanUp::fixEncoding($html);
+      $html = HtmlCleanUp::convertRelativeSrcsToAbsolute($html, $this->fileId);
 
-    $html = HtmlCleanUp::convertRelativeSrcsToAbsolute($html, $this->fileId);
+      // Strip Windows'' CR chars.
+      $html = StringCleanUp::stripWindowsCRChars($html);
 
-    // Strip Windows'' CR chars.
-    $html = StringCleanUp::stripWindowsCRChars($html);
+      // Clean up specific to the Justice site.
+      $html = HtmlCleanUp::stripOrFixLegacyElements($html);
 
-    // Clean up specific to the Justice site.
-    $html = HtmlCleanUp::stripOrFixLegacyElements($html);
-
-    $this->html = $html;
+      $this->html = $html;
+    }
+    catch (Exception $e) {
+      $this->html = $html;
+      watchdog('doj_migration', '%file: failed to clean the html', array('%file' => $this->fileId), WATCHDOG_ALERT);
+    }
   }
 
   /**
    * Sets $this->title using breadcrumb or <title>.
    */
   protected function setTitle() {
-    // First attempt to get the title from the breadcrumb.
-    $query_path = HtmlCleanUp::initQueryPath($this->html);
-    $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
-    $wrapper->children('a, span, font')->remove();
-    $title = $wrapper->text();
 
-    // If there was no breadcrumb title, get it from the <title> tag.
-    if (!$title) {
-      $title = $query_path->find('title')->innerHTML();
+    // QueryPathing our way through things can fail.
+    // In that case let's still set things and inform people about the issue.
+
+    try {
+      // First attempt to get the title from the breadcrumb.
+      $query_path = HtmlCleanUp::initQueryPath($this->html);
+      $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
+      $wrapper->children('a, span, font')->remove();
+      $title = $wrapper->text();
+
+      // If there was no breadcrumb title, get it from the <title> tag.
+      if (!$title) {
+        $title = $query_path->find('title')->innerHTML();
+      }
+      // If there are any html special chars let's change those to its char
+      // equivalent.
+      $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
+
+      // There are also numeric html special chars, let's change those.
+      module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+      $title = doj_migration_html_entity_decode_numeric($title);
+
+      // We want out titles to be only digits and ascii chars so we can produce
+      // clean aliases.
+      $title = StringCleanUp::convertNonASCIItoASCII($title);
+
+      // Remove undesirable chars.
+      $title = str_replace("»", "", $title);
+
+      // We also want to trim the string.
+      $title = StringCleanUp::superTrim($title);
+
+      // $title = $this->removeUndesirableChars($title);
+      // $title = $this->changeSpecialforRegularChars($title);
+
+      // Truncate title to max of 255 characters.
+      if (strlen($title) > 255) {
+        $title = substr($title, 0, 255);
+      }
+      $this->title = $title;
     }
-    // If there are any html special chars let's change those to its char
-    // equivalent.
-    $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
-
-    // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $title = doj_migration_html_entity_decode_numeric($title);
-
-    // We want out titles to be only digits and ascii chars so we can produce
-    // clean aliases.
-    $title = StringCleanUp::convertNonASCIItoASCII($title);
-
-    // We also want to trim the string.
-    $title = StringCleanUp::superTrim($title);
-
-    // $title = $this->removeUndesirableChars($title);
-    // $title = $this->changeSpecialforRegularChars($title);
-
-    // Truncate title to max of 255 characters.
-    if (strlen($title) > 255) {
-      $title = substr($title, 0, 255);
+    catch (Exception $e) {
+      $this->title = "";
+      watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
     }
-    $this->title = $title;
   }
 
   /**
@@ -127,16 +145,22 @@ class SourceParser {
    * Get the body from html and set the body var.
    */
   protected function setBody() {
-    $query_path = HtmlCleanUp::initQueryPath($this->html);
-    $body = $query_path->top('body')->innerHTML();
+    try {
+      $query_path = HtmlCleanUp::initQueryPath($this->html);
+      $body = $query_path->top('body')->innerHTML();
 
-    $enc = mb_detect_encoding($body, 'UTF-8', TRUE);
-    if (!$enc) {
-      watchdog("doj_migration", "%file body needed its encoding fixed!!!", array('%file' => $this->fileId), WATCHDOG_NOTICE);
+      $enc = mb_detect_encoding($body, 'UTF-8', TRUE);
+      if (!$enc) {
+        watchdog("doj_migration", "%file body needed its encoding fixed!!!", array('%file' => $this->fileId), WATCHDOG_NOTICE);
+      }
+
+      $body = StringCleanUp::fixEncoding($body);
+      $this->body = $body;
     }
-
-    $body = StringCleanUp::fixEncoding($body);
-    $this->body = $body;
+    catch (Exception $e) {
+      $this->body = "";
+      watchdog('doj_migration', '%file: failed to set the body', array('%file' => $this->fileId), WATCHDOG_ALERT);
+    }
   }
 
   /**
@@ -225,7 +249,7 @@ public function changeSpecialForHtmlSpecialChars($text) {
 }
 
 public function removeUndesirableChars($text, $exclusions = array()) {
-  $undesirables = array("»", "Â");
+  $undesirables = array("Â");
 
   $undesirables = array_diff($undesirables, $exclusions);
 
