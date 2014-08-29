@@ -97,6 +97,14 @@ function doj_migration_migrate_api() {
       ),
     ),
     'migrations' => array(
+      'AgPage' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgPageMigration',
+      ),
+      'AgFile' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgFileMigration',
+      ),
       'AsgPage' => array(
         'group_name' => 'asg',
         'class_name' => 'AsgPageMigration',
