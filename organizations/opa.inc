@@ -35,6 +35,14 @@ class OpaBlogEntryMigration extends JusticeWordpressBlogEntry {
   /**
    * {@inheritdoc}
    */
+  public function prepare($node, $row) {
+    parent::prepare($node, $row);
+    $node->context = "no_left_sidebar";
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function prepareRow($row) {
     parent::prepareRow($row);
 
