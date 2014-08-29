@@ -21,16 +21,72 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
   public function __construct($arguments) {
     // Define source directories.
     $source_dirs = array(
+      'about',
+      'accessibility',
+      'accomplishments',
+      'actioncenter',
+      'agencies',
+      'business',
+      'cjs',
+      'data',
+      'dec',
+      'developer',
+      'digitalstrategy',
+      'employees',
+      'healthcare',
+      'iqpr',
+      'joiningforces',
+      'publications',
+      'sitemap',
 
+      'about.html',
+      'a-z-index.html',
+      'component.htm',
+      'contact-us.html',
+      'dojofficials.htm',
+      'legalpolicies.htm',
+      'opa-in-memoriam.htm',
+      'privacy-file.htm',
+      'rss.htm',
     );
-    $options = array('recurse' => FALSE);
+    $options = array('recurse' => TRUE);
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from main Department of Justice section.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('doj')->sourceMigration('Organization');
+    // Hard coding in the nid of the DOJ group.
+    $doj_nid = 752;
+    $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
+
+    // Since this content belongs to DOJ but is not going into /doj/ then
+    // pathauto must be overridden.  See prepareRow().
+    $this->addFieldMapping('path', 'url_alias');
+
+    // @FIXIT This setting is not getting saved. Setting it by
+    // hand in JusticeHtmlNodeMigration prepare().
+    $this->addFieldMapping('pathauto', FALSE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    // Have to set the the group_path_override before calling the parent
+    // prepareRow or it will be too late and the alias will already be set.
+    // Since the doj group is the root of the site, the group path is ''.
+    $row->group_path_override = '';
+
+    parent::prepareRow($row);
+    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+
+    // Check for title alterations needed if title is "Publications".
+    if ($row->title == 'Publications') {
+      // Grab a more meaningful title from the <title>.
+      $row->title = $this->sourceParser->queryPath->find('title')->first()->text();
+    }
+
   }
 }
 
@@ -52,7 +108,14 @@ class DojFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match non-image files.
     $source_dirs = array(
-
+      'accomplishments',
+      'business/itss',
+      'cjs/docs',
+      'data',
+      'employees',
+      'healthcare/docs',
+      'publications',
+      'publications/waco',
     );
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/';
     $dest_dir = 'public:///doj/docs';
