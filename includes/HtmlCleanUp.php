@@ -14,8 +14,13 @@ class HtmlCleanUp {
    * Create the queryPath object.
    */
   public static function initQueryPath($html) {
+    // Create global query path, Gets reset to NULL by SourceParser__construct.
+    global $_doj_migration_query_path;
     $qp_options = array();
-    return htmlqp($html, NULL, $qp_options);
+    if (empty($_doj_migration_query_path)) {
+      $_doj_migration_query_path = htmlqp($html, NULL, $qp_options);
+    }
+    return $_doj_migration_query_path;
   }
 
   /**

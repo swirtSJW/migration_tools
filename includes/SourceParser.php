@@ -29,6 +29,9 @@ class SourceParser {
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    */
   public function __construct($file_id, $html, $fragment = FALSE) {
+    global $_doj_migration_query_path;
+    // Clear $queryPath out as it may be left over from a prior row.
+    $_doj_migration_query_path = NULL;
     // @todo We are not using $fragment, clean it up.
     $this->fileId = $file_id;
     $html = StringCleanUp::fixEncoding($html);
