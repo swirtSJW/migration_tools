@@ -202,6 +202,10 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
     $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+    // Remove common mso style string.
+    $bad_string1 = 'style="margin: 0in 0in 0pt; text-indent: 0in; line-height: normal; mso-layout-grid-align: none; mso-outline-level: 1;"';
+    $row->body = str_replace($bad_string1, '', $row->body);
+
     // Get the location from .speechlocation.
     $row->field_speech_location = trim($this->sourceParser->queryPath->find('.speechlocation')->first()->text());
 
