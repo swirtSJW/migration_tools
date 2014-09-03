@@ -4,31 +4,14 @@
  * Helper function to clean up html.
  */
 
-// composer_manager is supposed to take care of including this library, but
-// it doesn't seem to be working.
-require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
-
 class HtmlCleanUp {
-
-  /**
-   * Create the queryPath object.
-   */
-  public static function initQueryPath($html) {
-    // Create global query path, Gets reset to NULL by SourceParser__construct.
-    global $_doj_migration_query_path;
-    $qp_options = array();
-    if (empty($_doj_migration_query_path)) {
-      $_doj_migration_query_path = htmlqp($html, NULL, $qp_options);
-    }
-    return $_doj_migration_query_path;
-  }
 
   /**
    * Wrap an HTML fragment in the correct head/meta tags.
    *
    * This ensures that that UTF-8 is correctly detected.
    */
-  static public function wrapHTML($html) {
+  public static function wrapHTML($html) {
     // We add surrounding <html> and <head> tags.
     $wrapped_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
     $wrapped_html .= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>';
@@ -40,11 +23,10 @@ class HtmlCleanUp {
   /**
    * Removes legacy elements from HTML that are no longer needed.
    */
-  public static function stripOrFixLegacyElements($html) {
+  public static function stripOrFixLegacyElements($query_path) {
     // STRIP.
     // Strip comments.
-    $query_path = HTMLCleanUp::initQueryPath($html);
-
+    // @TODO make sure $query_path is a $query_path object.
     foreach ($query_path->top()->xpath('//comment()')->get() as $comment) {
       $comment->parentNode->removeChild($comment);
     }
@@ -95,7 +77,6 @@ class HtmlCleanUp {
     // Some pages have images as subtitles. Turn those into html.
     HTMLCleanUp::changeSubTitleImagesForHtml($query_path);
 
-    return $query_path->html();
   }
 
   /**
@@ -108,7 +89,6 @@ class HtmlCleanUp {
     foreach ($selectors as $selector) {
       $query_path->find($selector)->remove();
     }
-    return $query_path;
   }
 
   /**
@@ -217,8 +197,7 @@ class HtmlCleanUp {
   /**
    * Makes relative sources values on <a> and <img> tags absolute.
    */
-  public static function convertRelativeSrcsToAbsolute($html, $file_id) {
-    $query_path = HTMLCleanUp::initQueryPath($html);
+  public static function convertRelativeSrcsToAbsolute($query_path, $file_id) {
 
     // A list of attributes to convert, keyed by HTML tag (NOT selector).
     $attributes = array(
@@ -246,7 +225,6 @@ class HtmlCleanUp {
         }
       }
     }
-    return $query_path->html();
   }
 
   /**

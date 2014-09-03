@@ -5,6 +5,10 @@
  * Includes SourceParser class, which parses static HTML files via queryPath.
  */
 
+// composer_manager is supposed to take care of including this library, but
+// it doesn't seem to be working.
+require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
+
 /**
  * Class SourceParser.
  *
@@ -13,7 +17,6 @@
 class SourceParser {
 
   protected $fileId;
-  protected $html;
   protected $title;
   protected $body;
   public $queryPath;
@@ -29,56 +32,50 @@ class SourceParser {
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    */
   public function __construct($file_id, $html, $fragment = FALSE) {
-    global $_doj_migration_query_path;
-    // Clear $queryPath out as it may be left over from a prior row.
-    $_doj_migration_query_path = NULL;
     // @todo We are not using $fragment, clean it up.
-    $this->fileId = $file_id;
     $html = StringCleanUp::fixEncoding($html);
 
-    // First we set the html var to something similar to what we receive.
-    $this->setHtml($html, $fragment);
+    // Strip Windows'' CR chars.
+    $html = StringCleanUp::stripWindowsCRChars($html);
+
+    $this->initQueryPath($html);
+    $this->fileId = $file_id;
 
     // Getting the title relies on html that could be wiped during clean up
     // so let's get it before we clean things up.
     $this->setTitle();
 
     // The title is set, so let's clean our html up.
-    $this->setCleanHtml($html, $fragment);
+    $this->cleanHtml();
 
     // With clean html we can get the body out, and set our var.
     $this->setBody();
-
-    // We don't use this here public var, keeping it for backwards compatablity.
-    $this->queryPath = HtmlCleanUp::initQueryPath($this->html);
   }
 
   /**
-   * Set the html var.
+   * Create the queryPath object.
    */
-  protected function setHtml($html, $fragment = FALSE) {
-    $this->html = $html;
+  protected function initQueryPath($html) {
+    // Create global query path, Gets reset to NULL by SourceParser__construct.
+
+    $qp_options = array();
+    $this->queryPath = htmlqp($html, NULL, $qp_options);
   }
+
 
   /**
    * Set the html var after some cleaning.
    */
-  protected function setCleanHtml($html, $fragment = FALSE) {
+  protected function cleanHtml() {
     try {
-      $html = StringCleanUp::fixEncoding($html);
 
-      $html = HtmlCleanUp::convertRelativeSrcsToAbsolute($html, $this->fileId);
-
-      // Strip Windows'' CR chars.
-      $html = StringCleanUp::stripWindowsCRChars($html);
+      HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
 
       // Clean up specific to the Justice site.
-      $html = HtmlCleanUp::stripOrFixLegacyElements($html);
+      HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
 
-      $this->html = $html;
     }
     catch (Exception $e) {
-      $this->html = $html;
       watchdog('doj_migration', '%file: failed to clean the html', array('%file' => $this->fileId), WATCHDOG_ALERT);
     }
   }
@@ -93,7 +90,7 @@ class SourceParser {
 
     try {
       // First attempt to get the title from the breadcrumb.
-      $query_path = HtmlCleanUp::initQueryPath($this->html);
+      $query_path = $this->queryPath;
       $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
       $wrapper->children('a, span, font')->remove();
       $title = $wrapper->text();
@@ -149,7 +146,7 @@ class SourceParser {
    */
   protected function setBody() {
     try {
-      $query_path = HtmlCleanUp::initQueryPath($this->html);
+      $query_path = $this->queryPath;
       $body = $query_path->top('body')->innerHTML();
 
       $enc = mb_detect_encoding($body, 'UTF-8', TRUE);
@@ -181,7 +178,7 @@ class SourceParser {
    *   The update date.
    */
   public function extractUpdatedDate() {
-    $query_path = HtmlCleanUp::initQueryPath($this->html);
+    $query_path = $this->queryPath;
     $element = trim($query_path->find('.lastupdate'));
     $contents = $element->text();
     if ($contents) {
@@ -190,7 +187,6 @@ class SourceParser {
 
     // Here we are modifying html, so let's set our global again.
     $element->remove();
-    $this->html = $query_path->html();
 
     return $contents;
   }
@@ -202,7 +198,7 @@ class SourceParser {
    *   A string of email addresses separated by pipes.
    */
   public function getEmailAddresses() {
-    $query_path = HtmlCleanUp::initQueryPath($this->html);
+    $query_path = $this->queryPath;
     $anchors = $query_path->find('a[href^="mailto:"]');
     if ($anchors) {
       $email_addresses = array();
@@ -220,7 +216,7 @@ class SourceParser {
    * Crude search for strings matching US States.
    */
   public function getUsState() {
-    $query_path = HtmlCleanUp::initQueryPath($this->html);
+    $query_path = $this->queryPath;
     $states_blob = trim(file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt'));
     $states = explode("\n", $states_blob);
     $elements = $query_path->find('p');
