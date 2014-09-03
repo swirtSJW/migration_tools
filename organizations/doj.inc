@@ -55,7 +55,7 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
-    $this->description = t('Migrates pages from main Department of Justice section.');
+    $this->description = t('Migrates pages from main Department of Justice section and maintains their root level structure.');
     // Hard coding in the nid of the DOJ group.
     $doj_nid = 752;
     $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
@@ -64,9 +64,9 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
     // pathauto must be overridden.  See prepareRow().
     $this->addFieldMapping('path', 'url_alias');
 
-    // @FIXIT This setting is not getting saved. Setting it by
-    // hand in JusticeHtmlNodeMigration prepare().
-    $this->addFieldMapping('pathauto', FALSE);
+    // Pathauto is being overridden due to $row->url_path_overridden
+    // in JusticeHtmlNodeMigration prepare().
+    $this->removeFieldMapping('pathauto');
   }
 
   /**
