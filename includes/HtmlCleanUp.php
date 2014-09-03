@@ -45,6 +45,7 @@ class HtmlCleanUp {
       'div.lastupdate',
       'div.thick-bar',
       'div.rightcolumn',
+      'div.leftcolmenu',
     ));
 
     // Remove extraneous html wrapping elements, leaving children intact.
@@ -82,6 +83,8 @@ class HtmlCleanUp {
   /**
    * Removes elements matching CSS selectors.
    *
+   * @param object $query_path
+   *   A query path object.
    * @param array $selectors
    *   An array of selectors to remove.
    */
@@ -90,6 +93,29 @@ class HtmlCleanUp {
       $query_path->find($selector)->remove();
     }
   }
+
+  /**
+   * Removes elements matching CSS selectors from html.
+   *
+   * @param string $html
+   *   Html to get processed.
+   * @param array $selectors
+   *   An array of selectors to remove.
+   *
+   * @return string
+   *   Processed html.
+   */
+  public static function removeElementsFromHtml($html = '', array $selectors = array()) {
+    // Put the shell on the html to extract with more certainty later.
+    $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
+    $query_path = htmlqp($html, NULL, array());
+    HTMLCleanUp::removeElements($query_path, $selectors);
+
+    // Grab the html from the shell.
+    $processed_html = $query_path->top('.throw-away-parser-shell')->innerHTML();
+    return $processed_html;
+  }
+
 
   /**
    * Removes a wrapping element, leaving child elements intact.

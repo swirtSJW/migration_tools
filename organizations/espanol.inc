@@ -41,6 +41,20 @@ class EspanolPageMigration extends JusticeHtmlToPageMigration {
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
     $this->addFieldMapping('language')->defaultValue('es');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    module_load_include('inc', 'doj_migration', 'includes/HtmlCleanUp');
+    // Cleanup the body from some spanish image banners.
+    $row->body = HtmlCleanUp::removeElementsFromHtml($row->body, array(
+      'div.bar-hdr',
+      'div.banner_spanish',
+    ));
+  }
 }
 
 
