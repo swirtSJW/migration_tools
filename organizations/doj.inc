@@ -64,20 +64,13 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
     // pathauto must be overridden.  See prepareRow().
     $this->addFieldMapping('path', 'url_alias');
 
-    // Pathauto is being overridden due to $row->url_path_overridden
-    // in JusticeHtmlNodeMigration prepare().
-    $this->removeFieldMapping('pathauto');
+    $this->addFieldMapping('pathauto', 'pathauto');
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    // Have to set the the group_path_override before calling the parent
-    // prepareRow or it will be too late and the alias will already be set.
-    // Since the doj group is the root of the site, the group path is ''.
-    $row->group_path_override = '';
-
     parent::prepareRow($row);
     $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
 
@@ -87,6 +80,25 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
       $row->title = $this->sourceParser->queryPath->find('title')->first()->text();
     }
 
+    // Since the doj group is the root of the site, the group path is ''.
+    // Generate the full overridden alias.
+    $row->group_path_override = '';
+    $sub_sub_path = preg_replace('/([\/]?[0-9a-z\-\_]+)?\.(htm(l?))/ixm', '', $row->url_path);
+    $row->url_path_overridden = (empty($row->group_path_override)) ? $sub_sub_path : $row->group_path_override . '/' . $sub_sub_path;
+
+    if ((!empty($row->isIndex)) && module_load_include('inc', 'pathauto', 'pathauto')) {
+      // It is an index, so the alias does not need the title in it.
+      $row->url_alias = $row->url_path_overridden;
+      pathauto_alias_uniquify($row->url_alias, '', LANGUAGE_NONE);
+    }
+    else {
+      // It is not an index so it needs the title in the alias too.
+      $row->url_alias = $row->url_path_overridden . '/' . pathauto_cleanstring($row->title);
+      pathauto_alias_uniquify($row->url_alias, '', LANGUAGE_NONE);
+    }
+
+    // Disable pathauto.
+    $row->pathauto = FALSE;
   }
 }
 

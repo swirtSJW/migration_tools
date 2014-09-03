@@ -99,22 +99,6 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
     $row->title = $this->sourceParser->getTitle();
     $row->body = $this->sourceParser->getBody();
-
-    // Check to see if the alias is to be overridden.
-    if (!empty($row->url_path_overridden)) {
-      // Generate the full overridden alias.
-      if ((!empty($row->is_index)) && module_load_include('inc', 'pathauto', 'pathauto')) {
-        // It is an index, so the alias does not need the title in it.
-        $row->url_alias = $row->url_path_overridden;
-        pathauto_alias_uniquify($row->url_alias, '', LANGUAGE_NONE);
-
-      }
-      else {
-        // It is not and index so it needs the title in the alias too.
-        $row->url_alias = $row->url_path_overridden . '/' . pathauto_cleanstring($row->title);
-        pathauto_alias_uniquify($row->url_alias, '', LANGUAGE_NONE);
-      }
-    }
   }
 
   /**
@@ -125,11 +109,6 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
     // Sidestep language to get redirects and aliases working for all users.
     parent::languageSideStep($entity);
-
-    // Disable pathauto if an alias is being overridden.
-    if (!empty($row->url_path_overridden)) {
-      $entity->path['pathauto'] = FALSE;
-    }
   }
 
   /**

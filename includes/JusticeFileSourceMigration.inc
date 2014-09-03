@@ -89,12 +89,6 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     $row->url_path = substr($row->fileid, 1);
     $row->legacy_path = $row->url_path;
 
-    // Handle additional url path processing if if group path is overridden.
-    if (property_exists($row, 'group_path_override')) {
-      $sub_sub_path = preg_replace('/([\/]?[0-9a-z\-\_]+)?\.(htm(l?))/ixm', '', $row->url_path);
-      $row->url_path_overridden = (empty($row->group_path_override)) ? $sub_sub_path : $row->group_path_override . '/' . $sub_sub_path;
-    }
-
     $this->handleIndexRedirect($row);
   }
 
@@ -103,10 +97,10 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
    */
   public function handleIndexRedirect($row) {
     // Assume not an index until proven otherwise.
-    $row->is_index = FALSE;
+    $row->isIndex = FALSE;
     // Check to see if $row->fileid == 'index.html' or 'index.php'.
     if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
-      $row->is_index = TRUE;
+      $row->isIndex = TRUE;
       // Determine root path. E.g., oip/index.html would have the root path
       // /oip.
       $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileid), '/'), '/');
