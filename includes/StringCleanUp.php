@@ -130,4 +130,37 @@ class StringCleanUp {
     // http://technosophos.com/content/querypath-whats-13-end-every-line
     return str_replace(chr(13), '', $string);
   }
+
+  /**
+   * Strips legacy markup from content originating in CMS OPA.
+   *
+   * @param string $markup
+   *   Markup to be cleaned.
+   *
+   * @return string
+   *   Cleaned markup.
+   */
+  public static function stripCmsLegacyMarkup($markup = '') {
+    // Remove all \r and \n instances.
+    $markup = preg_replace("/\r|\n/", " ", $markup);
+
+    // Remove all empty <span>s with mso* style. This will remove the following:
+    // <span style="mso-spacerun: yes;"> &nbsp; </span>.
+    $markup = preg_replace("/<span[^>]*mso[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $markup);
+
+    // Remove all empty spans with color.
+    // <span style="color: #000000;">&nbsp;</span>
+    $markup = preg_replace("/<span[^>]*color[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $markup);
+
+    // Remove empty p tags. We are not removing p tags containing &nbsp;
+    $markup = preg_replace("/<p[^>]*>(?:\W)*<\/p>/i", "", $markup);
+
+    // Remove empty strong tags. We are not removing p tags containing &nbsp;
+    $markup = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/i", "", $markup);
+
+    // Replace <p> tags containing styling with non-descript p tags.
+    $markup = preg_replace("/<p class=\"Mso[^>]*\" style=\"[^>]*\">/i", "<p>", $markup);
+
+    return $markup;
+  }
 }

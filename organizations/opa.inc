@@ -242,7 +242,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     }
 
     $row->title = $row->documentTitle;
-    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->documentBody);
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->documentBody);
 
     parent::prepareRow($row);
     $row->tag = trim($row->tagSubject, ',');
@@ -386,7 +386,7 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $row->title = $row->documentTitle;
     parent::prepareRow($row);
 
-    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
 
     $row->tag = trim($row->tagSubject, ',');
     $row->legacy_url = trim($row->documentLocation, '/');

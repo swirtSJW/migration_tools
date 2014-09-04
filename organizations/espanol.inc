@@ -105,7 +105,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
-    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
     // Get pr number from .prnumber.
     $row->field_pr_number = $this->sourceParser->queryPath->find('.prnumber')->first()->text();
     // Get pr component from .prcomponent are these spanish translations?
@@ -215,7 +215,7 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
 
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
-    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
     // Remove common mso style string.
     $bad_string1 = 'style="margin: 0in 0in 0pt; text-indent: 0in; line-height: normal; mso-layout-grid-align: none; mso-outline-level: 1;"';
     $row->body = str_replace($bad_string1, '', $row->body);

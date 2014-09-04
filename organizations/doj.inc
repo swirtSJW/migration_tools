@@ -72,7 +72,7 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $row->body = parent::dojMigrateStripCmsLegacyMarkup($row->body);
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
 
     // Check for title alterations needed if title is "Publications".
     if ($row->title == 'Publications') {
