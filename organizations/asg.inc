@@ -124,7 +124,7 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
     $body = $this->sourceParser->queryPath->find('em')->remove();
     $body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
 
-    $body = parent::dojMigrateStripCmsLegacyMarkup($body);
+    $body = StringCleanUp::stripCmsLegacyMarkup($body);
 
     $row->body = $body;
 
@@ -210,7 +210,7 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
     $body = $this->sourceParser->queryPath->find('em')->remove();
     $body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
 
-    $body = parent::dojMigrateStripCmsLegacyMarkup($body);
+    $body = StringCleanUp::stripCmsLegacyMarkup($body);
 
     $row->body = $body;
 
