@@ -354,13 +354,13 @@ class OpaSpeechMigration extends JusticeBaseMigration {
     $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
-    $this->addFieldMapping('field_speech_teaser', 'teaser');
-    $this->addFieldMapping('field_speech_teaser:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_speech_body', 'body');
-    $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_speech_date', 'documentDate');
-    $this->addFieldMapping('field_speech_component', 'component')->separator('|');
-    $this->addFieldMapping('field_speech_topic', 'topic')->separator('|');
+    $this->addFieldMapping('field_pr_teaser', 'teaser');
+    $this->addFieldMapping('field_pr_teaser:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_body', 'body');
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_date', 'documentDate');
+    $this->addFieldMapping('field_pr_component', 'component')->separator('|');
+    $this->addFieldMapping('field_pr_topic', 'topic')->separator('|');
 
     $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
     $this->addFieldMapping('field_speech_location:locality', 'city');

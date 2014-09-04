@@ -34,7 +34,7 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),
-      'field_speech_body' => t('Body'),
+      'field_pr_body' => t('Body'),
     );
 
     // Calling parent constructor will set $this->source and $this->map.
@@ -44,15 +44,15 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     $this->destination = new MigrateDestinationNode('speech');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_speech_date', 'field_speech_date');
-    $this->addFieldMapping('field_speech_body', 'body');
-    $this->addFieldMapping('field_speech_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_pr_date', 'field_speech_date');
+    $this->addFieldMapping('field_pr_body', 'body');
+    $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_speech_location', 'country')->defaultValue('US');
     $this->addFieldMapping('field_speech_location:locality', 'city');
     $this->addFieldMapping('field_speech_location:administrative_area', 'state');
     $this->addFieldMapping('field_speech_image', 'field_speech_image');
     $this->addFieldMapping('field_speech_attachment', 'field_speech_attachment');
-    $this->addFieldMapping('field_speech_topic', 'field_speech_topic');
-    $this->addFieldMapping('field_speech_component', 'field_speech_component');
+    $this->addFieldMapping('field_pr_topic', 'field_speech_topic');
+    $this->addFieldMapping('field_pr_component', 'field_speech_component');
   }
 }
