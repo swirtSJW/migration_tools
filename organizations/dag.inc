@@ -23,10 +23,14 @@ class DagPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       'dag',
+      'dag/iptaskforce',
+      'dag/iptaskforce/proipact',
+      'dag/pubdoc',
+      'dag/readingroom',
     );
 
     $options = array(
-      'recurse' => TRUE,
+      'recurse' => FALSE,
     );
 
     // Parent constructor will set $this->source, $this->destination, and
