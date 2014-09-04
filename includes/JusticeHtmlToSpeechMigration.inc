@@ -55,4 +55,23 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_pr_topic', 'field_speech_topic');
     $this->addFieldMapping('field_pr_component', 'field_speech_component');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Get the location from .speechlocation.
+    try {
+      $location = trim($this->sourceParser->queryPath->find('.speechlocation')->first()->text());
+      $address = parent::geoCodeString($location);
+      $row->city = $address['locality'];
+      $row->state = $address['administrative_area_level_1'];
+      $row->country = $address['country'];
+    }
+    catch(Exception $e) {
+      $this->queueMessage("{$row->fileId} failed to acquire a location");
+    }
+  }
 }

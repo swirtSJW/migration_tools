@@ -20,6 +20,7 @@ files[] = includes/JusticeBinaryFileMigration.inc
 files[] = includes/JusticeHtmlToPageMigration.inc
 files[] = includes/JusticeHtmlToPressReleaseMigration.inc
 files[] = includes/JusticeHtmlToSpeechMigration.inc
+files[] = includes/JusticeHtmlToSpeechSpanishMigration.inc
 files[] = includes/JusticeHtmlToBlogEntryMigration.inc
 files[] = includes/JusticeWordpressMigration.inc
 files[] = includes/JusticeCsvMigration.inc

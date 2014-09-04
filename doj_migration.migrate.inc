@@ -108,6 +108,14 @@ function doj_migration_migrate_api() {
         'group_name' => 'ag',
         'class_name' => 'AgFileMigration',
       ),
+      'AgSpeech' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgSpeechMigration',
+      ),
+      'AgSpeechSpanish' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgSpeechSpanishMigration',
+      ),
       'AsgPage' => array(
         'group_name' => 'asg',
         'class_name' => 'AsgPageMigration',

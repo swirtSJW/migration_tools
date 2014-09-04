@@ -154,6 +154,7 @@ abstract class JusticeBaseMigration extends Migration {
    */
   public function dojMigrationESDateConvertWDMY($date_string = '') {
     $processed_date = '';
+
     // Date_string looks like   miércoles, 28 de febrero de 2014.
     // Clean up the string.
     $date_modified = trim(strtolower($date_string));
@@ -164,6 +165,7 @@ abstract class JusticeBaseMigration extends Migration {
     $date_modified = preg_replace('!\s+!', ' ', $date_modified);
     // Parse out the date.
     $date_array = explode(' ', $date_modified);
+
     // Make sure only digits in day $date_array[1] and year $date_array[3].
     $date_array[1] = preg_replace('/[^0-9]/', '', trim($date_array[1]));
     $date_array[3] = preg_replace('/[^0-9]/', '', trim($date_array[3]));
@@ -209,4 +211,46 @@ abstract class JusticeBaseMigration extends Migration {
     return $processed_date;
   }
 
+  /**
+   * Geocode a string.
+   *
+   * @param string $string
+   *   A location string.
+   *
+   * @return array
+   *   An array with location information extracted from the string.
+   */
+  public static function geoCodeString($string) {
+
+    // Geocode the location and parse into structured data for migration.
+    // Geocoder module is not an explicit dependency because most migrations
+    // do not rely on it. It should be disabled after use.
+    if (!empty($string)) {
+      if ($string == 'Washington, D.C.') {
+        // The most common entry, so skip geocoding.
+        $address['locality'] = 'Washington';
+        $address['administrative_area_level_1'] = 'DC';
+        $address['country'] = "US";
+      }
+      elseif (module_exists('geocoder')) {
+        // Note that calling this too many times (as in very large migrations)
+        // may exceed the API request limit for geocoder's source data.
+        $point = geocoder('google', $string);
+        module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+        $address = doj_migrate_convert_geocoded_point_to_address($point);
+
+        if (!$address) {
+          $address['locality'] = '';
+          $address['administrative_area_level_1'] = '';
+          $address['country'] = '';
+          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
+        }
+      }
+      else {
+        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
+      }
+
+      return $address;
+    }
+  }
 }

@@ -173,7 +173,7 @@ class EspanolFileMigration extends JusticeDeployableBinaryFileMigration {
  * @package doj_migration
  * @subpackage espanol
  */
-class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
+class EspanolSpeechMigration extends JusticeHtmlToSpeechSpanishMigration {
 
   /**
    * {@inheritdoc}
@@ -197,17 +197,14 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
-    $this->addFieldMapping('language')->defaultValue('es');
   }
-
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    // Process the date.
-    // Format: < div class="date">jueves, 19 de junio de 2014</div>
+
     // Get title from .presscontenttitle.
     $row->title = $this->sourceParser->queryPath->find('.presscontenttitle')->first()->text();
     $row->title = mb_strimwidth($row->title, 0, 255, "...");
@@ -216,46 +213,9 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechMigration {
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
     $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
+
     // Remove common mso style string.
     $bad_string1 = 'style="margin: 0in 0in 0pt; text-indent: 0in; line-height: normal; mso-layout-grid-align: none; mso-outline-level: 1;"';
     $row->body = str_replace($bad_string1, '', $row->body);
-
-    // Get the location from .speechlocation.
-    $row->field_speech_location = trim($this->sourceParser->queryPath->find('.speechlocation')->first()->text());
-
-    // Geocode the location and parse into structured data for migration.
-    // Geocoder module is not an explicit dependency because most migrations
-    // do not rely on it. It should be disabled after use.
-    if (!empty($row->field_speech_location)) {
-      if ($row->field_speech_location == 'Washington, D.C.') {
-        // The most common entry, so skip geocoding.
-        $row->city = 'Washington';
-        $row->state = 'DC';
-      }
-      elseif (module_exists('geocoder')) {
-        // Note that calling this too many times (as in very large migrations)
-        // may exceed the API request limit for geocoder's source data.
-        $point = geocoder('google', $row->field_speech_location);
-        module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-        $address = doj_migrate_convert_geocoded_point_to_address($point);
-
-        if ($address) {
-          $row->city = $address['locality'];
-          $row->state = $address['administrative_area_level_1'];
-          $row->country = $address['country'];
-        }
-        else {
-          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
-        }
-      }
-      else {
-        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
-      }
-    }
-
-    // Process release_date from spanish, into numeric.
-    $date_string = $this->sourceParser->queryPath->find('.speechdate')->first()->text();
-    // Date_string looks like   miércoles, 28 de febrero de 2014.
-    $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date_string);
   }
 }
