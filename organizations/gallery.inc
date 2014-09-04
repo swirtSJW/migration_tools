@@ -240,7 +240,7 @@ class GalleryImagesMigration extends JusticeFileSourceMigration {
       $row->field_gallery_image_body = $source_parser->queryPath->find('.image-desc')->text();
     }
     catch (Exception $e) {
-      watchdog('doj_migration', 'Gallery Image migration failed for Gallery @galleryid. File will be skipped. Error message: @error', array('@galleryid' => $row->gallery_id, '@error' => $e->getMessage()), WATCHDOG_ERROR);
+      watchdog('doj_migration', 'Gallery Image migration failed for Gallery Image @row_id. File will be skipped. Error message: @error', array('@row_id' => $row->id, '@error' => $e->getMessage()), WATCHDOG_ERROR);
       return FALSE;
     }
   }
