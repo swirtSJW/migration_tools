@@ -230,6 +230,23 @@ class SourceParser {
     }
     return NULL;
   }
+
+  /**
+   * Swaps one element tag for another.
+   *
+   * @param array $selectors
+   *   Associative array keyed by original value. E.g., changing all h4 tags
+   *   for strong tags would require array('h4' => 'strong').
+   */
+  public function changeElementTag($selectors) {
+    foreach ($selectors as $old_selector => $new_selector) {
+      $elements = $this->queryPath->find($old_selector);
+      foreach ($elements as $element) {
+        $element->wrapInner('<' . $new_selector . '></' . $new_selector . '>');
+        $element->children($new_selector)->first()->unwrap($old_selector);
+      }
+    }
+  }
 }
 
 /**
@@ -266,14 +283,4 @@ public function changeSpecialforRegularChars($text) {
 
   return $text;
 }
-
- public function changeElementTag($selectors) {
-    foreach ($selectors as $old_selector => $new_selector) {
-      $elements = $this->queryPath->find($old_selector);
-      foreach ($elements as $element) {
-        $element->wrapInner('<' . $new_selector . '></' . $new_selector . '>');
-        $element->children($new_selector)->first()->unwrap($old_selector);
-      }
-    }
-  }
 */
