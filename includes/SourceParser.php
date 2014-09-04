@@ -57,7 +57,6 @@ class SourceParser {
    */
   protected function initQueryPath($html) {
     // Create global query path, Gets reset to NULL by SourceParser__construct.
-
     $qp_options = array();
     $this->queryPath = htmlqp($html, NULL, $qp_options);
   }

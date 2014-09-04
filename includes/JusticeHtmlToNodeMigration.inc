@@ -122,7 +122,6 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
     }
-
   }
 
   /**
