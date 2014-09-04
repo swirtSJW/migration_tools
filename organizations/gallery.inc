@@ -226,17 +226,23 @@ class GalleryImagesMigration extends JusticeFileSourceMigration {
     $row->gallery_id = substr($row->id, 0, strpos($row->id, '-?MIGRATECHUNK?-'));
 
     // Create a new SourceParser to handle HTML content.
-    $source_parser = new SourceParser($row->id, (string) $row->filedata, TRUE);
+    try {
+      $source_parser = new SourceParser($row->url_path, $row->filedata, TRUE);
 
-    $image_url = $source_parser->queryPath->find('.download a')->attr('href');
-    $row->image_filename = basename($image_url);
+      $image_url = $source_parser->queryPath->find('.download a')->attr('href');
+      $row->image_filename = basename($image_url);
 
-    $row->image_alt = $source_parser->queryPath->find('img')->attr('alt');
-    $row->image_alt = mb_strimwidth($row->image_alt, 0, 512, "...");
+      $row->image_alt = $source_parser->queryPath->find('img')->attr('alt');
+      $row->image_alt = mb_strimwidth($row->image_alt, 0, 512, "...");
 
-    $row->field_gallery_image_title = $source_parser->queryPath->find('.image-title')->text();
-    $row->field_gallery_image_credits = $source_parser->queryPath->find('.image-credit')->text();
-    $row->field_gallery_image_body = $source_parser->queryPath->find('.image-desc')->text();
+      $row->field_gallery_image_title = $source_parser->queryPath->find('.image-title')->text();
+      $row->field_gallery_image_credits = $source_parser->queryPath->find('.image-credit')->text();
+      $row->field_gallery_image_body = $source_parser->queryPath->find('.image-desc')->text();
+    }
+    catch (Exception $e) {
+      watchdog('doj_migration', 'Gallery Image migration failed for Gallery @galleryid. File will be skipped. Error message: @error', array('@galleryid' => $row->gallery_id, '@error' => $e->getMessage()), WATCHDOG_ERROR);
+      return FALSE;
+    }
   }
 }
 

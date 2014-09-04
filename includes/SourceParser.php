@@ -32,7 +32,7 @@ class SourceParser {
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    */
   public function __construct($file_id, $html, $fragment = FALSE) {
-    // @todo We are not using $fragment, clean it up.
+
     $html = StringCleanUp::fixEncoding($html);
 
     // Strip Windows'' CR chars.
@@ -68,7 +68,6 @@ class SourceParser {
    */
   protected function cleanHtml() {
     try {
-
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
 
       // Clean up specific to the Justice site.
