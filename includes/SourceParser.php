@@ -39,6 +39,7 @@ class SourceParser {
     $html = StringCleanUp::stripWindowsCRChars($html);
 
     $this->initQueryPath($html);
+
     $this->fileId = $file_id;
 
     // Getting the title relies on html that could be wiped during clean up
@@ -57,7 +58,8 @@ class SourceParser {
    */
   protected function initQueryPath($html) {
     // Create global query path, Gets reset to NULL by SourceParser__construct.
-    $qp_options = array();
+
+    $qp_options = array('convert_to_encoding' => 'UTF-8');
     $this->queryPath = htmlqp($html, NULL, $qp_options);
   }
 
@@ -144,20 +146,21 @@ class SourceParser {
    */
   protected function setBody() {
     try {
-      $query_path = $this->queryPath;
-      $body = $query_path->top('body')->innerHTML();
+      $body = $this->queryPath->top('body')->innerHTML();
 
-      $enc = mb_detect_encoding($body, 'UTF-8', TRUE);
-      if (!$enc) {
+      // Checking again in case another process rendered it non UTF-8.
+      $is_utf8 = mb_check_encoding($body, 'UTF-8');
+
+      if (!$is_utf8) {
         watchdog("doj_migration", "%file body needed its encoding fixed!!!", array('%file' => $this->fileId), WATCHDOG_NOTICE);
+        $body = StringCleanUp::fixEncoding($body);
       }
 
-      $body = StringCleanUp::fixEncoding($body);
       $this->body = $body;
     }
     catch (Exception $e) {
       $this->body = "";
-      watchdog('doj_migration', '%file: failed to set the body', array('%file' => $this->fileId), WATCHDOG_ALERT);
+      watchdog('doj_migration', '%file: failed to set the body because: %message', array('%file' => $this->fileId, '%message' => $e->getMessage()), WATCHDOG_ALERT);
     }
   }
 

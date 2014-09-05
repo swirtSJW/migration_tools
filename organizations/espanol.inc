@@ -100,12 +100,12 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     // Get title from .presscontenttitle.
     $row->title = $this->sourceParser->queryPath->find('.presscontenttitle')->first()->text();
-    $row->title = mb_strimwidth($row->title, 0, 255, "...");
+    $row->title = mb_strimwidth($row->title, 0, 210, "...");
     $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
 
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
-    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
+
     // Get pr number from .prnumber.
     $row->field_pr_number = $this->sourceParser->queryPath->find('.prnumber')->first()->text();
     // Get pr component from .prcomponent are these spanish translations?
@@ -120,6 +120,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $date_string = $this->sourceParser->queryPath->find('.presscontentdate .date')->first()->text();
     // Date_string looks like   miércoles, 28 de febrero de 2014.
     $row->field_pr_date = parent::dojMigrationESDateConvertWDMY($date_string);
+
   }
 
 

@@ -8,15 +8,57 @@ class StringCleanUp {
   /**
    * Deal with encodings.
    */
-  public static function fixEncoding($string) {
-    // If the content is not UTF8, we assume it's WINDOWS-1252. This fixes
-    // bogus character issues. Technically it could be ISO-8859-1 but it's safe
-    // to convert this way.
-    // http://en.wikipedia.org/wiki/Windows-1252
-    $enc = mb_detect_encoding($string, 'UTF-8', TRUE);
-    if (!$enc) {
-      return mb_convert_encoding($string, 'UTF-8', 'WINDOWS-1252');
+  public static function fixEncoding($string = '') {
+    // Fix and bizarre characters pre-encoding.
+    $string = StringCleanUp::convertFatalCharstoASCII($string);
+    // If the content is not UTF8, attempt to convert it.  If encoding can't be
+    // detected, then it can't be converted.
+
+    $encoding = mb_detect_encoding($string, mb_detect_order(), TRUE);
+    $is_utf8 = mb_check_encoding($string, 'UTF-8');
+
+    if (!$is_utf8 && !empty($encoding)) {
+      $string = mb_convert_encoding($string, 'UTF-8', $encoding);
     }
+
+    // @TODO Here would be the spot to run a diff comparing before and after
+    // encoding and then watchdog the offending character that results in �.
+    // Then the offending character can be added to fatalCharsMap().
+
+    return $string;
+  }
+
+  /**
+   * Map of fatal chars to the replacements.
+   *
+   * @return array
+   *   An array with the mappings.
+   */
+  public static function fatalCharsMap() {
+    $convert_table = array(
+      '°' => '&deg;', 'ü' => '&uuml;',
+    );
+
+    return $convert_table;
+  }
+
+  /**
+   * Take all things that are not digits or the alphabet and simplify it.
+   *
+   * This should get rid of most accents, and language specific chars.
+   *
+   * @param string $string
+   *   A string.
+   *
+   * @return string
+   *   The converted string.
+   */
+  public static function convertFatalCharstoASCII($string = '') {
+
+    foreach (StringCleanUp::fatalCharsMap() as $weird => $normal) {
+      $string = str_replace($weird, $normal, $string);
+    }
+
     return $string;
   }
 
@@ -28,7 +70,7 @@ class StringCleanUp {
    */
   public static function funkyCharsMap() {
     $convert_table = array(
-      '@' => 'at',    '©' => 'c', '®' => 'r', 'À' => 'a',
+      '©' => 'c', '®' => 'r', 'À' => 'a',
       'Á' => 'a', 'Â' => 'a', 'Ä' => 'a', 'Å' => 'a', 'Æ' => 'ae','Ç' => 'c',
       'È' => 'e', 'É' => 'e', 'Ë' => 'e', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i',
       'Ï' => 'i', 'Ò' => 'o', 'Ó' => 'o', 'Ô' => 'o', 'Õ' => 'o', 'Ö' => 'o',
@@ -81,7 +123,7 @@ class StringCleanUp {
       'י' => 'i', 'ך' => 'k', 'כ' => 'k', 'ל' => 'l', 'ם' => 'm', 'מ' => 'm',
       'ן' => 'n', 'נ' => 'n', 'ס' => 's', 'ע' => 'e', 'ף' => 'p', 'פ' => 'p',
       'ץ' => 'C', 'צ' => 'c', 'ק' => 'q', 'ר' => 'r', 'ש' => 'w', 'ת' => 't',
-      '™' => 'tm',
+      '™' => 'tm', '°' => 'degree',
     );
 
     return $convert_table;
@@ -98,10 +140,12 @@ class StringCleanUp {
    * @return string
    *   The converted string.
    */
-  public static function convertNonASCIItoASCII($string) {
+  public static function convertNonASCIItoASCII($string = '') {
+
     foreach (StringCleanUp::funkyCharsMap() as $weird => $normal) {
       $string = str_replace($weird, $normal, $string);
     }
+
     return $string;
   }
 
