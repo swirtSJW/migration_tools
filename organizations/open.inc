@@ -94,18 +94,18 @@ class OpenSourceParser extends SourceParser {
    */
   public function getBody() {
     $body = parent::getBody();
-    $query_path = HTMLCleanUp::initQueryPath($body);
-    $images = $query_path->find('img');
+    $images = $this->queryPath->find('img');
 
     foreach ($images as $image) {
       $src = $image->attr('src');
+
       if (substr_count($src, "banner") > 0 || substr_count($src, "language") > 0
         || substr_count($src, "before") > 0) {
         $image->remove();
       }
       break;
     }
-    $body = $query_path->top('body')->innerHTML();
+    $body = $this->queryPath->top('body')->innerHTML();
     return $body;
   }
 }
