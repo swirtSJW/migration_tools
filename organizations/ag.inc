@@ -54,11 +54,6 @@ class AgPageMigration extends JusticeHtmlToPageMigration {
 
     // Remove all \r and \n instances.
     $row->body = preg_replace("/\r|\n/", " ", $row->body);
-
-    // Process release_date from spanish, into numeric.
-    $date_string = $this->sourceParser->queryPath->find('.speechdate')->first()->text();
-    // Date_string looks like   miércoles, 28 de febrero de 2014.
-    drush_print_r(parent::dojMigrationDateConvertWDMY($date_string));
   }
 }
 
