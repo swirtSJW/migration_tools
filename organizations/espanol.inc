@@ -105,6 +105,8 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     // Get body from .presscontenttext.
     $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
+    // Cleanup line breaks.
+    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
 
     // Get pr number from .prnumber.
     $row->field_pr_number = $this->sourceParser->queryPath->find('.prnumber')->first()->text();
