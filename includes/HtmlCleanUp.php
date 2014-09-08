@@ -17,8 +17,10 @@ class HtmlCleanUp {
       $comment->parentNode->removeChild($comment);
     }
 
+    // Removing doj seal.
+    $query_path->find('img[src="/gif/sealdoj.gif"]')->remove();
+
     // Remove elements and their children.
-    $query_path->find('img[src="/gif/sealdoj.gif"]')->parent('p')->remove();
     HTMLCleanUp::removeElements($query_path, array(
       'a[name="sitemap"]',
       'a[name="maincontent"]',
