@@ -114,6 +114,11 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    if (!is_object($this->sourceParser->queryPath)) {
+      throw new Exception(t("QueryPath could not be initialized for @fileId.", array('@fileId' => $row->fileid)));
+      return FALSE;
+    }
+
     // Get title from .presscontenttitle.
     $title = '';
     $title = $this->sourceParser->queryPath->find('.presscontenttitle')->first()->text();

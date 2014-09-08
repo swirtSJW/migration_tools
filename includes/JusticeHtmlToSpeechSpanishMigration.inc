@@ -30,13 +30,13 @@ abstract class JusticeHtmlToSpeechSpanishMigration extends JusticeHtmlToSpeechMi
     parent::prepareRow($row);
 
     // Process release_date from spanish, into numeric.
-    try{
+    try {
       $date_string = $this->sourceParser->queryPath->find('.speechdate')->first()->text();
       // Date_string looks like   miércoles, 28 de febrero de 2014.
       $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date_string);
     }
-    catch(Exception $e){
-      $this->queueMessage("{$row->fileId} failed to acquire a date");
+    catch (Exception $e){
+      $this->queueMessage("{$row->fileId} failed to acquire a date.");
     }
   }
 
