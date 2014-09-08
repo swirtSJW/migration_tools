@@ -115,7 +115,8 @@ class AsgSpeechMigration extends JusticeHtmlToSpeechMigration {
     parent::prepareRow($row);
 
     if (!is_object($this->sourceParser->queryPath)) {
-      throw new Exception(t("QueryPath could not be initialized for @fileId.", array('@fileId' => $row->fileid)));
+      $this->queueMessage(t("QueryPath could not be initialized for @fileId.", array('@fileId' => $row->fileid)));
+      
       return FALSE;
     }
 
