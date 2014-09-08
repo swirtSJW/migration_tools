@@ -145,3 +145,88 @@ class DojFileMigration extends JusticeDeployableBinaryFileMigration {
     return 'doj';
   }
 }
+
+/**
+ * Class DojCaseMigration.
+ *
+ * @package doj_migration
+ */
+class DojCaseMigration extends JusticeBaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $iso_db_name = $databases['iso']['default']['database'];
+
+    $query = db_select("$iso_db_name.largecases", 'c')
+      ->fields('c', array(
+        'id',
+        'case_link',
+        'names',
+        'district',
+        'overview',
+        'casey',
+      ));
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE));
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('case');
+
+    // Field Mappings.
+    // Hard coding in the nid of the DOJ group.
+    $doj_nid = 752;
+    $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
+
+    $this->addFieldMapping('title', 'casey');
+    $this->addFieldMapping('field_case_overview', 'overview');
+    $this->addFieldMapping('field_case_link', 'case_link');
+    $this->addFieldMapping('field_case_names', 'names')->separator(";");
+    $this->addFieldMapping('field_case_district', 'district');
+    $this->addSimpleMappings(array("uid", "status"));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $row->uid = 1;
+    $row->status = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
+}

@@ -172,6 +172,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'doj',
         'class_name' => 'DojPageMigration',
       ),
+      'DojCase' => array(
+        'group_name' => 'doj',
+        'class_name' => 'DojCaseMigration',
+      ),
       'EjFile' => array(
         'group_name' => 'ej',
         'class_name' => 'EjFileMigration',
