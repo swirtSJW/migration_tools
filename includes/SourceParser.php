@@ -58,11 +58,9 @@ class SourceParser {
    */
   protected function initQueryPath($html) {
     // Create global query path, Gets reset to NULL by SourceParser__construct.
-
     $qp_options = array('convert_to_encoding' => 'UTF-8');
     $this->queryPath = htmlqp($html, NULL, $qp_options);
   }
-
 
   /**
    * Set the html var after some cleaning.
