@@ -77,6 +77,9 @@ function doj_migration_migrate_api() {
       'open' => array(
         'title' => t('Open - Open Government'),
       ),
+      'osg' => array(
+        'title' => t('OSG - Office of the Solicitor General'),
+      ),
       'otj' => array(
         'title' => t('OTJ - Office of Tribal Justice'),
       ),
@@ -391,6 +394,14 @@ function doj_migration_migrate_api() {
       'OsdbuFile' => array(
         'group_name' => 'osdbu',
         'class_name' => 'OsdbuFileMigration',
+      ),
+      'OsgPage' => array(
+        'group_name' => 'osg',
+        'class_name' => 'OsgPageMigration',
+      ),
+      'OsgFile' => array(
+        'group_name' => 'osg',
+        'class_name' => 'OsgFileMigration',
       ),
       'OtjPage' => array(
         'group_name' => 'otj',

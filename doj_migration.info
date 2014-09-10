@@ -51,6 +51,7 @@ files[] = organizations/opa.inc
 files[] = organizations/open.inc
 files[] = organizations/opcl.inc
 files[] = organizations/osdbu.inc
+files[] = organizations/osg.inc
 files[] = organizations/otj.inc
 files[] = organizations/ovw.inc
 files[] = organizations/prao.inc

@@ -25,6 +25,9 @@ function doj_migration_drush_command() {
     'arguments' => array(
       'organization' => 'The organization to migrate',
     ),
+    'options' => array(
+      'ignore' => 'Comma delimited list of strings in folder to ignore',
+    ),
   );
 
   $items['doj-migrate-file-folders'] = array(
@@ -32,6 +35,9 @@ function doj_migration_drush_command() {
     'aliases' => array('dmff'),
     'arguments' => array(
       'organization' => 'The organization to migrate',
+    ),
+    'options' => array(
+      'ignore' => 'Comma delimited list of strings in folder to ignore',
     ),
   );
 
@@ -82,17 +88,20 @@ function drush_doj_migration_doj_migrate_images($organization) {
  * Drush command callback.
  */
 function drush_doj_migration_doj_migrate_html_folders($organization) {
-  drush_print_r(doj_migrate_find_folders_with_files($organization, array("htm", "html")));
+  $ignore = drush_get_option('ignore');
+  $ignore = explode(",", $ignore);
+  drush_print_r(doj_migrate_find_folders_with_files($organization, array("htm", "html"), $ignore));
 }
 
 /**
  * Drush command callback.
  */
 function drush_doj_migration_doj_migrate_file_folders($organization) {
-
+  $ignore = drush_get_option('ignore');
+  $ignore = explode(",", $ignore);
   drush_print_r(doj_migrate_find_folders_with_files($organization,
     array("pdf", "txt", "rtf", "doc", "docx", "xls", "xlsx", "csv", "mp3",
-      "mp4", "wpd", "wp", "qpw", "xml", "ppt", "pptx")));
+      "mp4", "wpd", "wp", "qpw", "xml", "ppt", "pptx"), $ignore));
 }
 
 /**
@@ -102,12 +111,15 @@ function drush_doj_migration_doj_migrate_file_folders($organization) {
  *   The org abbreviations for the org we want to process.
  * @param array $exts
  *   The extension of the type of files that we want to find.
+ * @param array $ignore
+ *   A list of words that if found in a folder path will ignore it from the
+ *   list.
  *
  * @return string
  *   A JSON string of an array containing all of the folders that contain files
  *   of the given extensions.
  */
-function doj_migrate_find_folders_with_files($organization, $exts) {
+function doj_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
   $source_directory = variable_get("doj_migration_base_dir");
   if (!$source_directory) {
     throw new Exception("the doj_migration_base_dir variable has not been defined");
@@ -132,12 +144,37 @@ function doj_migrate_find_folders_with_files($organization, $exts) {
     // Remove the file part.
     $pieces = array_slice($pieces, 0, count($pieces) - 1);
     $key = implode("/", $pieces);
-    if (!empty($key)) {
+    $ignore_folder = doj_migration_ignore_folder($key, $ignore);
+    if (!empty($key) && !$ignore_folder) {
       $folders[$key] = TRUE;
     }
   }
 
   return drupal_json_encode(array_keys($folders));
+}
+
+/**
+ * Ignore this folder, or not.
+ *
+ * @param string $folder
+ *   a strin representing a folder.
+ * @param array $ignore
+ *   A list of string to fine in folders to ignore.
+ *
+ * @return bool
+ *   Should this folder be ignored.
+ */
+function doj_migration_ignore_folder($folder, $ignore) {
+  $ignore_it = FALSE;
+
+  foreach ($ignore as $string) {
+    if (substr_count($folder, $string) > 0) {
+      $ignore_it = TRUE;
+      break;
+    }
+  }
+
+  return $ignore_it;
 }
 
 /**
