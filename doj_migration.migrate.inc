@@ -95,9 +95,6 @@ function doj_migration_migrate_api() {
       'psc' => array(
         'title' => t('PSC - Project Safe Childhood'),
       ),
-      'resource' => array(
-        'title' => t('Resource - The content type resource'),
-      ),
       'tribal' => array(
         'title' => t('Tribal Justice and Safety'),
       ),
@@ -450,9 +447,9 @@ function doj_migration_migrate_api() {
         'group_name' => 'psc',
         'class_name' => 'PscFileMigration',
       ),
-      'ResourceIsoFormDb' => array(
-        'group_name' => 'resource',
-        'class_name' => 'ResourceIsoFormMigration',
+      'DojResourceIsoFormDb' => array(
+        'group_name' => 'doj',
+        'class_name' => 'DojResourceIsoFormMigration',
       ),
       'TribalPage' => array(
         'group_name' => 'tribal',

@@ -56,6 +56,5 @@ files[] = organizations/otj.inc
 files[] = organizations/ovw.inc
 files[] = organizations/prao.inc
 files[] = organizations/psc.inc
-files[] = organizations/resource.inc
 files[] = organizations/tribal.inc
 files[] = organizations/usao.inc
