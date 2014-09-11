@@ -601,6 +601,31 @@ class OpaPageMigration extends JusticeHtmlToPageMigration {
     $this->description = t('Migrates pages from OPA section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('opa')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $title = $row->title;
+
+    // If this is one of the many pages with the title "Documents".
+    if (strcmp($title, "Documents") == 0) {
+
+      // Let's try to get an appropriate title, and get it off the body.
+      $query_path = htmlqp("<div class='get-it-out'>{$row->body}</div>");
+
+      foreach (array(".content-subpage>p>strong", ".content-subpage>center>strong") as $selector) {
+        $titles = $query_path->find($selector);
+        foreach ($titles as $t) {
+          $row->title = $t->text();
+          $t->remove();
+          $row->body = $query_path->top(".get-it-out")->innerHtml();
+          break;
+        }
+      }
+    }
+  }
 }
 
 /**
