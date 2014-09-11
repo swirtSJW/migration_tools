@@ -84,14 +84,22 @@ class ResourceIsoFormMigration extends JusticeBaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-
-    parent::prepareRow($row);
+    // Always include this fragment at the beginning of every prepareRow()
+    // implementation, so parent classes can ignore rows.
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
 
     // If the term does not exist in topic or component vocabularies, create
     // a new topic term.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $row->component = doj_migrate_prepare_topic_term($row->field_resource_component);
-    $row->component = doj_migrate_standardize_component_terms($row->field_resource_component);
+
+    // Convert the Agency to a matching component.
+    $row->Agency = ResourceIsoFormMigration::ResourceComponentNormalize($row->Agency);
+    if (empty($row->Agency)) {
+      // There is no agency so abort the migration.
+      return FALSE;
+    }
 
     // Build the links.
     // Populate the first link Title from the database entry.
@@ -118,9 +126,6 @@ class ResourceIsoFormMigration extends JusticeBaseMigration {
       $row->Location .= '|' . $link->Location;
       $row->LinkTitle .= '|' . $link->SubTitle;
     }
-
-    // Convert the Agency to a matching component.
-    $row->Agency = ResourceIsoFormMigration::ResourceComponentNormalize($row->Agency);
 
   }
 
