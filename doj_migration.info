@@ -45,6 +45,7 @@ files[] = organizations/nsd.inc
 files[] = organizations/organizations.inc
 files[] = organizations/oarm.inc
 files[] = organizations/oip.inc
+files[] = organizations/ola.inc
 files[] = organizations/olc.inc
 files[] = organizations/olp.inc
 files[] = organizations/opa.inc

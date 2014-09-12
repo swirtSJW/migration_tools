@@ -62,6 +62,9 @@ function doj_migration_migrate_api() {
       'oip' => array(
         'title' => t('OIP - Office of Information Policy'),
       ),
+      'ola' => array(
+        'title' => t('OLA - Office of Legislative Affairs'),
+      ),
       'olc' => array(
         'title' => t('OLC - Office of Legal Counsel'),
       ),
@@ -318,6 +321,14 @@ function doj_migration_migrate_api() {
       'OipFile' => array(
         'group_name' => 'oip',
         'class_name' => 'OipFileMigration',
+      ),
+      'OlaFile' => array(
+        'group_name' => 'ola',
+        'class_name' => 'OlaFileMigration',
+      ),
+      'OlaPage' => array(
+        'group_name' => 'ola',
+        'class_name' => 'OlaPageMigration',
       ),
       'OlcPage' => array(
         'group_name' => 'olc',

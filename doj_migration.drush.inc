@@ -164,11 +164,11 @@ function doj_migrate_find_folders_with_files($organization, $exts, $ignore = arr
  * @return bool
  *   Should this folder be ignored.
  */
-function doj_migration_ignore_folder($folder, $ignore) {
+function doj_migration_ignore_folder($folder, $ignore = array()) {
   $ignore_it = FALSE;
 
   foreach ($ignore as $string) {
-    if (substr_count($folder, $string) > 0) {
+    if (!empty($string) && substr_count($folder, $string) > 0) {
       $ignore_it = TRUE;
       break;
     }
