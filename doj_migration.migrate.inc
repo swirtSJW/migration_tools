@@ -458,6 +458,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'psc',
         'class_name' => 'PscFileMigration',
       ),
+      'DojResourceIsoFormDb' => array(
+        'group_name' => 'doj',
+        'class_name' => 'DojResourceIsoFormMigration',
+      ),
       'TribalPage' => array(
         'group_name' => 'tribal',
         'class_name' => 'TribalPageMigration',
