@@ -237,6 +237,19 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+    // If the press release is from 2005 - 2008, we should ignore it.
+    $ignore = FALSE;
+    foreach (array("2005", "2006", "2007", "2008") as $year) {
+      if (substr_count($row->documentLocation, $year) > 0) {
+        $ignore = TRUE;
+        break;
+      }
+    }
+
+    if ($ignore == TRUE) {
+      return FALSE;
+    }
+
     if (!$row->publishStatus) {
       return FALSE;
     }
