@@ -7,19 +7,34 @@
 class StringCleanUp {
   /**
    * Deal with encodings.
+   *
+   * @param string $string
+   *   The string to have its encoding processed.
+   *
+   * @return string
+   *   The processed string.
    */
   public static function fixEncoding($string = '') {
-    // Fix and bizarre characters pre-encoding.
+
+    // Fix and replace bizarre characters pre-encoding.
     $string = StringCleanUp::convertFatalCharstoASCII($string);
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
-
-    $encoding = mb_detect_encoding($string, mb_detect_order(), TRUE);
+    $type_detect = array(
+      'ASCII',
+      'UTF-8',
+      'ISO-8859-1',
+      'ISO-8859-6',
+    );
+    $encoding = mb_detect_encoding($string, $type_detect, TRUE);
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
     if (!$is_utf8 && !empty($encoding)) {
       $string = mb_convert_encoding($string, 'UTF-8', $encoding);
     }
+
+    // Fix and replace bizarre characters to get those caused by encoding.
+    $string = StringCleanUp::convertFatalCharstoASCII($string);
 
     // @TODO Here would be the spot to run a diff comparing before and after
     // encoding and then watchdog the offending character that results in �.
@@ -36,7 +51,16 @@ class StringCleanUp {
    */
   public static function fatalCharsMap() {
     $convert_table = array(
-      '°' => '&deg;', 'ü' => '&uuml;',
+      '°' => '&deg;',
+      '¡' => '&iexcl;', '&#xa1;' => '&iexcl;',
+      '¿' => '&iquest;', '&#xbf;' => '&iquest;',
+      'á' => '&agrave;', 'Á' => '&Aacute;', '&#xc4;' => '&Aacute;', '&#xe1;' => '&aacute;',
+      'é' => '&eacute;', 'É' => '&Eacute;', '&#xc9;' => '&Eacute;', '&#xe9;' => '&eacute;',
+      'Í' => '&Iacute;', 'í' => '&iacute;', '&#xcd;' => '&Iacute;', '&#xed;' => '&iacute;',
+      'ó' => '&oacute;', '&#xF3;' => '&oacute;','&#xf3;' => '&oacute;', '&#xd3;' => '&Oacute;', 'Ó' => '&Oacute;',
+      'ú' => '&uacute;', '&#xfa;' => '&uacute;', 'Ú' => '&Uacute;', '&#xda;' => '&Uacute;',
+      'ü' => '&uuml;', '&#xfc;' => '&uuml;', 'Ü' => '&Uuml;', '&#xdc;' => '&Uuml;',
+      'ñ' => '&ntilde;', '&#xf1;' => '&ntilde;',  'Ñ' => '&Ntilde;', '&#xd1;' => '&Ntilde;', '&#xF1;' => '&ntilde;',
     );
 
     return $convert_table;
