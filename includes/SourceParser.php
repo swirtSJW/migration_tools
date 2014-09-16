@@ -57,8 +57,18 @@ class SourceParser {
    * Create the queryPath object.
    */
   protected function initQueryPath($html) {
+    $type_detect = array(
+      'UTF-8',
+      'ISO-8859-1',
+      'ISO-8859-6',
+    );
+    $convert_from = mb_detect_encoding($string, $type_detect, TRUE);
+
     // Create global query path, Gets reset to NULL by SourceParser__construct.
-    $qp_options = array('convert_to_encoding' => 'UTF-8');
+    $qp_options = array(
+      'convert_to_encoding' => 'UTF-8',
+      'convert_from_encoding' => $convert_from,
+    );
     $this->queryPath = htmlqp($html, NULL, $qp_options);
   }
 
