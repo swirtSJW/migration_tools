@@ -11,98 +11,137 @@
  * Implements hook_migrate_api().
  */
 function doj_migration_migrate_api() {
+  $disable_hooks = array(
+    'node_update' => array(
+      'akamai',
+      'expire',
+    ),
+    'node_delete' => array(
+      'akamai',
+    ),
+  );
+
   $api = array(
     'api' => 2,
     'groups' => array(
       'asg' => array(
         'title' => t('Office of the Associate Attorney General'),
+        'disable_hooks' => $disable_hooks,
       ),
       'ag' => array(
         'title' => t('Office of the Attorney General'),
+        'disable_hooks' => $disable_hooks,
       ),
       'core' => array(
         'title' => t('Core Entities'),
+        'disable_hooks' => $disable_hooks,
       ),
       'careers' => array(
         'title' => t('Careers'),
+        'disable_hooks' => $disable_hooks,
       ),
       'crs' => array(
         'title' => t('CRS - Community Relations Service'),
+        'disable_hooks' => $disable_hooks,
       ),
       'dag' => array(
         'title' => t('DAG - Office of the Deputy Attorney General'),
+        'disable_hooks' => $disable_hooks,
       ),
       'doj' => array(
         'title' => t('DOJ - Department of Justice'),
+        'disable_hooks' => $disable_hooks,
       ),
       'ej' => array(
         'title' => t('EJ - Environmental Justice'),
+        'disable_hooks' => $disable_hooks,
       ),
       'espanol' => array(
         'title' => t('espanol - Justice.gov en Espanol'),
+        'disable_hooks' => $disable_hooks,
       ),
       'fcsc' => array(
         'title' => t('FCSC - Foreign Claims Settlement Commission'),
+        'disable_hooks' => $disable_hooks,
       ),
       'interpol' => array(
         'title' => t('INTERPOL'),
+        'disable_hooks' => $disable_hooks,
       ),
       'jmd' => array(
         'title' => t('JMD - Justice Management Division'),
+        'disable_hooks' => $disable_hooks,
       ),
       'ncfs' => array(
         'title' => t('NCFS - National Commission on Forensic Science'),
+        'disable_hooks' => $disable_hooks,
       ),
       'nsd' => array(
         'title' => t('NSD - National Security Division'),
+        'disable_hooks' => $disable_hooks,
       ),
       'oarm' => array(
         'title' => t('OARM - Office of Attorney Recruitment & Management'),
+        'disable_hooks' => $disable_hooks,
       ),
       'oip' => array(
         'title' => t('OIP - Office of Information Policy'),
+        'disable_hooks' => $disable_hooks,
       ),
       'ola' => array(
         'title' => t('OLA - Office of Legislative Affairs'),
       ),
       'olc' => array(
         'title' => t('OLC - Office of Legal Counsel'),
+        'disable_hooks' => $disable_hooks,
       ),
       'olp' => array(
         'title' => t('OLP - Office of Legal Policy'),
+        'disable_hooks' => $disable_hooks,
       ),
       'opa' => array(
         'title' => t('OPA - Office of Public Affairs'),
+        'disable_hooks' => $disable_hooks,
       ),
       'opcl' => array(
         'title' => t('OPCL - Office of Privacy and Civil Liberties'),
+        'disable_hooks' => $disable_hooks,
       ),
       'open' => array(
         'title' => t('Open - Open Government'),
+        'disable_hooks' => $disable_hooks,
       ),
       'osg' => array(
         'title' => t('OSG - Office of the Solicitor General'),
+        'disable_hooks' => $disable_hooks,
       ),
       'otj' => array(
         'title' => t('OTJ - Office of Tribal Justice'),
+        'disable_hooks' => $disable_hooks,
       ),
       'osdbu' => array(
         'title' => t('OSDBU - Office of Small and Disadvantaged Business Utilization'),
+        'disable_hooks' => $disable_hooks,
       ),
       'ovw' => array(
         'title' => t('OVW - Office on Violence Against Women'),
+        'disable_hooks' => $disable_hooks,
       ),
       'prao' => array(
         'title' => t('PRAO - Professional Responsibility Advisory Office'),
+        'disable_hooks' => $disable_hooks,
       ),
       'psc' => array(
         'title' => t('PSC - Project Safe Childhood'),
+        'disable_hooks' => $disable_hooks,
       ),
       'tribal' => array(
         'title' => t('Tribal Justice and Safety'),
+        'disable_hooks' => $disable_hooks,
       ),
       'usao' => array(
         'title' => t('USAO - United States Attorneys Office'),
+        'disable_hooks' => $disable_hooks,
       ),
     ),
     'migrations' => array(
