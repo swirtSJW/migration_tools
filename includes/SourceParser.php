@@ -64,7 +64,7 @@ class SourceParser {
     );
     $convert_from = mb_detect_encoding($string, $type_detect, TRUE);
 
-    // Create global query path, Gets reset to NULL by SourceParser__construct.
+    // Create query path object.
     $qp_options = array(
       'convert_to_encoding' => 'UTF-8',
       'convert_from_encoding' => $convert_from,
