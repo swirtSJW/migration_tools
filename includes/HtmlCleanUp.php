@@ -104,6 +104,63 @@ class HtmlCleanUp {
     return $processed_html;
   }
 
+  /**
+   * Get the first element matching the CSS selector from html.
+   *
+   * @param string $html
+   *   Html to get processed.
+   * @param string $selector
+   *   A css selector.
+   *
+   * @return string
+   *   The text from the first matching selector, if matched.
+   */
+  public static function getElementFromHtml($html, $selector) {
+    $text = "";
+
+    // Put the shell on the html to extract with more certainty later.
+    $query_path = htmlqp($html, NULL, array());
+    $items = $query_path->find($selector);
+    foreach ($items as $item) {
+      $text = $item->text();
+      break;
+    }
+
+    return $text;
+  }
+
+  /**
+   * Extract the first elements with the CSS selector from html.
+   *
+   * Extraction means that we return the match, but we also return the
+   * original html without the element that matched the search.
+   *
+   * @param string $html
+   *   Html to get processed.
+   * @param string $selector
+   *   A CSS selector to extract.
+   *
+   * @return array
+   *   The array contains the matched text, and the original html without the
+   *   match.
+   */
+  public static function extractElementFromHtml($html, $selector) {
+    // Put the shell on the html to extract with more certainty later.
+    $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
+    $query_path = htmlqp($html, NULL, array());
+
+    $items = $query_path->find($selector);
+    foreach ($items as $item) {
+      $text = $item->text();
+      $item->remove();
+      break;
+    }
+
+    // Grab the html from the shell.
+    $processed_html = $query_path->top('.throw-away-parser-shell')->innerHTML();
+    return array($text, $processed_html);
+  }
+
 
   /**
    * Removes a wrapping element, leaving child elements intact.
