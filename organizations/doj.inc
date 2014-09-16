@@ -204,7 +204,8 @@ class DojCaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_component', 'district');
     $this->addFieldMapping('field_case_component:create_term')->defaultValue(TRUE);
-    $this->addFieldMapping('field_case_topic')->defaultValue("Information for Victims in Large Cases")->arguments(array('create_term' => TRUE));
+    $this->addFieldMapping('field_case_topic')->defaultValue("Information for Victims in Large Cases");
+    $this->addFieldMapping('field_case_topic:create_term')->defaultValue(TRUE);
     $this->addSimpleMappings(array("uid", "status"));
   }
 
