@@ -131,6 +131,11 @@ class AgSpeechMigration extends JusticeHtmlToSpeechMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+    module_load_include("inc", "doj_migration", "includes/NewsHelper");
+    if (NewsHelper::rejectNewsOlderThan(2009, $row->fileid) == TRUE) {
+      return FALSE;
+    }
+
     parent::prepareRow($row);
     $row->field_speech_component = "Office of the Attorney General";
     try {
@@ -182,7 +187,19 @@ class AgSpeechSpanishMigration extends JusticeHtmlToSpeechSpanishMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+    module_load_include("inc", "doj_migration", "includes/NewsHelper");
+    if (NewsHelper::rejectNewsOlderThan(2009, $row->fileid) == TRUE) {
+      return FALSE;
+    }
+
     parent::prepareRow($row);
+    module_load_include("inc", "doj_migration", "includes/HtmlCleanUp");
+    $info = HtmlCleanUp::extractElementFromHtml($row->body, ".presscontenttitle");
+    if (!empty($info[0])) {
+      $row->title = $info[0];
+      $row->body = $info[1];
+    }
+
     $row->field_speech_component = "Office of the Attorney General";
   }
 }
