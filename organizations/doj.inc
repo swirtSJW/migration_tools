@@ -200,8 +200,10 @@ class DojCaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('title', 'casey');
     $this->addFieldMapping('field_case_overview', 'overview');
     $this->addFieldMapping('field_case_link', 'case_link');
-    $this->addFieldMapping('field_case_tags', 'names')->separator(";")->arguments(array('create_term' => TRUE));
-    $this->addFieldMapping('field_case_component', 'district')->arguments(array('create_term' => TRUE));
+    $this->addFieldMapping('field_case_tags', 'names')->separator(";");
+    $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_component', 'district');
+    $this->addFieldMapping('field_case_component:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_topic')->defaultValue("Information for Victims in Large Cases")->arguments(array('create_term' => TRUE));
     $this->addSimpleMappings(array("uid", "status"));
   }
