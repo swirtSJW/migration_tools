@@ -14,6 +14,8 @@
  */
 abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
+  private $sourceParserClass;
+
   /**
    * @var SourceParser $source_parser
    *   The source parser object for a given row.
@@ -45,6 +47,15 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
+
+    // A child class might provide it's own source parser that offer specific
+    // cleanup.
+    if (array_key_exists('source_parser_class', $arguments)) {
+      $this->sourceParserClass = $arguments['source_parser_class'];
+    }
+    else {
+      $this->sourceParserClass = "SourceParser";
+    }
 
     // The destination is the page content type.
     $this->destination = new MigrateDestinationNode('page');
@@ -95,7 +106,14 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    $this->sourceParser = new SourceParser($row->url_path, $row->filedata);
+    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata);
+
+    // We check that everything has been initialized correctly to keep children
+    // classes from having to do all this checks.
+    if (!is_object($this->sourceParser->queryPath)) {
+      $this->queueMessage(t("@fileid failed to initialize QueryPath", array('@fileid' => $row->fileid)));
+      return FALSE;
+    }
 
     $row->title = $this->sourceParser->getTitle();
     $row->body = $this->sourceParser->getBody();

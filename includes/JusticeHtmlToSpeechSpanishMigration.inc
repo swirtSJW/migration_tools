@@ -19,6 +19,12 @@ abstract class JusticeHtmlToSpeechSpanishMigration extends JusticeHtmlToSpeechMi
    * {@inheritdoc}
    */
   public function __construct($arguments, $source_dirs, $regex = NULL, $options = array()) {
+
+    // Use our own source parser, if one has not been defined.
+    if (!array_key_exists('source_parser_class', $arguments)) {
+      $arguments['source_parser_class'] = "HtmlToSpeechSpanishSourceParser";
+    }
+
     parent::__construct($arguments, $source_dirs, $regex, $options);
     $this->addFieldMapping('language')->defaultValue('es');
   }
@@ -27,17 +33,11 @@ abstract class JusticeHtmlToSpeechSpanishMigration extends JusticeHtmlToSpeechMi
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    parent::prepareRow($row);
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
 
-    // Process release_date from spanish, into numeric.
-    try {
-      $date_string = $this->sourceParser->queryPath->find('.speechdate')->first()->text();
-      // Date_string looks like   miércoles, 28 de febrero de 2014.
-      $row->field_speech_date = parent::dojMigrationESDateConvertWDMY($date_string);
-    }
-    catch (Exception $e){
-      $this->queueMessage("{$row->fileId} failed to acquire a date.");
-    }
+    $row->field_speech_date = $this->sourceParser->getSpeechDate();
   }
-
 }

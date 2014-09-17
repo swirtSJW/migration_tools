@@ -98,7 +98,6 @@ class AgFileMigration extends JusticeDeployableBinaryFileMigration {
   }
 }
 
-
 /**
  * Migrates  speeches .html files from /ag to speech nodes.
  *
@@ -136,21 +135,12 @@ class AgSpeechMigration extends JusticeHtmlToSpeechMigration {
       return FALSE;
     }
 
-    parent::prepareRow($row);
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return FALSE;
+    }
+
     $row->field_speech_component = "Office of the Attorney General";
-    try {
-      $date_string = $this->sourceParser->queryPath->find('.speechdate')->first()->text();
-      $date = DateTime::createFromFormat("l, F j, Y", $date_string);
-      if ($date) {
-        $row->field_speech_date = $date->format('Y-m-d');
-      }
-      else {
-        $this->queueMessage("{$row->fileId} date does not have the format l, F j, Y: {$date_string}");
-      }
-    }
-    catch(Exception $e){
-      $this->queueMessage("{$row->fileId} failed to acquire a date");
-    }
   }
 }
 
@@ -192,12 +182,9 @@ class AgSpeechSpanishMigration extends JusticeHtmlToSpeechSpanishMigration {
       return FALSE;
     }
 
-    parent::prepareRow($row);
-    module_load_include("inc", "doj_migration", "includes/HtmlCleanUp");
-    $info = HtmlCleanUp::extractElementFromHtml($row->body, ".presscontenttitle");
-    if (!empty($info[0])) {
-      $row->title = $info[0];
-      $row->body = $info[1];
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
     }
 
     $row->field_speech_component = "Office of the Attorney General";

@@ -25,8 +25,11 @@ files[] = includes/JusticeHtmlToBlogEntryMigration.inc
 files[] = includes/JusticeWordpressMigration.inc
 files[] = includes/JusticeCsvMigration.inc
 files[] = includes/JusticeUserMigration.inc
-files[] = includes/CareersSourceParser.php
-files[] = includes/SourceParser.php
+
+files[] = includes/source_parsers/CareersSourceParser.php
+files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
+files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
+files[] = includes/source_parsers/SourceParser.php
 
 files[] = organizations/asg.inc
 files[] = organizations/ag.inc

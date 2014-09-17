@@ -37,6 +37,11 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
       'field_pr_body' => t('Body'),
     );
 
+    // Use our own source parser, if one has not been defined.
+    if (!array_key_exists('source_parser_class', $arguments)) {
+      $arguments['source_parser_class'] = "HtmlToSpeechSourceParser";
+    }
+
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
@@ -60,21 +65,15 @@ abstract class JusticeHtmlToSpeechMigration extends JusticeHtmlToNodeMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    parent::prepareRow($row);
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
 
-    // Get the location from .speechlocation.
-    try {
-      if (!is_object($this->sourceParser->queryPath)) {
-        throw new Exception("QueryPath could not be initialized.");
-      }
-      $location = trim($this->sourceParser->queryPath->find('.speechlocation')->first()->text());
-      $address = parent::geoCodeString($location);
-      $row->city = $address['locality'];
-      $row->state = $address['administrative_area_level_1'];
-      $row->country = $address['country'];
-    }
-    catch (Exception $e) {
-      $this->queueMessage(t("@fileid failed to acquire a location, error: @error", array('@fileid' => $row->fileid, '@error' => $e->getMessage())));
-    }
+    $row->city = $this->sourceParser->getCity();
+    $row->state = $this->sourceParser->getState();
+    $row->country = $this->sourceParser->getCountry();
+
+    $row->field_speech_date = $this->sourceParser->getSpeechDate();
   }
 }
