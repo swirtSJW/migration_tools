@@ -66,6 +66,8 @@ class HtmlCleanUp {
     // Some pages have images as subtitles. Turn those into html.
     HTMLCleanUp::changeSubTitleImagesForHtml($query_path);
 
+    // Removing scripts used when linking to outside sources.
+    HtmlCleanUp::removeExtLinkJS($query_path);
   }
 
   /**

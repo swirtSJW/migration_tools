@@ -31,31 +31,11 @@ class OlaPageMigration extends JusticeHtmlToPageMigration {
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
+    $arguments['source_parser_class'] = "OlaPageSourceParser";
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from Office of Legislative Affairs section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('ola')->sourceMigration('Organization');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    parent::prepareRow($row);
-    $body = $row->body;
-    $qp = htmlqp("<div class='get-this-out'>{$body}</div>");
-    $images = $qp->find('img');
-
-    // If the first image says bar, is most likely one of the eagle image
-    // banners.
-    foreach ($images as $img) {
-      if (substr_count($img->attr('src'), "-bar") > 0 || substr_count($img->attr('src'), "-banner") > 0) {
-        $img->remove();
-      }
-      break;
-    }
-
-    $row->body = $qp->top('.get-this-out')->innerHtml();
   }
 }
 
