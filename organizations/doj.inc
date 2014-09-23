@@ -38,7 +38,6 @@ class DojPageMigration extends JusticeHtmlToPageMigration {
       'joiningforces',
       'publications',
       'sitemap',
-
       'about.html',
       'a-z-index.html',
       'component.htm',
