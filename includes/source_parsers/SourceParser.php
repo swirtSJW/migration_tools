@@ -62,7 +62,7 @@ class SourceParser {
       'ISO-8859-1',
       'ISO-8859-6',
     );
-    $convert_from = mb_detect_encoding($string, $type_detect, TRUE);
+    $convert_from = mb_detect_encoding($html, $type_detect, TRUE);
 
     // Create query path object.
     $qp_options = array(
