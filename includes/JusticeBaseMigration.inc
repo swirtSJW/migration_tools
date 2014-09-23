@@ -205,7 +205,8 @@ abstract class JusticeBaseMigration extends Migration {
         '@date_modified' => $date_modified,
         '@processed_date' => $date_array[3] . '-' . $date_array[2] . '-' . $date_array[1],
       );
-      $this->queueMessage(t("Date import went wrong when: '@date_string'  modified to '@date_modified' became'@processed_date'.", $msgvars));
+      $message = t("Date import went wrong when: '@date_string'  modified to '@date_modified' became'@processed_date'.", $msgvars);
+      watchdog('doj_migration', $message);
     }
 
     return $processed_date;
