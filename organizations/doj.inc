@@ -216,6 +216,7 @@ class DojCaseMigration extends JusticeBaseMigration {
     parent::prepareRow($row);
     $row->uid = 1;
     $row->status = 1;
+    $row->case_link = "http://www.justice.gov{$row->case_link}";
   }
 
   /**
