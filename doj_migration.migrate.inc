@@ -40,6 +40,10 @@ function doj_migration_migrate_api() {
         'title' => t('Careers'),
         'disable_hooks' => $disable_hooks,
       ),
+      'civil' => array(
+        'title' => t('Civil Division'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'crs' => array(
         'title' => t('CRS - Community Relations Service'),
         'disable_hooks' => $disable_hooks,
@@ -196,6 +200,18 @@ function doj_migration_migrate_api() {
       'CareersPage' => array(
         'group_name' => 'careers',
         'class_name' => 'CareersPageMigration',
+      ),
+      'CivilCase' => array(
+        'group_name' => 'civil',
+        'class_name' => 'CivilCaseMigration',
+      ),
+      'CivilFile' => array(
+        'group_name' => 'civil',
+        'class_name' => 'CivilFileMigration',
+      ),
+      'CivilPage' => array(
+        'group_name' => 'civil',
+        'class_name' => 'CivilPageMigration',
       ),
       'CrsFile' => array(
         'group_name' => 'crs',
