@@ -48,6 +48,10 @@ function doj_migration_migrate_api() {
         'title' => t('DAG - Office of the Deputy Attorney General'),
         'disable_hooks' => $disable_hooks,
       ),
+      'defendingchildhood' => array(
+        'title' => t('Defending Childhood'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'doj' => array(
         'title' => t('DOJ - Department of Justice'),
         'disable_hooks' => $disable_hooks,
@@ -208,6 +212,14 @@ function doj_migration_migrate_api() {
       'DagFile' => array(
         'group_name' => 'dag',
         'class_name' => 'DagFileMigration',
+      ),
+      'DefendingChildhoodPage' => array(
+        'group_name' => 'defendingchildhood',
+        'class_name' => 'DefendingChildhoodPageMigration',
+      ),
+      'DefendingChildhoodFile' => array(
+        'group_name' => 'defendingchildhood',
+        'class_name' => 'DefendingChildhoodFileMigration',
       ),
       'DojFile' => array(
         'group_name' => 'doj',
