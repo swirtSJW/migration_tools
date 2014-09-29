@@ -39,7 +39,7 @@ class EspanolPageMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
-    $this->addFieldMapping('language')->defaultValue('es');
+    $this->addFieldMapping('field_pseudo_language')->defaultValue('es');
   }
 
   /**
@@ -88,7 +88,7 @@ class EspanolPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates Press Releases from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
-    $this->addFieldMapping('language')->defaultValue('es');
+    $this->addFieldMapping('field_pseudo_language')->defaultValue('es');
 
   }
 

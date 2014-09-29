@@ -196,7 +196,7 @@ class AsgSpeechEspanolMigration extends JusticeHtmlToSpeechMigration {
     parent::__construct($arguments, $source_dirs, $regex, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Office of the Associate Attorney General.');
-    $this->addFieldMapping('language')->defaultValue('es');
+    $this->addFieldMapping('field_pseudo_language')->defaultValue('es');
     $this->addFieldMapping('og_group_ref')->defaultValue('aag')->sourceMigration('Organization');
   }
 

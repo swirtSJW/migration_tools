@@ -26,7 +26,7 @@ abstract class JusticeHtmlToSpeechSpanishMigration extends JusticeHtmlToSpeechMi
     }
 
     parent::__construct($arguments, $source_dirs, $regex, $options);
-    $this->addFieldMapping('language')->defaultValue('es');
+    $this->addFieldMapping('field_pseudo_language')->defaultValue('es');
   }
 
   /**
