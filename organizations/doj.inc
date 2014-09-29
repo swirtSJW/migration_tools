@@ -199,6 +199,7 @@ class DojCaseMigration extends JusticeBaseMigration {
     $this->addFieldMapping('title', 'casey');
     $this->addFieldMapping('field_case_link:title', 'casey');
     $this->addFieldMapping('field_case_overview', 'overview');
+    $this->addFieldMapping('field_case_overview:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_case_link', 'case_link');
     $this->addFieldMapping('field_case_tags', 'names')->separator(";");
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
