@@ -19,19 +19,38 @@ class CivilPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $json_dir = '["civil\/ocpl","civil\/ocpl\/cases\/Closed","civil\/ocpl\/cases\/Open","civil\/common\/elecread\/2004","civil\/common\/elecread\/2003","civil\/cases\/tobacco2","civil\/cases\/tobacco2\/_vti_cnf","civil\/cases\/cobell","civil\/cases\/cobell\/docs","civil\/cases\/cobell\/docs\/pdf","civil\/cases\/cobell\/docs\/pdf\/_vti_cnf","civil\/cases\/cobell\/_vti_cnf","civil\/docs_forms","civil\/torts\/reca","civil\/torts\/const","civil\/torts\/const\/reca","civil","civil\/ocl","civil\/oil","civil\/BusSchedule","civil\/ocpl\/cases\/cases\/Fidelity_ATM","civil\/ocpl\/cases\/cases\/AmericanVending","civil\/ocpl\/cases\/cases\/Putnam","civil\/orientation","civil\/www.justice.gov\/opcl","civil\/appellate","civil\/common","civil\/common\/press","civil\/common\/oija","civil\/commercial","civil\/commercial\/oija","civil\/commercial\/financial","civil\/commercial\/fraud","civil\/commercial\/intellectual","civil\/commercial\/national-courts","civil\/commercial\/foreign","civil\/omp","civil\/css","civil\/torts\/cstls","civil\/torts\/aa","civil\/torts","civil\/torts\/etls","civil\/torts\/ftcals","civil\/employment","civil\/fedprog","civil\/oil\/dcs","civil\/oil\/as","civil\/pr"]';
+    $json_dir = '["civil\/ocpl","civil\/ocpl\/cases\/Closed","civil\/ocpl\/cases\/Open","civil\/common\/elecread\/2004","civil\/common\/elecread\/2003","civil\/cases\/tobacco2","civil\/cases\/cobell","civil\/cases\/cobell\/docs","civil\/cases\/cobell\/docs\/pdf","civil\/docs_forms","civil\/torts\/reca","civil\/torts\/const","civil\/torts\/const\/reca","civil","civil\/ocl","civil\/oil","civil\/BusSchedule","civil\/ocpl\/cases\/cases\/Fidelity_ATM","civil\/ocpl\/cases\/cases\/AmericanVending","civil\/ocpl\/cases\/cases\/Putnam","civil\/orientation","civil\/www.justice.gov\/opcl","civil\/appellate","civil\/common","civil\/common\/oija","civil\/commercial","civil\/commercial\/oija","civil\/commercial\/financial","civil\/commercial\/fraud","civil\/commercial\/intellectual","civil\/commercial\/national-courts","civil\/commercial\/foreign","civil\/omp","civil\/css","civil\/torts\/cstls","civil\/torts\/aa","civil\/torts","civil\/torts\/etls","civil\/torts\/ftcals","civil\/employment","civil\/fedprog","civil\/oil\/dcs","civil\/oil\/as"]';
 
     // Define source directories.
     $source_dirs = drupal_json_decode($json_dir);
 
     $options = array('recurse' => FALSE);
 
+    $arguments['source_parser_class'] = "CivilPageSourceParser";
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the Civil Division section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('civil')->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (substr_count($row->fileid, "boxchart") > 0) {
+      return FALSE;
+    }
+
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
+
+    if (substr_count($row->title, "Untitled") > 0) {
+      return FALSE;
+    }
   }
 }
 

@@ -306,5 +306,27 @@ class HtmlCleanUp {
       $alt = $image->attr('alt');
       $element->html("<h2>{$alt}</h2>");
     }
+
+    // Let's assume that images with 20 height are also subtitles.
+    $images = $query_path->find('img');
+
+    foreach ($images as $image) {
+      $height = $image->attr("height");
+      $alt = $image->attr('alt');
+
+      if (strcasecmp($height, "20") == 0 && !empty($alt)) {
+        $image->wrap("<div class='h2-wrapper'></div>");
+      }
+    }
+
+    // Let's assume that images with 20 height are also subtitles.
+    $wrappers = $query_path->find('.h2-wrapper');
+
+    foreach ($wrappers as $wrapper) {
+      foreach ($wrapper->find('img') as $img) {
+        $alt = $img->attr('alt');
+        $wrapper->html("<h2>{$alt}</h2>");
+      }
+    }
   }
 }
