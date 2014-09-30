@@ -29,6 +29,7 @@ files[] = includes/JusticeUserMigration.inc
 
 files[] = includes/source_parsers/CareersSourceParser.php
 files[] = includes/source_parsers/CivilPageSourceParser.php
+files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/OlaPageSourceParser.php

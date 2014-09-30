@@ -194,31 +194,12 @@ class EspanolSpeechMigration extends JusticeHtmlToSpeechSpanishMigration {
       'recurse' => TRUE,
     );
 
+    $arguments['source_parser_class'] = "EspanolSpeechSourceParser";
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates Speeches from the Spanish section into Espanol.');
     $this->addFieldMapping('og_group_ref')->defaultValue('espanol')->sourceMigration('Organization');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    parent::prepareRow($row);
-
-    // Get title from .presscontenttitle.
-    $row->title = $this->sourceParser->queryPath->find('.presscontenttitle')->first()->text();
-    $row->title = mb_strimwidth($row->title, 0, 255, "...");
-    $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
-
-    // Get body from .presscontenttext.
-    $row->body = $this->sourceParser->queryPath->find('.presscontenttext')->first()->html();
-    $row->body = StringCleanUp::stripCmsLegacyMarkup($row->body);
-
-    // Remove common mso style string.
-    $bad_string1 = 'style="margin: 0in 0in 0pt; text-indent: 0in; line-height: normal; mso-layout-grid-align: none; mso-outline-level: 1;"';
-    $row->body = str_replace($bad_string1, '', $row->body);
   }
 }
