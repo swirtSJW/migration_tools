@@ -175,7 +175,12 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
       'compLongName',
       'compAbbrev',
     ));
-    $query->orderBy('id', 'ASC');
+    $query->leftJoin("$cmsopa_db_name.cms_opa_doclinks", 'cod', 'c.id = cod.docID');
+    $query->condition('cod.documentType', 'speech', '!=');
+    $query->addExpression("GROUP_CONCAT(cod.url SEPARATOR '|')", 'doclink_urls');
+    $query->addExpression("GROUP_CONCAT(cod.text SEPARATOR '|')", 'doclink_titles');
+    $query->groupBy('c.id');
+    $query->orderBy('c.id', 'ASC');
 
     // A map of source MySQL row -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
@@ -184,6 +189,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
           'type' => 'int',
           'length' => 11,
           'not null' => TRUE,
+          'alias' => 'c',
         ),
       ),
       MigrateDestinationNode::getKeySchema()
@@ -237,6 +243,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+
     if (!$row->publishStatus) {
       return FALSE;
     }
@@ -265,6 +272,18 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
     }
 
     $row->component = doj_migrate_standardize_component_terms($row->compLongName);
+
+    if (!empty($row->doclink_titles)) {
+      $doclink_titles = explode('|', $row->doclink_titles);
+      $doclink_urls = explode('|', $row->doclink_urls);
+      $doclinks = array();
+      foreach ($doclink_titles as $key => $title) {
+        $doclinks[] = l($title, ltrim($doclink_urls[$key], '/'));
+      }
+
+      // Append doclinks to body.
+      $row->body = $row->body . implode('<br />', $doclinks);
+    }
   }
 
   /**
