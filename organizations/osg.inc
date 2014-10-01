@@ -74,3 +74,269 @@ class OsgFileMigration extends JusticeDeployableBinaryFileMigration {
     return "osg";
   }
 }
+
+/**
+ * Class OsgBriefMigration.
+ * @package doj_migration
+ */
+class OsgBriefMigration extends JusticeHtmlToNodeMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    // Define the fields that will be derived from the static files.
+    $source_fields = array(
+      'title' => t('Title'),
+      'field_brief_body' => t('Body'),
+      'field_brief_docket' => t('Docket number'),
+      'field_brief_sc_term' => t('Supreme Court term'),
+      'field_brief_filing_date' => t('Filing date'),
+      'field_brief_topic' => t('Topic'),
+      'field_brief_court_level' => t('Court level'),
+      'field_brief_federal_court' => t('Federal court'),
+      'field_brief_links' => t('Links'),
+      'field_brief_attachments' => t('Attachments'),
+    );
+
+    $source_dirs = array(
+      'osg/briefs',
+    );
+
+    $regex = '/toc3index\.html/';
+
+    $options = array('recurse' => TRUE);
+
+    // Instantiate the parser object that will parse a single HTML file into
+    // chunks that will be translated into nodes.
+    $parser = new BriefChunkParser();
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('brief');
+    $this->addFieldMapping('og_group_ref')->defaultValue('osg')->sourceMigration('Organization');
+
+    // Define non-simple field mappings.
+    $this->addFieldMapping('field_brief_body', 'body');
+    $this->addFieldMapping('field_brief_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_brief_docket', 'field_brief_docket');
+    $this->addFieldMapping('field_brief_sc_term', 'field_brief_sc_term');
+    $this->addFieldMapping('field_brief_filing_date', 'field_brief_filing_date');
+    $this->addFieldMapping('field_brief_topic', 'field_brief_topic');
+    $this->addFieldMapping('field_brief_court_level', 'field_brief_court_level');
+    $this->addFieldMapping('field_brief_federal_court', 'field_brief_federal_court');
+    $this->addFieldMapping('field_brief_type', 'field_brief_type');
+    $this->addFieldMapping('field_brief_links', 'field_brief_links');
+
+    $this->addFieldMapping('field_brief_attachments', 'link');
+    $this->addFieldMapping('field_brief_attachments:file_class')
+      ->defaultValue('MigrateFileUri');
+    //$this->addFieldMapping('field_brief_attachments:source_dir')
+    //  ->defaultValue(variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT) . '/olc/opiniondocs');
+    $this->addFieldMapping('field_brief_attachments:destination_dir', 'destination_dir');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    // Parse the filename to extract tags and year data.
+    // $row->fileid will look something like:
+    // /osg/briefs/2014/3mer/2mer/toc3index.html-?MIGRATECHUNK?-No. 13-534.
+    $fileid_parts = explode('-?MIGRATECHUNK?', $row->fileid);
+    $filename_parts = explode('/', ltrim($fileid_parts[0], '/'));
+    switch (count($filename_parts)) {
+      case 6:
+        $tags = array($filename_parts[3], $filename_parts[4]);
+        break;
+
+      case 5:
+        $tags = array($filename_parts[3]);
+        break;
+    }
+
+    preg_match('/[0-9]{4}/', $fileid_parts[0], $matches);
+    if ($matches) {
+      $year = $matches[0];
+      $row->field_brief_filing_date = $matches[0];
+      unset($matches);
+    }
+
+    // Generate filepath based on article date.
+    $row->destination_dir = "public:///osg/briefs/$year/01/01";
+
+    preg_match('/[A-Z0-9-]/i', $fileid_parts[1], $matches);
+    if ($matches) {
+      $row->field_brief_docket = $matches[0];
+    }
+
+    // Parse attachment URL.
+    $link = $this->sourceParser->queryPath->find('a');
+    if ($link) {
+      global $base_url;
+      $attachment_url = $link->attr('href');
+      $link_prefix =  $base_url . '/' . ltrim(dirname($fileid_parts[0]), '/');
+      $row->link = $link_prefix . '/' . ltrim($attachment_url, './');
+      $link->remove();
+
+      $brief_types = array(
+        'zadm' => 'Admiralty & Maritime',
+        'zadlaw' => 'Administrative Law',
+        'zatr' => 'Antitrust (including FTC antitrust)',
+        'zbkg' => 'Banking (FDIC, Fed., OCC, RTC)',
+        'zbkr' => 'Bankruptcy',
+        'zciv1' => 'Civil Div. I: General (e.g., DOT, FEC, FOIA, FTC (except antitrust), HUD)',
+        'zciv2' => 'Civil Div. II: HHS (Medicare, Social Security)',
+        'zcrt' => 'Civil Rights (including EEOC)',
+        'zcom' => 'Communications (FCC)',
+        'zcon' => 'Constitutional',
+        'zcrim' => 'Criminal (including Habeas/2255)',
+        'zcus' => 'Customs & International Trade',
+        'zedu' => 'Education',
+        'zerisa' => 'ERISA',
+        'zforf' => 'Forfeiture (civil & criminal)',
+        'zhls' => 'National Security & Homeland Security',
+        'zimm' => 'Immigration, Naturalization, & Citizenship',
+        'zind' => 'Indian Law',
+        'zlab' => 'Labor & Employment: FLRA, Labor Dep’t (not ERISA), LHWCA, MSPB, NLRB, OSHA',
+        'zenv' => 'Natural Resources: ENRD, EPA, FERC, Interior, water rights',
+        'zorig' => 'Original Jurisdiction',
+        'zpto' => 'Patent, Trademark, & Copyright',
+        'zsec' => 'Securities Regulation (SEC)',
+        'ztax' => 'Tax',
+        'ztort' => 'Torts (FTCA, Bivens Actions, § 1983, Qualified Immunity)',
+        'ztfa' => 'Treaties and Foreign Affairs',
+        'zmisc' => 'Other',
+      );
+
+      $found_types = array();
+      foreach ($brief_types as $brief_type_key => $brief_type_title) {
+        strstr($attachment_url, $brief_types);
+      }
+      $row->field_brief_type = implode('|', $found_types);
+    }
+
+    $docket_number = doj_migration_find_docket_number($row->filedata);
+    $row->field_brief_docket = $docket_number;
+    $row->title = StringCleanUp::stripFunkyChars(ltrim(str_replace($docket_number, '', $this->sourceParser->queryPath->text()), ' :'));
+    $row->body = '';
+    $row->legacy_path = '';
+
+    $topic = '';
+    if ($topic) {
+      $row->field_brief_topic = doj_migrate_prepare_topic_term($topic);
+    }
+
+    print_r($fileid_parts);
+    print_r($filename_parts);
+    print_r($row);
+  }
+}
+
+/**
+ * Parses a single gallery into a list gallery images.
+ *
+ * @package doj_migration
+ * @subpackage core
+ * @see GalleryImagesMigration
+ */
+class BriefChunkParser extends JusticeChunkParser {
+
+  /**
+   * Sets $this->chunks.
+   */
+  public function setChunks() {
+    // There are multiple patterns used on brief pages.
+    // @see http://www.justice.gov/osg/briefs/1985/index.html
+    // @see http://www.justice.gov/osg/briefs/2014/0responses/toc3index.html
+    $this->chunks = $this->sourceParser->queryPath->find('.brieflist > div');
+    if (!$this->chunks) {
+      $this->chunks = $this->sourceParser->queryPath->find('.bodytext > p');
+    }
+    if (!$this->chunks) {
+      //print_r($this->sourceParser->html());
+      $this->chunks = array();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunkIDs() {
+    $chunks = $this->getChunks();
+
+    $ids = array();
+
+    foreach ($chunks as $chunk) {
+      // The ID of each gallery image will be the href of the image file.
+      $text = $chunk->text();
+      $id = doj_migration_find_docket_number($text);
+
+      // Filter out empty strings.
+      if ($id) {
+        $ids[] = $id;
+      }
+    }
+
+    return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunk($chunk_id) {
+    $chunks = $this->getChunks();
+    $chunk = $chunks->filterPreg('|' . $chunk_id . '|');
+
+    if ($chunk->is('div')) {
+      $data = $chunk->innerHtml();
+    }
+    else {
+      $data = $chunk->parent('p')->innerHtml();
+    }
+
+    if (!$data) {
+      $data = $chunk->parent('div')->innerHtml();
+    }
+    if (!$data) {
+      return 'Data could not be migrated';
+    }
+    else {
+      return $data;
+    }
+  }
+}
+
+/**
+ * Extracts the docket number from a string of text using regex.
+ *
+ * @param string $string
+ *   A string containing the docket number
+ *
+ * @return string
+ *   The extracted docket number.
+ */
+function doj_migration_find_docket_number($string) {
+  // In this regex we are ignoring matches USDOJ:, OSG:, etc. with a negative
+  // look behind. This should match:
+  // @codingStandardsIgnoreStart
+  // 96-1590B:
+  // No. 06-1285
+  // No. 135,
+  // No. 97-1942
+  // Nos. 99-464,
+  // @codingStandardsIgnoreEnd
+  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))#', $string, $matches);
+  if ($matches) {
+    $docket_number = $matches[0];
+    return $docket_number;
+  }
+  return FALSE;
+}
