@@ -218,7 +218,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
 
       $found_types = array();
       foreach ($brief_types as $brief_type_key => $brief_type_title) {
-         strstr($attachment_url, $brief_types);
+        strstr($attachment_url, $brief_types);
       }
       $row->field_brief_type = implode('|', $found_types);
     }
