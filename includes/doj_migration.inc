@@ -303,6 +303,11 @@ function doj_migration_chr_utf8($num) {
  *   The abbreviation of the organization.
  */
 function doj_migration_create_menu_file($organization) {
+  drush_print_r($organization);
+
+  // Organization can be a specific url to, so lets filenamize it.
+  $file_name = str_replace("/", "|", $organization);
+
   // Get html from the organization in justice.
   $base = "http://www.justice.gov";
   $url = "{$base}/{$organization}";
@@ -314,7 +319,7 @@ function doj_migration_create_menu_file($organization) {
   $content = doj_migration_generate_menu_file_content($organization, $menu, "div.leftnav>ul");
 
   // Generate the file.
-  $file = DRUPAL_ROOT . "/sites/all/modules/custom/doj_migration/sources/{$organization}-menu.txt";
+  $file = DRUPAL_ROOT . "/sites/all/modules/custom/doj_migration/sources/{$file_name}-menu.txt";
   $fh = fopen($file, 'w') or die("can't open file");
   fwrite($fh, $content);
   fclose($fh);
@@ -344,6 +349,12 @@ function doj_migration_generate_menu_file_content($organization, $tier, $root, $
   // Get all the li.
   $elements = $tier->find("{$root}>*");
   foreach ($elements as $elem) {
+    if ($elem->is("ul")) {
+      $class_name = doj_migration_random_string();
+      $elem->attr('class', $class_name);
+      $content .= doj_migration_generate_menu_file_content($organization, $tier,
+        "{$root}>ul.{$class_name}", "{$prefix}-");
+    }
     if ($elem->is("div")) {
       $class = $elem->attr('class');
       $content .= doj_migration_generate_menu_file_content($organization, $tier,
@@ -357,13 +368,15 @@ function doj_migration_generate_menu_file_content($organization, $tier, $root, $
 
         $legacy_uri = $a->attr("href");
 
-        // If this is an absolute uri, let's fix that.
-        if (strcmp(substr($legacy_uri, 0, 1), "/") == 0) {
-          $legacy_uri = substr($legacy_uri, 1);
+        $base = "http://www.justice.gov";
+        $url = "{$base}/{$organization}";
+
+        if (substr_count($organization, "/") <= 0) {
+          $url .= "/index.html";
         }
-        else {
-          $legacy_uri = "{$organization}/{$legacy_uri}";
-        }
+
+        $legacy_uri = doj_migration_relative_to_absolute_url($legacy_uri, $url);
+        $legacy_uri = str_replace("http://www.justice.gov/", "", $legacy_uri);
 
         // If the url is pointing to a directory and no an html doc,
         // let's fix that.
@@ -414,4 +427,65 @@ function doj_migration_legacy_to_uri($legacy_uri) {
   }
   watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
   return "";
+}
+
+/**
+ * Generate a random string.
+ *
+ * @return string
+ *   Random string.
+ */
+function doj_migration_random_string() {
+  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $randstring = '';
+  for ($i = 0; $i < 10; $i++) {
+    $randstring = $characters[rand(0, strlen($characters))];
+  }
+  return $randstring;
+}
+
+/**
+ * Convert a relative url to absolute.
+ *
+ * @param string $rel
+ *   Relative url.
+ * @param string $base
+ *   Base url.
+ *
+ * @return string
+ *   The relative url transformed to absolute.
+ */
+function doj_migration_relative_to_absolute_url($rel, $base) {
+  // Return if already absolute URL.
+  if (parse_url($rel, PHP_URL_SCHEME) != '') {
+    return $rel;
+  }
+
+  // Queries and anchors.
+  if ($rel[0] == '#' || $rel[0] == '?') {
+    return $base . $rel;
+  }
+
+  // Parse base URL and convert to local variables:
+  // $scheme, $host, $path.
+  extract(parse_url($base));
+
+  // Remove non-directory element from path.
+  $path = preg_replace('#/[^/]*$#', '', $path);
+
+  // Destroy path if relative url points to root.
+  if ($rel[0] == '/') {
+    $path = '';
+  }
+
+  // Dirty absolute URL.
+  $abs = "$host$path/$rel";
+
+  // Replace '//' or '/./' or '/foo/../' with '/'.
+  $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+  for ($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {
+  }
+
+  // Absolute URL is ready.
+  return $scheme . '://' . $abs;
 }
