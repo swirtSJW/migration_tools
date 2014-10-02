@@ -134,8 +134,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_brief_attachments', 'link');
     $this->addFieldMapping('field_brief_attachments:file_class')
       ->defaultValue('MigrateFileUri');
-    //$this->addFieldMapping('field_brief_attachments:source_dir')
-    //  ->defaultValue(variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT) . '/olc/opiniondocs');
     $this->addFieldMapping('field_brief_attachments:destination_dir', 'destination_dir');
   }
 
@@ -182,7 +180,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     if ($link) {
       global $base_url;
       $attachment_url = $link->attr('href');
-      $link_prefix =  $base_url . '/' . ltrim(dirname($fileid_parts[0]), '/');
+      $link_prefix = $base_url . '/' . ltrim(dirname($fileid_parts[0]), '/');
       $row->link = $link_prefix . '/' . ltrim($attachment_url, './');
       $link->remove();
 
@@ -261,7 +259,6 @@ class BriefChunkParser extends JusticeChunkParser {
       $this->chunks = $this->sourceParser->queryPath->find('.bodytext > p');
     }
     if (!$this->chunks) {
-      //print_r($this->sourceParser->html());
       $this->chunks = array();
     }
   }
