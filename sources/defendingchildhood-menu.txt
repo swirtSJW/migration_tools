@@ -2,15 +2,15 @@
  About the Initiative {"url":"defendingchildhood/about-initiative"}
  Task Force on Children Exposed to Violence {"url":"defendingchildhood/task-force-children-exposed-violence"}
 - Task Force Members {"url":"defendingchildhood/task-force-members"}
-- Task Force Hearings {"url":"defendingchildhood/task-force-hearings"}
+- Task Force Hearings {"url":"defendingchildhood/task-force-hearings-0"}
 - Frequently Asked Questions {"url":"defendingchildhood/frequently-asked-questions"}
  Task Force on American Indian and Alaska Native Children Exposed to Violence {"url":"defendingchildhood/task-force-american-indian-and-alaska-native-children-exposed-violence"}
-- Task Force Members {"url":"defendingchildhood/task-force-members"}
+- Task Force Members {"url":"defendingchildhood/task-force-members-0"}
 - Task Force Hearings {"url":"defendingchildhood/task-force-hearings"}
  Facts about Children and Violence {"url":"defendingchildhood/facts-about-children-and-violence"}
  Take Action to Protect Children {"url":"defendingchildhood/take-action-protect-children"}
  Press Room {"url":"defendingchildhood/press-room"}
-- Public Service Announcement {"url":"defendingchildhood/press-room"}
+- Public Service Announcement {"url":"defendingchildhood/press-room-3"}
 - Press Room Archive {"url":"defendingchildhood/press-room-archive"}
  Selected Publications &  Research {"url":"defendingchildhood/selected-publications-and-research"}
  Contact the Initiative {"url":"defendingchildhood/contact-initiative"}
