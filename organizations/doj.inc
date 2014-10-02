@@ -186,7 +186,7 @@ class DojCaseMigration extends JusticeBaseMigration {
     );
 
     // Create a MigrateSource object, which manages retrieving the input data.
-    $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE));
+    $this->source = new MigrateSourceSQL($query);
 
     // The destination is the page content type.
     $this->destination = new MigrateDestinationNode('case');
