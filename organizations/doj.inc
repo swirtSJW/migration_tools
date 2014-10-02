@@ -170,7 +170,7 @@ class DojCaseMigration extends JusticeBaseMigration {
         'names',
         'district',
         'overview',
-        'case',
+        'casey',
       ));
 
     // A map of source MySQL row -> destination node id.
@@ -196,8 +196,8 @@ class DojCaseMigration extends JusticeBaseMigration {
     $doj_nid = 752;
     $this->addFieldMapping('og_group_ref')->defaultValue($doj_nid);
 
-    $this->addFieldMapping('title', 'case');
-    $this->addFieldMapping('field_case_link:title', 'case');
+    $this->addFieldMapping('title', 'casey');
+    $this->addFieldMapping('field_case_link:title', 'casey');
     $this->addFieldMapping('field_case_overview', 'overview');
     $this->addFieldMapping('field_case_overview:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_case_link', 'case_link');
