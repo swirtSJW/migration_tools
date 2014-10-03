@@ -240,6 +240,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
         '.resp' => 'Petition Stage: Response',
         '.mer.aa' => 'Merits Stage: Brief',
         '.mer.ami' => 'Merits Stage: Amicus Brief',
+        '.ami.mer' => 'Merits Stage: Amicus Brief',
         '.Original.resp' => 'Original Actions: All',
       );
       $types = $this->findNeedleSubstrings($brief_types, $attachment_url);
@@ -257,7 +258,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $docket_number = doj_migration_find_docket_number($row->filedata);
     $row->field_brief_docket = $docket_number;
     $row->title = StringCleanUp::stripFunkyChars(ltrim(str_replace($docket_number, '', $this->sourceParser->queryPath->text()), ' :'));
-    $row->title = mb_strimwidth(trim($row->title, ' \t\n\r\0\x0B,'), 0, 255, "...");
+    $row->title = mb_strimwidth(trim($row->title, ' \t\n\r\0\x0B,|'), 0, 255, "...");
     $row->body = '';
     unset($row->legacy_path);
   }
