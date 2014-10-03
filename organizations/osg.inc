@@ -127,7 +127,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_brief_filing_date', 'field_brief_filing_date');
     $this->addFieldMapping('field_brief_topic', 'field_brief_topic');
     $this->addFieldMapping('field_brief_court_level', 'field_brief_court_level')->defaultValue('supreme_court');
-    $this->addFieldMapping('field_brief_federal_court', 'field_brief_federal_court');
+    // $this->addFieldMapping('field_brief_federal_court', 'field_brief_federal_court')->defaultValue('supreme_court');
     $this->addFieldMapping('field_brief_type', 'field_brief_type');
     $this->addFieldMapping('field_brief_links', 'field_brief_links');
 
@@ -185,8 +185,8 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
       // Parse contents of attached pdf file.
       if ($attachment_ext == 'pdf') {
         try {
-          $pdf_parser = XPDF\PdfToText::create(array('pdftotext.binaries' => variable_get('pdftotext_binary', '/home/doj/xpdf/bin64/pdftotext')));
-          $pdf_content = $pdf_parser->getText($attachment_filepath);
+
+          $pdf_metadata = $this->getPdfMetadata($attachment_filepath);
 
           // Set brief topic by searching for substring in attachment url.
           $brief_topics = array(
@@ -219,7 +219,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
             'zmisc' => 'Other',
           );
 
-          $topics = $this->findNeedleSubstrings($brief_topics, $pdf_content);
+          $topics = $this->findNeedleSubstrings($brief_topics, $pdf_metadata['Keywords']);
           foreach ($topics as $topic) {
             doj_migration_create_term($topic, 'topic');
           }
@@ -234,31 +234,35 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
 
       // Set brief type by searching for substring in attachment url.
       $brief_types = array(
-        '.pet.aa' => 'Petition Stage: Petition',
-        '.pet.rep' => 'Petition Stage: Reply',
-        '.pet.ami.inv' => 'Petition Stage: Invitation',
-        '.resp' => 'Petition Stage: Response',
-        '.mer.aa' => 'Merits Stage: Brief',
-        '.mer.ami' => 'Merits Stage: Amicus Brief',
-        '.ami.mer' => 'Merits Stage: Amicus Brief',
+        '.pet.aa' => 'Petition for Writ of Certiorari',
+        '.pet.app' => 'Appendix to Petition',
+        '.pet.rep' => 'Petition Stage Reply Brief',
+        '.pet.ami.inv' => 'Petition Stage Amicus Brief (Invitation)',
+        '.pet.ami' => 'Petition Stage Amicus Brief (Uninvited)',
+        '.pet.sup' => 'Petition Stage Supplemental Brief',
+        '.resp' => 'Petition Stage Response',
+        '.mer.aa' => 'Merits Stage Brief',
+        '.mer.rep' => 'Merits Stage Reply Brief',
+        '.mer.ami' => 'Merits Stage Amicus Brief',
+        '.ami.mer' => 'Merits Stage Amicus Brief',
+        '.mer.post' => 'Post Argument Brief',
         '.Original.resp' => 'Original Actions: All',
       );
-      $types = $this->findNeedleSubstrings($brief_types, $attachment_url);
-      $row->field_brief_type = implode('|', array_values($types));
 
-      // Set brief level.
-      $brief_court_levels = array(
-        '.mer.ami' => 'Amicus Brief',
-        '.resp' => 'Response',
-      );
-      $court_levels = $this->findNeedleSubstrings($brief_court_levels, $attachment_url);
-      $row->field_brief_court_level = reset(array_values($court_levels));
+      $types = $this->findNeedleSubstrings($brief_types, $attachment_url, FALSE);
+      $row->field_brief_type = implode('|', array_values($types));
     }
 
     $docket_number = doj_migration_find_docket_number($row->filedata);
     $row->field_brief_docket = $docket_number;
     $row->title = StringCleanUp::stripFunkyChars(ltrim(str_replace($docket_number, '', $this->sourceParser->queryPath->text()), ' :'));
     $row->title = mb_strimwidth(trim($row->title, ' \t\n\r\0\x0B,|'), 0, 255, "...");
+
+    // If the title is empty attempt to use PDF metadata for title.
+    if (empty($row->title) && !empty($pdf_metadata['Title'])) {
+      $row->title = $pdf_metadata['Title'];
+    }
+
     $row->body = '';
     unset($row->legacy_path);
   }
@@ -274,18 +278,68 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
    * @param string $haystack
    *   A string.
    *
+   * @param bool $multiple
+   *   If FALSE, a maximum of one value will be returned in the array.
+   *
    * @return array
    *   An array of all found needles.
    */
-  public function findNeedleSubstrings($needles, $haystack) {
+  public function findNeedleSubstrings($needles, $haystack, $multiple = TRUE) {
     $values = array();
     foreach ($needles as $needle_key => $needle_title) {
       if (stristr($haystack, $needle_key)) {
         $values[$needle_key] = $needle_title;
+        if (!$multiple) {
+          return $values;
+        }
       }
     }
 
     return $values;
+  }
+
+
+  /**
+   * Extracts metadata from pdf file.
+   *
+   * @param string $pdf_file_path
+   *   The absolute file path of the pdf on the local system.
+   *
+   * @return array
+   *   An associative array of pdf metadata.
+   */
+  public function getPdfMetadata($pdf_file_path) {
+    $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/doj/xpdf/bin64/pdfinfo');
+    $command = "$pdfinfo_bin $pdf_file_path";
+    $output = shell_exec($command);
+    $pdf_info_rows = explode("\n", $output);
+    $pdf_metadata = array();
+    foreach ($pdf_info_rows as $row) {
+      $columns = explode(':', $row);
+      $pdf_metadata[$columns[0]] = $columns[1];
+    }
+
+    return $pdf_metadata;
+  }
+
+  /**
+   * Extracts the contents of a pdf file.
+   *
+   * @param string $pdf_file_path
+   *   The absolute file path of the pdf on the local system.
+   *
+   * @return string
+   *   The text content of the pdf.
+   *
+   * @throws \XPDF\Exception\BinaryNotFoundException
+   */
+  public function getPdfContents($pdf_file_path) {
+    // Get PDF contents.
+    $pdftotext_bin = variable_get('pdftotext_binary', '/home/doj/xpdf/bin64/pdftotext');
+    $pdf_parser = XPDF\PdfToText::create(array('pdftotext.binaries' => $pdftotext_bin));
+    $pdf_contents = $pdf_parser->getText($pdf_file_path);
+
+    return $pdf_contents;
   }
 }
 
