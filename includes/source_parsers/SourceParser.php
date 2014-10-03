@@ -38,6 +38,8 @@ class SourceParser {
     // Strip Windows'' CR chars.
     $html = StringCleanUp::stripWindowsCRChars($html);
 
+    $html = StringCleanUp::fixWindowSpecificChars($html);
+
     $this->initQueryPath($html);
 
     $this->fileId = $file_id;

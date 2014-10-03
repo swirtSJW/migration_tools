@@ -225,7 +225,7 @@ class HtmlCleanUp {
     // This should replace tags matching
     // <a href="javascript:exitWinOpen('http://example.com');">Example</a>
     // with <a href="http://example.com">Example</a>.
-    $patterns[] = "|javascript:exitWinOpen\('([^']+)'\);|";
+    $patterns[] = "|javascript:exitWinOpen\('([^']+)'\)|";
 
     // This should replace tags matching
     // <a href="/cgi-bin/outside.cgi?http://nccic.org/tribal/">Tribal</a>

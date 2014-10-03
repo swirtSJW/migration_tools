@@ -249,4 +249,40 @@ class StringCleanUp {
 
     return $markup;
   }
+
+  /**
+   * Fix window specific chars.
+   *
+   * @param string $string
+   *   A string.
+   *
+   * @return string
+   *   Fixed string.
+   */
+  public static function fixWindowSpecificChars($string) {
+    // Unicode hex codes for chars only supported in windows.
+    $incorrect = array(91, 92, 93, 94, 96, 97);
+
+    // Bad chars reference: http://www.w3schools.com/charsets/ref_html_ansi.asp
+    // Good chars reference: http://www.utexas.edu/learn/html/spchar.html
+    $map = array(
+      145 => 8216,
+      146 => 8217,
+      147 => 8220,
+      148 => 8221,
+      150 => 8211,
+      151 => 8212,
+    );
+
+    // Create unicode chars to match.
+    foreach ($incorrect as $hex) {
+      $unistring = "\u00{$hex}";
+      $char = json_decode('"' . $unistring . '"');
+      $dec = hexdec("00{$hex}");
+      $html = "&#{$map[$dec]};";
+      $string = str_replace($char, $html, $string);
+    }
+
+    return $string;
+  }
 }
