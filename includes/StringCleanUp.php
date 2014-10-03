@@ -174,6 +174,24 @@ class StringCleanUp {
   }
 
   /**
+   * Removes all funky characters from a string.
+   *
+   * @param string $string
+   *   A string.
+   *
+   * @return string
+   *   The converted string.
+   */
+  public static function stripFunkyChars($string = '') {
+
+    foreach (StringCleanUp::funkyCharsMap() as $weird => $normal) {
+      $string = str_replace($weird, '', $string);
+    }
+
+    return $string;
+  }
+
+  /**
    * Trim string from various types of whitespace.
    *
    * @param string $string

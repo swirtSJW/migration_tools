@@ -60,10 +60,11 @@ function doj_migrate_prepare_vocab_terms($legacy_term = '', $vocabulary = '') {
 }
 
 /**
- * Prepares a taxonomy term for the topic vocabulary.
+ * Prepares a string of taxonomy terms for the topic vocabulary.
  *
  * @param string $legacy_term
- *   The legacy term from the migration source.
+ *   The legacy term from the migration source. Terms may be separated by
+ *   commas.
  *
  * @return string
  *   The term to be saved at the destination. Multiple terms are separated by
@@ -85,14 +86,7 @@ function doj_migrate_prepare_topic_term($legacy_term) {
         $term = doj_migrate_standardize_component_terms($term);
         if (!taxonomy_get_term_by_name($term, 'topic')
           && !taxonomy_get_term_by_name($term, 'component')) {
-
-          watchdog('doj_migration', 'Creating new topic term "@topic".', array('@topic' => $term));
-          $vocab = taxonomy_vocabulary_machine_name_load('topic');
-          $term_obj = new stdClass();
-          $term_obj->name = $term;
-          $term_obj->vid = $vocab->vid;
-          taxonomy_term_save($term_obj);
-
+          doj_migration_create_term($term, 'topic');
           $terms[$key] = $term;
         }
       }
@@ -102,6 +96,27 @@ function doj_migrate_prepare_topic_term($legacy_term) {
   }
 
   return $new_terms;
+}
+
+
+/**
+ * Creates a new taxonomy term for a given vocabulary.
+ *
+ * @param string $term
+ *   The human readable value fo the term.
+ *
+ * @param string $vocab_name
+ *   The name of the vocabulary.
+ */
+function doj_migration_create_term($term, $vocab_name) {
+  if (!taxonomy_get_term_by_name($term, $vocab_name)) {
+    watchdog('doj_migration', 'Creating new topic term "@term".', array('@term' => $term));
+    $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
+    $term_obj = new stdClass();
+    $term_obj->name = $term;
+    $term_obj->vid = $vocab->vid;
+    taxonomy_term_save($term_obj);
+  }
 }
 
 /**

@@ -28,25 +28,28 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * @param array $arguments
    *   Arguments provided by migrate module.
    * @param array $source_fields
-   *   An associative aray of fields contained in the source data, in the form
+   *   An associative array of fields contained in the source data, in the form
    *   of array('machine_name' => t('Human Readable')).
    * @param array $source_dirs
    *   A flat array of the source directories containing html files.
    * @param string $regex
-   *   The file mask. Only filenames matching this regex will be migrated.
+   *   The file mask. Only file names matching this regex will be migrated.
    *   This will default to '/.*\.htm(l)?$/' if NULL is passed in.
    * @param array $options
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
+   * @param MigrateContentParser $parser
+   *   A parser class that will provide file chunk ids. Defaults to
+   *   MigrateSimpleContentParser in parent constructor.
    */
-  public function __construct($arguments, $source_fields, $source_dirs, $regex = NULL, $options = array()) {
+  public function __construct($arguments, $source_fields, $source_dirs, $regex = NULL, $options = array(), MigrateContentParser $parser = NULL) {
 
     if ($regex === NULL) {
       $regex = '/.*\.htm(l)?$/';
     }
 
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
 
     // A child class might provide it's own source parser that offer specific
     // cleanup.
