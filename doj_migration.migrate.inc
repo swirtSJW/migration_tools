@@ -473,6 +473,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'osdbu',
         'class_name' => 'OsdbuFileMigration',
       ),
+      'OsgBrief' => array(
+        'group_name' => 'osg',
+        'class_name' => 'OsgBriefMigration',
+      ),
       'OsgPage' => array(
         'group_name' => 'osg',
         'class_name' => 'OsgPageMigration',
