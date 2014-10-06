@@ -184,9 +184,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
       // Parse contents of attached pdf file.
       if ($attachment_ext == 'pdf') {
         try {
-
-          $pdf_metadata = $this->getPdfMetadata($attachment_filepath);
-
           // Set brief topic by searching for substring in attachment url.
           $brief_topics = array(
             'zadm' => 'Admiralty & Maritime',
@@ -218,11 +215,14 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
             'zmisc' => 'Other',
           );
 
-          $topics = $this->findNeedleSubstrings($brief_topics, $pdf_metadata['Keywords']);
-          foreach ($topics as $topic) {
-            doj_migration_create_term($topic, 'topic');
+          $pdf_metadata = $this->getPdfMetadata($attachment_filepath);
+          if (!empty($pdf_metadata['Keywords'])) {
+            $topics = $this->findNeedleSubstrings($brief_topics, $pdf_metadata['Keywords']);
+            foreach ($topics as $topic) {
+              doj_migration_create_term($topic, 'topic');
+            }
+            $row->field_brief_topic = implode('|', $topics);
           }
-          $row->field_brief_topic = implode('|', $topics);
         }
         catch (Exception $e) {
           $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $row->fileid, '@exception' => $e->getMessage()));
@@ -433,7 +433,7 @@ function doj_migration_find_docket_number($string) {
   // No. 97-1942
   // Nos. 99-464,
   // @codingStandardsIgnoreEnd
-  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))#', $string, $matches);
+  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))(([ ,]|(and))*([A-Z0-9-]+))*#', $string, $matches);
   if ($matches) {
     $docket_number = $matches[0];
     return $docket_number;
