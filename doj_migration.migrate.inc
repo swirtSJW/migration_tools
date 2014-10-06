@@ -32,6 +32,10 @@ function doj_migration_migrate_api() {
         'title' => t('Office of the Attorney General'),
         'disable_hooks' => $disable_hooks,
       ),
+      'atj' => array(
+        'title' => t('The Access to Justice Initiative'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'core' => array(
         'title' => t('Core Entities'),
         'disable_hooks' => $disable_hooks,
@@ -184,6 +188,14 @@ function doj_migration_migrate_api() {
       'AsgSpeechEspanol' => array(
         'group_name' => 'asg',
         'class_name' => 'AsgSpeechEspanolMigration',
+      ),
+      'AtjPage' => array(
+        'group_name' => 'atj',
+        'class_name' => 'AtjPageMigration',
+      ),
+      'AtjFile' => array(
+        'group_name' => 'atj',
+        'class_name' => 'AtjFileMigration',
       ),
       'CareersFile' => array(
         'group_name' => 'careers',
