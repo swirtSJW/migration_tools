@@ -6,9 +6,89 @@
  * Defines migration classes for the OLA section of justice.gov.
  */
 
-class OlaTestimonyMigration extends JusticeFileSourceMigration {
-  // Migration from {cms_ola_testimony} in cmsopa table.
-  // Join to cms_ola_doclinks to import attachments!
+class OlaTestimonyMigration extends JusticeBaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $cmsopa_db_name = $databases['cmsopa']['default']['database'];
+
+    $query = db_select("$cmsopa_db_name.cms_ola_testimony", 'c')
+      ->fields('c', array(
+        'id',
+        'creationDate',
+        'modificationDate',
+        'sensitiveData',
+        'documentDate',
+        'documentTitle',
+        'testimonyCommitte',
+        'dateExtra',
+        'congressTerm',
+        'congressSession',
+      ));
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('testimony');
+
+    // Field Mappings.
+    $this->addFieldMapping('og_group_ref')->defaultValue('ola');
+
+    $this->addFieldMapping('title', 'documentTitle');
+    $this->addFieldMapping('create', 'creationDate');
+    $this->addFieldMapping('changed', 'modificationDate');
+    $this->addFieldMapping('field_testimony_subject', 'documentTitle');
+    $this->addFieldMapping('field_testimony_date', 'documentDate');
+    $this->addFieldMapping('field_testimony_committee', 'testimonyCommitte')->separator(",");
+    $this->addFieldMapping('field_testimony_committee:create_term')->defaultValue(TRUE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+    $entity->status = 1;
+    $entity->uid = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
 }
 
 /**
