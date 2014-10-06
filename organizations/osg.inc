@@ -127,7 +127,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_brief_filing_date', 'field_brief_filing_date');
     $this->addFieldMapping('field_brief_topic', 'field_brief_topic');
     $this->addFieldMapping('field_brief_court_level', 'field_brief_court_level')->defaultValue('supreme_court');
-    // $this->addFieldMapping('field_brief_federal_court', 'field_brief_federal_court')->defaultValue('supreme_court');
     $this->addFieldMapping('field_brief_type', 'field_brief_type');
     $this->addFieldMapping('field_brief_links', 'field_brief_links');
 
