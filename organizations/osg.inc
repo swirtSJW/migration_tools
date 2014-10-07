@@ -432,8 +432,9 @@ function doj_migration_find_docket_number($string) {
   // No. 135,
   // No. 97-1942
   // Nos. 99-464,
+  // No. 132, Original:
   // @codingStandardsIgnoreEnd
-  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))(([ ,]|(and))*([A-Z0-9-]+))*#', $string, $matches);
+  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))(([ ,]|(and))*(?!Original)([A-Z0-9-]+))*#', $string, $matches);
   if ($matches) {
     $docket_number = $matches[0];
     return $docket_number;
