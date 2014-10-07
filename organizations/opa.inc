@@ -282,7 +282,7 @@ class OpaPressReleaseMigration extends JusticeBaseMigration {
       }
 
       // Append doclinks to body.
-      $row->body = $row->body . "<h4>Related Materials</h4><p>" . implode('<br />', $doclinks) . '</p>';
+      $row->body = $row->body . "<h4>Related Materials:</h4><p>" . implode('<br />', $doclinks) . '</p>';
     }
   }
 
