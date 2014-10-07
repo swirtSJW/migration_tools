@@ -2,56 +2,88 @@ Civil Division Home {"url":"civil"}
 About the  Division {"url":"civil/about"}
 - Organization {"url":"civil/organization"}
 - Appellate {"url":"civil/appellate-staff"}
--- Employment {"url":"civil/employment-9"}
+-- Employment {"url":"civil/employment-11"}
 -- Links {"url":"civil/links-8"}
 -- Contact the Appellate Staff {"url":"civil/contact-us-10"}
 -- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#appellate"}
 - Commercial Litigation {"url":"civil/commercial-litigation-branch"}
 -- Contact the Branch {"url":"civil/commercial-litigation-branch-0"}
 -- Fraud Section {"url":"civil/fraud-section"}
---- Employment {"url":"civil/employment-7"}
+--- Employment {"url":"civil/employment-9"}
 --- Links {"url":"civil/links-7"}
 --- Contact the Section {"url":"civil/contact-us-9"}
 --- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#cfrauds"}
 -- Corporate / Financial Litigation Section {"url":"civil/corporate-financial-litigation-section"}
---- Employment {"url":"civil/employment-8"}
---- Links {"url":"http://www.justice.gov/civil/common/docs-forms.html#ccorpfin"}
---- Contact the Section {"url":"civil/contact-0"}
+--- Employment {"url":"civil/employment-10"}
+--- Links {"url":"civil/documents-and-forms-1"}
+--- Contact the Section {"url":"civil/contact-2"}
 --- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#ccorpfin"}
---- Cobell v. Kempthorne, et al. {"url":"civil/corporate-financial-litigation-section-1"}
+--- Cobell v. Kempthorne, et al. {"url":""}
 -- Intellectual Property Section {"url":"civil/intellectual-property-section"}
---- Employment {"url":"civil/employment-8"}
+--- Employment {"url":"civil/employment-10"}
 --- Links {"url":"http://www.justice.gov/civil/common/docs-forms.html#cip"}
---- Contact the Section {"url":"civil/employment-6"}
+--- Contact the Section {"url":"civil/employment-8"}
 --- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#cip"}
 -- National Courts Section {"url":"civil/national-courts-section-1"}
---- Employment {"url":"civil/employment-5"}
+--- Employment {"url":"civil/employment-7"}
 --- Links {"url":"civil/links-5"}
 --- Contact the Section {"url":"civil/contact-us-8"}
 --- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#cnatcourts"}
 -- Office of Foreign Litigation {"url":"civil/office-foreign-litigation"}
---- Employment {"url":"civil/employment-8"}
---- Links {"url":"http://www.justice.gov/civil/common/docs-forms.html#cforlit"}
---- Contact the Office {"url":"civil/contact"}
+--- Employment {"url":"civil/employment-10"}
+--- Links {"url":"civil/documents-and-forms-1"}
+--- Contact the Office {"url":"civil/contact-1"}
 --- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#cforlit"}
-- Consumer Protection Branch {"url":""}
+- Consumer Protection Branch {"url":"civil/consumer-protection-branch"}
+-- Practice Areas {"url":"civil/practice-areas"}
+-- Current Cases {"url":"civil/current-and-recent-cases"}
+-- Press Releases {"url":"civil/press-releases-0"}
+-- Agency Partners {"url":"civil/agency-partners-0"}
+-- Consumer Information {"url":"civil/consumer-information"}
+-- Employment {"url":"civil/employment-6"}
+-- Contact {"url":"civil/contact-0"}
 - Federal Programs {"url":"civil/federal-programs-branch"}
 -- Links {"url":"http://www.justice.gov/civil/common/docs-forms.html#fedprog"}
 -- Contact the Section {"url":"civil/contact-us-1"}
 -- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#fedprog"}
 - Immigration Litigation {"url":"civil/office-immigration-litigation"}
 -- Appellate Section {"url":"civil/appellate-section-0"}
+--- Employment {"url":"civil/employment"}
+--- Links {"url":"civil/links"}
+--- Contact the Section {"url":"civil/contact-us"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#oilapp"}
+--- Padilla Monograph {"url":"civil/appellate-section-1"}
 -- District Court Section {"url":"civil/district-court-section"}
+--- Employment {"url":"civil/employment-0"}
+--- Links {"url":"civil/links-1"}
+--- Contact the Section {"url":"civil/contact-us-0"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#oildc"}
 - Torts Branch {"url":"civil/torts-branch-0"}
 -- Contact the Branch {"url":"civil/torts-branch"}
 -- Aviation & Admiralty Section {"url":"civil/aviation-admiralty-section"}
+--- Employment {"url":"civil/employment-3"}
+--- Links {"url":"civil/documents-and-forms-1"}
+--- Contact the Section {"url":"civil/contact-us-5"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#taa"}
 -- Constitutional & Specialized Tort Litigation Section {"url":"civil/constitutional-specialized-tort-litigation-section"}
+--- Employment {"url":"civil/employment-4"}
+--- Links {"url":"civil/links-3"}
+--- Contact the Section {"url":"civil/contact-us-6"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#tcstl"}
 -- Environmental Tort Litigation Section {"url":"civil/environmental-tort-litigation-section"}
+--- Employment {"url":"civil/employment-2"}
+--- Links {"url":"civil/contact-us-4"}
+--- Contact the Section {"url":"civil/contact-us-3"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#tetl"}
 -- Federal Tort Claims Act Litigation Section {"url":"civil/federal-tort-claims-act-litigation-section"}
+--- Employment {"url":"civil/employment-1"}
+--- Links {"url":"civil/links-2"}
+--- Contact the Section {"url":"civil/contact-us-2"}
+--- Documents & Forms {"url":"http://www.justice.gov/civil/common/docs-forms.html#tftca"}
 - Language Access {"url":"civil/language-access-plan"}
 Meet the Assistant Attorney General {"url":"civil/meet-assistant-attorney-general-0"}
 - Former Assistant Attorneys General {"url":"civil/former-assistant-attorneys-general"}
-Press Room {"url":"civil/press-room"}
+Press Room {"url":"civil/press-room-25"}
 Selected Documents & Forms {"url":"civil/documents-and-forms-1"}
 Structured Settlement Brokers {"url":"civil/structured-settlement-brokers"}
 Office Of International Judicial Assistance {"url":"civil/office-international-judicial-assistance-0"}
@@ -63,8 +95,8 @@ Office Of International Judicial Assistance {"url":"civil/office-international-j
 Compensation Programs {"url":"civil/compensation-programs"}
 - RECA {"url":"civil/reca-0"}
 - VICP {"url":"civil/vicp"}
-- 9/11 VCF {"url":"civil/vcf"}
-Employment {"url":"civil/employment-8"}
+- 9/11 VCF {"url":"civil/vcf"} 
+Employment {"url":"civil/employment-10"}
 - Vacancies {"url":"civil/vacancies"}
 Civil Division FOIA {"url":"civil/foia-2"}
 - Electronic Reading Room {"url":"civil/electronic-reading-room"}
