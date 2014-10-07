@@ -22,9 +22,16 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
    * @param string $dest_dir
    *   The destination directory uri, with public:// or private::/ prefix.
    * @param string $regex
-   *   The file mask. Only filenames matching this regex will be migrated.
+   *   The file mask. Only filenames matching this regex will be migrated. If
+   *   a NULL value is passed, a default value will be given.
    */
-  public function __construct($arguments, $source_dirs, $dest_dir, $regex, $options = array()) {
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex = NULL, $options = array()) {
+
+    // Set default regex for file mask.
+    if (!$regex) {
+      $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    }
+
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'fileid' => t('File Location'),
@@ -128,7 +135,7 @@ abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMig
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments, $source_dirs, $dest_dir, $regex, $options = array()) {
+  public function __construct($arguments, $source_dirs, $dest_dir, $regex = NULL, $options = array()) {
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
     if (module_exists("doj_deploy")) {
       $abbrev = $this->getOrganizationAbbreviation();
