@@ -190,3 +190,95 @@ class AgSpeechSpanishMigration extends JusticeHtmlToSpeechSpanishMigration {
     $row->field_speech_component = "Office of the Attorney General";
   }
 }
+
+/**
+ * Class AgHistoricalBioMigration.
+ *
+ * @package doj_migration
+ */
+class AgHistoricalBioMigration extends JusticeBaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $iso_db_name = $databases['iso']['default']['database'];
+
+    $query = db_select("$iso_db_name.attygeneral", 'c')
+      ->fields('c', array(
+        'id',
+        'term',
+        'wholename',
+        'first',
+        'last',
+        'description',
+      ));
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('historical_bio');
+
+    // Field Mappings.
+    $this->addFieldMapping('og_group_ref')->defaultValue("ag");
+
+    $this->addFieldMapping('title', 'wholename');
+    $this->addFieldMapping('field_bio_body', 'description');
+    $this->addFieldMapping('field_bio_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_dates_service', 'term1');
+    $this->addFieldMapping('field_dates_service:to', 'term2');
+    $this->addSimpleMappings(array("uid", "status"));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
+
+    $term = $row->term;
+    $terms = explode("-", $term);
+    $row->term1 = trim($terms[0]);
+    $row->term2 = trim($terms[1]);
+
+    $row->uid = 1;
+    $row->status = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
+}

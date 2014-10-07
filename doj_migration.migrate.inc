@@ -173,6 +173,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'ag',
         'class_name' => 'AgSpeechSpanishMigration',
       ),
+      'AgHistoricalBio' => array(
+        'group_name' => 'ag',
+        'class_name' => 'AgHistoricalBioMigration',
+      ),
       'AsgPage' => array(
         'group_name' => 'asg',
         'class_name' => 'AsgPageMigration',
