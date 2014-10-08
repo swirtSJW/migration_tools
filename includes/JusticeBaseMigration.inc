@@ -101,6 +101,7 @@ abstract class JusticeBaseMigration extends Migration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    // Prepare title property by trimming to 255 chars and fixing encoding.
     if (!empty($row->title)) {
       $row->title = mb_strimwidth($row->title, 0, 255, "...");
       $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
@@ -123,7 +124,6 @@ abstract class JusticeBaseMigration extends Migration {
       $entity->language = LANGUAGE_NONE;
     }
   }
-
 
   /**
    * Alters language on node back to originally specified if used in complete().
@@ -221,7 +221,7 @@ abstract class JusticeBaseMigration extends Migration {
    * @return array
    *   An array with location information extracted from the string.
    */
-  public static function geoCodeString($string) {
+  public function geoCodeString($string) {
 
     // Geocode the location and parse into structured data for migration.
     // Geocoder module is not an explicit dependency because most migrations
@@ -252,6 +252,125 @@ abstract class JusticeBaseMigration extends Migration {
       }
 
       return $address;
+    }
+  }
+
+  /**
+   * Extracts metadata from pdf file.
+   *
+   * @param string $pdf_file_path
+   *   The absolute file path of the pdf on the local system.
+   *
+   * @return array
+   *   An associative array of pdf metadata.
+   */
+  public function getPdfMetadata($pdf_file_path) {
+    try {
+      $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/doj/xpdf/bin64/pdfinfo');
+      $command = "$pdfinfo_bin $pdf_file_path";
+      $output = shell_exec($command);
+      $pdf_info_rows = explode("\n", $output);
+      $pdf_metadata = array();
+      foreach ($pdf_info_rows as $row) {
+        $columns = explode(':', $row);
+        $pdf_metadata[$columns[0]] = $columns[1];
+      }
+
+      return $pdf_metadata;
+    }
+    catch (Exception $e) {
+      $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $pdf_file_path, '@exception' => $e->getMessage()));
+      $this->queueMessage($message);
+      watchdog('doj_migration', $message);
+    }
+  }
+
+  /**
+   * Extracts the contents of a pdf file.
+   *
+   * @param string $pdf_file_path
+   *   The absolute file path of the pdf on the local system.
+   *
+   * @return string
+   *   The text content of the pdf.
+   *
+   * @throws \XPDF\Exception\BinaryNotFoundException
+   */
+  public function getPdfContents($pdf_file_path) {
+    try {
+      // Get PDF contents.
+      $pdftotext_bin = variable_get('pdftotext_binary', '/home/doj/xpdf/bin64/pdftotext');
+      $pdf_parser = XPDF\PdfToText::create(array('pdftotext.binaries' => $pdftotext_bin));
+      $pdf_contents = $pdf_parser->getText($pdf_file_path);
+
+      return $pdf_contents;
+    }
+    catch (Exception $e) {
+      $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $pdf_file_path, '@exception' => $e->getMessage()));
+      $this->queueMessage($message);
+      watchdog('doj_migration', $message);
+    }
+  }
+
+  /**
+   * Creates redirects for files attached to a given entity's field field.
+   *
+   * @param object $entity
+   *   The fully loaded entity.
+   *
+   * @param array $source_urls
+   *   A flat array of source urls that should redirect to the attachments
+   *   on this entity. $source_urls[0] will redirect to the first attachment,
+   *   $entity->$field_name[$language][0], and so on.
+   *
+   * @param string $field_name
+   *   The machine name of the attachment field.
+   *
+   * @param string $language
+   *   Optional. Defaults to LANGUAGE_NONE.
+   */
+  public static function createAttachmentRedirect($entity, $source_urls, $field_name, $language = LANGUAGE_NONE) {
+    $field = $entity->$field_name;
+    if (!empty($field[$language])) {
+      foreach ($field[$language] as $delta => $item) {
+        $file = file_load($item['fid']);
+        $destination = file_create_url($file->uri);
+        $source = $source_urls[$delta];
+
+        // Create redirect.
+        $redirect = redirect_load_by_source($source);
+        if (!$redirect) {
+          $redirect = new stdClass();
+          redirect_object_prepare($redirect);
+          $redirect->source = $source;
+          $redirect->redirect = $destination;
+
+          redirect_save($redirect);
+        }
+      }
+    }
+  }
+
+  /**
+   * Deletes any redirects associated files attached to an entity's file field.
+   *
+   * @param object $entity
+   *   The fully loaded entity.
+   *
+   * @param string $field_name
+   *   The machine name of the attachment field.
+   *
+   * @param string $language
+   *   Optional. Defaults to LANGUAGE_NONE.
+   */
+  public static function rollbackAttachmentRedirect($entity, $field_name, $language = LANGUAGE_NONE) {
+    $field = $entity->$field_name;
+    if (!empty($field[$language])) {
+      foreach ($field[$language] as $delta => $item) {
+        $file = file_load($item['fid']);
+        $destination = file_create_url($file->uri);
+        redirect_delete_by_path($destination);
+      }
     }
   }
 }

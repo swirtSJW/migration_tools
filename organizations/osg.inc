@@ -129,12 +129,12 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_brief_court_level', 'field_brief_court_level')->defaultValue('supreme_court');
     $this->addFieldMapping('field_brief_type', 'field_brief_type');
     $this->addFieldMapping('field_brief_links', 'field_brief_links');
-
     $this->addFieldMapping('field_brief_attachments', 'attachment_filename');
     $this->addFieldMapping('field_brief_attachments:file_class')
       ->defaultValue('MigrateFileUri');
     $this->addFieldMapping('field_brief_attachments:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_brief_attachments:source_dir', 'source_dir');
+    $this->addFieldMapping('field_brief_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
   }
 
   /**
@@ -144,6 +144,10 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+
+    // Unset variables that were set by parent methods.
+    $row->body = '';
+    unset($row->legacy_path);
 
     // Parse the filename to extract tags and year data.
     // $row->fileid will look something like:
@@ -169,101 +173,127 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
       $row->field_brief_docket = $matches[0];
     }
 
-    // Parse attachment URL.
-    $link = $this->sourceParser->queryPath->find('a');
-    if ($link) {
-      $attachment_url = $link->attr('href');
-      $attachment_ext = pathinfo($attachment_url, PATHINFO_EXTENSION);
+    // The attachmentRedirect map property is an array of legacy URLs for every
+    // file that is added as an attachment to this row. This property will
+    // later be used in complete() to create redirects to the new file
+    // location.
+    $row->attachmentRedirects = array();
 
-      $row->attachment_filename = basename($attachment_url);
-      $row->source_dir = $this->baseDir . '/' . ltrim(dirname($file_path), '/');
-
-      $attachment_filepath = $row->source_dir . '/' . $row->attachment_filename;
+    // Parse attachment URL. Examples of attachment patterns:
+    // http://www.justice.gov/osg/briefs/1998/3mer/1ami/toc3index.html
+    // http://www.justice.gov/osg/briefs/1983/index.html
+    $links = $this->sourceParser->queryPath->find('a');
+    foreach ($links as $link) {
+      $link_url = $link->attr('href');
       $link->remove();
 
-      // Parse contents of attached pdf file.
-      if ($attachment_ext == 'pdf') {
-        try {
-          // Set brief topic by searching for substring in attachment url.
-          $brief_topics = array(
-            'zadm' => 'Admiralty & Maritime',
-            'zadlaw' => 'Administrative Law',
-            'zatr' => 'Antitrust (including FTC antitrust)',
-            'zbkg' => 'Banking (FDIC, Fed., OCC, RTC)',
-            'zbkr' => 'Bankruptcy',
-            'zciv1' => 'Civil Div. I: General (e.g., DOT, FEC, FOIA, FTC (except antitrust), HUD)',
-            'zciv2' => 'Civil Div. II: HHS (Medicare, Social Security)',
-            'zcrt' => 'Civil Rights (including EEOC)',
-            'zcom' => 'Communications (FCC)',
-            'zcon' => 'Constitutional',
-            'zcrim' => 'Criminal (including Habeas/2255)',
-            'zcus' => 'Customs & International Trade',
-            'zedu' => 'Education',
-            'zerisa' => 'ERISA',
-            'zforf' => 'Forfeiture (civil & criminal)',
-            'zhls' => 'National Security & Homeland Security',
-            'zimm' => 'Immigration, Naturalization, & Citizenship',
-            'zind' => 'Indian Law',
-            'zlab' => 'Labor & Employment: FLRA, Labor Dep’t (not ERISA), LHWCA, MSPB, NLRB, OSHA',
-            'zenv' => 'Natural Resources: ENRD, EPA, FERC, Interior, water rights',
-            'zorig' => 'Original Jurisdiction',
-            'zpto' => 'Patent, Trademark, & Copyright',
-            'zsec' => 'Securities Regulation (SEC)',
-            'ztax' => 'Tax',
-            'ztort' => 'Torts (FTCA, Bivens Actions, § 1983, Qualified Immunity)',
-            'ztfa' => 'Treaties and Foreign Affairs',
-            'zmisc' => 'Other',
-          );
+      // Get more information about the linked file.
+      $link_ext = pathinfo($link_url, PATHINFO_EXTENSION);
+      $link_filename = basename($link_url);
+      $link_dir_path = ltrim(dirname($file_path), ' /');
+      $link_url_abs = url($link_dir_path . '/' . $link_filename, array('absolute' => TRUE, 'base_url' => 'http://www.justice.gov'));
 
-          $pdf_metadata = $this->getPdfMetadata($attachment_filepath);
+      // Determine the file path to the linked file on the local system.
+      $source_dir = $this->baseDir . '/' . $link_dir_path;
+      $system_file_path = $source_dir . '/' . $link_filename;
+
+      switch ($link_ext) {
+        case 'pdf':
+
+          $pdf_metadata = $this->getPdfMetadata($system_file_path);
           if (!empty($pdf_metadata['Keywords'])) {
-            $topics = $this->findNeedleSubstrings($brief_topics, $pdf_metadata['Keywords']);
-            foreach ($topics as $topic) {
-              doj_migration_create_term($topic, 'topic');
-            }
-            $row->field_brief_topic = implode('|', $topics);
+            $row->field_brief_topic = $this->getBriefTopic($pdf_metadata['Keywords']);
           }
-        }
-        catch (Exception $e) {
-          $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $row->fileid, '@exception' => $e->getMessage()));
-          $this->queueMessage($message);
-          watchdog('doj_migration', $message);
-        }
+
+          // Intentional fall through.
+        case 'txt':
+          $row->attachmentRedirects[] = $link_url_abs;
+          $row->source_dir = $source_dir;
+          $row->attachment_filename = $link_filename;
+          $row->field_brief_type = $this->getBriefType($link_url);
+
+          if ($link_ext == 'txt') {
+            print_r($row);
+          }
+
+          break;
+
+        case 'html':
+          $attached_html = new SourceParser($system_file_path, file_get_contents($system_file_path));
+          $row->body = $attached_html->getBody();
+
+          print_r($row);
+
+          break;
       }
-
-      // Set brief type by searching for substring in attachment url.
-      $brief_types = array(
-        '.pet.aa' => 'Petition for Writ of Certiorari',
-        '.pet.app' => 'Appendix to Petition',
-        '.pet.rep' => 'Petition Stage Reply Brief',
-        '.pet.ami.inv' => 'Petition Stage Amicus Brief (Invitation)',
-        '.pet.ami' => 'Petition Stage Amicus Brief (Uninvited)',
-        '.pet.sup' => 'Petition Stage Supplemental Brief',
-        '.resp' => 'Petition Stage Response',
-        '.mer.aa' => 'Merits Stage Brief',
-        '.mer.rep' => 'Merits Stage Reply Brief',
-        '.mer.ami' => 'Merits Stage Amicus Brief',
-        '.ami.mer' => 'Merits Stage Amicus Brief',
-        '.mer.post' => 'Post Argument Brief',
-        '.Original.resp' => 'Original Actions: All',
-      );
-
-      $types = $this->findNeedleSubstrings($brief_types, $attachment_url, FALSE);
-      $row->field_brief_type = implode('|', array_values($types));
     }
 
     $docket_number = doj_migration_find_docket_number($row->filedata);
     $row->field_brief_docket = $docket_number;
     $row->title = StringCleanUp::stripFunkyChars(ltrim(str_replace($docket_number, '', $this->sourceParser->queryPath->text()), ' :'));
-    $row->title = mb_strimwidth(trim($row->title, ' \t\n\r\0\x0B,|'), 0, 255, "...");
+    $row->title = mb_strimwidth(trim($row->title, " \t\n\r\0\x0B,|"), 0, 255, "...");
 
     // If the title is empty attempt to use PDF metadata for title.
-    if (empty($row->title) && !empty($pdf_metadata['Title'])) {
-      $row->title = $pdf_metadata['Title'];
+    if (empty($row->title)) {
+      if (!empty($pdf_metadata['Title'])) {
+        $row->title = $pdf_metadata['Title'];
+      }
+      // If we still don't have a title at this point, skip the row.
+      else {
+        return FALSE;
+      }
     }
+  }
 
-    $row->body = '';
-    unset($row->legacy_path);
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    parent::complete($entity, $row);
+
+    if (module_exists('redirect')) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_brief_attachments');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entities = entity_load('node', $entity_id);
+    $entity = reset($entities);
+
+    $this->rollbackAttachmentRedirect($entity, 'field_brief_attachments');
+  }
+
+  /**
+   * Gets list of brief types by searching a URL for valid substring match.
+   *
+   * @param $attachment_url
+   *
+   * @return string
+   */
+  public function getBriefType($attachment_url) {
+    // Set brief type by searching for substring in attachment url.
+    $brief_types = array(
+      '.pet.aa' => 'Petition for Writ of Certiorari',
+      '.pet.app' => 'Appendix to Petition',
+      '.pet.rep' => 'Petition Stage Reply Brief',
+      '.pet.ami.inv' => 'Petition Stage Amicus Brief (Invitation)',
+      '.pet.ami' => 'Petition Stage Amicus Brief (Uninvited)',
+      '.pet.sup' => 'Petition Stage Supplemental Brief',
+      '.resp' => 'Petition Stage Response',
+      '.mer.aa' => 'Merits Stage Brief',
+      '.mer.rep' => 'Merits Stage Reply Brief',
+      '.mer.ami' => 'Merits Stage Amicus Brief',
+      '.ami.mer' => 'Merits Stage Amicus Brief',
+      '.mer.post' => 'Post Argument Brief',
+      '.Original.resp' => 'Original Actions: All',
+    );
+
+    $types = $this->findNeedleSubstrings($brief_types, $attachment_url, FALSE);
+
+    return implode('|', array_values($types));
   }
 
   /**
@@ -297,48 +327,55 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     return $values;
   }
 
-
   /**
-   * Extracts metadata from pdf file.
+   * Extracts as valid brief topic from a string.
    *
-   * @param string $pdf_file_path
-   *   The absolute file path of the pdf on the local system.
+   * @param $string
+   *   A string that might contain a brief topic.
    *
-   * @return array
-   *   An associative array of pdf metadata.
+   * @return string|NULL
+   *   A list of brief topics, separated by '|'.
+   *
    */
-  public function getPdfMetadata($pdf_file_path) {
-    $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/doj/xpdf/bin64/pdfinfo');
-    $command = "$pdfinfo_bin $pdf_file_path";
-    $output = shell_exec($command);
-    $pdf_info_rows = explode("\n", $output);
-    $pdf_metadata = array();
-    foreach ($pdf_info_rows as $row) {
-      $columns = explode(':', $row);
-      $pdf_metadata[$columns[0]] = $columns[1];
+  public function getBriefTopic($string) {
+
+    // Set brief topic by searching for substring in attachment url.
+    $brief_topics = array(
+      'zadm' => 'Admiralty & Maritime',
+      'zadlaw' => 'Administrative Law',
+      'zatr' => 'Antitrust (including FTC antitrust)',
+      'zbkg' => 'Banking (FDIC, Fed., OCC, RTC)',
+      'zbkr' => 'Bankruptcy',
+      'zciv1' => 'Civil Div. I: General (e.g., DOT, FEC, FOIA, FTC (except antitrust), HUD)',
+      'zciv2' => 'Civil Div. II: HHS (Medicare, Social Security)',
+      'zcrt' => 'Civil Rights (including EEOC)',
+      'zcom' => 'Communications (FCC)',
+      'zcon' => 'Constitutional',
+      'zcrim' => 'Criminal (including Habeas/2255)',
+      'zcus' => 'Customs & International Trade',
+      'zedu' => 'Education',
+      'zerisa' => 'ERISA',
+      'zforf' => 'Forfeiture (civil & criminal)',
+      'zhls' => 'National Security & Homeland Security',
+      'zimm' => 'Immigration, Naturalization, & Citizenship',
+      'zind' => 'Indian Law',
+      'zlab' => 'Labor & Employment: FLRA, Labor Dep’t (not ERISA), LHWCA, MSPB, NLRB, OSHA',
+      'zenv' => 'Natural Resources: ENRD, EPA, FERC, Interior, water rights',
+      'zorig' => 'Original Jurisdiction',
+      'zpto' => 'Patent, Trademark, & Copyright',
+      'zsec' => 'Securities Regulation (SEC)',
+      'ztax' => 'Tax',
+      'ztort' => 'Torts (FTCA, Bivens Actions, § 1983, Qualified Immunity)',
+      'ztfa' => 'Treaties and Foreign Affairs',
+      'zmisc' => 'Other',
+    );
+
+    $topics = $this->findNeedleSubstrings($brief_topics, $string);
+    foreach ($topics as $topic) {
+      doj_migration_create_term($topic, 'topic');
     }
 
-    return $pdf_metadata;
-  }
-
-  /**
-   * Extracts the contents of a pdf file.
-   *
-   * @param string $pdf_file_path
-   *   The absolute file path of the pdf on the local system.
-   *
-   * @return string
-   *   The text content of the pdf.
-   *
-   * @throws \XPDF\Exception\BinaryNotFoundException
-   */
-  public function getPdfContents($pdf_file_path) {
-    // Get PDF contents.
-    $pdftotext_bin = variable_get('pdftotext_binary', '/home/doj/xpdf/bin64/pdftotext');
-    $pdf_parser = XPDF\PdfToText::create(array('pdftotext.binaries' => $pdftotext_bin));
-    $pdf_contents = $pdf_parser->getText($pdf_file_path);
-
-    return $pdf_contents;
+    return implode('|', $topics);
   }
 }
 
