@@ -154,7 +154,7 @@ class SourceParser {
   /**
    * Get the body from html and set the body var.
    */
-  protected function setBody() {
+  public function setBody() {
     try {
       $body = $this->queryPath->top('body')->innerHTML();
 
@@ -178,7 +178,7 @@ class SourceParser {
    * Return content of <body> element.
    */
   public function getBody() {
-    // The body gets set in the constructor, no need to check for existance.
+    // The body gets set in the constructor, no need to check for existence.
     return $this->body;
   }
 
