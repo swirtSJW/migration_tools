@@ -330,7 +330,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
    *
    * @return string|NULL
    *   A list of brief topics, separated by '|'.
-   *
    */
   public function getBriefTopic($string) {
 
