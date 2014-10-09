@@ -24,6 +24,7 @@ The following is a list of classes that exemplify various types of migrations.
     * CareersJobMigration
 * Chunk Parsing:
     * JusticeChunkParser
+    * BriefChunkParser
     * GalleryChunkParser
 * Field Collections:
     * GalleryImagesMigration
@@ -38,3 +39,7 @@ The following is a list of classes that exemplify various types of migrations.
     * GalleryImagesMigration
 * Location migration:
     * OpaSpeechMigration
+* PDF parsing:
+    * OsgBriefMigration
+* Non-english node migration:
+    * EspanolPageMigration

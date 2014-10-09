@@ -30,8 +30,10 @@ class SourceParser {
    *   The full HTML data as loaded from the file.
    * @param bool $fragment
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
+   * @param array $qp_options
+   *   An associative array of options to be passed to the html_qp() function.
    */
-  public function __construct($file_id, $html, $fragment = FALSE) {
+  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array()) {
 
     $html = StringCleanUp::fixEncoding($html);
 
@@ -40,7 +42,7 @@ class SourceParser {
 
     $html = StringCleanUp::fixWindowSpecificChars($html);
 
-    $this->initQueryPath($html);
+    $this->initQueryPath($html, $qp_options);
 
     $this->fileId = $file_id;
 
@@ -58,19 +60,38 @@ class SourceParser {
   /**
    * Create the queryPath object.
    */
-  protected function initQueryPath($html) {
+  protected function initQueryPath($html, $qp_options) {
     $type_detect = array(
       'UTF-8',
+      'ASCII',
       'ISO-8859-1',
+      'ISO-8859-2',
+      'ISO-8859-3',
+      'ISO-8859-4',
+      'ISO-8859-5',
       'ISO-8859-6',
+      'ISO-8859-7',
+      'ISO-8859-8',
+      'ISO-8859-9',
+      'ISO-8859-10',
+      'ISO-8859-13',
+      'ISO-8859-14',
+      'ISO-8859-15',
+      'ISO-8859-16',
+      'Windows-1251',
+      'Windows-1252',
+      'Windows-1254',
     );
-    $convert_from = mb_detect_encoding($html, $type_detect, TRUE);
+    $convert_from = mb_detect_encoding($html, $type_detect);
+
+    if (!$qp_options) {
+      $qp_options = array(
+        'convert_to_encoding' => 'UTF-8',
+        'convert_from_encoding' => $convert_from,
+      );
+    }
 
     // Create query path object.
-    $qp_options = array(
-      'convert_to_encoding' => 'UTF-8',
-      'convert_from_encoding' => $convert_from,
-    );
     $this->queryPath = htmlqp($html, NULL, $qp_options);
   }
 
@@ -86,7 +107,7 @@ class SourceParser {
 
     }
     catch (Exception $e) {
-      watchdog('doj_migration', '%file: failed to clean the html', array('%file' => $this->fileId), WATCHDOG_ALERT);
+      watchdog('doj_migration', '%file: failed to clean the html, Error: %error', array('%file' => $this->fileId, '%error' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 

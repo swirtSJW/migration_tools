@@ -141,6 +141,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
@@ -220,8 +221,12 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
           // Remove redundant PDF links from body.
           $row->body = $attached_html->getBody();
           $row->body = preg_replace('|<a[^>]*>View PDF Version<\/a>|', " ", $row->body);
+
           // Remove empty p tags. We are not removing p tags containing &nbsp;
           $row->body = preg_replace("/\r|\n/", " ", $row->body);
+
+          // Remove <tt> tags.
+          $row->body = preg_replace('/<tt>|<\/tt>/', " ", $row->body);
 
           break;
       }
@@ -229,8 +234,17 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
 
     $docket_number = doj_migration_find_docket_number($row->filedata);
     $row->field_brief_docket = $docket_number;
-    $row->title = StringCleanUp::stripFunkyChars(ltrim(str_replace($docket_number, '', $this->sourceParser->queryPath->text()), ' :'));
-    $row->title = mb_strimwidth(trim($row->title, " \t\n\r\0\x0B,|"), 0, 255, "...");
+
+    // Clean up title.
+    $row->title = $this->sourceParser->queryPath->text();
+    $row->title = str_replace($docket_number, '', $row->title);
+    $row->title = StringCleanUp::stripFunkyChars($row->title);
+    $row->title = trim($row->title, " \t\n\r\0\x0B,|-:");
+    $row->title = mb_strimwidth($row->title, 0, 255, "...");
+    $row->title = StringCleanUp::superTrim($row->title);
+    // Replace double spaces with single spaces
+    $row->title = preg_replace('/(\s){2,}/', ' ', $row->title);
+    $row->title = preg_replace('/[\pZ\pC]{2,}|[\pZ\pC]{2,}/u', ' ', $row->title);
 
     // If the title is empty attempt to use PDF metadata for title.
     if (empty($row->title)) {
@@ -396,11 +410,12 @@ class BriefChunkParser extends JusticeChunkParser {
     // @see http://www.justice.gov/osg/briefs/2006/2pet/7pet/toc3index.html
     // @see http://www.justice.gov/osg/briefs/2014/0responses/toc3index.html
     $this->chunks = $this->sourceParser->queryPath->find('.brieflist > div');
-    if (!$this->chunks) {
+    if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = $this->sourceParser->queryPath->find('.bodytext > p');
     }
-    if (!$this->chunks) {
+    if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = array();
+      watchdog('doj_migration', 'Could not find chunks for JusticeChunkParser child class @class_name', array('@class_name' => get_class()), WATCHDOG_ERROR);
     }
   }
 
@@ -430,6 +445,7 @@ class BriefChunkParser extends JusticeChunkParser {
    * {@inheritdoc}
    */
   public function getChunk($chunk_id) {
+
     $chunks = $this->getChunks();
     $chunk = $chunks->filterPreg('|' . $chunk_id . '|');
 
@@ -437,13 +453,14 @@ class BriefChunkParser extends JusticeChunkParser {
       $data = $chunk->innerHtml();
     }
     else {
-      $data = $chunk->parent('p')->innerHtml();
+      $data = $chunk->innerHtml();
     }
 
     if (!$data) {
       $data = $chunk->parent('div')->innerHtml();
     }
     if (!$data) {
+      watchdog('doj_migration', 'Data could not be migrated for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
       return 'Data could not be migrated';
     }
     else {
@@ -471,8 +488,10 @@ function doj_migration_find_docket_number($string) {
   // No. 97-1942
   // Nos. 99-464,
   // No. 132, Original:
+  // No. 83-1386, No. 83-1721 and No. 83-1838
+  // No. 83-1569 & No. 83-1733
   // @codingStandardsIgnoreEnd
-  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))(([ ,]|(and))*(?!Original)([A-Z0-9-]+))*#', $string, $matches);
+  preg_match('#(([A-Z0-9-]+)(?<!USDOJ)(?<!OSG):)|(No(s?)\. ([A-Z0-9-]+))(([ ,]|(and)|[ ]|No\.)*(?!Original)([A-Z0-9-]+))*#', $string, $matches);
   if ($matches) {
     $docket_number = $matches[0];
     return $docket_number;

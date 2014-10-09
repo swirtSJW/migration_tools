@@ -18,13 +18,29 @@ class StringCleanUp {
 
     // Fix and replace bizarre characters pre-encoding.
     $string = StringCleanUp::convertFatalCharstoASCII($string);
+
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
     $type_detect = array(
-      'ASCII',
       'UTF-8',
+      'ASCII',
       'ISO-8859-1',
+      'ISO-8859-2',
+      'ISO-8859-3',
+      'ISO-8859-4',
+      'ISO-8859-5',
       'ISO-8859-6',
+      'ISO-8859-7',
+      'ISO-8859-8',
+      'ISO-8859-9',
+      'ISO-8859-10',
+      'ISO-8859-13',
+      'ISO-8859-14',
+      'ISO-8859-15',
+      'ISO-8859-16',
+      'Windows-1251',
+      'Windows-1252',
+      'Windows-1254',
     );
     $encoding = mb_detect_encoding($string, $type_detect, TRUE);
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
@@ -94,7 +110,7 @@ class StringCleanUp {
    */
   public static function funkyCharsMap() {
     $convert_table = array(
-      '©' => 'c', '®' => 'r', 'À' => 'a',
+      '©' => 'c', '®' => 'r', 'À' => 'a', 'Ã' => 'a',
       'Á' => 'a', 'Â' => 'a', 'Ä' => 'a', 'Å' => 'a', 'Æ' => 'ae','Ç' => 'c',
       'È' => 'e', 'É' => 'e', 'Ë' => 'e', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i',
       'Ï' => 'i', 'Ò' => 'o', 'Ó' => 'o', 'Ô' => 'o', 'Õ' => 'o', 'Ö' => 'o',
