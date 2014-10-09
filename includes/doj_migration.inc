@@ -338,6 +338,7 @@ function doj_migration_create_menu_file($organization) {
   $fh = fopen($file, 'w') or die("can't open file");
   fwrite($fh, $content);
   fclose($fh);
+  drush_print_r("Created menu import file at $file");
 }
 
 /**
