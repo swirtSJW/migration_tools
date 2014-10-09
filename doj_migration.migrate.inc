@@ -189,13 +189,17 @@ function doj_migration_migrate_api() {
         'group_name' => 'asg',
         'class_name' => 'AsgSpeechEspanolMigration',
       ),
+      'AtjFile' => array(
+        'group_name' => 'atj',
+        'class_name' => 'AtjFileMigration',
+      ),
       'AtjPage' => array(
         'group_name' => 'atj',
         'class_name' => 'AtjPageMigration',
       ),
-      'AtjFile' => array(
+      'AtjPublication' => array(
         'group_name' => 'atj',
-        'class_name' => 'AtjFileMigration',
+        'class_name' => 'AtjPublicationMigration',
       ),
       'CareersFile' => array(
         'group_name' => 'careers',
