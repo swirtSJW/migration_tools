@@ -60,6 +60,8 @@ class OlaTestimonyMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_testimony_date', 'documentDate');
     $this->addFieldMapping('field_testimony_committee', 'testimonyCommitte')->separator(",");
     $this->addFieldMapping('field_testimony_committee:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_testimony_session', 'term');
+    $this->addFieldMapping('field_testimony_session:create_term')->defaultValue(TRUE);
   }
 
   /**
@@ -70,6 +72,19 @@ class OlaTestimonyMigration extends JusticeBaseMigration {
     if (isset($bool) && $bool == FALSE) {
       return $bool;
     }
+
+    $pieces = explode("-", $row->documentDate);
+    $year = $pieces[0];
+
+    $m = array(
+      1 => "First",
+      2 => "Second",
+      3 => "Third",
+      4 => "Fourth",
+      5 => "Fifth",
+    );
+
+    $row->term = "{$row->congressTerm}th Congress {$m[$row->congressSession]} Session - {$year}";
   }
 
   /**
@@ -87,6 +102,131 @@ class OlaTestimonyMigration extends JusticeBaseMigration {
   public function complete($entity, $row) {
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
+}
+
+class OlaWitnessMigration extends JusticeBaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $cmsopa_db_name = $databases['cmsopa']['default']['database'];
+
+    $query = db_select("$cmsopa_db_name.cms_opa_doclinks", 'c')
+      ->fields('c', array(
+        'id',
+        'docID',
+        'documentType',
+        'url',
+        'text',
+        'inDocument',
+      ))->condition('documentType', 'olatestimony', "=");
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationFieldCollection::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query);
+
+    $this->destination = new MigrateDestinationFieldCollection(
+      'field_testimony_witness',
+      array('host_entity_type' => 'node')
+    );
+
+    $this->addFieldMapping('host_entity_id', 'docID')->sourceMigration('OlaTestimony');
+    $this->addFieldMapping('field_witness_name', 'name');
+    $this->addFieldMapping('field_witness_position', 'position');
+    $this->addFieldMapping('field_witness_component', 'component');
+
+    $this->addFieldMapping('field_witness_attachment', 'attachment_filename');
+    $this->addFieldMapping('field_witness_attachment:file_class')
+      ->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_witness_attachment:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_witness_attachment:source_dir', 'source_dir');
+    $this->addFieldMapping('field_witness_attachment:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    $text = $row->text;
+    $pieces = explode("--------", $text);
+
+    // The second piece contains the position and the component.
+    $pc = explode(",", $pieces[1]);
+
+    $row->name = $pieces[0];
+    $row->position = trim($pc[0]);
+
+    $component = trim($pc[1]);
+
+    if (!empty($component)) {
+      $query = db_select("taxonomy_term_data", "t")->fields("t", array('name'))->condition('vid', 6, '=')
+        ->condition('name', "%{$component}%", "LIKE");
+
+      $results = $query->execute();
+      foreach ($results as $result) {
+        $row->component = $result->name;
+        break;
+      }
+    }
+
+    $url = $row->url;
+    $row->attachmentRedirects = array(substr($url, 1));
+
+    $pieces = explode("/", $url);
+
+    $attachment_filename = array_pop($pieces);
+
+    $file_pieces = explode("-", $attachment_filename);
+    $year = "20{$file_pieces[2]}";
+    $month = $file_pieces[0];
+    $day = $file_pieces[1];
+
+    $source_dir = implode("/", $pieces);
+    $source_dir = variable_get("doj_migration_base_dir") . $source_dir . "/";
+
+    $destination_dir = "public:///testimonies/witnesses/attachments/{$year}/{$month}/{$day}/";
+
+    $row->attachment_filename = $attachment_filename;
+    $row->source_dir = $source_dir;
+    $row->destination_dir = $destination_dir;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entity = entity_load_single('field_collection_item', $entity_id);
+    $this->rollbackAttachmentRedirect($entity, 'field_witness_attachment');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (module_exists('redirect')) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_witness_attachment');
     }
   }
 }
