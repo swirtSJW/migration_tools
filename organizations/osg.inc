@@ -415,7 +415,10 @@ class BriefChunkParser extends JusticeChunkParser {
     }
     if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = array();
-      watchdog('doj_migration', 'Could not find chunks for JusticeChunkParser child class @class_name', array('@class_name' => get_class()), WATCHDOG_ERROR);
+      watchdog('doj_migration',
+        'Could not find chunks for JusticeChunkParser child class @class_name. Content: %content',
+        array('@class_name' => get_class(),'%content' => $this->content),
+        WATCHDOG_ERROR);
     }
   }
 
@@ -447,6 +450,9 @@ class BriefChunkParser extends JusticeChunkParser {
   public function getChunk($chunk_id) {
 
     $chunks = $this->getChunks();
+    if (!$chunks) {
+      watchdog('doj_migration', 'No data chunks were found. Cannot search for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
+    }
     $chunk = $chunks->filterPreg('|' . $chunk_id . '|');
 
     if ($chunk->is('div')) {
