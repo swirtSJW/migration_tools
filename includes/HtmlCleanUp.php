@@ -177,7 +177,7 @@ class HtmlCleanUp {
    * @param array $selectors
    *   An array of selectors to remove.
    */
-  protected static function removeEmptyElements($query_path, array $selectors) {
+  public static function removeEmptyElements($query_path, array $selectors) {
     foreach ($selectors as $selector) {
       $elements = $query_path->find($selector);
       foreach ($elements as $element) {

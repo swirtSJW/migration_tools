@@ -104,7 +104,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
       'osg/briefs',
     );
 
-    $regex = '/toc3index\.html/';
+    $regex = '/^(toc3)?index\.html/';
 
     $options = array('recurse' => TRUE);
 
@@ -199,6 +199,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
 
       switch ($link_ext) {
         case 'pdf':
+
           $pdf_metadata = $this->getPdfMetadata($system_file_path);
           if (!empty($pdf_metadata['Keywords'])) {
             $row->field_brief_topic = $this->getBriefTopic($pdf_metadata['Keywords']);
@@ -211,11 +212,20 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
           $row->attachment_filename = $link_filename;
           $row->field_brief_type = $this->getBriefType($link_url);
 
+          if ($link_ext == 'txt') {
+            print_r($row);
+          }
+
           break;
 
         case 'html':
           $attached_html = new SourceParser($system_file_path, file_get_contents($system_file_path));
+
+          // Remove redundant PDF links from body.
           $row->body = $attached_html->getBody();
+          $row->body = preg_replace('|<a[^>]*>View PDF Version<\/a>|', " ", $row->body);
+          // Remove empty p tags. We are not removing p tags containing &nbsp;
+          $row->body = preg_replace("/\r|\n/", " ", $row->body);
 
           break;
       }
@@ -262,11 +272,9 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
   /**
    * Gets list of brief types by searching a URL for valid substring match.
    *
-   * @param string $attachment_url
-   *   The url of the pdf. This string will be searched for key strings.
+   * @param $attachment_url
    *
    * @return string
-   *   A string of found brief types, imploded with '|'.
    */
   public function getBriefType($attachment_url) {
     // Set brief type by searching for substring in attachment url.
@@ -325,11 +333,12 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
   /**
    * Extracts as valid brief topic from a string.
    *
-   * @param string $string
+   * @param $string
    *   A string that might contain a brief topic.
    *
    * @return string|NULL
    *   A list of brief topics, separated by '|'.
+   *
    */
   public function getBriefTopic($string) {
 
@@ -387,6 +396,7 @@ class BriefChunkParser extends JusticeChunkParser {
   public function setChunks() {
     // There are multiple patterns used on brief pages.
     // @see http://www.justice.gov/osg/briefs/1985/index.html
+    // @see http://www.justice.gov/osg/briefs/2006/2pet/7pet/toc3index.html
     // @see http://www.justice.gov/osg/briefs/2014/0responses/toc3index.html
     $this->chunks = $this->sourceParser->queryPath->find('.brieflist > div');
     if (!$this->chunks) {

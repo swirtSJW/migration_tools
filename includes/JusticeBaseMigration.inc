@@ -267,7 +267,8 @@ abstract class JusticeBaseMigration extends Migration {
   public function getPdfMetadata($pdf_file_path) {
     try {
       $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/doj/xpdf/bin64/pdfinfo');
-      $command = "$pdfinfo_bin $pdf_file_path";
+      $file_arg = escapeshellarg($pdf_file_path);
+      $command = "$pdfinfo_bin $file_arg";
       $output = shell_exec($command);
       $pdf_info_rows = explode("\n", $output);
       $pdf_metadata = array();
