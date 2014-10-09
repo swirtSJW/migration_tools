@@ -416,8 +416,8 @@ class BriefChunkParser extends JusticeChunkParser {
     if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = array();
       watchdog('doj_migration',
-        'Could not find chunks for JusticeChunkParser child class @class_name. Content: %content',
-        array('@class_name' => get_class(),'%content' => $this->content),
+        'Could not find chunks for JusticeChunkParser child class @class_name. Content: @content',
+        array('@class_name' => get_class(),'@content' => $this->content),
         WATCHDOG_ERROR);
     }
   }
@@ -448,10 +448,12 @@ class BriefChunkParser extends JusticeChunkParser {
    * {@inheritdoc}
    */
   public function getChunk($chunk_id) {
+    $error_data = 'Data could not be migrated';
 
     $chunks = $this->getChunks();
     if (!$chunks) {
       watchdog('doj_migration', 'No data chunks were found. Cannot search for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
+      return $error_data;
     }
     $chunk = $chunks->filterPreg('|' . $chunk_id . '|');
 
@@ -467,7 +469,7 @@ class BriefChunkParser extends JusticeChunkParser {
     }
     if (!$data) {
       watchdog('doj_migration', 'Data could not be migrated for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
-      return 'Data could not be migrated';
+      return $error_data;
     }
     else {
       return $data;
