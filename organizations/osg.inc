@@ -212,10 +212,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
           $row->attachment_filename = $link_filename;
           $row->field_brief_type = $this->getBriefType($link_url);
 
-          if ($link_ext == 'txt') {
-            print_r($row);
-          }
-
           break;
 
         case 'html':
@@ -273,6 +269,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
    * Gets list of brief types by searching a URL for valid substring match.
    *
    * @param $attachment_url
+   *   The url of the pdf. This string will be searched for key strings.
    *
    * @return string
    */
@@ -333,7 +330,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
   /**
    * Extracts as valid brief topic from a string.
    *
-   * @param $string
+   * @param string $string
    *   A string that might contain a brief topic.
    *
    * @return string|NULL
