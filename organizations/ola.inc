@@ -113,7 +113,7 @@ class OlaWitnessMigration extends JusticeBaseMigration {
   public function __construct($arguments) {
     parent::__construct($arguments);
 
-    $this->dependencies = array('Organization');
+    $this->dependencies = array('Organization', 'OlaTestimony');
 
     global $databases;
     $cmsopa_db_name = $databases['cmsopa']['default']['database'];
