@@ -416,8 +416,8 @@ class BriefChunkParser extends JusticeChunkParser {
     if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = array();
       watchdog('doj_migration',
-        'Could not find chunks for JusticeChunkParser child class @class_name. Content: @content',
-        array('@class_name' => get_class(),'@content' => $this->content),
+        'Could not find chunks for JusticeChunkParser child class @class_name.',
+        array('@class_name' => get_class()),
         WATCHDOG_ERROR);
     }
   }
