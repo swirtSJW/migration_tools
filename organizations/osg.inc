@@ -242,7 +242,7 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
     $row->title = trim($row->title, " \t\n\r\0\x0B,|-:");
     $row->title = mb_strimwidth($row->title, 0, 255, "...");
     $row->title = StringCleanUp::superTrim($row->title);
-    // Replace double spaces with single spaces
+    // Replace double spaces with single spaces.
     $row->title = preg_replace('/(\s){2,}/', ' ', $row->title);
     $row->title = preg_replace('/[\pZ\pC]{2,}|[\pZ\pC]{2,}/u', ' ', $row->title);
 
@@ -282,10 +282,11 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
   /**
    * Gets list of brief types by searching a URL for valid substring match.
    *
-   * @param $attachment_url
+   * @param string $attachment_url
    *   The url of the pdf. This string will be searched for key strings.
    *
    * @return string
+   *   Returns matched brief types, imploded by '|'.
    */
   public function getBriefType($attachment_url) {
     // Set brief type by searching for substring in attachment url.
@@ -349,7 +350,6 @@ class OsgBriefMigration extends JusticeHtmlToNodeMigration {
    *
    * @return string|NULL
    *   A list of brief topics, separated by '|'.
-   *
    */
   public function getBriefTopic($string) {
 
