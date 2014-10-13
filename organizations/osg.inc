@@ -506,3 +506,172 @@ function doj_migration_find_docket_number($string) {
   }
   return FALSE;
 }
+
+/**
+ * Class OsgHistoricalBioMigration.
+ *
+ * @package doj_migration
+ */
+class OsgHistoricalBioMigration extends JusticeBaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array('Organization');
+
+    global $databases;
+    $iso_db_name = $databases['iso']['default']['database'];
+
+    $query = db_select("$iso_db_name.soltgeneral", 'c')
+      ->fields('c', array(
+        'id',
+        'term',
+        'first',
+        'last',
+        'description',
+        'imgsrc',
+      ));
+
+    // A map of source MySQL row -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // Create a MigrateSource object, which manages retrieving the input data.
+    $this->source = new MigrateSourceSQL($query);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('historical_bio');
+
+    // Field Mappings.
+    $this->addFieldMapping('og_group_ref')->defaultValue("osg")->sourceMigration('Organization');
+    $this->addFieldMapping('title', 'name');
+    $this->addFieldMapping('field_bio_body', 'description');
+    $this->addFieldMapping('field_bio_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_dates_service', 'term1');
+    $this->addFieldMapping('field_dates_service:to', 'term2');
+    $this->addSimpleMappings(array("uid", "status"));
+
+    $this->addFieldMapping('field_portrait', 'filename');
+    $this->addFieldMapping('field_portrait:file_class')
+      ->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_portrait:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_portrait:source_dir', 'source_dir');
+    $this->addFieldMapping('field_portrait:alt', 'alt');
+    $this->addFieldMapping('field_portrait:title', 'title');
+    $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $bool = parent::prepareRow($row);
+    if (isset($bool) && $bool == FALSE) {
+      return $bool;
+    }
+
+    $row->name = $row->first . " " . $row->last;
+
+    $term = $row->term;
+    $terms = explode("-", $term);
+
+    // Each term has a month spelled out and a year.
+    $months = array(
+      "January" => "01", "February" => "02", "March" => "03", "April" => "04",
+      "May" => "05", "June" => "06", "July" => "07", "August" => "08",
+      "September" => "09", "October" => "10", "November" => "11",
+      "December" => "12");
+
+    foreach ($terms as $key => $t) {
+      $t = trim($t);
+      $pieces = explode(" ", $t);
+      $month = $months[trim($pieces[0])];
+      $pieces[0] = $month;
+
+      $year = trim($pieces[1]);
+
+      $terms[$key] = $pieces[0] . "-" . $pieces[1];
+    }
+
+    $row->term1 = "1-" . trim($terms[0]);
+
+    if (!empty($terms[1])) {
+      $row->term2 = "1-" . trim($terms[1]);
+    }
+    else {
+      $row->term2 = "";
+    }
+
+    $row->uid = 1;
+    $row->status = 1;
+
+    // Portrait.
+    $url = NULL;
+    $qp = htmlqp($row->imgsrc);
+    foreach ($qp->find('img') as $img) {
+      $url = $img->attr('src');
+      $alt = $img->attr('alt');
+    }
+
+    if (!empty($url)) {
+      $row->attachmentRedirects = array(substr($url, 1));
+
+      $pieces = explode("/", $url);
+
+      $attachment_filename = array_pop($pieces);
+
+      $day = "01";
+
+      $source_dir = implode("/", $pieces);
+      $source_dir = variable_get("doj_migration_base_dir") . $source_dir . "/";
+
+      $destination_dir = "public:///bios/portraits/{$year}/{$month}/{$day}/";
+
+      $row->filename = $attachment_filename;
+      $row->source_dir = $source_dir;
+      $row->destination_dir = $destination_dir;
+      $row->alt = $alt;
+      $row->title = $alt;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+
+    if (module_exists('redirect')) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_portrait');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entity = entity_load_single('node', $entity_id);
+
+    $this->rollbackAttachmentRedirect($entity, 'field_portrait');
+  }
+}

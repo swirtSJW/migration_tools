@@ -513,6 +513,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'osg',
         'class_name' => 'OsgFileMigration',
       ),
+      'OsgHistoricalBio' => array(
+        'group_name' => 'osg',
+        'class_name' => 'OsgHistoricalBioMigration',
+      ),
       'OtjPage' => array(
         'group_name' => 'otj',
         'class_name' => 'OtjPageMigration',
