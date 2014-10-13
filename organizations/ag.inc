@@ -253,6 +253,8 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
       ->defaultValue('MigrateFileUri');
     $this->addFieldMapping('field_portrait:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_portrait:source_dir', 'source_dir');
+    $this->addFieldMapping('field_portrait:alt', 'alt');
+    $this->addFieldMapping('field_portrait:title', 'title');
     $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
   }
 
@@ -283,6 +285,37 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
 
     $row->uid = 1;
     $row->status = 1;
+
+    // Portrait.
+    $url = NULL;
+    $qp = htmlqp($row->imgsrc);
+    foreach ($qp->find('img') as $img) {
+      $url = $img->attr('src');
+      $alt = $img->attr('alt');
+    }
+
+    if (!empty($url)) {
+      $row->attachmentRedirects = array(substr($url, 1));
+
+      $pieces = explode("/", $url);
+
+      $attachment_filename = array_pop($pieces);
+
+      $year = $terms[0];
+      $month = "01";
+      $day = "01";
+
+      $source_dir = implode("/", $pieces);
+      $source_dir = variable_get("doj_migration_base_dir") . $source_dir . "/";
+
+      $destination_dir = "public:///bios/portraits/{$year}/{$month}/{$day}/";
+
+      $row->filename = $attachment_filename;
+      $row->source_dir = $source_dir;
+      $row->destination_dir = $destination_dir;
+      $row->alt = $alt;
+      $row->title = $alt;
+    }
   }
 
   /**
@@ -299,5 +332,18 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
     }
+
+    if (module_exists('redirect')) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_portrait');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entity = entity_load_single('node', $entity_id);
+
+    $this->rollbackAttachmentRedirect($entity, 'field_portrait');
   }
 }
