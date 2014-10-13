@@ -217,6 +217,7 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
         'first',
         'last',
         'description',
+        'imgsrc',
       ));
 
     // A map of source MySQL row -> destination node id.
@@ -238,7 +239,7 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->destination = new MigrateDestinationNode('historical_bio');
 
     // Field Mappings.
-    $this->addFieldMapping('og_group_ref')->defaultValue("ag");
+    $this->addFieldMapping('og_group_ref')->defaultValue("ag")->sourceMigration('Organization');
 
     $this->addFieldMapping('title', 'wholename');
     $this->addFieldMapping('field_bio_body', 'description');
@@ -246,6 +247,13 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_dates_service', 'term1');
     $this->addFieldMapping('field_dates_service:to', 'term2');
     $this->addSimpleMappings(array("uid", "status"));
+
+    $this->addFieldMapping('field_portrait', 'filename');
+    $this->addFieldMapping('field_portrait:file_class')
+      ->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_portrait:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_portrait:source_dir', 'source_dir');
+    $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
   }
 
   /**
@@ -258,9 +266,20 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     }
 
     $term = $row->term;
+
     $terms = explode("-", $term);
-    $row->term1 = trim($terms[0]);
-    $row->term2 = trim($terms[1]);
+    if (strcmp($terms[1], "Present") == 0) {
+      $terms[1] = "2014";
+    }
+
+    $row->term1 = "1-1-" . trim($terms[0]);
+
+    if (!empty($terms[1])) {
+      $row->term2 = "1-1-" . trim($terms[1]);
+    }
+    else {
+      $row->term2 = "";
+    }
 
     $row->uid = 1;
     $row->status = 1;
