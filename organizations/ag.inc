@@ -258,6 +258,8 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_portrait:title', 'title');
     $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
 
+    $this->addFieldMapping('field_portrait_artist', 'artist');
+
     $this->addFieldMapping('field_bio_link', 'link');
     $this->addFieldMapping('field_bio_link:title', 'link_title');
   }
@@ -296,6 +298,12 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     foreach ($qp->find('img') as $img) {
       $url = $img->attr('src');
       $alt = $img->attr('alt');
+    }
+
+    foreach ($qp->find('em') as $em) {
+      $artist = $em->text();
+      $artist = trim(str_replace("Artist:", "", $artist));
+      $row->artist = $artist;
     }
 
     if (!empty($url)) {
