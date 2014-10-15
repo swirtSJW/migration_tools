@@ -218,6 +218,7 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
         'last',
         'description',
         'imgsrc',
+        'speeches',
       ));
 
     // A map of source MySQL row -> destination node id.
@@ -256,6 +257,9 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_portrait:alt', 'alt');
     $this->addFieldMapping('field_portrait:title', 'title');
     $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+
+    $this->addFieldMapping('field_bio_link', 'link');
+    $this->addFieldMapping('field_bio_link:title', 'link_title');
   }
 
   /**
@@ -315,6 +319,13 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
       $row->destination_dir = $destination_dir;
       $row->alt = $alt;
       $row->title = $alt;
+
+      $qp = htmlqp($row->speeches);
+      foreach ($qp->find('a') as $a) {
+        $src = $a->attr('href');
+        $row->link = "http://www.justice.gov" . $src;
+        $row->link_title = "Speeches";
+      }
     }
   }
 
