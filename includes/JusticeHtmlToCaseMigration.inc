@@ -44,7 +44,7 @@ abstract class JusticeHtmlToCaseMigration extends JusticeHtmlToNodeMigration {
     $this->destination = new MigrateDestinationNode('case');
 
     // Define non-simple field mappings.
-    $this->addFieldMapping('field_page_body', 'body');
-    $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_case_body', 'body');
+    $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
   }
 }

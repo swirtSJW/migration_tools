@@ -28,6 +28,7 @@ files[] = includes/JusticeCsvMigration.inc
 files[] = includes/JusticeUserMigration.inc
 
 files[] = includes/source_parsers/CareersSourceParser.php
+files[] = includes/source_parsers/CivilCaseSourceParser.php
 files[] = includes/source_parsers/CivilPageSourceParser.php
 files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php

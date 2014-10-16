@@ -150,7 +150,7 @@ function doj_migrate_find_folders_with_files($organization, $exts, $ignore = arr
     }
   }
 
-  return drupal_json_encode(array_keys($folders));
+  return var_export(array_keys($folders));
 }
 
 /**
