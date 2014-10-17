@@ -206,11 +206,81 @@ class OlaWitnessMigration extends JusticeBaseMigration {
     $source_dir = implode("/", $pieces);
     $source_dir = variable_get("doj_migration_base_dir") . $source_dir . "/";
 
+    // $source_dir = variable_get("doj_migration_base_dir") .
+    // "/ola/testimony/{$info[0]}-{$info[1]}/";
+
     $destination_dir = "public:///testimonies/witnesses/attachments/{$year}/{$month}/{$day}/";
 
     $row->attachment_filename = $attachment_filename;
     $row->source_dir = $source_dir;
     $row->destination_dir = $destination_dir;
+  }
+
+  /**
+   * Not being use right now. Might be helpful with testimony html migrations.
+   */
+  private function parseHostTerm($term) {
+    $return = array();
+
+    $ms = array(
+      1 => "First",
+      2 => "Second",
+      3 => "Third",
+      4 => "Fourth",
+      5 => "Fifth",
+    );
+
+    $cs = array("110", "111", "112", "113", "114", "115");
+
+    $name = $term->name;
+
+    foreach ($cs as $c) {
+      if (substr_count($name, $c) > 0) {
+        $return[] = $c;
+        break;
+      }
+    }
+
+    foreach ($ms as $n => $m) {
+      if (substr_count($name, $m) > 0) {
+        $return[] = $n;
+        break;
+      }
+    }
+
+    return $return;
+  }
+
+  /**
+   * Not being use right now. Might be helpful with testimony html migrations.
+   */
+  private function getHostEntity($doc_id) {
+    // Arghh, need the host_entity_id here. Will ned to do db query directly.
+    $query = db_select("migrate_map_olatestimony", "t");
+    $query->fields("t", array('destid1'));
+    $query->condition("sourceid1", $doc_id, "=");
+    $results = $query->execute();
+    $node = NULL;
+    foreach ($results as $r) {
+      $host_entity_id = $r->destid1;
+      $node = node_load($host_entity_id);
+      break;
+    }
+    return $node;
+  }
+
+  /**
+   * Not being use right now. Might be helpful with testimony html migrations.
+   */
+  private function getSessionFromHost($host) {
+    // Now we need a session.
+    $items = field_get_items("node", $host, "field_testimony_session");
+    $item = reset($items);
+    $term = NULL;
+    if ($item) {
+      $term = taxonomy_term_load($item['tid']);
+    }
+    return $term;
   }
 
   /**
