@@ -218,6 +218,7 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
         'last',
         'description',
         'imgsrc',
+        'speeches',
       ));
 
     // A map of source MySQL row -> destination node id.
@@ -256,6 +257,11 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->addFieldMapping('field_portrait:alt', 'alt');
     $this->addFieldMapping('field_portrait:title', 'title');
     $this->addFieldMapping('field_portrait:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+
+    $this->addFieldMapping('field_portrait_artist', 'artist');
+
+    $this->addFieldMapping('field_bio_link', 'link');
+    $this->addFieldMapping('field_bio_link:title', 'link_title');
   }
 
   /**
@@ -294,6 +300,12 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
       $alt = $img->attr('alt');
     }
 
+    foreach ($qp->find('em') as $em) {
+      $artist = $em->text();
+      $artist = trim(str_replace("Artist:", "", $artist));
+      $row->artist = $artist;
+    }
+
     if (!empty($url)) {
       $row->attachmentRedirects = array(substr($url, 1));
 
@@ -315,6 +327,13 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
       $row->destination_dir = $destination_dir;
       $row->alt = $alt;
       $row->title = $alt;
+
+      $qp = htmlqp($row->speeches);
+      foreach ($qp->find('a') as $a) {
+        $src = $a->attr('href');
+        $row->link = "http://www.justice.gov" . $src;
+        $row->link_title = "Speeches";
+      }
     }
   }
 
