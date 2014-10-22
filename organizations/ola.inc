@@ -6,7 +6,169 @@
  * Defines migration classes for the OLA section of justice.gov.
  */
 
-class OlaTestimonyMigration extends JusticeBaseMigration {
+/**
+ * Class OsgBriefMigration.
+ * @package doj_migration
+ */
+class OlaTestimonyMigration extends JusticeFileSourceMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $parser = new OlaTestimonyChunkParser();
+
+    $source_fields = array(
+      'id',
+      'creationDate',
+      'modificationDate',
+      'sensitiveData',
+      'documentDate',
+      'documentTitle',
+      'testimonyCommitte',
+      'dateExtra',
+      'congressTerm',
+      'congressSession',
+    );
+
+    $source_dirs = array(
+      'ola/testimony',
+    );
+
+    $regex = '/(111|112)-(first|second)\.htm(l)?$/';
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, array(), $parser);
+
+    // A map of source HTML filename -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('testimony');
+
+    // Field Mappings.
+    $this->addFieldMapping('og_group_ref')->defaultValue('ola')->sourceMigration('Organization');
+
+    $this->addFieldMapping('title', 'documentTitle');
+    $this->addFieldMapping('field_testimony_subject', 'documentTitle');
+    $this->addFieldMapping('field_testimony_date', 'documentDate');
+    $this->addFieldMapping('field_testimony_committee', 'testimonyCommitte')->separator(",");
+    $this->addFieldMapping('field_testimony_committee:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_testimony_session', 'term');
+    $this->addFieldMapping('field_testimony_session:create_term')->defaultValue(TRUE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    // Create a new SourceParser to handle HTML content.
+    $this->sourceParser = new OlaTestimonySourceParser($row->url_path, $row->filedata);
+
+    // We check that everything has been initialized correctly to keep children
+    // classes from having to do all this checks.
+    if (!is_object($this->sourceParser->queryPath)) {
+      $this->queueMessage(t("@fileid failed to initialize QueryPath", array('@fileid' => $row->fileid)));
+      return FALSE;
+    }
+
+    $row->documentTitle = $this->sourceParser->getDocumentTitle();
+    $row->documentDate = $this->sourceParser->getDocumentDate();
+    $row->testimonyCommitte = $this->sourceParser->getTestimonyCommittee();
+
+    $year = explode("-", $row->documentDate);
+    $year = $year[0];
+
+    // Create the term.
+    $id = $row->id;
+    $pieces = explode("/", $id);
+    $p = array_pop($pieces);
+    $pieces = explode("-", $p);
+    $cardinality = ucfirst(str_replace(".htm", "", $pieces[1]));
+    $term = "{$pieces[0]}th Congress {$cardinality} Session - {$year}";
+
+    $row->term = $term;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
+}
+
+class OlaTestimonyChunkParser extends JusticeChunkParser {
+  /**
+   * {@inheritdoc}
+   */
+  public function setChunks() {
+    $this->chunks = array();
+    $table = $this->sourceParser->queryPath->find('#theTable');
+    $counter = 0;
+    foreach ($table->find('tr') as $tr) {
+      // The first table row is the header of the table.
+      if ($counter != 0) {
+        $this->chunks[] = $tr->html();
+      }
+      $counter++;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunkIDs() {
+    $chunks = $this->getChunks();
+    $ids = array();
+
+    $counter = 0;
+    foreach ($chunks as $chunk) {
+      $ids[] = "Hello" . $counter;
+      $counter++;
+    }
+    return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunk($chunk_id) {
+    $id = (int) str_replace("Hello", "", $chunk_id);
+    $chunks = $this->getChunks();
+    $counter = 0;
+    foreach ($chunks as $chunk) {
+      if ($id == $counter) {
+        return $chunk;
+      }
+      $counter++;
+    }
+  }
+}
+
+class OlaDbTestimonyMigration extends JusticeBaseMigration {
   /**
    * {@inheritdoc}
    */
@@ -51,7 +213,7 @@ class OlaTestimonyMigration extends JusticeBaseMigration {
     $this->destination = new MigrateDestinationNode('testimony');
 
     // Field Mappings.
-    $this->addFieldMapping('og_group_ref')->defaultValue('ola');
+    $this->addFieldMapping('og_group_ref')->defaultValue('ola')->sourceMigration('Organization');
 
     $this->addFieldMapping('title', 'documentTitle');
     $this->addFieldMapping('create', 'creationDate');
@@ -106,14 +268,12 @@ class OlaTestimonyMigration extends JusticeBaseMigration {
   }
 }
 
-class OlaWitnessMigration extends JusticeBaseMigration {
+class OlaDbWitnessMigration extends JusticeBaseMigration {
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
-
-    $this->dependencies = array('Organization', 'OlaTestimony');
 
     global $databases;
     $cmsopa_db_name = $databases['cmsopa']['default']['database'];
@@ -148,7 +308,7 @@ class OlaWitnessMigration extends JusticeBaseMigration {
       array('host_entity_type' => 'node')
     );
 
-    $this->addFieldMapping('host_entity_id', 'docID')->sourceMigration('OlaTestimony');
+    $this->addFieldMapping('host_entity_id', 'docID')->sourceMigration('OlaDbTestimony');
     $this->addFieldMapping('field_witness_name', 'name');
     $this->addFieldMapping('field_witness_position', 'position');
     $this->addFieldMapping('field_witness_component', 'component');
@@ -256,7 +416,7 @@ class OlaWitnessMigration extends JusticeBaseMigration {
    */
   private function getHostEntity($doc_id) {
     // Arghh, need the host_entity_id here. Will ned to do db query directly.
-    $query = db_select("migrate_map_olatestimony", "t");
+    $query = db_select("migrate_map_oladbtestimony", "t");
     $query->fields("t", array('destid1'));
     $query->condition("sourceid1", $doc_id, "=");
     $results = $query->execute();

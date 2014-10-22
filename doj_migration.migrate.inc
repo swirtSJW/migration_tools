@@ -421,9 +421,13 @@ function doj_migration_migrate_api() {
         'group_name' => 'ola',
         'class_name' => 'OlaTestimonyMigration',
       ),
-      'OlaWitness' => array(
+      'OlaDbTestimony' => array(
         'group_name' => 'ola',
-        'class_name' => 'OlaWitnessMigration',
+        'class_name' => 'OlaDbTestimonyMigration',
+      ),
+      'OlaDbWitness' => array(
+        'group_name' => 'ola',
+        'class_name' => 'OlaDbWitnessMigration',
       ),
       'OlcPage' => array(
         'group_name' => 'olc',

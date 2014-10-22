@@ -34,6 +34,7 @@ files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/OlaPageSourceParser.php
+files[] = includes/source_parsers/OlaTestimonySourceParser.php
 files[] = includes/source_parsers/SourceParser.php
 
 files[] = organizations/asg.inc
