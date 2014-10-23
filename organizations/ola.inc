@@ -168,6 +168,194 @@ class OlaTestimonyChunkParser extends JusticeChunkParser {
   }
 }
 
+class OlaWitnessMigration extends JusticeFileSourceMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $parser = new OlaWitnessChunkParser();
+
+    $source_fields = array(
+      'id',
+      'witness',
+    );
+
+    $source_dirs = array(
+      'ola/testimony',
+    );
+
+    $regex = '/(111|112)-(first|second)\.htm(l)?$/';
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, array(), $parser);
+
+    // A map of source HTML filename -> destination node id.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'id' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ),
+      ),
+      MigrateDestinationFieldCollection::getKeySchema()
+    );
+
+    $this->destination = new MigrateDestinationFieldCollection(
+      'field_testimony_witness',
+      array('host_entity_type' => 'node')
+    );
+
+    $this->addFieldMapping('host_entity_id', 'host_id')->sourceMigration('OlaTestimony');
+    $this->addFieldMapping('field_witness_name', 'name');
+    $this->addFieldMapping('field_witness_position', 'position');
+    $this->addFieldMapping('field_witness_component', 'component');
+
+    $this->addFieldMapping('field_witness_attachment', 'attachment_filename');
+    $this->addFieldMapping('field_witness_attachment:file_class')
+      ->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_witness_attachment:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_witness_attachment:source_dir', 'source_dir');
+    $this->addFieldMapping('field_witness_attachment:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    // Create a new SourceParser to handle HTML content.
+    $this->sourceParser = new OlaWitnessSourceParser($row->url_path, $row->filedata);
+
+    // We check that everything has been initialized correctly to keep children
+    // classes from having to do all this checks.
+    if (!is_object($this->sourceParser->queryPath)) {
+      $this->queueMessage(t("@fileid failed to initialize QueryPath", array('@fileid' => $row->fileid)));
+      return FALSE;
+    }
+
+    $row->host_id = substr($row->id, 0, -1);
+    $row->name = $this->sourceParser->getName();
+    $row->position = $this->sourceParser->getPosition();
+    $row->component = $this->sourceParser->getComponent();
+    $row->attachment_filename = $this->sourceParser->getFileName();
+    $row->source_dir = $this->sourceParser->getSourceDirectory();
+    $row->destination_dir = $this->sourceParser->getDestinationDirectory();
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (module_exists('redirect')) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_witness_attachment');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entity = entity_load_single('field_collection_item', $entity_id);
+    $this->rollbackAttachmentRedirect($entity, 'field_witness_attachment');
+  }
+}
+
+class OlaWitnessChunkParser extends JusticeChunkParser {
+  /**
+   * {@inheritdoc}
+   */
+  /**
+   * Get a td from a tr.
+   *
+   * @param int $position
+   *   which td do you want.
+   *
+   * @return string
+   *   the text inside the td.
+   */
+  private function getTD($tr, $position) {
+    // The frist td has the date.
+    $counter = 0;
+    foreach ($tr->find('td') as $td) {
+      if ($counter == $position) {
+        return $td;
+      }
+      $counter++;
+    }
+  }
+
+  /**
+   * Get the witnesses information from the html.
+   *
+   * @param string $td_html
+   *   A string of html.
+   */
+  private function getWitnesses($td_html) {
+    $witnesses = array();
+
+    // Strip td tags.
+    $td_html = str_replace("<td valign=\"top\">", "", $td_html);
+    $td_html = str_replace("</td>", "", $td_html);
+
+    // Try to find multiple witnesses.
+    $witnesses = explode("<br /><br />", $td_html);
+
+    return $witnesses;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setChunks() {
+    $this->chunks = array();
+    $table = $this->sourceParser->queryPath->find('#theTable');
+    $counter = 0;
+    foreach ($table->find('tr') as $tr) {
+      // The first table row is the header of the table.
+      if ($counter != 0) {
+        $td = $this->getTD($tr, 3)->html();
+        $witnesses = $this->getWitnesses($td);
+        $w_counter = 0;
+        foreach ($witnesses as $key => $witness) {
+          $c = $counter - 1;
+          $this->chunks["{$c}{$w_counter}"] = $witness;
+          $w_counter++;
+        }
+      }
+      $counter++;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunkIDs() {
+    $ids = array();
+
+    $counter = 0;
+    foreach ($this->chunks as $id => $chunk) {
+      $ids[] = "Hello" . $id;
+    }
+    return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunk($chunk_id) {
+    $id = str_replace("Hello", "", $chunk_id);
+    $chunks = $this->getChunks();
+    $chunk = $chunks[$id];
+    return $chunk;
+  }
+}
+
 class OlaDbTestimonyMigration extends JusticeBaseMigration {
   /**
    * {@inheritdoc}
