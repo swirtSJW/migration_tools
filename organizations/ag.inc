@@ -243,6 +243,7 @@ class AgHistoricalBioMigration extends JusticeBaseMigration {
     $this->addFieldMapping('og_group_ref')->defaultValue("ag")->sourceMigration('Organization');
 
     $this->addFieldMapping('title', 'wholename');
+    $this->addFieldMapping('field_bio_name', 'wholename');
     $this->addFieldMapping('field_bio_body', 'description');
     $this->addFieldMapping('field_bio_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_dates_service', 'term1');
