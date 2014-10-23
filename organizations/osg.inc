@@ -556,6 +556,7 @@ class OsgHistoricalBioMigration extends JusticeBaseMigration {
     // Field Mappings.
     $this->addFieldMapping('og_group_ref')->defaultValue("osg")->sourceMigration('Organization');
     $this->addFieldMapping('title', 'name');
+    $this->addFieldMapping('field_bio_name', 'name');
     $this->addFieldMapping('field_bio_body', 'description');
     $this->addFieldMapping('field_bio_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_dates_service', 'term1');
