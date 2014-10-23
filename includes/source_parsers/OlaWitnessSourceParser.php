@@ -48,7 +48,9 @@ class OlaWitnessSourceParser extends SourceParser {
     // Get rid of the anchor.
     $pieces = explode("</a>", $html);
     $text = $pieces[1];
+    // @codingStandardsIgnoreStart
     $text = str_replace('<br>', "", $text);
+    // @codingStandardsIgnoreEnd
     $text = str_replace("</body></html>", "", $text);
     return $text;
   }
