@@ -18,6 +18,7 @@ function doj_migration_migrate_api() {
     ),
     'node_delete' => array(
       'akamai',
+      'expire',
     ),
   );
 
