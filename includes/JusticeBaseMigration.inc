@@ -331,6 +331,13 @@ abstract class JusticeBaseMigration extends Migration {
    *   Optional. Defaults to LANGUAGE_NONE.
    */
   public static function createAttachmentRedirect($entity, $source_urls, $field_name, $language = LANGUAGE_NONE) {
+    if (empty($source_urls)) {
+      // Nothing to be done here.
+      $json_entity = json_encode($entity);
+      watchdog("doj_migration", "redirect was not created for attachment in entity {$json_entity}");
+      return;
+    }
+
     $field = $entity->$field_name;
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
@@ -345,7 +352,6 @@ abstract class JusticeBaseMigration extends Migration {
           redirect_object_prepare($redirect);
           $redirect->source = $source;
           $redirect->redirect = $destination;
-
           redirect_save($redirect);
         }
       }

@@ -37,8 +37,10 @@ class OlaTestimonyMigration extends JusticeFileSourceMigration {
 
     $regex = '/(111|112)-(first|second)\.htm(l)?$/';
 
+    $options = array('recurse' => FALSE);
+
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex, array(), $parser);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
 
     // A map of source HTML filename -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
@@ -187,8 +189,10 @@ class OlaWitnessMigration extends JusticeFileSourceMigration {
 
     $regex = '/(111|112)-(first|second)\.htm(l)?$/';
 
+    $options = array('recurse' => FALSE);
+
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex, array(), $parser);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
 
     // A map of source HTML filename -> destination node id.
     $this->map = new MigrateSQLMap($this->machineName,
@@ -244,6 +248,13 @@ class OlaWitnessMigration extends JusticeFileSourceMigration {
     $row->component = $this->sourceParser->getComponent();
     $row->attachment_filename = $this->sourceParser->getFileName();
     $row->source_dir = $this->sourceParser->getSourceDirectory();
+
+    // Configure redirect.
+    $migration_dir = variable_get("doj_migration_base_dir");
+    $src = $row->source_dir;
+    $src = str_replace($migration_dir . "/", "", $src) . $row->attachment_filename;
+    $row->attachmentRedirects = array($src);
+
     $row->destination_dir = $this->sourceParser->getDestinationDirectory();
 
   }
