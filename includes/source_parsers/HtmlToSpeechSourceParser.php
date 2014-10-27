@@ -129,7 +129,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
   /**
    * {@inheritdoc}
    */
-  protected function setBody() {
+  public function setBody() {
     // Get rid of the justice news header.
     try {
       HtmlCleanUp::removeElements($this->queryPath, array('.justicenews-header'));
