@@ -69,6 +69,10 @@ function doj_migration_migrate_api() {
         'title' => t('EJ - Environmental Justice'),
         'disable_hooks' => $disable_hooks,
       ),
+      'eousa' => array(
+        'title' => t('EOUSA - Executive Office for United States Attorneys'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'espanol' => array(
         'title' => t('espanol - Justice.gov en Espanol'),
         'disable_hooks' => $disable_hooks,
@@ -589,6 +593,14 @@ function doj_migration_migrate_api() {
       'UsaoStaffProfile' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoStaffProfileMigration',
+      ),
+      'UsaoFile' => array(
+        'group_name' => 'usao',
+        'class_name' => 'UsaoFileMigration',
+      ),
+      'UsaoPage' => array(
+        'group_name' => 'usao',
+        'class_name' => 'UsaoPageMigration',
       ),
     ),
   );
