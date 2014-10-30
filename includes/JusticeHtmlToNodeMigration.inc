@@ -93,7 +93,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    
+
     // Sets $row->legacy_path and $row->url_path.
     if (empty($row->legacy_path) || empty($row->url_path)) {
       $this->generateLegacyPath($row);
