@@ -1,93 +1,93 @@
-alm,"Alabama, Middle",George L. Beck
-aln,"Alabama, Northern",Joyce White Vance
-als,"Alabama, Southern",Kenyen Ray Brown
-ak,"Alaska",Karen L. Loeffler
-az,"Arizona",John S. Leonardo
-are,"Arkansas, Eastern",Christopher R. Thyer
-arw,"Arkansas, Western",Conner Eldridge
-cac,"California, Central","André Birotte, Jr."
-cae,"California, Eastern",Benjamin B. Wagner
-can,"California, Northern",Melinda L. Haag
-cas,"California, Southern",Laura E. Duffy
-co,"Colorado",John F. Walsh
-ct,"Connecticut",Deirdre Daly
-de,"Delaware","Charles M. Oberly, III"
-dc,"District of Columbia",Ronald C. Machen
-flm,"Florida, Middle",Lee  Bentley
-fln,"Florida, Northern",Pamela C. Marsh
-fls,"Florida, Southern",Wifredo A. Ferrer
-gam,"Georgia, Middle",Michael J. Moore
-gan,"Georgia, Northern",Sally Quillian Yates
-gas,"Georgia, Southern",Edward J. Tarver
-gu;Guam &amp," Northern Mariana Islands",Alicia A.G. Limtiaco
-hi,"Hawaii",Florence T. Nakakuni
-id,"Idaho",Wendy J. Olson
-ilc,"Illinois, Central",James A. Lewis
-iln,"Illinois, Northern",Zachary T. Fardon
-ils,"Illinois, Southern",Stephen R. Wigginton
-inn,"Indiana, Northern",David A. Capp
-ins,"Indiana, Southern",Joseph H. Hogsett
-ian,"Iowa, Northern",Sean Berry
-ias,"Iowa, Southern",Nicholas A. Klinefeldt
-ks,"Kansas",Barry R. Grissom
-kye,"Kentucky, Eastern",Kerry B. Harvey
-kyw,"Kentucky, Western",David J. Hale
-lae,"Louisiana, Eastern",Kenneth A. Polite
-lam,"Louisiana, Middle",Walt  Green
-law,"Louisiana, Western",Stephanie A. Finley
-me,"Maine","Thomas Edward Delahanty, II"
-md,"Maryland",Rod J. Rosenstein
-ma,"Massachusetts",Carmen Milagros Ortiz
-mie,"Michigan, Eastern",Barbara L. McQuade
-miw,"Michigan, Western","Patrick A. Miles, Jr."
-mn,"Minnesota",John Marti
-msn,"Mississippi, Northern",Felicia Adams
-mss,"Mississippi, Southern",Gregory K.  Davis
-moe,"Missouri, Eastern",Richard G. Callahan
-mow,"Missouri, Western",Tammy  Dickinson
-mt,"Montana",Michael Cotter
-ne,"Nebraska",Deborah K.R. Gilg
-nv,"Nevada",Daniel G. Bogden
-nh,"New Hampshire",John P. Kacavas
-nj,"New Jersey",Paul J. Fishman
-nm,"New Mexico",Steven Yarbrough
-nye,"New York, Eastern",Loretta E. Lynch
-nyn,"New York, Northern",Richard S. Hartunian
-nys,"New York, Southern",Preet Bharara
-nyw,"New York, Western","William J. Hochul, Jr."
-nce,"North Carolina, Eastern",Thomas G. Walker
-ncm,"North Carolina, Middle",Ripley Rand
-ncw,"North Carolina, Western",Anne Tompkins
-nd,"North Dakota",Timothy Q. Purdon
-ohn,"Ohio, Northern",Steven M. Dettelbach
-ohs,"Ohio, Southern",Carter M. Stewart
-oke,"Oklahoma, Eastern",Mark F. Green
-okn,"Oklahoma, Northern",Danny Williams
-okw,"Oklahoma, Western",Sanford Coats
-or,"Oregon",S. Amanda Marshall
-pae,"Pennsylvania, Eastern",Zane D. Memeger
-pam,"Pennsylvania, Middle",Peter J. Smith
-paw,"Pennsylvania, Western",David J. Hickton
-pr,"Puerto Rico",Rosa E. Rodriguez-Velez
-ri,"Rhode Island",Peter  F. Neronha
-sc,"South Carolina",William N. Nettles
-sd,"South Dakota",Brendan V. Johnson
-tne,"Tennessee, Eastern",William C. Killian
-tnm,"Tennessee, Middle",David Rivera
-tnw,"Tennessee, Western","Edward L. Stanton, III"
-txe,"Texas, Eastern",John Malcolm Bales
-txn,"Texas, Northern",Sarah R. Saldaña
-txs,"Texas, Southern",Kenneth Magidson
-txw,"Texas, Western",Robert  L. Pitman
-ut,"Utah",David B. Barlow
-vt,"Vermont",Tristram J. Coffin
-vi,"Virgin Islands",Ronald W. Sharpe
-vae,"Virginia, Eastern",Dana Boente
-vaw,"Virginia, Western",Timothy J. Heaphy
-wae,"Washington, Eastern",Michael Ormsby
-waw,"Washington, Western",Jenny A. Durkan
-wvn,"West Virginia, Northern","William J. Ihlenfeld, II"
-wvs,"West Virginia, Southern","R. Booth Goodwin, II"
-wie,"Wisconsin, Eastern",James Santelle
-wiw,"Wisconsin, Western",John William Vaudreuil
-wy,"Wyoming",Christopher A. Crofts
+mdal,"Alabama, Middle",George L. Beck
+ndal,"Alabama, Northern",Joyce White Vance
+sdal,"Alabama, Southern",Kenyen Ray Brown
+ak,Alaska,Karen L. Loeffler
+az,Arizona,John S. Leonardo
+edar,"Arkansas, Eastern",Christopher R. Thyer
+wdar,"Arkansas, Western",Conner Eldridge
+cdca,"California, Central","André Birotte, Jr."
+edca,"California, Eastern",Benjamin B. Wagner
+ndca,"California, Northern",Melinda L. Haag
+sdca,"California, Southern",Laura E. Duffy
+co,Colorado,John F. Walsh
+ct,Connecticut,Deirdre Daly
+de,Delaware,"Charles M. Oberly, III"
+dc,District of Columbia,Ronald C. Machen
+mdfl,"Florida, Middle",Lee  Bentley
+ndfl,"Florida, Northern",Pamela C. Marsh
+sdfl,"Florida, Southern",Wifredo A. Ferrer
+mdga,"Georgia, Middle",Michael J. Moore
+ndga,"Georgia, Northern",Sally Quillian Yates
+sdga,"Georgia, Southern",Edward J. Tarver
+gu,Guam & the Northern Mariana Islands,Alicia A.G. Limtiaco
+hi,Hawaii,Florence T. Nakakuni
+id,Idaho,Wendy J. Olson
+cdil,"Illinois, Central",James A. Lewis
+ndil,"Illinois, Northern",Zachary T. Fardon
+sdil,"Illinois, Southern",Stephen R. Wigginton
+ndin,"Indiana, Northern",David A. Capp
+sdin,"Indiana, Southern",Joseph H. Hogsett
+ndia,"Iowa, Northern",Sean Berry
+sdia,"Iowa, Southern",Nicholas A. Klinefeldt
+ks,Kansas,Barry R. Grissom
+edky,"Kentucky, Eastern",Kerry B. Harvey
+wdky,"Kentucky, Western",David J. Hale
+edla,"Louisiana, Eastern",Kenneth A. Polite
+mdla,"Louisiana, Middle",Walt  Green
+wdla,"Louisiana, Western",Stephanie A. Finley
+me,Maine,"Thomas Edward Delahanty, II"
+md,Maryland,Rod J. Rosenstein
+ma,Massachusetts,Carmen Milagros Ortiz
+edmi,"Michigan, Eastern",Barbara L. McQuade
+wdmi,"Michigan, Western","Patrick A. Miles, Jr."
+mn,Minnesota,John Marti
+ndms,"Mississippi, Northern",Felicia Adams
+sdms,"Mississippi, Southern",Gregory K.  Davis
+edmo,"Missouri, Eastern",Richard G. Callahan
+wdmo,"Missouri, Western",Tammy  Dickinson
+mt,Montana,Michael Cotter
+ne,Nebraska,Deborah K.R. Gilg
+nv,Nevada,Daniel G. Bogden
+nh,New Hampshire,John P. Kacavas
+nj,New Jersey,Paul J. Fishman
+nm,New Mexico,Steven Yarbrough
+edny,"New York, Eastern",Loretta E. Lynch
+ndny,"New York, Northern",Richard S. Hartunian
+sdny,"New York, Southern",Preet Bharara
+wdny,"New York, Western","William J. Hochul, Jr."
+ednc,"North Carolina, Eastern",Thomas G. Walker
+mdnc,"North Carolina, Middle",Ripley Rand
+wdnc,"North Carolina, Western",Anne Tompkins
+nd,North Dakota,Timothy Q. Purdon
+ndoh,"Ohio, Northern",Steven M. Dettelbach
+sdoh,"Ohio, Southern",Carter M. Stewart
+edok,"Oklahoma, Eastern",Mark F. Green
+ndok,"Oklahoma, Northern",Danny Williams
+wdok,"Oklahoma, Western",Sanford Coats
+or,Oregon,S. Amanda Marshall
+edpa,"Pennsylvania, Eastern",Zane D. Memeger
+mdpa,"Pennsylvania, Middle",Peter J. Smith
+wdpa,"Pennsylvania, Western",David J. Hickton
+pr,Puerto Rico,Rosa E. Rodriguez-Velez
+ri,Rhode Island,Peter  F. Neronha
+sc,South Carolina,William N. Nettles
+sd,South Dakota,Brendan V. Johnson
+edtn,"Tennessee, Eastern",William C. Killian
+mdtn,"Tennessee, Middle",David Rivera
+wdtn,"Tennessee, Western","Edward L. Stanton, III"
+edtx,"Texas, Eastern",John Malcolm Bales
+ndtx,"Texas, Northern",Sarah R. Salda̱a
+sdtx,"Texas, Southern",Kenneth Magidson
+wdtx,"Texas, Western",Robert  L. Pitman
+ut,Utah,David B. Barlow
+vt,Vermont,Tristram J. Coffin
+vi,Virgin Islands,Ronald W. Sharpe
+edva,"Virginia, Eastern",Dana Boente
+wdva,"Virginia, Western",Timothy J. Heaphy
+edwa,"Washington, Eastern",Michael Ormsby
+wdwa,"Washington, Western",Jenny A. Durkan
+ndwv,"West Virginia, Northern","William J. Ihlenfeld, II"
+sdwv,"West Virginia, Southern","R. Booth Goodwin, II"
+edwi,"Wisconsin, Eastern",James Santelle
+wdwi,"Wisconsin, Western",John William Vaudreuil
+wy,Wyoming,Christopher A. Crofts
