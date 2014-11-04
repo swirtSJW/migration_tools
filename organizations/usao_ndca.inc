@@ -41,6 +41,22 @@ class UsaoNdcaPageMigration extends JusticeHtmlToPageMigration {
       ->defaultValue('usao-ndca')
       ->sourceMigration('UsaoDistrict');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    $legacy = $row->legacy_path;
+    $pieces = explode("/", $legacy);
+    module_load_include("inc", "doj_migration", "includes/doj_migration");
+    $pieces[0] = doj_migration_district_abbreviation_alias($pieces[0]);
+    $pieces = array_merge(array('usao'), $pieces);
+    $row->legacy_path = implode("/", $pieces);
+  }
 }
 
 /**

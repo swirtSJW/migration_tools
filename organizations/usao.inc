@@ -91,17 +91,11 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
     parent::prepareRow($row);
     $abbr = $row->abbreviation;
     $row->path = $abbr;
-    $short_abbr = str_replace("usao-", "", $abbr);
 
-    $map = array(
-      "ndca" => "can",
-    );
+    module_load_include("inc", "doj_migration", "includes/doj_migration");
+    $abbr = doj_migration_district_abbreviation_alias($abbr);
 
-    if (array_key_exists($short_abbr, $map)) {
-      $short_abbr = $map[$short_abbr];
-    }
-
-    $row->legacy_path = "usao/districts/{$short_abbr}.html";
+    $row->legacy_path = "usao/{$abbr}/index.html";
 
     // Set to admin for now.
     $row->uid = 1;
