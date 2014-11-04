@@ -160,6 +160,10 @@ function doj_migration_migrate_api() {
         'title' => t('USAO - United States Attorneys Office'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-ndca' => array(
+        'title' => t('Northern District of California'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'AgPage' => array(
@@ -601,6 +605,14 @@ function doj_migration_migrate_api() {
       'UsaoPage' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoPageMigration',
+      ),
+      'UsaoNdcaFile' => array(
+        'group_name' => 'usao-ndca',
+        'class_name' => 'UsaoNdcaFileMigration',
+      ),
+      'UsaoNdcaPage' => array(
+        'group_name' => 'usao-ndca',
+        'class_name' => 'UsaoNdcaPageMigration',
       ),
     ),
   );

@@ -10,10 +10,12 @@ dependencies[] = og
 dependencies[] = redirect
 dependencies[] = pathauto
 
+; Miscellaneous
 files[] = includes/HtmlCleanUp.php
 files[] = includes/StringCleanUp.php
+
+; Migrations
 files[] = includes/JusticeBaseMigration.inc
-files[] = includes/JusticeChunkParser.inc
 files[] = includes/JusticeHtmlToNodeMigration.inc
 files[] = includes/JusticeFileSourceMigration.inc
 files[] = includes/JusticeBinaryFileMigration.inc
@@ -27,9 +29,14 @@ files[] = includes/JusticeWordpressMigration.inc
 files[] = includes/JusticeCsvMigration.inc
 files[] = includes/JusticeUserMigration.inc
 
+; Chunk Parsers
+files[] = includes/JusticeChunkParser.inc
+
+; Source Parsers
 files[] = includes/source_parsers/CareersSourceParser.php
 files[] = includes/source_parsers/CivilCaseSourceParser.php
 files[] = includes/source_parsers/CivilPageSourceParser.php
+files[] = includes/source_parsers/DistrictsSourceParser.php
 files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
@@ -38,6 +45,7 @@ files[] = includes/source_parsers/OlaTestimonySourceParser.php
 files[] = includes/source_parsers/OlaWitnessSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
 
+; Organizations
 files[] = organizations/asg.inc
 files[] = organizations/ag.inc
 files[] = organizations/atj.inc
@@ -72,3 +80,4 @@ files[] = organizations/prao.inc
 files[] = organizations/psc.inc
 files[] = organizations/tribal.inc
 files[] = organizations/usao.inc
+files[] = organizations/usao_ndca.inc

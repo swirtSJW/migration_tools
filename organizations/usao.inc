@@ -53,6 +53,12 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
 
     $this->addFieldMapping('pathauto')->defaultValue(FALSE);
     $this->addFieldMapping('path', 'path');
+
+    // Map fields where source field name is same as destination field name.
+    $this->addSimpleMappings(array(
+      'uid',
+      'status',
+    ));
   }
 
   /**
@@ -82,9 +88,24 @@ class UsaoDistrictMigration extends JusticeCsvMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $url_prefix = 'usao/districts/';
-    $row->path = $url_prefix . $row->abbreviation;
-    $row->legacy_path = $url_prefix . $row->abbreviation . '.html';
+    parent::prepareRow($row);
+    $abbr = $row->abbreviation;
+    $row->path = $abbr;
+    $short_abbr = str_replace("usao-", "", $abbr);
+
+    $map = array(
+      "ndca" => "can",
+    );
+
+    if (array_key_exists($short_abbr, $map)) {
+      $short_abbr = $map[$short_abbr];
+    }
+
+    $row->legacy_path = "usao/districts/{$short_abbr}.html";
+
+    // Set to admin for now.
+    $row->uid = 1;
+    $row->status = 1;
   }
 }
 
