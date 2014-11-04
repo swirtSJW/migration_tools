@@ -45,7 +45,12 @@ function doj_migration_drush_command() {
     'description' => "Generate a file to import a menu for an organization.",
     'aliases' => array('dgm'),
     'arguments' => array(
-      'organization' => 'The organization to migrate',
+      'organization' => 'The abbreviation of the organization to migrate (ex. oarm, ola, etc.)',
+    ),
+    'options' => array(
+      'menu-location-uri' => "If the menu is in www.justice.gov/oarm/division/index.html then this option should be set to 'oarm/division/index.html'. If no option is given the default will be www.justice.gov/<organization>",
+      'local-base-uri' => "When pages are migrated into drupal they will usually be at <organization>/page-title-alias, if for some reason, <organization> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
+      'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
     ),
   );
 
@@ -230,8 +235,37 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
  * Drush command callback.
  */
 function drush_doj_migration_doj_generate_menu($organization) {
+  $css_selector = drush_get_option('css-selector');
+  $local_base_uri = drush_get_option('local-base-uri');
+  $menu_location_uri = drush_get_option('menu-location-uri');
+
+  $parameters = new MenuGenerationParameters($organization);
+
+  if ($local_base_uri) {
+    $parameters->setUriLocalBase($local_base_uri);
+  }
+
+  if ($menu_location_uri) {
+    $parameters->setUriMenuLocation($menu_location_uri);
+  }
+
+  $engine = new MenuGeneratorEngineDefault($parameters);
+
+  if ($css_selector) {
+    $engine->setInitialCssSelector($css_selector);
+  }
+
+  $generator = new MenuGenerator($parameters, $engine);
+  $file_name = $generator->generate();
+  drush_print_r("File {$file_name} was generated.");
+}
+
+/**
+ * Drush command callback.
+ */
+function drush_doj_migration_doj_generate_menu_district($organization) {
   module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-  doj_migration_create_menu_file($organization);
+  doj_migration_create_menu_file("usao|" . $organization, TRUE);
 }
 
 /**
