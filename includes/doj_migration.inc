@@ -509,6 +509,13 @@ function doj_migration_relative_to_absolute_url($rel, $base) {
 /**
  * Transform the abbreviation into the equivalent one in justice.gov.
  *
+ * In the Drupal version of justice, all of the abbreviations for district
+ * have been transformed to containt the usao- prefix.
+ * Some have even been transformed further. For example can (Northern District
+ * of California) has become usao-ndca in Drupal.
+ * This function should allow us to easily map the transformed abbreviations
+ * to the original ones in justice.gov.
+ *
  * @param string $abbreviation
  *   The abbreviation of a district without the
  *
@@ -516,14 +523,23 @@ function doj_migration_relative_to_absolute_url($rel, $base) {
  *   Aliased abbreviation.
  */
 function doj_migration_district_abbreviation_alias($abbreviation) {
+  // Get rid of the usao- prefix we added to all district abbreviations.
   $abbreviation = str_replace("usao-", "", $abbreviation);
 
+  // This map should contain all of the Drupal abbreviations that have
+  // changed beyond the prefix.
+  // key: Drupal version of the abbreviation.
+  // value: Justice.gov version of the abbreviation.
   $map = array(
     "ndca" => "can",
   );
 
+  // If this abbreviation is in the map, let's return the original version
+  // from justice.gov
   if (array_key_exists($abbreviation, $map)) {
     return $map[$abbreviation];
   }
+
+  // Otherwise, removing the prefix is good enough.
   return $abbreviation;
 }
