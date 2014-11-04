@@ -1,93 +1,94 @@
-usao-mdal,"Alabama, Middle",George L. Beck
-usao-ndal,"Alabama, Northern",Joyce White Vance
-usao-sdal,"Alabama, Southern",Kenyen Ray Brown
-usao-ak,Alaska,Karen L. Loeffler
-usao-az,Arizona,John S. Leonardo
-usao-edar,"Arkansas, Eastern",Christopher R. Thyer
-usao-wdar,"Arkansas, Western",Conner Eldridge
-usao-cdca,"California, Central","André Birotte, Jr."
-usao-edca,"California, Eastern",Benjamin B. Wagner
-usao-ndca,"California, Northern",Melinda L. Haag
-usao-sdca,"California, Southern",Laura E. Duffy
-usao-co,Colorado,John F. Walsh
-usao-ct,Connecticut,Deirdre Daly
-usao-de,Delaware,"Charles M. Oberly, III"
-usao-dc,District of Columbia,Ronald C. Machen
-usao-mdfl,"Florida, Middle",Lee  Bentley
-usao-ndfl,"Florida, Northern",Pamela C. Marsh
-usao-sdfl,"Florida, Southern",Wifredo A. Ferrer
-usao-mdga,"Georgia, Middle",Michael J. Moore
-usao-ndga,"Georgia, Northern",Sally Quillian Yates
-usao-sdga,"Georgia, Southern",Edward J. Tarver
-usao-gu,Guam & the Northern Mariana Islands,Alicia A.G. Limtiaco
-usao-hi,Hawaii,Florence T. Nakakuni
-usao-id,Idaho,Wendy J. Olson
-usao-cdil,"Illinois, Central",James A. Lewis
-usao-ndil,"Illinois, Northern",Zachary T. Fardon
-usao-sdil,"Illinois, Southern",Stephen R. Wigginton
-usao-ndin,"Indiana, Northern",David A. Capp
-usao-sdin,"Indiana, Southern",Joseph H. Hogsett
-usao-ndia,"Iowa, Northern",Sean Berry
-usao-sdia,"Iowa, Southern",Nicholas A. Klinefeldt
-usao-ks,Kansas,Barry R. Grissom
-usao-edky,"Kentucky, Eastern",Kerry B. Harvey
-usao-wdky,"Kentucky, Western",David J. Hale
-usao-edla,"Louisiana, Eastern",Kenneth A. Polite
-usao-mdla,"Louisiana, Middle",Walt  Green
-usao-wdla,"Louisiana, Western",Stephanie A. Finley
-usao-me,Maine,"Thomas Edward Delahanty, II"
-usao-md,Maryland,Rod J. Rosenstein
-usao-ma,Massachusetts,Carmen Milagros Ortiz
-usao-edmi,"Michigan, Eastern",Barbara L. McQuade
-usao-wdmi,"Michigan, Western","Patrick A. Miles, Jr."
-usao-mn,Minnesota,John Marti
-usao-ndms,"Mississippi, Northern",Felicia Adams
-usao-sdms,"Mississippi, Southern",Gregory K.  Davis
-usao-edmo,"Missouri, Eastern",Richard G. Callahan
-usao-wdmo,"Missouri, Western",Tammy  Dickinson
-usao-mt,Montana,Michael Cotter
-usao-ne,Nebraska,Deborah K.R. Gilg
-usao-nv,Nevada,Daniel G. Bogden
-usao-nh,New Hampshire,John P. Kacavas
-usao-nj,New Jersey,Paul J. Fishman
-usao-nm,New Mexico,Steven Yarbrough
-usao-edny,"New York, Eastern",Loretta E. Lynch
-usao-ndny,"New York, Northern",Richard S. Hartunian
-usao-sdny,"New York, Southern",Preet Bharara
-usao-wdny,"New York, Western","William J. Hochul, Jr."
-usao-ednc,"North Carolina, Eastern",Thomas G. Walker
-usao-mdnc,"North Carolina, Middle",Ripley Rand
-usao-wdnc,"North Carolina, Western",Anne Tompkins
-usao-nd,North Dakota,Timothy Q. Purdon
-usao-ndoh,"Ohio, Northern",Steven M. Dettelbach
-usao-sdoh,"Ohio, Southern",Carter M. Stewart
-usao-edok,"Oklahoma, Eastern",Mark F. Green
-usao-ndok,"Oklahoma, Northern",Danny Williams
-usao-wdok,"Oklahoma, Western",Sanford Coats
-usao-or,Oregon,S. Amanda Marshall
-usao-edpa,"Pennsylvania, Eastern",Zane D. Memeger
-usao-mdpa,"Pennsylvania, Middle",Peter J. Smith
-usao-wdpa,"Pennsylvania, Western",David J. Hickton
-usao-pr,Puerto Rico,Rosa E. Rodriguez-Velez
-usao-ri,Rhode Island,Peter  F. Neronha
-usao-sc,South Carolina,William N. Nettles
-usao-sd,South Dakota,Brendan V. Johnson
-usao-edtn,"Tennessee, Eastern",William C. Killian
-usao-mdtn,"Tennessee, Middle",David Rivera
-usao-wdtn,"Tennessee, Western","Edward L. Stanton, III"
-usao-edtx,"Texas, Eastern",John Malcolm Bales
-usao-ndtx,"Texas, Northern",Sarah R. Salda̱a
-usao-sdtx,"Texas, Southern",Kenneth Magidson
-usao-wdtx,"Texas, Western",Robert  L. Pitman
-usao-ut,Utah,David B. Barlow
-usao-vt,Vermont,Tristram J. Coffin
-usao-vi,Virgin Islands,Ronald W. Sharpe
-usao-edva,"Virginia, Eastern",Dana Boente
-usao-wdva,"Virginia, Western",Timothy J. Heaphy
-usao-edwa,"Washington, Eastern",Michael Ormsby
-usao-wdwa,"Washington, Western",Jenny A. Durkan
-usao-ndwv,"West Virginia, Northern","William J. Ihlenfeld, II"
-usao-sdwv,"West Virginia, Southern","R. Booth Goodwin, II"
-usao-edwi,"Wisconsin, Eastern",James Santelle
-usao-wdwi,"Wisconsin, Western",John William Vaudreuil
-usao-wy,Wyoming,Christopher A. Crofts
+usao-mdal,Middle District of Alabama,George L. Beck
+usao-ndal,Northern District of Alabama,Joyce White Vance
+usao-sdal,Southern District of Alabama,Kenyen Ray Brown
+usao-ak,District of Alaska,Karen L. Loeffler
+usao-az,District of Arizona,John S. Leonardo
+usao-edar,Eastern District of Arkansas,Christopher R. Thyer
+usao-wdar,Western District of Arkansas,Conner Eldridge
+usao-cdca,Central District of California,"André Birotte, Jr."
+usao-edca,Eastern District of California,Benjamin B. Wagner
+usao-ndca,Northern District of California,Melinda L. Haag
+usao-sdca,Southern District of California,Laura E. Duffy
+usao-co,District of Colorado,John F. Walsh
+usao-ct,District of Connecticut,Deirdre Daly
+usao-de,District of Delaware,"Charles M. Oberly, III"
+usao-dc,District of District of Columbia,Ronald C. Machen
+usao-mdfl,Middle District of Florida,Lee  Bentley
+usao-ndfl,Northern District of Florida,Pamela C. Marsh
+usao-sdfl,Southern District of Florida,Wifredo A. Ferrer
+usao-mdga,Middle District of Georgia,Michael J. Moore
+usao-ndga,Northern District of Georgia,Sally Quillian Yates
+usao-sdga,Southern District of Georgia,Edward J. Tarver
+usao-gu,District of Guam & the Northern Mariana Islands,Alicia A.G. Limtiaco
+usao-hi,District of Hawaii,Florence T. Nakakuni
+usao-id,District of Idaho,Wendy J. Olson
+usao-cdil,Central District of Illinois,James A. Lewis
+usao-ndil,Northern District of Illinois,Zachary T. Fardon
+usao-sdil,Southern District of Illinois,Stephen R. Wigginton
+usao-ndin,Northern District of Indiana,David A. Capp
+usao-sdin,Southern District of Indiana,Joseph H. Hogsett
+usao-ndia,Northern District of Iowa,Sean Berry
+usao-sdia,Southern District of Iowa,Nicholas A. Klinefeldt
+usao-ks,District of Kansas,Barry R. Grissom
+usao-edky,Eastern District of Kentucky,Kerry B. Harvey
+usao-wdky,Western District of Kentucky,David J. Hale
+usao-edla,Eastern District of Louisiana,Kenneth A. Polite
+usao-mdla,Middle District of Louisiana,Walt  Green
+usao-wdla,Western District of Louisiana,Stephanie A. Finley
+usao-me,District of Maine,"Thomas Edward Delahanty, II"
+usao-md,District of Maryland,Rod J. Rosenstein
+usao-ma,District of Massachusetts,Carmen Milagros Ortiz
+usao-edmi,Eastern District of Michigan,Barbara L. McQuade
+usao-wdmi,Western District of Michigan,"Patrick A. Miles, Jr."
+usao-mn,District of Minnesota,John Marti
+usao-ndms,Northern District of Mississippi,Felicia Adams
+usao-sdms,Southern District of Mississippi,Gregory K.  Davis
+usao-edmo,Eastern District of Missouri,Richard G. Callahan
+usao-wdmo,Western District of Missouri,Tammy  Dickinson
+usao-mt,District of Montana,Michael Cotter
+usao-ne,District of Nebraska,Deborah K.R. Gilg
+usao-nv,District of Nevada,Daniel G. Bogden
+usao-nh,District of New Hampshire,John P. Kacavas
+usao-nj,District of New Jersey,Paul J. Fishman
+usao-nm,District of New Mexico,Steven Yarbrough
+usao-edny,Eastern District of New York,Loretta E. Lynch
+usao-ndny,Northern District of New York,Richard S. Hartunian
+usao-sdny,Southern District of New York,Preet Bharara
+usao-wdny,Western District of New York,"William J. Hochul, Jr."
+usao-ednc,Eastern District of North Carolina,Thomas G. Walker
+usao-mdnc,Middle District of North Carolina,Ripley Rand
+usao-wdnc,Western District of North Carolina,Anne Tompkins
+usao-nd,District of North Dakota,Timothy Q. Purdon
+usao-ndoh,Northern District of Ohio,Steven M. Dettelbach
+usao-sdoh,Southern District of Ohio,Carter M. Stewart
+usao-edok,Eastern District of Oklahoma,Mark F. Green
+usao-ndok,Northern District of Oklahoma,Danny Williams
+usao-wdok,Western District of Oklahoma,Sanford Coats
+usao-or,District of Oregon,S. Amanda Marshall
+usao-edpa,Eastern District of Pennsylvania,Zane D. Memeger
+usao-mdpa,Middle District of Pennsylvania,Peter J. Smith
+usao-wdpa,Western District of Pennsylvania,David J. Hickton
+usao-pr,District of Puerto Rico,Rosa E. Rodriguez-Velez
+usao-ri,District of Rhode Island,Peter  F. Neronha
+usao-sc,District of South Carolina,William N. Nettles
+usao-sd,District of South Dakota,Brendan V. Johnson
+usao-edtn,Eastern District of Tennessee,William C. Killian
+usao-mdtn,Middle District of Tennessee,David Rivera
+usao-wdtn,Western District of Tennessee,"Edward L. Stanton, III"
+usao-edtx,Eastern District of Texas,John Malcolm Bales
+usao-ndtx,Northern District of Texas,Sarah R. Salda
+usao-sdtx,Southern District of Texas,Kenneth Magidson
+usao-wdtx,Western District of Texas,Robert  L. Pitman
+usao-ut,District of Utah,David B. Barlow
+usao-vt,District of Vermont,Tristram J. Coffin
+usao-vi,District of Virgin Islands,Ronald W. Sharpe
+usao-edva,Eastern District of Virginia,Dana Boente
+usao-wdva,Western District of Virginia,Timothy J. Heaphy
+usao-edwa,Eastern District of Washington,Michael Ormsby
+usao-wdwa,Western District of Washington,Jenny A. Durkan
+usao-ndwv,Northern District of West Virginia,"William J. Ihlenfeld, II"
+usao-sdwv,Southern District of West Virginia,"R. Booth Goodwin, II"
+usao-edwi,Eastern District of Wisconsin,James Santelle
+usao-wdwi,Western District of Wisconsin,John William Vaudreuil
+usao-wy,District of Wyoming,Christopher A. Crofts
+mii,Medical Integrity Institute,n/a
