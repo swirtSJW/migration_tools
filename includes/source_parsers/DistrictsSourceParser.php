@@ -28,10 +28,11 @@ class DistrictsSourceParser extends SourceParser {
   protected function setTitle() {
     $subbanner = $this->getSubBanner();
     if ($subbanner) {
-      $this->title = $subbanner->attr('alt');
+      $title = $subbanner->attr('alt');
+      $this->title = str_ireplace("banner", "", $title);
     }
 
-    if ($this->title == "Placeholder Banner Image") {
+    if ($this->title == "Placeholder  Image") {
       $this->title = $this->queryPath->find("h1")->text();
     }
 

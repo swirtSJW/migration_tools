@@ -505,3 +505,25 @@ function doj_migration_relative_to_absolute_url($rel, $base) {
   // Absolute URL is ready.
   return $scheme . '://' . $abs;
 }
+
+/**
+ * Transform the abbreviation into the equivalent one in justice.gov.
+ *
+ * @param string $abbreviation
+ *   The abbreviation of a district without the
+ *
+ * @return string
+ *   Aliased abbreviation.
+ */
+function doj_migration_district_abbreviation_alias($abbreviation) {
+  $abbreviation = str_replace("usao-", "", $abbreviation);
+
+  $map = array(
+    "ndca" => "can",
+  );
+
+  if (array_key_exists($abbreviation, $map)) {
+    return $map[$abbreviation];
+  }
+  return $abbreviation;
+}
