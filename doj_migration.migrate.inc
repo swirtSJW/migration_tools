@@ -164,6 +164,10 @@ function doj_migration_migrate_api() {
         'title' => t('Northern District of California'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdny' => array(
+        'title' => t('Western District of New York'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'AgPage' => array(
@@ -613,6 +617,14 @@ function doj_migration_migrate_api() {
       'UsaoNdcaPage' => array(
         'group_name' => 'usao-ndca',
         'class_name' => 'UsaoNdcaPageMigration',
+      ),
+      'UsaoWdnyFile' => array(
+        'group_name' => 'usao-wdny',
+        'class_name' => 'UsaoWdnyFileMigration',
+      ),
+      'UsaoWdnyPage' => array(
+        'group_name' => 'usao-wdny',
+        'class_name' => 'UsaoWdnyPageMigration',
       ),
     ),
   );
