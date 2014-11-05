@@ -425,6 +425,7 @@ function doj_migration_district_abbreviation_alias($abbreviation) {
   // value: Justice.gov version of the abbreviation.
   $map = array(
     "ndca" => "can",
+    'wdny' => 'nyw',
   );
 
   // If this abbreviation is in the map, let's return the original version
@@ -435,4 +436,34 @@ function doj_migration_district_abbreviation_alias($abbreviation) {
 
   // Otherwise, removing the prefix is good enough.
   return $abbreviation;
+}
+
+
+/**
+ * Alters the legacy_path for a row to match the district's live site path.
+ *
+ * @param object $row
+ *   The $row from prepareRow by reference.
+ */
+function doj_migration_set_district_legacy_path(&$row) {
+  $legacy = $row->legacy_path;
+  $pieces = explode("/", $legacy);
+  $pieces[0] = doj_migration_district_abbreviation_alias($pieces[0]);
+  $pieces = array_merge(array('usao'), $pieces);
+  $row->legacy_path = implode("/", $pieces);
+}
+
+
+/**
+ * Alters the file_id for a row to match the district's live site path.
+ *
+ * @param object $row
+ *   The $row from prepareRow by reference.
+ */
+function doj_migration_set_district_legacy_fileid(&$row) {
+  $legacy = $row->fileid;
+  $pieces = explode("/", $legacy);
+  $pieces[1] = doj_migration_district_abbreviation_alias($pieces[1]);
+  $pieces[0] = '/usao';
+  $row->fileid = implode("/", $pieces);
 }
