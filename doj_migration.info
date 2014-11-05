@@ -13,6 +13,7 @@ dependencies[] = pathauto
 ; Miscellaneous
 files[] = includes/HtmlCleanUp.php
 files[] = includes/StringCleanUp.php
+files[] = includes/MenuGenerator.php
 
 ; Migrations
 files[] = includes/JusticeBaseMigration.inc
