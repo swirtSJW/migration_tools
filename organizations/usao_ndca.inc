@@ -20,12 +20,12 @@ class UsaoNdcaPageMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      0 => 'usao-ndca',
-      1 => 'usao-ndca/divisions',
-      2 => 'usao-ndca/notifications',
-      3 => 'usao-ndca/news',
-      7 => 'usao-ndca/about',
-      8 => 'usao-ndca/programs',
+      0 => 'usao/can',
+      1 => 'usao/can/divisions',
+      2 => 'usao/can/notifications',
+      3 => 'usao/can/news',
+      7 => 'usao/can/about',
+      8 => 'usao/can/programs',
     );
 
     $arguments['source_parser_class'] = "DistrictsSourceParser";
@@ -50,8 +50,6 @@ class UsaoNdcaPageMigration extends JusticeHtmlToPageMigration {
       return FALSE;
     }
 
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
-    doj_migration_set_district_legacy_path($row);
   }
 }
 
@@ -72,11 +70,11 @@ class UsaoNdcaFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = array(
-      0 => 'usao-ndca/documents',
-      1 => 'usao-ndca/notifications/docs',
-      2 => 'usao-ndca/news/2014/docs',
-      3 => 'usao-ndca/news/2013/docs',
-      5 => 'usao-ndca/programs/docs',
+      0 => 'usao/can/documents',
+      1 => 'usao/can/notifications/docs',
+      2 => 'usao/can/news/2014/docs',
+      3 => 'usao/can/news/2013/docs',
+      5 => 'usao/can/programs/docs',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
@@ -90,17 +88,6 @@ class UsaoNdcaFileMigration extends JusticeDeployableBinaryFileMigration {
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
-    doj_migration_set_district_legacy_fileid($row);
-  }
 
   /**
    * {@inheritdoc}

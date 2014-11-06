@@ -5,6 +5,57 @@
  * Defines migration classes for the Western District of New York.
  */
 
+/**
+ * Migrates .html files from /usao-wdny to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage usao-wdny
+ */
+class UsaoWdnyPageMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    // Define source directories.
+    $source_dirs = array(
+      0 => 'usao/nyw',
+    );
+
+    $arguments['source_parser_class'] = "DistrictsSourceParser";
+
+    $options = array('recurse' => FALSE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, NULL, $options);
+    $this->dependencies = array('UsaoDistrict');
+    $this->description = t('Migrates pages from the Western District of New York.');
+    $this->addFieldMapping('og_group_ref')
+      ->defaultValue('usao-wdny')
+      ->sourceMigration('UsaoDistrict');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    module_load_include("inc", "doj_migration", "includes/doj_migration");
+
+    $skip_these = array(
+      'usao/nyw/usao-header.html',
+      'usao/nyw/usao-rightCol.html',
+      'usao/nyw/usao-footer.html',
+    );
+
+    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+  }
+}
+
 
 /**
  * Migrates files (*.pdf) from /usao-wdny.
@@ -23,10 +74,10 @@ class UsaoWdnyFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = array(
-      0 => 'usao-wdny',
-      1 => 'usao-wdny/nyw_document',
-      2 => 'usao-wdny/lecc',
-      3 => 'usao-wdny/press/press_releases',
+      0 => 'usao/nyw',
+      1 => 'usao/nyw/nyw_document',
+      2 => 'usao/nyw/lecc',
+      3 => 'usao/nyw/press/press_releases',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
@@ -48,8 +99,6 @@ class UsaoWdnyFileMigration extends JusticeDeployableBinaryFileMigration {
       return FALSE;
     }
 
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
-    doj_migration_set_district_legacy_fileid($row);
   }
 
   /**
