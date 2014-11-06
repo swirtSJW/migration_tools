@@ -6,7 +6,7 @@
  */
 
 /**
- * Migrates .html files from /usao-wdny to page nodes.
+ * Migrates .html files from /usao/nyw to page nodes in /usao-wdny.
  *
  * @package doj_migration
  * @subpackage usao-wdny

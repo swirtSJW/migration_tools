@@ -168,6 +168,31 @@ class HtmlCleanUp {
     }
   }
 
+
+  /**
+   * Rewraps an element, leaving child elements intact.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   *
+   * @param string $new_wrapper
+   *   A string of the leading wrapping element.
+   *   - <h2 />
+   *   - <h2 id="title" />
+   *   - <div class="friends" />
+   */
+  public static function rewrapElements($query_path, array $selectors, $new_wrapper = '') {
+    if (!empty($new_wrapper)  && is_string($new_wrapper)) {
+      // There is something to wrap it in, so begin the hunt.
+      foreach ($selectors as $selector) {
+        $children = $query_path->find($selector)->children();
+        $children->unwrap();
+        $children->wrap($new_wrapper);
+      }
+    }
+  }
+
+
   /**
    * Removes empty elements matching selectors.
    *

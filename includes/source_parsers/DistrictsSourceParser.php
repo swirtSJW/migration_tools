@@ -19,8 +19,8 @@ class DistrictsSourceParser extends SourceParser {
         return $image;
       }
     }
-
   }
+
 
   /**
    * {@inheritdoc}
@@ -49,6 +49,32 @@ class DistrictsSourceParser extends SourceParser {
     if ($subbanner) {
       $subbanner->remove();
     }
+
+    // Remove <a href="#top">Return to Top</a>.
+    $this->removeLinkReturnToTop();
+    // Rewrap p.greyHeadline to h2.
+    $selectors_to_rewrap = array('p.greyHeadline');
+    $new_wrapper = '<h2 class="subheading" />';
+    HtmlCleanup::rewrapElements($this->queryPath, $selectors_to_rewrap, $new_wrapper);
+    // Remove breadcrumbs.
+    $this->queryPath->find('.breadcrumb')->remove();
+
     parent::setBody();
+  }
+
+
+  /**
+   * Remove 'return to top' link.
+   */
+  protected function removeLinkReturnToTop() {
+    // Remove <a href="#top">Return to Top</a>.
+    $items = $this->queryPath->find("a");
+    foreach ($items as $item) {
+      $text = $item->text();
+      if (stristr($text, 'return to top')) {
+        $item->remove();
+        break;
+      }
+    }
   }
 }
