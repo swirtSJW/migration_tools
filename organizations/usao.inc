@@ -254,10 +254,10 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /ola.
+ * Migrates files (*.pdf) from /usao.
  *
  * @package doj_migration
- * @subpackage ola
+ * @subpackage usao
  */
 class UsaoFileMigration extends JusticeDeployableBinaryFileMigration {
 
@@ -270,7 +270,64 @@ class UsaoFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = array(
-      'usao',
+      0 => 'usao/about',
+      1 => 'usao/eousa/vr/forms',
+      2 => 'usao/eousa/foia_reading_room',
+      3 => 'usao/eousa/foia_reading_room/usam/title9',
+      4 => 'usao/eousa/foia_reading_room/usam/title6',
+      5 => 'usao/eousa/foia_reading_room/usamndx/archive/1976',
+      6 => 'usao/eousa/foia_reading_room/usamndx/archive/1966',
+      7 => 'usao/eousa/foia_reading_room/usamndx/archive/1988',
+      8 => 'usao/eousa/foia_reading_room/usamndx/archive/1971',
+      9 => 'usao/eousa/foia_reading_room/usamndx/archive/1970',
+      10 => 'usao/eousa/foia_reading_room/usamndx/archive/1961',
+      11 => 'usao/eousa/foia_reading_room/usamndx/archive/1953',
+      12 => 'usao/eousa/foia_reading_room/images',
+      13 => 'usao/eousa/foia_reading_room/images/0505',
+      14 => 'usao/briefing_room/ic',
+      15 => 'usao/briefing_room/dp',
+      16 => 'usao/briefing_room/vc',
+      17 => 'usao/training',
+      18 => 'usao/training/attendeeinfo',
+      19 => 'usao/training/travel',
+      20 => 'usao/training/mii',
+      21 => 'usao/training/mii/archive',
+      22 => 'usao/training/training',
+      23 => 'usao/training/directories',
+      24 => 'usao/reading_room/data/Info',
+      25 => 'usao/reading_room/pia',
+      26 => 'usao/reading_room/reports/1990s',
+      27 => 'usao/reading_room/reports/asr2013',
+      28 => 'usao/reading_room/reports/asr2006',
+      29 => 'usao/reading_room/reports/asr2004',
+      30 => 'usao/reading_room/reports/asr2002',
+      31 => 'usao/reading_room/reports/asr2008',
+      32 => 'usao/reading_room/reports/asr2003',
+      33 => 'usao/reading_room/reports/asr1999',
+      34 => 'usao/reading_room/reports/1950s',
+      35 => 'usao/reading_room/reports/asr2010',
+      36 => 'usao/reading_room/reports/asr2000',
+      37 => 'usao/reading_room/reports/asr2012',
+      38 => 'usao/reading_room/reports/asr2011',
+      39 => 'usao/reading_room/reports/asr1998',
+      40 => 'usao/reading_room/reports/asr2005',
+      41 => 'usao/reading_room/reports/asr2001',
+      42 => 'usao/reading_room/reports/asr2009',
+      43 => 'usao/reading_room/reports/1970s',
+      44 => 'usao/reading_room/reports/asr2007',
+      45 => 'usao/reading_room/reports/1960s',
+      46 => 'usao/reading_room/reports/1980s',
+      47 => 'usao/eousa/foia_reading_room/usam/title4',
+      48 => 'usao/eousa/_notes',
+      49 => 'usao/eousa/vr/_notes',
+      50 => 'usao/eousa/foia_reading_room/usam/_notes',
+      51 => 'usao/eousa/foia_reading_room/_notes',
+      52 => 'usao/_notes',
+      53 => 'usao/reading_room/data/FAQs_files',
+      54 => 'usao/reading_room/_notes',
+      55 => 'usao/reading_room/reports/asr2004/_notes',
+      56 => 'usao/reading_room/reports/asr2002/_notes',
+      57 => 'usao/reading_room/reports/asr2003/_notes',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
