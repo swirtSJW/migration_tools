@@ -203,7 +203,7 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
   // Get all files from the source directory.
   $final_input_directory = "$parent_input_directory/$directory";
   $files = scandir($final_input_directory);
-
+  $count = 0;
   foreach ($files as $file) {
     $ext = pathinfo("$final_input_directory/$file", PATHINFO_EXTENSION);
 
@@ -217,6 +217,7 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
       watchdog("doj_migration", "FILE: @file EXT: @ext \n", array('@file' => $file, 'ext' => $ext));
 
       if (copy("$final_input_directory/$file", "$final_output_directory/$file")) {
+        $count++;
         watchdog("doj_migration", "File @file was copied to $final_output_directory \n", array('@file' => $file));
       }
       else {
@@ -229,6 +230,8 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
       doj_migration_move_images($final_input_directory, $file, $final_output_directory);
     }
   }
+  $message = dt('Moved @count images into -> @final_output_directory.', array('@count' => $count, '@final_output_directory' => $final_output_directory));
+  drush_log($message, 'success');
 }
 
 /**
