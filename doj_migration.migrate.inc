@@ -107,6 +107,7 @@ function doj_migration_migrate_api() {
       ),
       'ola' => array(
         'title' => t('OLA - Office of Legislative Affairs'),
+        'disable_hooks' => $disable_hooks,
       ),
       'olc' => array(
         'title' => t('OLC - Office of Legal Counsel'),
