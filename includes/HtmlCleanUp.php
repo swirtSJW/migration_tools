@@ -185,10 +185,12 @@ class HtmlCleanUp {
     if (!empty($new_wrapper)  && is_string($new_wrapper)) {
       // There is something to wrap it in, so begin the hunt.
       foreach ($selectors as $selector) {
-        $children = $query_path->find($selector)->children();
-        $children->unwrap();
-        $children->wrap($new_wrapper);
+        $elements = $query_path->find($selector);
+        foreach ($elements as $element) {
+          $element->wrapInner($new_wrapper);
+        }
       }
+      HTMLCleanUp::removeWrapperElements($query_path, $selectors);
     }
   }
 

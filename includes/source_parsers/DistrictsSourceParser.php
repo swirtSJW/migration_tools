@@ -52,8 +52,8 @@ class DistrictsSourceParser extends SourceParser {
 
     // Remove <a href="#top">Return to Top</a>.
     $this->removeLinkReturnToTop();
-    // Rewrap p.greyHeadline to h2.
-    $selectors_to_rewrap = array('p.greyHeadline');
+    // Rewrap p.greyHeadline and div.greyHeadline to h2.
+    $selectors_to_rewrap = array('p.greyHeadline', 'div.greyHeadline');
     $new_wrapper = '<h2 class="subheading" />';
     HtmlCleanup::rewrapElements($this->queryPath, $selectors_to_rewrap, $new_wrapper);
     // Remove breadcrumbs.
