@@ -98,14 +98,14 @@ class MenuGenerator {
   public function generate() {
     // Generate the file's content.
     $content = $this->engine->generate();
-    //drush_print_r($content);
+    // drush_print_r($content);
 
     $file = $this->fileOutputDirectory . "/" . $this->fileName;
 
-     $fh = fopen($file, 'w') or die("can't open file");
-     fwrite($fh, $content);
-     fclose($fh);
-     drush_print_r($content);
+    $fh = fopen($file, 'w') or die("can't open file");
+    fwrite($fh, $content);
+    fclose($fh);
+    drush_print_r($content);
 
     return $file;
   }
