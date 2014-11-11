@@ -277,7 +277,10 @@ class HtmlCleanUp {
       $contents = trim($element->innerXHTML());
       if ($contents == '') {
         if ($anchor_id = $element->attr('id')) {
-          $element->attr('name', $anchor_id);
+          // Only set a name if there isn't one.
+          if (!$element->hasAttr('name')) {
+            $element->attr('name', $anchor_id);
+          }
         }
       }
     }
