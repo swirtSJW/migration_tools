@@ -81,5 +81,6 @@ files[] = organizations/prao.inc
 files[] = organizations/psc.inc
 files[] = organizations/tribal.inc
 files[] = organizations/usao.inc
+files[] = organizations/usao_edla.inc
 files[] = organizations/usao_ndca.inc
 files[] = organizations/usao_wdny.inc

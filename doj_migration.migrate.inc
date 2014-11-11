@@ -161,6 +161,10 @@ function doj_migration_migrate_api() {
         'title' => t('USAO - United States Attorneys Office'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-edla' => array(
+        'title' => t('Eastern District of Louisiana'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-ndca' => array(
         'title' => t('Northern District of California'),
         'disable_hooks' => $disable_hooks,
@@ -610,6 +614,14 @@ function doj_migration_migrate_api() {
       'UsaoPage' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoPageMigration',
+      ),
+      'UsaoEdlaFile' => array(
+        'group_name' => 'usao-edla',
+        'class_name' => 'UsaoEdlaFileMigration',
+      ),
+      'UsaoEdlaPage' => array(
+        'group_name' => 'usao-edla',
+        'class_name' => 'UsaoEdlaPageMigration',
       ),
       'UsaoNdcaFile' => array(
         'group_name' => 'usao-ndca',
