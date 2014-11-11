@@ -1,0 +1,40 @@
+ HOME {"url":"usao-ndca/usdoj-us-attorneys-office-northern-district-california-3"}
+ ABOUT {"url":"usao-ndca/about-district"}
+ - About the District {"url":"usao-ndca/about-district"}
+ - Court Locations {"url":"usao-ndca/court-locations"}
+ NEWS {"url":"usao-ndca/news-and-press-releases"}
+ - 2013 {"url":""}
+ - 2012 {"url":""}
+ MEET THE U.S. ATTORNEY {"url":"usao-ndca/hon-melinda-haag"}
+ - U.S. Attorney {"url":"usao-ndca/hon-melinda-haag"}
+ - Senior Leadership {"url":"usao-ndca/senior-leadership"}
+ DIVISIONS {"url":"usao-ndca/divisions"}
+ - Appellate Division {"url":"http://www.justice.gov/usao-ndca/divisions#appellate"}
+ - Civil Division {"url":"http://www.justice.gov/usao-ndca/divisions#civil"}
+ - Criminal Division {"url":"http://www.justice.gov/usao-ndca/divisions#criminal"}
+ - Tax Division {"url":"http://www.justice.gov/usao-ndca/divisions#tax"}
+ NOTIFICATIONS {"url":"usao-ndca/public-notifications"}
+ PROGRAMS {"url":"usao-ndca/programs"}
+ - Prescription Drug Abuse Summit {"url":"usao-ndca/prescription-drug-abuse-summit"}
+ - Investor Fraud Summit {"url":"usao-ndca/investor-fraud-summit"}
+ - Stop Bullying Summit {"url":"usao-ndca/bay-area-stop-bullying-summitthe-san-francisco-district-attorneys-office-presents-video"}
+ - Victim Witness Assistance {"url":"usao-ndca/victim-witness-assistance"}
+ - Community Outreach {"url":"usao-ndca/community-outreach"}
+ - Best Practices {"url":"usao-ndca/best-practices"}
+ - DOJ Grant Opportunities {"url":"usao-ndca/grant-opportunities"}
+ - Weed & Seed {"url":"usao-ndca/weed-and-seed"}
+ - PSN National Program {"url":"usao-ndca/project-safe-neighborhoods"}
+ - Violent Crime Strategy {"url":"usao-ndca/violent-crime-reduction-strategy"}
+ - NDCA PSN Program {"url":"usao-ndca/ndca-project-safe-neighborhoods"}
+ - Juvenile Justice Summit {"url":"usao-ndca/bay-area-juvenile-justice-summit"}
+ - SFPD and NDCA {"url":"usao-ndca/sfpd-and-ndca-partnership"}
+ - Salinas and NDCA {"url":"usao-ndca/salinas-and-ndca-model-program"}
+ - Oakland Crime Summit {"url":"usao-ndca/oakland-crime-summit"}
+ - PSN District Grants {"url":"usao-ndca/psn-district-grants"}
+ - Forum on Youth Violence {"url":"usao-ndca/youth-violence-prevention"}
+ - Operation Ceasefire {"url":"usao-ndca/operation-ceasefire"}
+ - Reentry Court {"url":"usao-ndca/reentry-court"}
+ - Tribal Outreach {"url":"usao-ndca/tribal-outreach"}
+ - LECC {"url":"usao-ndca/law-enforcement-coordination"}
+ FAQ {"url":"usao-ndca/frequently-asked-questions"}
+ CONTACT US {"url":"usao-ndca/contact-us"}
