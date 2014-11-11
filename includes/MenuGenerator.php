@@ -98,14 +98,14 @@ class MenuGenerator {
   public function generate() {
     // Generate the file's content.
     $content = $this->engine->generate();
-    drush_print_r($content);
+    //drush_print_r($content);
 
     $file = $this->fileOutputDirectory . "/" . $this->fileName;
 
-    // $fh = fopen($file, 'w') or die("can't open file");
-    // fwrite($fh, $content);
-    // fclose($fh);
-    // drush_print_r($content);
+     $fh = fopen($file, 'w') or die("can't open file");
+     fwrite($fh, $content);
+     fclose($fh);
+     drush_print_r($content);
 
     return $file;
   }
@@ -160,31 +160,34 @@ class MenuGeneratorEngineDefault {
     }
     $pre = $prefix;
 
-    drush_print_r("CSS: $css_selector \n");
-    drush_print_r("PRE: $pre \n");
+    drush_print_r("CSS INITIAL: $css_selector \n");
+    drush_print_r("PRE INTITIAL: $pre \n");
 
     $query = $this->getQueryPath();
 
     $elements = $query->find("{$css_selector}>*");
     foreach ($elements as $elem) {
       if ($elem->is("ul")) {
+        drush_print_r('Im in a ul');
         $class_name = doj_migration_random_string();
         $elem->attr('class', $class_name);
         $this->content .= $this->recurse("{$css_selector}>ul.{$class_name}", "{$pre}-");
       }
       if ($elem->is("div")) {
+        drush_print_r('Im in a div');
         $class = $elem->attr('class');
         $this->content .= $this->recurse("{$css_selector}>div.{$class}>ul", "{$pre}-");
       }
       elseif ($elem->is("li")) {
+        drush_print_r('Im in a li');
         $li = $elem;
         $anchors = $li->find('a:nth-child(1)');
         foreach ($anchors as $a) {
           $al = $a->text();
           $uri = $this->normalizeUri($a->attr("href"));
           $line = "{$pre} {$al} {\"url\":\"{$uri}\"}\n";
-          drush_print_r("CSS: $css_selector \n");
-          drush_print_r("PRE: $pre \n");
+          drush_print_r("CSS INNER $al: $css_selector \n");
+          drush_print_r("PRE INNER $al: $pre \n");
           drush_print_r("LINE: $line");
           $this->content .= $line;
         }
