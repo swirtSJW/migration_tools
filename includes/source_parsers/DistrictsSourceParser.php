@@ -35,6 +35,17 @@ class DistrictsSourceParser extends SourceParser {
       if (empty($title) && $subbanner) {
         $title = $subbanner->attr('alt');
         $title = str_ireplace("banner", "", $title);
+        // Check to see if alt is just placeholder to discard.
+        if (stristr($title, 'placeholder')) {
+          $title = '';
+        }
+      }
+      if (empty($title)) {
+        // Try the last item in the breadcrumb.
+        $breadcrumb = $this->queryPath->find(".breadcrumb");
+        // Remove the anchors.
+        $breadcrumb->find(a)->remove();
+        $title = trim($breadcrumb->first()->text());
       }
     }
     else {
@@ -42,52 +53,11 @@ class DistrictsSourceParser extends SourceParser {
       $title = $override;
     }
 
-    if (empty($title)) {
-      // This method came up empty so use the parent method as fallback.
-      parent::setTitle();
-    }
-    else {
-      $this->title = $title;
-    }
-    // Output to show progress to aid debugging.
-    drush_print_r("{$this->fileId}  --->  {$this->title}");
+    // Pass it to the parent::setTitle to process string cleanup or trigger
+    // a fallback for title sources.
+    parent::setTitle($title);
   }
 
-
-  /**
-   * Sets a title retrieved using an array of selectors searched in order.
-   *
-   * The first selector to find something wins.
-   *
-   * @param array $selectors
-   *   Querypath selectors to use in order for finding title text.
-   * @param string $title_default
-   *   The title to use if all selectors come up empty.
-   *
-   * @return string
-   *   The current title text.
-   */
-  public function overrideSetTitle($selectors = array(), $title_default = '') {
-    $title = '';
-    foreach (is_array($selectors) ? $selectors : array() as $selector) {
-      // If we have a title, no more searching.
-      if (!empty($title)) {
-        break;
-      }
-      $found_text = trim($this->queryPath->find($selector)->first()->text());
-      if (!empty($found_text)) {
-        $title = $found_text;
-        $this->queryPath->find($selector)->first()->remove();
-      }
-      $title = (!empty($found_text)) ? $found_text : '';
-    }
-    $title = (empty($title)) ? $title_default : $title;
-    // Set the found title only if we have no other.
-    if (!empty($title)) {
-      $this->setTitle($title);
-    }
-    return $this->getTitle();
-  }
 
   /**
    * {@inheritdoc}
@@ -105,7 +75,7 @@ class DistrictsSourceParser extends SourceParser {
     $new_wrapper = '<h2 class="subheading" />';
     HtmlCleanup::rewrapElements($this->queryPath, $selectors_to_rewrap, $new_wrapper);
     // Remove breadcrumbs.
-    $this->queryPath->find('.breadcrumb')->remove();
+    $this->queryPath->find('.breadcrumb')->first()->remove();
 
     parent::setBody();
   }

@@ -114,22 +114,34 @@ class SourceParser {
   /**
    * Sets $this->title using breadcrumb or <title>.
    */
-  protected function setTitle() {
+  protected function setTitle($override = '') {
 
     // QueryPathing our way through things can fail.
     // In that case let's still set things and inform people about the issue.
-
     try {
-      // First attempt to get the title from the breadcrumb.
-      $query_path = $this->queryPath;
-      $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
-      $wrapper->children('a, span, font')->remove();
-      $title = $wrapper->text();
+      if (empty($override)) {
+        // First attempt to get the title from the breadcrumb.
+        $query_path = $this->queryPath;
+        $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
+        $wrapper->children('a, span, font')->remove();
+        $title = $wrapper->text();
 
-      // If there was no breadcrumb title, get it from the <title> tag.
-      if (!$title) {
-        $title = $query_path->find('title')->innerHTML();
+        // If there was no breadcrumb title, get it from the <title> tag.
+        if (empty($title)) {
+          $title = $query_path->find('title')->innerHTML();
+        }
+
+        // If there is still no title found, Look for the first H1.
+        if (empty($title)) {
+          $title = $this->queryPath->find("h1")->first()->text();
+          $this->queryPath->find("h1")->first()->remove();
+        }
       }
+      else {
+        // The override was invoked, so use it.
+        $title = $override;
+      }
+
       // If there are any html special chars let's change those to its char
       // equivalent.
       $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
@@ -156,11 +168,49 @@ class SourceParser {
         $title = substr($title, 0, 255);
       }
       $this->title = $title;
+      // Output to show progress to aid debugging.
+      drush_print_r("{$this->fileId}  --->  {$this->title}");
     }
     catch (Exception $e) {
       $this->title = "";
       watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
     }
+  }
+
+
+  /**
+   * Sets a title retrieved using an array of selectors searched in order.
+   *
+   * The first selector to find something wins.
+   *
+   * @param array $selectors
+   *   Querypath selectors to use in order for finding title text.
+   * @param string $title_default
+   *   The title to use if all selectors come up empty.
+   *
+   * @return string
+   *   The current title text.
+   */
+  public function overrideSetTitle($selectors = array(), $title_default = '') {
+    $title = '';
+    foreach (is_array($selectors) ? $selectors : array() as $selector) {
+      // If we have a title, no more searching.
+      if (!empty($title)) {
+        break;
+      }
+      $found_text = trim($this->queryPath->find($selector)->first()->childrenText(' '));
+      if (!empty($found_text)) {
+        $title = $found_text;
+        $this->queryPath->find($selector)->first()->remove();
+      }
+      $title = (!empty($found_text)) ? $found_text : '';
+    }
+    $title = (empty($title)) ? $title_default : $title;
+    // Set the found title only if we have no other.
+    if (!empty($title)) {
+      $this->setTitle($title);
+    }
+    return $this->getTitle();
   }
 
   /**
