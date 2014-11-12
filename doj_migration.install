@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Installation file for DOJ Migration module.
+ */
+
+/**
+ * Disable wordpress_migrate.
+ */
+function doj_migration_update_7000(&$sandbox) {
+  // We are finished migrating from wordpress.
+  module_disable(array('wordpress_migrate'));
+}
