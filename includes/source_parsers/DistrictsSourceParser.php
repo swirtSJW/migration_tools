@@ -25,20 +25,68 @@ class DistrictsSourceParser extends SourceParser {
   /**
    * {@inheritdoc}
    */
-  protected function setTitle() {
-    $subbanner = $this->getSubBanner();
-    if ($subbanner) {
-      $title = $subbanner->attr('alt');
-      $this->title = str_ireplace("banner", "", $title);
+  protected function setTitle($override = '') {
+    if (empty($override)) {
+      // h1 is top priority.
+      $title = $this->queryPath->find("h1")->first()->text();
+      $this->queryPath->find("h1")->first()->remove();
+      // If no title, try to get it from the sub banner.
+      $subbanner = $this->getSubBanner();
+      if (empty($title) && $subbanner) {
+        $title = $subbanner->attr('alt');
+        $title = str_ireplace("banner", "", $title);
+      }
+    }
+    else {
+      // The override was invoked, so use it.
+      $title = $override;
     }
 
-    if ($this->title == "Placeholder  Image") {
-      $this->title = $this->queryPath->find("h1")->text();
-    }
-
-    if (empty($this->title)) {
+    if (empty($title)) {
+      // This method came up empty so use the parent method as fallback.
       parent::setTitle();
     }
+    else {
+      $this->title = $title;
+    }
+    // Output to show progress to aid debugging.
+    drush_print_r("{$this->fileId}  --->  {$this->title}");
+  }
+
+
+  /**
+   * Sets a title retrieved using an array of selectors searched in order.
+   *
+   * The first selector to find something wins.
+   *
+   * @param array $selectors
+   *   Querypath selectors to use in order for finding title text.
+   * @param string $title_default
+   *   The title to use if all selectors come up empty.
+   *
+   * @return string
+   *   The current title text.
+   */
+  public function overrideSetTitle($selectors = array(), $title_default = '') {
+    $title = '';
+    foreach (is_array($selectors) ? $selectors : array() as $selector) {
+      // If we have a title, no more searching.
+      if (!empty($title)) {
+        break;
+      }
+      $found_text = trim($this->queryPath->find($selector)->first()->text());
+      if (!empty($found_text)) {
+        $title = $found_text;
+        $this->queryPath->find($selector)->first()->remove();
+      }
+      $title = (!empty($found_text)) ? $found_text : '';
+    }
+    $title = (empty($title)) ? $title_default : $title;
+    // Set the found title only if we have no other.
+    if (!empty($title)) {
+      $this->setTitle($title);
+    }
+    return $this->getTitle();
   }
 
   /**
@@ -77,4 +125,5 @@ class DistrictsSourceParser extends SourceParser {
       }
     }
   }
+
 }
