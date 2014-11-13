@@ -183,26 +183,17 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
+    $arguments['source_parser_class'] = "DistrictsSourceParser";
 
     // Define source directories.
     $source_dirs = array(
-      0 => 'usao/eousa/foia_reading_room/usam/title6',
-      1 => 'usao/eousa/foia_reading_room/usam/title5',
-      2 => 'usao/eousa/foia_reading_room/usam/title9',
-      3 => 'usao/eousa/foia_reading_room/usam/title3',
-      4 => 'usao/eousa/foia_reading_room/usam/title2',
-      5 => 'usao/eousa/foia_reading_room/usam/title4',
-      6 => 'usao/eousa/foia_reading_room/usam/title7',
-      7 => 'usao/eousa/foia_reading_room/usam/title1',
-      8 => 'usao/eousa/foia_reading_room/usam/title8',
+      15 => 'usao/eousa/foia_reading_room',
       9 => 'usao/eousa/foia_reading_room/usamndx',
       10 => 'usao/eousa/foia_reading_room/usamndx/archive',
       11 => 'usao/reading_room/reports/asr2005',
       12 => 'usao/reading_room/data',
       13 => 'usao/eousa',
       14 => 'usao/eousa/vr',
-      15 => 'usao/eousa/foia_reading_room',
-      16 => 'usao/eousa/foia_reading_room/usam',
       17 => 'usao/eousa/palmetto',
       18 => 'usao/contact_form',
       19 => 'usao/justice101',
@@ -237,7 +228,6 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
       49 => 'usao/about',
       50 => 'usao/training',
       51 => 'usao/training/mii',
-      52 => 'usao/training/mii/includes',
       53 => 'usao/training/attendeeinfo',
       54 => 'usao/training/training',
     );
@@ -250,6 +240,25 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the Executive Office for United States Attorneys.');
     $this->addFieldMapping('og_group_ref')->defaultValue('usao')->sourceMigration('Organization');
+  }
+
+  /**
+   * Processes additional logic and alterations row by row.
+   *
+   * @param object $row
+   *   The migration row.
+   *
+   * @return bool
+   *   FALSE only if the row should be skipped.
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    // Check for biographies.
+    if (stristr($row->fileid, 'biographies')) {
+      $row->title = $this->sourceParser->overrideSetTitle(array('h2'), $title_default = 'Biography');
+    }
   }
 }
 
