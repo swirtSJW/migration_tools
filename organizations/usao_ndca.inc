@@ -96,3 +96,17 @@ class UsaoNdcaFileMigration extends JusticeDeployableBinaryFileMigration {
     return "usao-ndca";
   }
 }
+
+class UsaoNdcaPressReleaseMigration extends DistrictPressReleaseMigration {
+  /**
+   * {@inheritdoc} 
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-ndca";
+
+    $source_dirs = array(
+      "usao/can/news",
+    );
+    parent::__construct($arguments, $source_dirs);
+  }
+}
