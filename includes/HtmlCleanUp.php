@@ -26,7 +26,9 @@ class HtmlCleanUp {
       'div.hdrwrpr',
       'div.breadcrumbmenu',
       'div.footer',
-      'div.clear',
+      // This is deleting the content from the Louisiana pr example.
+      // @todo can we target it better?
+      // 'div.clear',
       'div.lastupdate',
       'div.thick-bar',
       'div.rightcolumn',
@@ -355,5 +357,54 @@ class HtmlCleanUp {
         $wrapper->html("<h2>{$alt}</h2>");
       }
     }
+  }
+
+  /**
+   * General matching function.
+   */
+  private static function match($qp, $selector, $target, $function, $parameter = NULL) {
+    foreach ($qp->find($selector) as $elem) {
+      $stuff = $elem->$function($parameter);
+      if (substr_count($stuff, $target) > 0) {
+        return $elem;
+      }
+      return FALSE;
+    }
+  }
+
+  /**
+   * Return an element if the text in the attribute matches a target.
+   *
+   * @param object $qp
+   *   QueryPath object.
+   * @param string $selector
+   *   The selector to look into.
+   * @param string $target
+   *   the target string to match.
+   * @param string $attribute
+   *   the attribute to test.
+   *
+   * @return mixed
+   *   The matched querypath object or FALSE.
+   */
+  public static function matchAttribute($qp, $selector, $target, $attribute) {
+    return HtmlCleanUp::match($qp, $selector, $target, "attr", $attribute);
+  }
+
+  /**
+   * Return an element if the text matches a target.
+   *
+   * @param object $qp
+   *   QueryPath object.
+   * @param string $selector
+   *   The selector to look into.
+   * @param string $target
+   *   the target string to match.
+   *
+   * @return mixed
+   *   The matched querypath object or FALSE.
+   */
+  public static function matchText($qp, $selector, $target) {
+    return HtmlCleanUp::match($qp, $selector, $target, "text");
   }
 }
