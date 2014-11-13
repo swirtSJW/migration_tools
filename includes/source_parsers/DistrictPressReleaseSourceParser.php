@@ -111,7 +111,12 @@ class DistrictPressReleaseSourceParser extends SourceParser {
         $this->subtitle = $this->titleSetHelper($pieces[1]);
       }
 
-      return ucwords(strtolower($text));
+      $uppercase_version = strtoupper($text);
+      if (strcmp($uppercase_version, $text) == 0) {
+        $text = ucwords(strtolower($text));
+      }
+
+      return $text;
     }
     return "";
   }
@@ -367,38 +372,6 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    */
   public function getNumber() {
     return $this->number;
-  }
-
-  /**
-   * Get specific tds from a table.
-   *
-   * @param object $table
-   *   A query path object with a table as the root.
-   * @param int $tr_target
-   *   Which tr do you want. Starting the count from 1.
-   * @param int $td_target
-   *   Which td do you want. Starting the count from 1.
-   *
-   * @return string
-   *   The text inside of the wanted tr and td.
-   */
-  private function getFromTable($table, $tr_target, $td_target) {
-    $trcount = 1;
-    $tdcount = 1;
-
-    foreach ($table->find("tr") as $tr) {
-      if ($trcount == $tr_target) {
-        foreach ($tr->find("td") as $td) {
-          if ($tdcount == $td_target) {
-            return $td->text();
-          }
-          $tdcount++;
-        }
-      }
-      $trcount++;
-    }
-
-    return "";
   }
 
   /**
