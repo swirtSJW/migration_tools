@@ -155,6 +155,7 @@ class MenuGeneratorEngineDefault {
    *   level 1, and so on.
    */
   private function recurse($css_selector = NULL, $prefix = "") {
+    module_load_include("inc", "doj_migration", "includes/doj_migration");
     if (!isset($css_selector)) {
       $css_selector = $this->initialCssSelector;
     }
