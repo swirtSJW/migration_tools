@@ -148,6 +148,18 @@ function doj_migration_migrate_api() {
         'group_name' => 'usao-edla',
         'class_name' => 'UsaoEdlaPressReleaseMigration',
       ),
+      'UsaoIdFile' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdFileMigration',
+      ),
+      'UsaoIdPage' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdPageMigration',
+      ),
+      'UsaoIdPressRelease' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdPressReleaseMigration',
+      ),
       'UsaoNdcaFile' => array(
         'group_name' => 'usao-ndca',
         'class_name' => 'UsaoNdcaFileMigration',
