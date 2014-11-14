@@ -107,7 +107,10 @@ class SourceParser {
 
     }
     catch (Exception $e) {
-      watchdog('doj_migration', '%file: failed to clean the html, Error: %error', array('%file' => $this->fileId, '%error' => $e->getMessage()), WATCHDOG_ERROR);
+      watchdog('doj_migration', '%file: failed to clean the html, Error: %error', array(
+          '%file' => $this->fileId,
+          '%error' => $e->getMessage(),
+        ), WATCHDOG_ERROR);
     }
   }
 
@@ -198,7 +201,9 @@ class SourceParser {
       if (!empty($title)) {
         break;
       }
-      $found_text = trim($this->queryPath->find($selector)->first()->childrenText(' '));
+      $found_text = trim($this->queryPath->find($selector)
+          ->first()
+          ->childrenText(' '));
       if (!empty($found_text)) {
         $title = $found_text;
         $this->queryPath->find($selector)->first()->remove();
@@ -241,7 +246,10 @@ class SourceParser {
     }
     catch (Exception $e) {
       $this->body = "";
-      watchdog('doj_migration', '%file: failed to set the body because: %message', array('%file' => $this->fileId, '%message' => $e->getMessage()), WATCHDOG_ALERT);
+      watchdog('doj_migration', '%file: failed to set the body because: %message', array(
+          '%file' => $this->fileId,
+          '%message' => $e->getMessage(),
+        ), WATCHDOG_ALERT);
     }
   }
 
@@ -328,6 +336,38 @@ class SourceParser {
         $element->children($new_selector)->first()->unwrap($old_selector);
       }
     }
+  }
+
+  /**
+   * Get specific tds from a table.
+   *
+   * @param object $table
+   *   A query path object with a table as the root.
+   * @param int $tr_target
+   *   Which tr do you want. Starting the count from 1.
+   * @param int $td_target
+   *   Which td do you want. Starting the count from 1.
+   *
+   * @return string
+   *   The text inside of the wanted tr and td.
+   */
+  protected function getFromTable($table, $tr_target, $td_target) {
+    $trcount = 1;
+    $tdcount = 1;
+
+    foreach ($table->find("tr") as $tr) {
+      if ($trcount == $tr_target) {
+        foreach ($tr->find("td") as $td) {
+          if ($tdcount == $td_target) {
+            return $td->text();
+          }
+          $tdcount++;
+        }
+      }
+      $trcount++;
+    }
+
+    return "";
   }
 }
 

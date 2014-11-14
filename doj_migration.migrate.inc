@@ -139,6 +139,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'usao-ndca',
         'class_name' => 'UsaoNdcaPageMigration',
       ),
+      'UsaoNdcaPressRelease' => array(
+        'group_name' => 'usao-ndca',
+        'class_name' => 'UsaoNdcaPressReleaseMigration',
+      ),
       'UsaoWdnyFile' => array(
         'group_name' => 'usao-wdny',
         'class_name' => 'UsaoWdnyFileMigration',
