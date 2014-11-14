@@ -186,7 +186,7 @@ class MenuGeneratorEngineDefault {
         foreach ($anchors as $a) {
           $al = $a->text();
           $uri = $this->normalizeUri($a->attr("href"));
-          $line = "{$pre} {$al} {\"url\":\"{$uri}\"}\n";
+          $line = "{$pre}{$al}{\"url\":\"{$uri}\"}\n";
           drush_doj_migration_debug_output("CSS INNER $al: $css_selector \n");
           drush_doj_migration_debug_output("PRE INNER $al: $pre \n");
           drush_doj_migration_debug_output("LINE: $line");
