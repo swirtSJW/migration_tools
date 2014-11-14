@@ -188,7 +188,6 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       15 => 'usao/eousa/foia_reading_room',
-      9 => 'usao/eousa/foia_reading_room/usamndx',
       10 => 'usao/eousa/foia_reading_room/usamndx/archive',
       11 => 'usao/reading_room/reports/asr2005',
       12 => 'usao/reading_room/data',
@@ -282,8 +281,6 @@ class UsaoFileMigration extends JusticeDeployableBinaryFileMigration {
       0 => 'usao/about',
       1 => 'usao/eousa/vr/forms',
       2 => 'usao/eousa/foia_reading_room',
-      3 => 'usao/eousa/foia_reading_room/usam/title9',
-      4 => 'usao/eousa/foia_reading_room/usam/title6',
       5 => 'usao/eousa/foia_reading_room/usamndx/archive/1976',
       6 => 'usao/eousa/foia_reading_room/usamndx/archive/1966',
       7 => 'usao/eousa/foia_reading_room/usamndx/archive/1988',
@@ -326,17 +323,7 @@ class UsaoFileMigration extends JusticeDeployableBinaryFileMigration {
       44 => 'usao/reading_room/reports/asr2007',
       45 => 'usao/reading_room/reports/1960s',
       46 => 'usao/reading_room/reports/1980s',
-      47 => 'usao/eousa/foia_reading_room/usam/title4',
-      48 => 'usao/eousa/_notes',
-      49 => 'usao/eousa/vr/_notes',
-      50 => 'usao/eousa/foia_reading_room/usam/_notes',
-      51 => 'usao/eousa/foia_reading_room/_notes',
-      52 => 'usao/_notes',
       53 => 'usao/reading_room/data/FAQs_files',
-      54 => 'usao/reading_room/_notes',
-      55 => 'usao/reading_room/reports/asr2004/_notes',
-      56 => 'usao/reading_room/reports/asr2002/_notes',
-      57 => 'usao/reading_room/reports/asr2003/_notes',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
