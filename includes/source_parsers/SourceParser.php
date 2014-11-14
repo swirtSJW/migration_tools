@@ -172,7 +172,7 @@ class SourceParser {
       }
       $this->title = $title;
       // Output to show progress to aid debugging.
-      drush_print_r("{$this->fileId}  --->  {$this->title}");
+      drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
     }
     catch (Exception $e) {
       $this->title = "";

@@ -283,3 +283,15 @@ function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
 
   drush_menu_import_import($file_path, $group_menu_name);
 }
+
+/**
+ * Wrapper function to output info if doj_migration_drush_debug = TRUE.
+ *
+ * @param mixed $output
+ *   Thing to pass to drush_print_r().
+ */
+function drush_doj_migration_debug_output($output = '') {
+  if (variable_get('doj_migration_drush_debug', FALSE)) {
+    drush_print_r($output);
+  }
+}
