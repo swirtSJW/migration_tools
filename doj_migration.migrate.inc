@@ -45,6 +45,10 @@ function doj_migration_migrate_api() {
         'title' => t('OLA - Office of Legislative Affairs'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-az' => array(
+        'title' => t('District of Arizona'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao' => array(
         'title' => t('USAO - United States Attorneys Office'),
         'disable_hooks' => $disable_hooks,
@@ -107,6 +111,15 @@ function doj_migration_migrate_api() {
         'group_name' => 'ola',
         'class_name' => 'OlaDbWitnessMigration',
       ),
+      'UsaoAzFile' => array(
+        'group_name' => 'usao-az',
+        'class_name' => 'UsaoAzFileMigration',
+      ),
+      'UsaoAzPage' => array(
+        'group_name' => 'usao-az',
+        'class_name' => 'UsaoAZPageMigration',
+      ),
+
       'UsaoDistrict' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoDistrictMigration',
