@@ -131,6 +131,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'usao-edla',
         'class_name' => 'UsaoEdlaPageMigration',
       ),
+      'UsaoEdlaPressRelease' => array(
+        'group_name' => 'usao-edla',
+        'class_name' => 'UsaoEdlaPressReleaseMigration',
+      ),
       'UsaoNdcaFile' => array(
         'group_name' => 'usao-ndca',
         'class_name' => 'UsaoNdcaFileMigration',
@@ -150,6 +154,10 @@ function doj_migration_migrate_api() {
       'UsaoWdnyPage' => array(
         'group_name' => 'usao-wdny',
         'class_name' => 'UsaoWdnyPageMigration',
+      ),
+      'UsaoWdnyPressRelease' => array(
+        'group_name' => 'usao-wdny',
+        'class_name' => 'UsaoWdnyPressReleaseMigration',
       ),
     ),
   );

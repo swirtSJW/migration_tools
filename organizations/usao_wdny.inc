@@ -108,3 +108,18 @@ class UsaoWdnyFileMigration extends JusticeDeployableBinaryFileMigration {
     return "usao-wdny";
   }
 }
+
+class UsaoWdnyPressReleaseMigration extends DistrictPressReleaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-wdny";
+
+    $source_dirs = array(
+      "usao/nyw/press/press_releases/2014",
+      "usao/nyw/press/press_releases/2013",
+    );
+    parent::__construct($arguments, $source_dirs);
+  }
+}

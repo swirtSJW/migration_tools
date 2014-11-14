@@ -101,3 +101,18 @@ class UsaoEdlaFileMigration extends JusticeDeployableBinaryFileMigration {
     return "usao-edla";
   }
 }
+
+class UsaoEdlaPressReleaseMigration extends DistrictPressReleaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-edla";
+
+    $source_dirs = array(
+      "usao/lae/news/2014",
+      "usao/lae/news/2013",
+    );
+    parent::__construct($arguments, $source_dirs);
+  }
+}
