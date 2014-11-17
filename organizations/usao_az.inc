@@ -22,6 +22,7 @@ class UsaoAzPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       0 => 'usao/az',
       1 => 'usao/az/victimw',
+      2 => 'usao/az/press_releases',
       9 => 'usao/az/reports',
     );
 
