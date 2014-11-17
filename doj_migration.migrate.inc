@@ -69,6 +69,10 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of New York'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdok' => array(
+        'title' => t('Western District of Oklahoma'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -187,6 +191,18 @@ function doj_migration_migrate_api() {
       'UsaoWdnyPressRelease' => array(
         'group_name' => 'usao-wdny',
         'class_name' => 'UsaoWdnyPressReleaseMigration',
+      ),
+      'UsaoWdokFile' => array(
+        'group_name' => 'usao-wdok',
+        'class_name' => 'UsaoWdokFileMigration',
+      ),
+      'UsaoWdokPage' => array(
+        'group_name' => 'usao-wdok',
+        'class_name' => 'UsaoWdokPageMigration',
+      ),
+      'UsaoWdokPressRelease' => array(
+        'group_name' => 'usao-wdok',
+        'class_name' => 'UsaoWdokPressReleaseMigration',
       ),
     ),
   );
