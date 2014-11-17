@@ -209,9 +209,10 @@ class MenuGeneratorEngineDefault {
     // @todo This is cheating, this will work with districts, but not
     // generally.
     $base = $this->parameters->getJusticeUrl();
+    $subpath = str_replace($base, '', $this->parameters->getUriMenuLocation());
 
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $legacy_uri = doj_migration_relative_to_absolute_url($uri, $base);
+    $legacy_uri = doj_migration_relative_to_absolute_url($uri, $base, $subpath);
 
     $legacy_uri = str_replace($this->parameters->getJusticeUrl() . "/", "", $legacy_uri);
 
@@ -221,10 +222,15 @@ class MenuGeneratorEngineDefault {
       $legacy_uri = "{$legacy_uri}index.html";
     }
 
-    // The index.(html|htm) pages are aliased to the org name.
-    if (strcmp($legacy_uri, "{$this->parameters->getOrganization()}/index.html") == 0 ||
+    // Check to see if the legacy uri contains a #.
+    if (stristr($legacy_uri, '#')) {
+      // The uri contains a # which is not supported by the menu import, so
+      // force it to an absolute path.
+      $uri = $base . '/' . $legacy_uri;
+    }
+    elseif (strcmp($legacy_uri, "{$this->parameters->getOrganization()}/index.html") == 0 ||
       strcmp($legacy_uri, "{$this->parameters->getOrganization()}/index.htm") == 0) {
-
+      // The index.(html|htm) pages are aliased to the org name.
       $uri = $this->parameters->getOrganization();
     }
     else {

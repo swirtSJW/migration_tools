@@ -360,14 +360,23 @@ function doj_migration_random_string() {
  *   Relative url.
  * @param string $base
  *   Base url.
+ * @param string $subpath
+ *   An optional sub-path to check for when translating relative URIs that are
+ *   not root based.
  *
  * @return string
  *   The relative url transformed to absolute.
  */
-function doj_migration_relative_to_absolute_url($rel, $base) {
+function doj_migration_relative_to_absolute_url($rel, $base, $subpath = '') {
   // Return if already absolute URL.
   if (parse_url($rel, PHP_URL_SCHEME) != '') {
     return $rel;
+  }
+
+  // Check for presence of subpath in $rel to see if a subpath is missing.
+  if ((!empty($subpath)) && (!stristr($rel, $subpath))) {
+    // The subpath is not present, so add it.
+    $rel = $subpath . '/' . $rel;
   }
 
   // Queries and anchors.
