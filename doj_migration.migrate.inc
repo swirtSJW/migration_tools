@@ -131,7 +131,10 @@ function doj_migration_migrate_api() {
         'group_name' => 'usao-az',
         'class_name' => 'UsaoAZPageMigration',
       ),
-
+      'UsaoAzPressRelease' => array(
+        'group_name' => 'usao-az',
+        'class_name' => 'UsaoAzPressReleaseMigration',
+      ),
       'UsaoDistrict' => array(
         'group_name' => 'usao',
         'class_name' => 'UsaoDistrictMigration',

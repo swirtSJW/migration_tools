@@ -104,3 +104,27 @@ class UsaoAzFileMigration extends JusticeDeployableBinaryFileMigration {
     return "usao-az";
   }
 }
+
+
+/**
+ * Migrates .html files from /usao/az to press release nodes in /usao-az.
+ *
+ * @package doj_migration
+ * @subpackage usao-az
+ */
+class UsaoAzPressReleaseMigration extends DistrictPressReleaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-az";
+    $arguments['component'] = "District of Arizona (USAO)";
+
+    $source_dirs = array(
+      3 => 'usao/az/press_releases/2013',
+      8 => 'usao/az/press_releases/2014',
+    );
+
+    parent::__construct($arguments, $source_dirs);
+  }
+}

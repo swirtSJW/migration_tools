@@ -183,7 +183,9 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       "p > strong > em",
       "#contentstart > div > h2",
       // For usao-az.
-      '.Part > p',
+      'div.contentSub > div > div[align="center"]',
+      'div > div[align="center"] > div.Part > p',
+
       // Hail Mary.
       ".MsoNormal",
     );
@@ -191,8 +193,9 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     while ($this->titleCheck($title) && !empty($selectors)) {
       $selector = array_shift($selectors);
       if ($text = HtmlCleanUp::extractFirstElement($this->queryPath, $selector)) {
-        $title = $this->titleSetHelper($text);
         $winner = $selector;
+        $title = $this->titleSetHelper($text);
+
       }
     }
 
@@ -220,7 +223,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     }
 
     // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("{$this->fileId}  --match[{$winner}]-->  {$this->title}");
+    drush_doj_migration_debug_output("Match: {$winner}");
     return $title;
   }
 
@@ -229,6 +232,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    */
   protected function setTitle() {
     $this->title = $this->titlesHelper();
+    drush_doj_migration_debug_output("{$this->fileId}  --Title->  {$this->title}");
   }
 
   /**
@@ -237,6 +241,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
   private function setSubTitle() {
     if (empty($this->subtitle)) {
       $this->subtitle = $this->titlesHelper();
+      drush_doj_migration_debug_output("--Subtitle->  {$this->subtitle}");
     }
   }
 
