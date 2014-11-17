@@ -57,6 +57,10 @@ function doj_migration_migrate_api() {
         'title' => t('Eastern District of Louisiana'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-id' => array(
+        'title' => t('District of Idaho'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-ndca' => array(
         'title' => t('Northern District of California'),
         'disable_hooks' => $disable_hooks,
@@ -147,6 +151,18 @@ function doj_migration_migrate_api() {
       'UsaoEdlaPressRelease' => array(
         'group_name' => 'usao-edla',
         'class_name' => 'UsaoEdlaPressReleaseMigration',
+      ),
+      'UsaoIdFile' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdFileMigration',
+      ),
+      'UsaoIdPage' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdPageMigration',
+      ),
+      'UsaoIdPressRelease' => array(
+        'group_name' => 'usao-id',
+        'class_name' => 'UsaoIdPressReleaseMigration',
       ),
       'UsaoNdcaFile' => array(
         'group_name' => 'usao-ndca',
