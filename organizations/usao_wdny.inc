@@ -115,6 +115,7 @@ class UsaoWdnyPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdny";
+    $arguments['component'] = "Western District of New York (USAO)";
 
     $source_dirs = array(
       "usao/nyw/press/press_releases/2014",
