@@ -73,6 +73,10 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of Oklahoma'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdtx' => array(
+        'title' => t('Western District of Texas'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -203,6 +207,18 @@ function doj_migration_migrate_api() {
       'UsaoWdokPressRelease' => array(
         'group_name' => 'usao-wdok',
         'class_name' => 'UsaoWdokPressReleaseMigration',
+      ),
+      'UsaoWdtxFile' => array(
+        'group_name' => 'usao-wdtx',
+        'class_name' => 'UsaoWdtxFileMigration',
+      ),
+      'UsaoWdtxPage' => array(
+        'group_name' => 'usao-wdtx',
+        'class_name' => 'UsaoWdtxPageMigration',
+      ),
+      'UsaoWdtxPressRelease' => array(
+        'group_name' => 'usao-wdtx',
+        'class_name' => 'UsaoWdtxPressReleaseMigration',
       ),
     ),
   );

@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Defines migration classes for Western District of Oklahoma.
+ * Defines migration classes for Western District of Texas.
  */
 
 /**
- * Migrates .html files from /usao-wdok to page nodes.
+ * Migrates .html files from /usao-wdtx to page nodes.
  *
  * @package doj_migration
- * @subpackage usao-wdok
+ * @subpackage usao-wdtx
  */
-class UsaoWdokPageMigration extends JusticeHtmlToPageMigration {
+class UsaoWdtxPageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -20,7 +20,8 @@ class UsaoWdokPageMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      0 => 'usao/okw',
+      0 => 'usao/txw',
+      4 => 'usao/txw/vw',
     );
 
     $arguments['source_parser_class'] = "DistrictsSourceParser";
@@ -31,9 +32,9 @@ class UsaoWdokPageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('UsaoDistrict');
-    $this->description = t('Migrates pages from the Westerb District of Oklahoma.');
+    $this->description = t('Migrates pages from the Western District of Texas.');
     $this->addFieldMapping('og_group_ref')
-      ->defaultValue('usao-wdok')
+      ->defaultValue('usao-wdtx')
       ->sourceMigration('UsaoDistrict');
   }
 
@@ -49,27 +50,27 @@ class UsaoWdokPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /usao-wdok.
+ * Migrates files (*.pdf) from /usao-wdtx.
  *
  * @package doj_migration
- * @subpackage usao-wdok
+ * @subpackage usao-wdtx
  */
-class UsaoWdokFileMigration extends JusticeDeployableBinaryFileMigration {
+class UsaoWdtxFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the usao-wdok subdirectory.');
+    $this->description = t('Migrates non-image files from the usao-wdtx subdirectory.');
     $this->dependencies = array('UsaoDistrict');
 
     // Match .pdf files only.
     $source_dirs = array(
-      0 => 'usao/okw',
+      0 => 'usao/txw',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///usao-wdok/docs';
+    $dest_dir = 'public:///usao-wdtx/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -84,20 +85,20 @@ class UsaoWdokFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "usao-wdok";
+    return "usao-wdtx";
   }
 }
 
-class UsaoWdokPressReleaseMigration extends DistrictPressReleaseMigration {
+class UsaoWdtxPressReleaseMigration extends DistrictPressReleaseMigration {
   /**
    * {@inheritdoc} 
    */
   public function __construct($arguments) {
-    $arguments['district'] = "usao-wdok";
+    $arguments['district'] = "usao-wdtx";
 
     $source_dirs = array(
-      1 => 'usao/okw/news/2014',
-      2 => 'usao/okw/news/2013',
+      1 => 'usao/txw/news/2014',
+      2 => 'usao/txw/news/2013',
     );
     parent::__construct($arguments, $source_dirs);
   }
