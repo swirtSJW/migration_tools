@@ -36,9 +36,9 @@ class UsaoEspanolPageMigration extends JusticeHtmlToPageMigration {
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
-    $this->dependencies = array('Organization');
+    $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates pages from the Executive Office for United States Attorneys in spanish.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('usao-espanol')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('usao-espanol')->sourceMigration('UsaoDistrict');
   }
 
   /**
@@ -70,7 +70,7 @@ class UsaoEspanolFileMigration extends JusticeDeployableBinaryFileMigration {
    */
   public function __construct($arguments) {
     $this->description = t('Migrates non-image files from the usao/espanol subdirectory.');
-    $this->dependencies = array('Organization');
+    $this->dependencies = array('UsaoDistrict');
 
     // Match .pdf files only.
     $source_dirs = array(
