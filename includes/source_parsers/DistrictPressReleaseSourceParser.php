@@ -137,23 +137,29 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    */
   private function titlesHelper() {
     $title = "";
+    $winner = '';
 
+    // Check the h1
     foreach ($this->queryPath->find("h1") as $h1) {
       // We don't want h1s to override each other.
       if ($this->titleCheck($title)) {
         $text = $h1->text();
         $title = $this->titleSetHelper($text, $h1);
+        $winner = 'h1';
       }
       else {
         break;
       }
     }
 
+    // Check the second h2.
     if ($this->titleCheck($title)) {
       $counter = 1;
       foreach ($this->queryPath->find("#contentstart > div > h2") as $h2) {
         if ($counter == 2) {
-          $title = $this->titleSetHelper($h2->text(), $h2); break;
+          $title = $this->titleSetHelper($h2->text(), $h2);
+          $winner = 'h2-2nd';
+          break;
         }
         $counter++;
       }
@@ -162,6 +168,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     // Maybe the main title is just an h2.
     if ($this->titleCheck($title)) {
       $title = $this->titleSetHelper(HtmlCleanUp::extractFirstElement($this->queryPath, "h2"));
+      $winner = 'h2';
     }
 
     // Straight up matches.
@@ -174,6 +181,9 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       // "p > em",
       "p > strong > em",
       "#contentstart > div > h2",
+      // For usao-az.
+      '.Part > p',
+      // Hail Mary.
       ".MsoNormal",
     );
 
@@ -181,6 +191,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       $selector = array_shift($selectors);
       if ($text = HtmlCleanUp::extractFirstElement($this->queryPath, $selector)) {
         $title = $this->titleSetHelper($text);
+        $winner = $selector;
       }
     }
 
@@ -195,6 +206,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
             $title = $elem->text();
             $title = StringCleanUp::superTrim($title);
             $elem->remove();
+            $winner = "p-#$pcounter";
           }
         }
       }
@@ -203,8 +215,11 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     // Maybe the main title is just an h3.
     if ($this->titleCheck($title)) {
       $title = $this->titleSetHelper(HtmlCleanUp::extractFirstElement($this->queryPath, "h3"));
+      $winner = 'h3';
     }
 
+    // Output to show progress to aid debugging.
+    drush_doj_migration_debug_output("{$this->fileId}  --match[{$winner}]-->  {$this->title}");
     return $title;
   }
 
