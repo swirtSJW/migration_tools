@@ -19,7 +19,7 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     }
 
     if (array_key_exists('component', $arguments)) {
-      $component_id = $arguments['component'];
+      $component = $arguments['component'];
     }
     else {
       throw new Exception("DistrictPressReleaseMigration requires the component argument.");
