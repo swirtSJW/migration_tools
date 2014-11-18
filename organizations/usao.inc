@@ -188,7 +188,6 @@ class UsaoPageMigration extends JusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       15 => 'usao/eousa/foia_reading_room',
-      10 => 'usao/eousa/foia_reading_room/usamndx/archive',
       11 => 'usao/reading_room/reports/asr2005',
       12 => 'usao/reading_room/data',
       13 => 'usao/eousa',
@@ -278,13 +277,6 @@ class UsaoFileMigration extends JusticeDeployableBinaryFileMigration {
       0 => 'usao/about',
       1 => 'usao/eousa/vr/forms',
       2 => 'usao/eousa/foia_reading_room',
-      5 => 'usao/eousa/foia_reading_room/usamndx/archive/1976',
-      6 => 'usao/eousa/foia_reading_room/usamndx/archive/1966',
-      7 => 'usao/eousa/foia_reading_room/usamndx/archive/1988',
-      8 => 'usao/eousa/foia_reading_room/usamndx/archive/1971',
-      9 => 'usao/eousa/foia_reading_room/usamndx/archive/1970',
-      10 => 'usao/eousa/foia_reading_room/usamndx/archive/1961',
-      11 => 'usao/eousa/foia_reading_room/usamndx/archive/1953',
       12 => 'usao/eousa/foia_reading_room/images',
       13 => 'usao/eousa/foia_reading_room/images/0505',
       14 => 'usao/briefing_room/ic',
