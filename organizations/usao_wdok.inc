@@ -94,6 +94,7 @@ class UsaoWdokPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdok";
+    $arguments['component'] = "Western District of Oklahoma (USAO)";
 
     $source_dirs = array(
       1 => 'usao/okw/news/2014',

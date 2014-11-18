@@ -18,6 +18,13 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
       throw new Exception("DistrictPressReleaseMigration requires the district argument.");
     }
 
+    if (array_key_exists('component', $arguments)) {
+      $component_id = $arguments['component'];
+    }
+    else {
+      throw new Exception("DistrictPressReleaseMigration requires the component argument.");
+    }
+
     $options = array(
       'recurse' => TRUE,
     );
@@ -31,6 +38,7 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Press Releases from Districts.');
     $this->addFieldMapping('og_group_ref')->defaultValue($district)->sourceMigration("UsaoDistrict");
+    $this->addFieldMapping("field_pr_component")->defaultValue(array($component));
   }
 
   /**

@@ -76,6 +76,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       // Remove footers.
       "#footer",
       "a[title='Printer Friendly']",
+      "a[href='#top']",
     );
     HtmlCleanUp::removeElements($this->queryPath, $selectors);
 
