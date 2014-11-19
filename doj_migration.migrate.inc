@@ -73,6 +73,10 @@ function doj_migration_migrate_api() {
         'title' => t('Northern District of California'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-ndwv' => array(
+        'title' => t('Northern District of West Virginia'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-wdny' => array(
         'title' => t('Western District of New York'),
         'disable_hooks' => $disable_hooks,
@@ -214,6 +218,18 @@ function doj_migration_migrate_api() {
       'UsaoNdcaPressRelease' => array(
         'group_name' => 'usao-ndca',
         'class_name' => 'UsaoNdcaPressReleaseMigration',
+      ),
+      'UsaoNdwvFile' => array(
+        'group_name' => 'usao-ndwv',
+        'class_name' => 'UsaoNdwvFileMigration',
+      ),
+      'UsaoNdwvPage' => array(
+        'group_name' => 'usao-ndwv',
+        'class_name' => 'UsaoNdwvPageMigration',
+      ),
+      'UsaoNdwvPressRelease' => array(
+        'group_name' => 'usao-ndwv',
+        'class_name' => 'UsaoNdwvPressReleaseMigration',
       ),
       'UsaoWdnyFile' => array(
         'group_name' => 'usao-wdny',
