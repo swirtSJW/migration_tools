@@ -1,0 +1,25 @@
+HOME{"url":"usao-edpa/usdoj-us-attorneys-office-eastern-district-pennsylvania"}
+ABOUT{"url":"usao-edpa/about-2"}
+MEET THE U.S. ATTORNEY{"url":"usao-edpa/united-states-attorney-zane-david-memeger"}
+NEWS{"url":"usao-edpa/news-and-press-releases-2"}
+- Pharma/Device Special Focus {"url":"usao-edpa/about-0"}
+- U.S. Attorney's Quarterly {"url":"usao-edpa/about-1"}
+DIVISIONS{"url":"usao-edpa/civil-division-0"}
+- Civil Division {"url":"usao-edpa/civil-division"}
+- Criminal Division{"url":"usao-edpa/criminal-division"}
+- Administrative Division{"url":"usao-edpa/administrative-division"}
+RESOURCES{"url":"usao-edpa/community-outreach"}
+- Court Schedule{"url":"usao-edpa/wednesday-november-12-2014"}
+- Community Outreach{"url":"usao-edpa/community-outreach-0"}
+- LECC{"url":"usao-edpa/continuing-legal-education-0"}
+- Project Safe Neighborhoods{"url":"usao-edpa/project-safe-neighborhoods"}
+- Mortgage Fraud Task Force{"url":"usao-edpa/mortgage-fraud-task-force"}
+- Victim/Witness Resources{"url":"usao-edpa/2004-crime-victims-bill-rights"}
+EMPLOYMENT{"url":"usao-edpa/employment"}
+- Employment Opportunities{"url":"usao-edpa/employment"}
+- Recruitment Brochure{"url":"usao-edpa"}
+- Summer Internships {"url":"usao-edpa/summer-internships"}
+CONTACT US{"url":"usao-edpa/contact-us"}
+- Contact Us{"url":"usao-edpa/contact-us"}
+- Directions{"url":"usao-edpa/directions-office"}
+- Report a Crime{"url":"usao-edpa/how-report-crime"}
