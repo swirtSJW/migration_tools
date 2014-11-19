@@ -139,6 +139,10 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
     $this->destination = new MigrateDestinationNode('staff_profile');
     $this->addFieldMapping('title', 'attorney');
     $this->addFieldMapping('og_group_ref', 'abbreviation')->sourceMigration('UsaoDistrict');
+
+    // Define non-simple field mappings.
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+
   }
 
   /**
@@ -167,7 +171,28 @@ class UsaoStaffProfileMigration extends JusticeCsvMigration {
   /**
    * {@inheritdoc}
    */
-  public function prepareRow($row) {}
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Set to admin for now.
+    $row->uid = 1;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+  }
 }
 
 
