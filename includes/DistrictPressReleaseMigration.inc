@@ -38,8 +38,10 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Press Releases from Districts.');
     $this->addFieldMapping('og_group_ref')->defaultValue($district)->sourceMigration("UsaoDistrict");
+    $this->removeFieldMapping("field_pr_component");
     $this->addFieldMapping("field_pr_component")->defaultValue(array($component));
   }
+
 
   /**
    * {@inheritdoc}
