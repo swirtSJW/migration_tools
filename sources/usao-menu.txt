@@ -1,47 +1,47 @@
- ABOUT {"url":"usao/about-offices-united-states-attorneys"}
- - Mission {"url":"usao/mission"}
- - District Profiles {""}
- - U.S. Attorneys Listing {"url":"usao/us-attorneys-listing"}
- - History {"url":""}
- EOUSA {"url":"usao/executive-office-united-states-attorneys"}
- - Meet the Director {"url":"usao/meet-director"}
- - Mission and Functions {"url":"usao/mission-and-functions"}
- - Organizational Chart {"url":"usao/eousa-organizational-chart"}
- - Project Palmetto {"url":"usao/project-palmetto-status-update-june-19-2013"}
- PRIORITY AREAS {"url":"usao/priority-areas"}
- - Anti-Bullying {"url":"usao/anti-bullying"}
- - Civil Rights {"url":"usao/civil-rights"}
- - Cybercrime {"url":"usao/cyber-crime"}
- - Financial Fraud {"url":"usao/financial-fraud"}
- - Indian Country {"url":"usao/indian-country"}
- - National Security {"url":"usao/national-security"}
- - Prescription Drug Abuse {"url":"usao/prescription-drug-abuse"}
- - Project Safe Childhood {"url":"usao/project-safe-childhood"}
- - Victims' Rights & Services {"url":"usao/victims-rights-services"}
- - Violent Crime Prevention {"url":"usao/violent-crime-prevention"}
- RESOURCES {"url":"usao/resources-0"}
- - FOIA Library {"url":"usao/foia-library"}
- - FOIA/Privacy Act Requests {"url":"usao/making-foia-request"}
- - Annual Statistical Reports {"url":"usao/annual-statistical-reports"}
- - USA Bulletins {"url":"usao/united-states-attorneys-bulletins"}
- - USA Manual {"url":""}
- - Crime Victims' Rights Ombudsman {"url":"usao/crime-victims-rights-ombudsman-0"}
- - Filing a Complaint {"url":"usao/crime-victims-rights-ombudsman-5"}
- - Complaint Forms {"url":"usao/crime-victims-rights-ombudsman-7"}
- - Victims' Rights {"url":"usao/crime-victims-rights-ombudsman-3"}
- - Resources {"url":"usao/crime-victims-rights-ombudsman-1"}
- - Contact Us {"url":"usao/crime-victims-rights-ombudsman-2"}
- TRAINING {"url":"usao/office-legal-education"}
- - Attendee Information {"url":"usao/attendee-information"}
- - Courses {"url":"usao/course-offerings"}
- - Course Descriptions {"url":"usao/course-descriptions-1"}
- - Schedule {"url":"usao/schedule-1"}
- - Registration {"url":"usao/registration"}
- - Contact {"url":"usao/contact-us-0"}
- CAREER CENTER {"url":"usao/career-center"}
- - Current Job Openings {"url":"usao/job-openings"}
- - Attorneys {"url":"usao/attorneys"}
- - Professional Staff {"url":"usao/professional-staff"}
- - Students {"url":"usao/students"}
- - Salary Information {"url":"usao/salary-information"}
- - FAQs {"url":"usao/frequently-asked-questions"}
+ABOUT {"url":"usao/about-offices-united-states-attorneys"}
+- Mission {"url":"usao/mission"}
+- District Profiles {"url": "usao"}
+- U.S. Attorneys Listing {"url":"usao/us-attorneys-listing"}
+- History {"url":"usao"}
+EOUSA {"url":"usao/executive-office-united-states-attorneys"}
+- Meet the Director {"url":"usao/meet-director"}
+- Mission and Functions {"url":"usao/mission-and-functions"}
+- Organizational Chart {"url":"usao/eousa-organizational-chart"}
+- Project Palmetto {"url":"usao/project-palmetto-status-update-june-19-2013"}
+PRIORITY AREAS {"url":"usao/priority-areas"}
+- Anti-Bullying {"url":"usao/anti-bullying"}
+- Civil Rights {"url":"usao/civil-rights"}
+- Cybercrime {"url":"usao/cyber-crime"}
+- Financial Fraud {"url":"usao/financial-fraud"}
+- Indian Country {"url":"usao/indian-country"}
+- National Security {"url":"usao/national-security"}
+- Prescription Drug Abuse {"url":"usao/prescription-drug-abuse"}
+- Project Safe Childhood {"url":"usao/project-safe-childhood"}
+- Victims' Rights & Services {"url":"usao/victims-rights-services"}
+- Violent Crime Prevention {"url":"usao/violent-crime-prevention"}
+RESOURCES {"url":"usao/resources-0"}
+- FOIA Library {"url":"usao/foia-library"}
+- FOIA/Privacy Act Requests {"url":"usao/making-foia-request"}
+- Annual Statistical Reports {"url":"usao/annual-statistical-reports"}
+- USA Bulletins {"url":"usao/united-states-attorneys-bulletins"}
+- USA Manual {"url":"usao"}
+- Crime Victims' Rights Ombudsman {"url":"usao/crime-victims-rights-ombudsman-0"}
+- Filing a Complaint {"url":"usao/crime-victims-rights-ombudsman-5"}
+- Complaint Forms {"url":"usao/crime-victims-rights-ombudsman-7"}
+- Victims' Rights {"url":"usao/crime-victims-rights-ombudsman-3"}
+- Resources {"url":"usao/crime-victims-rights-ombudsman-1"}
+- Contact Us {"url":"usao/crime-victims-rights-ombudsman-2"}
+TRAINING {"url":"usao/office-legal-education"}
+- Attendee Information {"url":"usao/attendee-information"}
+- Courses {"url":"usao/course-offerings"}
+- Course Descriptions {"url":"usao/course-descriptions-1"}
+- Schedule {"url":"usao/schedule-1"}
+- Registration {"url":"usao/registration"}
+- Contact {"url":"usao/contact-us-0"}
+CAREER CENTER {"url":"usao/career-center"}
+- Current Job Openings {"url":"usao/job-openings"}
+- Attorneys {"url":"usao/attorneys"}
+- Professional Staff {"url":"usao/professional-staff"}
+- Students {"url":"usao/students"}
+- Salary Information {"url":"usao/salary-information"}
+- FAQs {"url":"usao/frequently-asked-questions"}
