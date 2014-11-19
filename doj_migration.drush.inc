@@ -230,8 +230,10 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
       doj_migration_move_images($final_input_directory, $file, $final_output_directory);
     }
   }
-  $message = dt('Moved @count images into -> @final_output_directory.', array('@count' => $count, '@final_output_directory' => $final_output_directory));
-  drush_log($message, 'success');
+  if ($count > 0) {
+    $message = dt('Moved @count images into -> @final_output_directory.', array('@count' => $count, '@final_output_directory' => $final_output_directory));
+    drush_log($message, 'success');
+  }
 }
 
 /**
