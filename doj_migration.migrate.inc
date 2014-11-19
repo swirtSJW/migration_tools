@@ -61,6 +61,10 @@ function doj_migration_migrate_api() {
         'title' => t('Eastern District of Louisiana'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-edpa' => array(
+        'title' => t('Eastern District of Pennsylvania'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-id' => array(
         'title' => t('District of Idaho'),
         'disable_hooks' => $disable_hooks,
@@ -174,6 +178,18 @@ function doj_migration_migrate_api() {
       'UsaoEdlaPressRelease' => array(
         'group_name' => 'usao-edla',
         'class_name' => 'UsaoEdlaPressReleaseMigration',
+      ),
+      'UsaoEdpaFile' => array(
+        'group_name' => 'usao-edpa',
+        'class_name' => 'UsaoEdpaFileMigration',
+      ),
+      'UsaoEdpaPage' => array(
+        'group_name' => 'usao-edpa',
+        'class_name' => 'UsaoEdpaPageMigration',
+      ),
+      'UsaoEdpaPressRelease' => array(
+        'group_name' => 'usao-edpa',
+        'class_name' => 'UsaoEdpaPressReleaseMigration',
       ),
       'UsaoIdFile' => array(
         'group_name' => 'usao-id',

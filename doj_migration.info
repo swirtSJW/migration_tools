@@ -37,6 +37,7 @@ files[] = includes/JusticeChunkParser.inc
 ; Source Parsers
 files[] = includes/source_parsers/DistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/DistrictsSourceParser.php
+files[] = includes/source_parsers/EdpaSourceParser.php
 files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
@@ -54,6 +55,7 @@ files[] = organizations/usao.inc
 files[] = organizations/usao-espanol.inc
 files[] = organizations/usao_az.inc
 files[] = organizations/usao_edla.inc
+files[] = organizations/usao_edpa.inc
 files[] = organizations/usao_id.inc
 files[] = organizations/usao_ndca.inc
 files[] = organizations/usao_wdny.inc
