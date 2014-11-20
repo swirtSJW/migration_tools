@@ -23,6 +23,7 @@ abstract class JusticeBaseMigration extends Migration {
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
+    $this->mergeArguments($arguments);
 
     $this->team = array(
       new MigrateTeamMember('Matthew Grasmick', 'matthew.grasmick@acquia.com', t('Architect')),
@@ -62,6 +63,56 @@ abstract class JusticeBaseMigration extends Migration {
 
     return $og_eid;
   }
+
+  /**
+   * Arguements in keyed array passed among migration classes and parsers.
+   *
+   * @var array $arguments
+   */
+  protected $arguments = array();
+  /**
+   * Basic cetter for $arguments.
+   *
+   * @return array
+   *   Whatever has been stored in $this->arguments.
+   */
+  public function getArguments() {
+    return $this->arguments;
+  }
+  /**
+   * Merges an array into the existing arguments array.
+   *
+   * @param array $new_args
+   *   An array matching the format of the arguments array, to be merged.
+   *
+   * @return array
+   *   Array of the complete arguments array with the new material.
+   */
+  protected function mergeArguments($new_args = '') {
+    if (!empty($new_args) && is_array($new_args)) {
+      return array_merge($this->getArguments(), $new_args);
+    }
+  }
+
+  /**
+   * Gets a single argument from the arguments array.
+   *
+   * @param string $arg_key
+   *   The key of the item to return from the Arguments array.
+   *
+   * @return mixed
+   *   Whatever is stored in the $keys's value, or NULL if not in the arguments.
+   */
+  protected function getArgument($arg_key = '') {
+    if (!empty($arg_key)) {
+      $args = $this->getArguments();
+      if (array_key_exists($arg_key, $args)) {
+        return $args[$arg_key];
+      }
+    }
+    return NULL;
+  }
+
 
   /**
    * Unsets NULL properties on a single dimensional object.

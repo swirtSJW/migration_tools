@@ -43,7 +43,6 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    *   MigrateSimpleContentParser in parent constructor.
    */
   public function __construct($arguments, $source_fields, $source_dirs, $regex = NULL, $options = array(), MigrateContentParser $parser = NULL) {
-
     if ($regex === NULL) {
       $regex = '/.*\.htm(l)?$/';
     }
@@ -109,7 +108,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata);
+    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata, FALSE, array(), $this->getArguments());
 
     // We check that everything has been initialized correctly to keep children
     // classes from having to do all this checks.

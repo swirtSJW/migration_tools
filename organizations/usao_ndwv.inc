@@ -50,6 +50,7 @@ class UsaoNdwvPageMigration extends JusticeHtmlToPageMigration {
     $skip_these = array(
       '',
       'usao/wvn/images/images.html',
+      'usao/wvn/images/skyline1.htm',
       'usao/wvn/images/thrift.html',
       'usao/wvn/images/District%20Map.htm',
       'usao/wvn/images/wvseallarge.html',
@@ -67,8 +68,8 @@ class UsaoNdwvPageMigration extends JusticeHtmlToPageMigration {
       'usao/wvn/images/images.html',
       'usao/wvn/index-savemetoo.html',
       'Copy (2) of index.html',
+      'usao/wvn/Untitled-1.html',
       'usao/wvn/meetmgtteam-x.html',
-
     );
 
     return doj_migration_check_skip_this($row->legacy_path, $skip_these);
@@ -158,6 +159,20 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-ndwv";
     $arguments['component'] = "Northern District of West Virginia (USAO)";
+    $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1First',
+        'findIdLayer4P6',
+      ),
+      'body' => array(
+        'findClassContentSub',
+      ),
+      'subtitle' => array(),
+      'date' => array(),
+      // There are no ids.
+      'id' => array(),
+    );
 
     $source_dirs = array(
       2 => 'usao/wvn/news/2013/april',
