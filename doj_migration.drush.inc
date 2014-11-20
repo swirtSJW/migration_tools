@@ -206,9 +206,9 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
   $count = 0;
   foreach ($files as $file) {
     $ext = pathinfo("$final_input_directory/$file", PATHINFO_EXTENSION);
-
+    $ext = strtoupper($ext);
     // If any of the files are images, copy them.
-    if ($ext == "gif" || $ext == "png" || $ext == "jpg") {
+    if ($ext == "GIF" || $ext == "PNG" || $ext == "JPG" || $ext == "JPEG") {
       // We only want to create the output directory if we have images.
       if (!file_exists($final_output_directory)) {
         mkdir($final_output_directory, 0777, TRUE);
