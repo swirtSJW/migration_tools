@@ -65,6 +65,10 @@ function doj_migration_migrate_api() {
         'title' => t('Eastern District of Pennsylvania'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-gu' => array(
+        'title' => t('District of Guam & Northern Mariana Islands'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-id' => array(
         'title' => t('District of Idaho'),
         'disable_hooks' => $disable_hooks,
@@ -194,6 +198,18 @@ function doj_migration_migrate_api() {
       'UsaoEdpaPressRelease' => array(
         'group_name' => 'usao-edpa',
         'class_name' => 'UsaoEdpaPressReleaseMigration',
+      ),
+      'UsaoGuFile' => array(
+        'group_name' => 'usao-gu',
+        'class_name' => 'UsaoGuFileMigration',
+      ),
+      'UsaoGuPage' => array(
+        'group_name' => 'usao-gu',
+        'class_name' => 'UsaoGuPageMigration',
+      ),
+      'UsaoGuPressRelease' => array(
+        'group_name' => 'usao-gu',
+        'class_name' => 'UsaoGuPressReleaseMigration',
       ),
       'UsaoIdFile' => array(
         'group_name' => 'usao-id',
