@@ -124,9 +124,16 @@ class DistrictPressReleaseSourceParser extends SourceParser {
 
   /**
    * A common check to see if we need to continue to find a title or not.
+   *
+   * return bool
+   *   TRUE if the title is essentially empty or worthless.
    */
-  private function titleCheck($text) {
-    return empty($text) || strcmp($text, "News And Press Releases") == 0;
+  public static function titleCheck($text) {
+    if (strcasecmp(trim($text), "News And Press Releases") == 0) {
+      return TRUE;
+    }
+    // If it got this far, send it to the parent for further checks.
+    return parent::titleCheck($text);
   }
 
   /**

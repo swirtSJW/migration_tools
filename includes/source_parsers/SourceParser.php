@@ -198,7 +198,7 @@ class SourceParser {
     $title = '';
     foreach (is_array($selectors) ? $selectors : array() as $selector) {
       // If we have a title, no more searching.
-      if (!empty($title)) {
+      if (titleCheck($title)) {
         break;
       }
       $found_text = trim($this->queryPath->find($selector)
@@ -210,13 +210,27 @@ class SourceParser {
       }
       $title = (!empty($found_text)) ? $found_text : '';
     }
-    $title = (empty($title)) ? $title_default : $title;
+    $title = (titleCheck($title)) ? $title_default : $title;
     // Set the found title only if we have no other.
-    if (!empty($title)) {
+    if (titleCheck($title)) {
       $this->setTitle($title);
     }
     return $this->getTitle();
   }
+
+
+  /**
+   * A common check to see if we need to continue to find a title or not.
+   *
+   * return bool
+   *   TRUE if the title is essentially empty or worthless.
+   */
+  public static function titleCheck($text = '') {
+    // Remove any garbage that my make it look not empty.
+    $text = StringCleanUp::superTrim(html_entity_decode($text));
+    return empty($text);
+  }
+
 
   /**
    * Return the title for this content.
