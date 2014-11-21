@@ -97,6 +97,10 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of Texas'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdky' => array(
+        'title' => t('Western District of Kentucky'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -298,6 +302,18 @@ function doj_migration_migrate_api() {
       'UsaoWdtxPressRelease' => array(
         'group_name' => 'usao-wdtx',
         'class_name' => 'UsaoWdtxPressReleaseMigration',
+      ),
+      'UsaoWdkyFile' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyFileMigration',
+      ),
+      'UsaoWdkyPage' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyPageMigration',
+      ),
+      'UsaoWdkyPressRelease' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyPressReleaseMigration',
       ),
     ),
   );
