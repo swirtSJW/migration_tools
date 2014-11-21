@@ -1,0 +1,20 @@
+HOME{"url":"node/185931"}
+ABOUT{"url":"usao-ks/about-district-kansas"}
+- About the Office{"url":"usao-ks/about-district-kansas"}
+- About the District{"url":"usao-ks/history"}
+NEWS{"url":"usao-ks/news-and-press-releases-1"}
+- Press Releases{"url":"usao-ks/news-and-press-releases-1"}
+- News Archive{"url":"usao-ks/news-and-press-releases"}
+- Upcoming Events{"url":"usao-ks/events"}
+MEET THE U.S. ATTORNEY{"url":"usao-ks/barry-r-grissom-united-states-attorney-district-kansas"}
+DIVISIONS{"url":"node/185931"}
+- Civil Division {"url":"usao-ks/civil-division"}
+- Criminal Division {"url":"usao-ks/criminal-division"}
+- Administrative Division {"url":"usao-ks/admin"}
+PROGRAMS{"url":"node/185931"}
+- Civil Rights{"url":"usao-ks/civil-rights"}
+- LECC{"url":"usao-ks/law-enforcement-coordinating-committee-lecc"}
+- ATAC{"url":"usao-ks/anti-terrorism-advisory-council"}
+- Victim Witness Assistance {"url":"usao-ks/victim-witness"}
+- Project Safe Childhood {"url":"usao-ks/project-safe-childhood-cyber-safety"}
+CONTACT US{"url":"usao-ks/contact-us"}
