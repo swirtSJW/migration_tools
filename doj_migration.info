@@ -59,6 +59,7 @@ files[] = organizations/usao_edpa.inc
 files[] = organizations/usao_gu.inc
 files[] = organizations/usao_id.inc
 files[] = organizations/usao_ks.inc
+files[] = organizations/usao_mt.inc
 files[] = organizations/usao_ndca.inc
 files[] = organizations/usao_ndwv.inc
 files[] = organizations/usao_wdny.inc
