@@ -77,6 +77,10 @@ function doj_migration_migrate_api() {
         'title' => t('District of Kansas'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-mt' => array(
+        'title' => t('District of Montana'),
+        'disable_hooks' => $disable_hooks,
+      ),
       'usao-ndca' => array(
         'title' => t('Northern District of California'),
         'disable_hooks' => $disable_hooks,
@@ -250,6 +254,18 @@ function doj_migration_migrate_api() {
       'UsaoKsPressRelease' => array(
         'group_name' => 'usao-ks',
         'class_name' => 'UsaoKsPressReleaseMigration',
+      ),
+      'UsaoMtFile' => array(
+        'group_name' => 'usao-mt',
+        'class_name' => 'UsaoMtFileMigration',
+      ),
+      'UsaoMtPage' => array(
+        'group_name' => 'usao-mt',
+        'class_name' => 'UsaoMtPageMigration',
+      ),
+      'UsaoMtPressRelease' => array(
+        'group_name' => 'usao-mt',
+        'class_name' => 'UsaoMtPressReleaseMigration',
       ),
       'UsaoNdcaFile' => array(
         'group_name' => 'usao-ndca',
