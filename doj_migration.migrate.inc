@@ -101,6 +101,10 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of Kentucky'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdmo' => array(
+        'title' => t('Western District of Missouri'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -314,6 +318,18 @@ function doj_migration_migrate_api() {
       'UsaoWdkyPressRelease' => array(
         'group_name' => 'usao-wdky',
         'class_name' => 'UsaoWdkyPressReleaseMigration',
+      ),
+      'UsaoWdmoFile' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoFileMigration',
+      ),
+      'UsaoWdmoPage' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoPageMigration',
+      ),
+      'UsaoWdmoPressRelease' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoPressReleaseMigration',
       ),
     ),
   );
