@@ -105,6 +105,10 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of Missouri'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-sdwv' => array(
+        'title' => t('Southern District of West Virginia'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -330,6 +334,18 @@ function doj_migration_migrate_api() {
       'UsaoWdmoPressRelease' => array(
         'group_name' => 'usao-wdmo',
         'class_name' => 'UsaoWdmoPressReleaseMigration',
+      ),
+      'UsaoSdwvFile' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvFileMigration',
+      ),
+      'UsaoSdwvPage' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvPageMigration',
+      ),
+      'UsaoSdwvPressRelease' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvPressReleaseMigration',
       ),
     ),
   );

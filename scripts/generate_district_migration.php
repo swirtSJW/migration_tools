@@ -43,7 +43,7 @@ $final[2] .=
   "      '{$class}Page' => array(\n        'group_name' => '{$district}',\n        'class_name' => '{$class}PageMigration',\n      ),\n" .
   "      '{$class}PressRelease' => array(\n        'group_name' => '{$district}',\n        'class_name' => '{$class}PressReleaseMigration',\n      ),\n    ";
 // Put the file back together.
-$migrate = $final[0] . $cut1 . $final[1] . $cut2 . $final[2] . $cut3;
+$migrate = $final[0] . $cut1 . $final[1] . $cut2 . $final[2] . $cut3 . "\n";
 file_put_contents("../doj_migration.migrate.inc", $migrate);
 
 // Generate the classes with twig.
