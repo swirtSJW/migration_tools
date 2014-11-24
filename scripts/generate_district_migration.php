@@ -18,7 +18,7 @@ $class_file_name = $abbr_pieces[0] . "_" . $abbr_pieces[1] . ".inc";
 
 // First, let's add the file to doj_migration.info
 $file_name = str_replace("-", "_", $district);
-file_put_contents("../doj_migration.info", "files[] = organizations/{$district}.inc\n", FILE_APPEND);
+file_put_contents("../doj_migration.info", "files[] = organizations/{$file_name}.inc\n", FILE_APPEND);
 
 // Now, Let's add the necessary info to doj_migration.migrate.inc
 $content = file_get_contents("../doj_migration.migrate.inc");
