@@ -64,3 +64,6 @@ files[] = organizations/usao_ndwv.inc
 files[] = organizations/usao_wdny.inc
 files[] = organizations/usao_wdok.inc
 files[] = organizations/usao_wdtx.inc
+files[] = organizations/usao_wdky.inc
+files[] = organizations/usao_wdmo.inc
+files[] = organizations/usao_sdwv.inc

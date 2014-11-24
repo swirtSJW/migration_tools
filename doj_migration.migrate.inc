@@ -97,6 +97,18 @@ function doj_migration_migrate_api() {
         'title' => t('Western District of Texas'),
         'disable_hooks' => $disable_hooks,
       ),
+      'usao-wdky' => array(
+        'title' => t('Western District of Kentucky'),
+        'disable_hooks' => $disable_hooks,
+      ),
+      'usao-wdmo' => array(
+        'title' => t('Western District of Missouri'),
+        'disable_hooks' => $disable_hooks,
+      ),
+      'usao-sdwv' => array(
+        'title' => t('Southern District of West Virginia'),
+        'disable_hooks' => $disable_hooks,
+      ),
     ),
     'migrations' => array(
       'EspanolFile' => array(
@@ -298,6 +310,42 @@ function doj_migration_migrate_api() {
       'UsaoWdtxPressRelease' => array(
         'group_name' => 'usao-wdtx',
         'class_name' => 'UsaoWdtxPressReleaseMigration',
+      ),
+      'UsaoWdkyFile' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyFileMigration',
+      ),
+      'UsaoWdkyPage' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyPageMigration',
+      ),
+      'UsaoWdkyPressRelease' => array(
+        'group_name' => 'usao-wdky',
+        'class_name' => 'UsaoWdkyPressReleaseMigration',
+      ),
+      'UsaoWdmoFile' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoFileMigration',
+      ),
+      'UsaoWdmoPage' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoPageMigration',
+      ),
+      'UsaoWdmoPressRelease' => array(
+        'group_name' => 'usao-wdmo',
+        'class_name' => 'UsaoWdmoPressReleaseMigration',
+      ),
+      'UsaoSdwvFile' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvFileMigration',
+      ),
+      'UsaoSdwvPage' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvPageMigration',
+      ),
+      'UsaoSdwvPressRelease' => array(
+        'group_name' => 'usao-sdwv',
+        'class_name' => 'UsaoSdwvPressReleaseMigration',
       ),
     ),
   );
