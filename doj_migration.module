@@ -29,7 +29,7 @@ function doj_migration_menu_alter(&$items) {
 }
 
 /**
- * Set workbench configration for entity.
+ * Set workbench configuration for entity.
  *
  * This fixes a number of bugs that result from worbench revisions failing
  * to be created or updated when entities are created or updated.
@@ -54,4 +54,22 @@ function doj_migration_complete_workbench_settings($entity, $row) {
 JOIN {node} n ON (n.vid = nr.vid AND n.nid = :nid)
 SET nr.status = 1 WHERE n.status = 1 AND nr.status = 0",
     array(':nid' => $entity->nid));
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function doj_migrate_module_implements_alter(&$implementations, $hook) {
+  // Sadly, we cannot use the migrate module's $disable_hooks to disable
+  // hook_node_update() from firing on `drush migrate-import` because
+  // hook_node_update() is triggered too late, at which point
+  // Migration::currentMigration() returns FALSE.
+  if (class_exists('Migration') && $migration = Migration::currentMigration()) {
+    variable_set('doj_migration_is_running', TRUE);
+  }
+
+  if ($hook == 'node_update' && variable_get('doj_migration_is_running')) {
+    unset($implementations['akamai']);
+    unset($implementations['expire']);
+  }
 }
