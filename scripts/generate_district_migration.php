@@ -98,8 +98,8 @@ function doj_migrate_migrate_inc($district_abbreviation, $district_full_name) {
   }
 
   // Save the modifications.
-  $header = "<?php\n/**\n * @file\n * Migrations.\n */\n\nreturn ";
-  file_put_contents("../includes/doj_migration_migrations.inc", $header . var_export($api, TRUE) . ";\n");
+  $header = "<?php\n/**\n * @file\n * Migrations.\n */\n\n// @codingStandardsIgnoreStart\nreturn ";
+  file_put_contents("../includes/doj_migration_migrations.inc", $header . var_export($api, TRUE) . ";\n// @codingStandardsIgnoreEnd\n");
 }
 
 /**
