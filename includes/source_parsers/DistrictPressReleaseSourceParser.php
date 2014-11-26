@@ -74,7 +74,8 @@ class DistrictPressReleaseSourceParser extends SourceParser {
 
     $default_target_stack = array();
 
-    $body_stack = (!empty($this->getObtainerMethods('body'))) ? $this->getObtainerMethods('body') : $default_target_stack;
+    $om = $this->getObtainerMethods('body');
+    $body_stack = (!empty($om)) ? $this->getObtainerMethods('body') : $default_target_stack;
     $this->setObtainerMethods(array('body' => $body_stack));
 
     parent::setBody($override);
@@ -106,13 +107,15 @@ class DistrictPressReleaseSourceParser extends SourceParser {
           'findDivClassContentSubDivDivCenter',
         );
 
-        $title_find_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+        $om = $this->getObtainerMethods('title');
+        $title_find_stack = (!empty($om)) ? $this->getObtainerMethods('title') : $default_target_stack;
         $obtained_title = new ObtainTitlePressRelease($this->queryPath, $title_find_stack);
         $title = $obtained_title->getText();
 
         // Check for discarded text and for a setSubTitle method.
         // Some extensions may have them, but the base class does not.
-        if (!empty($obtained_title->getTextDiscarded()) && method_exists($this, 'setSubTitle')) {
+        $td = $obtained_title->getTextDiscarded();
+        if (!empty($td) && method_exists($this, 'setSubTitle')) {
           // Put the discarded text into the subtitle.  It might not be right,
           // but at least it is not lost.
           $this->setSubTitle($obtained_title->getTextDiscarded());
@@ -265,7 +268,8 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       'findTable3y1x',
     );
 
-    $id_stack = (!empty($this->getObtainerMethods('id'))) ? $this->getObtainerMethods('id') : $default_target_stack;
+    $om = $this->getObtainerMethods('id');
+    $id_stack = (!empty($om)) ? $this->getObtainerMethods('id') : $default_target_stack;
     $this->setObtainerMethods(array('id' => $id_stack));
 
     parent::setID($override);
@@ -277,7 +281,8 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    */
   public function setSubTitle($override = '') {
     // If the subttile has already been set, leave it alone.
-    if (empty($this->getSubTitle())) {
+    $st = $this->getSubTitle();
+    if (empty($st)) {
       if (empty($override)) {
         $default_target_stack = array();
 

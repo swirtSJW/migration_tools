@@ -36,7 +36,8 @@ class DistrictsSourceParser extends SourceParser {
         'findSubBannerAlt',
 
       );
-      $title_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+      $om = $this->getObtainerMethods('title');
+      $title_stack = (!empty($om)) ? $this->getObtainerMethods('title') : $default_target_stack;
       $this->setObtainerMethods(array('title' => $title_stack));
     }
     else {
