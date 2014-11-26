@@ -110,7 +110,8 @@ class ObtainDate extends Obtainer {
    *   The formatted date string.
    */
   public function formatDate($format = 'n/d/Y') {
-    if ((!empty($format)) && (!empty($this->getText()))) {
+    $text = $this->getText();
+    if ((!empty($format)) && (!empty($text))) {
       // We have a format and a date to use.
       $date_string = date($format, strtotime($this->getText()));
     }

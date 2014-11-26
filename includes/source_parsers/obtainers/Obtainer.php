@@ -183,7 +183,8 @@ class Obtainer {
    * Removes $justFound from the dom if it is not empty.
    */
   protected function removeFoundDomElement() {
-    if (!empty($this->getJustFound())) {
+    $jf = $this->getJustFound();
+    if (!empty($jf)) {
       $this->getJustFound()->remove();
     }
     // Break the reference to the QueryPath.
@@ -238,15 +239,15 @@ class Obtainer {
     // Check to see if any truncation is made.
     if (strcmp($text, $trunc_text) != 0) {
       // There was truncation, so process it differently.
-      // Grab the remaing text by removing $trunc_test.
+      // Grab the remaning text by removing $trunc_test.
       $remaining_text = str_replace($trunc_text, '', $text);
       // Set the discarded text value.
-      if (!empty($this)) {
-        $this->setTextDiscarded($remaining_text);
+      if (!empty($remaining_text)) {
+        // @todo now that this is static, we can't set the discarded text.
+        // $this->setTextDiscarded($remaining_text);
       }
-      $text = $trunc_text;
     }
-    return $text;
+    return $trunc_text;
   }
 
 
@@ -298,7 +299,8 @@ class Obtainer {
       }
 
     }
-    if (!empty($this->getCurrentFindMethod())) {
+    $cfm = $this->getCurrentFindMethod();
+    if (!empty($cfm)) {
       drush_doj_migration_debug_output("{$obtainer_name}-Matched: {$this->getCurrentFindMethod()}");
     }
     else {
