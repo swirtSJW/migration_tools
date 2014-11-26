@@ -204,7 +204,8 @@ class SourceParser {
 
         // Check for discarded text and for a setSubTitle method.
         // Some extensions may have them, but the base class does not.
-        if (!empty($obtained_title->getTextDiscarded()) && method_exists($this, 'setSubTitle')) {
+        $discarded = $obtained_title->getTextDiscarded();
+        if (!empty($discarded) && method_exists($this, 'setSubTitle')) {
           // Put the discarded text into the subtitle.  It might not be right,
           // but at least it is not lost.
           $this->setSubTitle($obtained_title->getTextDiscarded());
@@ -268,7 +269,8 @@ class SourceParser {
 
     $this->body = $body;
     // Output to show progress to aid debugging.
-    if (!empty($this->getBody())) {
+    $var = $this->getBody();
+    if (!empty($var)) {
       drush_doj_migration_debug_output("--body-->  found something");
     }
     else {
@@ -298,8 +300,9 @@ class SourceParser {
       'findClassLastupdate',
     );
 
-    $date_find_stack = (!empty($this->getObtainerMethods('date_updated'))) ? $this->getObtainerMethods('date_updated') : $default_target_stack;
-    $obtained_date = new ObtainDate($this->queryPath, $title_find_stack);
+    $method = $this->getObtainerMethods('date_updated');
+    $date_find_stack = (!empty($method)) ? $this->getObtainerMethods('date_updated') : $default_target_stack;
+    $obtained_date = new ObtainDate($this->queryPath, $date_find_stack);
     $date = $obtained_date->getText();
 
     return $date;
