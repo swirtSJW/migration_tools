@@ -197,7 +197,8 @@ class SourceParser {
           'findH1First',
         );
 
-        $title_find_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+        $target_stack = $this->getObtainerMethods('title');
+        $title_find_stack = (!empty($target_stack)) ? $target_stack : $default_target_stack;
         $obtained_title = new ObtainTitle($this->queryPath, $title_find_stack);
         $title = $obtained_title->getText();
 
@@ -534,8 +535,8 @@ class SourceParser {
     // Must have a class and a key.
     if ((!empty($obtainer_class)) && (!empty($obtainer_methods_key))) {
       try {
-
-        $find_stack = (!empty($this->getObtainerMethods($obtainer_methods_key))) ? $this->getObtainerMethods($obtainer_methods_key) : $default_stack;
+        $target_stack = $this->getObtainerMethods($obtainer_methods_key);
+        $find_stack = (!empty($target_stack)) ? $target_stack : $default_stack;
         $obtained = new $obtainer_class($this->queryPath, $find_stack);
         $text = $obtained->getText();
       }

@@ -47,18 +47,15 @@ class ObtainID extends Obtainer {
   // ***************** Helpers ***********************************************.
 
   /**
-   * Cleans $possibleText or $override and puts it back.
+   * Cleans $text and returns it.
    *
-   * @param string $override
-   *   Optional override text to clean and return if used publicly.
+   * @param string $text
+   *   Text to clean and return.
    *
    * @return string
    *   The cleaned text.
    */
-  public function cleanPossibleText($override = '') {
-    // Use the override text if it has been provided.
-    $text = (!empty($override)) ? $override : $this->getPossibleText();
-
+  public static function cleanPossibleText($text = '') {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $text = doj_migration_html_entity_decode_numeric($text);
@@ -84,8 +81,6 @@ class ObtainID extends Obtainer {
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);
 
-    $this->setPossibleText($text);
-    // Return the $text in case this is being used publicly.
     return $text;
   }
 

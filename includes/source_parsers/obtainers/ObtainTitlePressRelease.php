@@ -9,7 +9,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
   /**
    * {@inheritdoc}
    */
-  protected function validatePossibleText() {
+  public function validatePossibleText() {
     // If the text it grabbed was 'News And Press Releases' then try again.
     if (strcasecmp(trim($text), "News And Press Releases") == 0) {
       return FALSE;

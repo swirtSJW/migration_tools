@@ -190,6 +190,15 @@ class Obtainer {
     $this->clearJustFound();
   }
 
+  /**
+   * Clean PossibleText prior to validation.
+   */
+  protected function cleanThisPossibleText() {
+    $text = $this->getPossibleText();
+    $text = $this->cleanPossibleText($text);
+    $this->setPossibleText($text);
+  }
+
 
   /**
    * Clears the ability to remove $justFound from the querypath object.
@@ -222,7 +231,7 @@ class Obtainer {
    * @return string
    *   Plain text that has been truncated.
    */
-  protected function truncateThisWithoutHTML($text = '', $length = 255, $min_word_length = 2) {
+  public static function truncateThisWithoutHTML($text = '', $length = 255, $min_word_length = 2) {
     $text = strip_tags($text);
 
     $trunc_text = truncate_utf8($text, $length, TRUE, FALSE, $min_word_length);
@@ -232,7 +241,9 @@ class Obtainer {
       // Grab the remaing text by removing $trunc_test.
       $remaining_text = str_replace($trunc_text, '', $text);
       // Set the discarded text value.
-      $this->setTextDiscarded($remaining_text);
+      if (!empty($this)) {
+        $this->setTextDiscarded($remaining_text);
+      }
       $text = $trunc_text;
     }
     return $text;
@@ -263,7 +274,7 @@ class Obtainer {
           // Run the method to get $possibleText.
           $this->setPossibleText($this->$target());
           // Clean up the $possibleText.
-          $this->cleanPossibleText();
+          $this->cleanThisPossibleText();
           // Evaluate the $possibleText.
           if ($this->validatePossibleText()) {
             // Set $textToReturn to $possibleText.

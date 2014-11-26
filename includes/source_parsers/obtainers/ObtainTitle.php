@@ -150,7 +150,7 @@ class ObtainTitle extends Obtainer {
       $this->setJustFound($h1);
       $text = $h1->text();
       $this->setPossibleText($text);
-      $this->cleanPossibleText();
+      $this->cleanThisPossibleText();
       if ($this->validatePossibleText()) {
         $this->setCurrentFindMethod("findAnyH1-i={$key}");
         // Return the original string to avoid double cleanup causing issues.
@@ -255,6 +255,7 @@ class ObtainTitle extends Obtainer {
         if ($pcounter == 2) {
           $this->setJustFound($elem);
           $title = $elem->text();
+          break;
         }
       }
     }
@@ -332,17 +333,15 @@ class ObtainTitle extends Obtainer {
   // ***************** Helpers ***********************************************.
 
   /**
-   * Cleans $possibleText or $override and puts it back.
+   * Cleans $text and returns it.
    *
-   * @param string $override
-   *   Optional override text to clean and return if used publicly.
+   * @param string $text
+   *   Text to clean and return.
    *
    * @return string
    *   The cleaned text.
    */
-  public function cleanPossibleText($override = '') {
-    // Use the override text if it has been provided.
-    $text = (!empty($override)) ? $override : $this->getPossibleText();
+  public static function cleanPossibleText($text = '') {
     $text = strip_tags($text);
     // Titles can not have html entities.
     $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
@@ -372,11 +371,8 @@ class ObtainTitle extends Obtainer {
     $text = str_replace('»', '', $text);
 
     // Can not be longer than 255 chars. Trimming must be done LAST!
-    $text = $this->truncateThisWithoutHTML($text, 255, 2);
+    $text = self::truncateThisWithoutHTML($text, 255, 2);
 
-    $this->setPossibleText($text);
-
-    // Return the $text in case this is being used publicly function.
     return $text;
   }
 
