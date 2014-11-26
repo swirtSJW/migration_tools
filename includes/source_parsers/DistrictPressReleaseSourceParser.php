@@ -7,43 +7,34 @@
 
 class DistrictPressReleaseSourceParser extends SourceParser {
 
-  protected $date;
-  protected $subtitle;
-  protected $number;
 
   /**
-   * Constructor.
+   * Defines and returns an array of parsing methods to call in order.
    *
-   * @param string $file_id
-   *   The file id, e.g. careers/legal/pm7205.html
-   * @param string $html
-   *   The full HTML data as loaded from the file.
-   * @param bool $fragment
-   *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
-   * @param array $qp_options
-   *   An associative array of options to be passed to the html_qp() function.
+   * @return array
+   *   An array of parssing methods to call in order.
    */
-  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array()) {
-    $html = StringCleanUp::fixEncoding($html);
-    $html = StringCleanUp::stripWindowsCRChars($html);
-    $html = StringCleanUp::fixWindowSpecificChars($html);
-
-    $this->initQueryPath($html, $qp_options);
-    $this->fileId = $file_id;
-
-    $this->setTitle();
-    $this->setSubTitle();
-    $this->setDate();
-    $this->setNumber();
-    $this->cleanHtml();
-    $this->setBody();
+  public function getParseOrder() {
+    // Specify the parsing methods that should run in order.
+    return array(
+      // Getting the title relies on html that could be wiped during clean up
+      // so let's get it before we clean things up.
+      'setTitle',
+      'setSubTitle',
+      'setDate',
+      'setID',
+      // The title is set, so let's clean our html up.
+      'cleanHtml',
+      // With clean html we can get the body out.
+      'setBody',
+    );
   }
 
 
   /**
    * Setter.
    */
-  public function setBody() {
+  public function setBody($override = '') {
     // If the first paragraph in the content div says archive, lets remove it.
     $elem = HtmlCleanUp::matchText($this->queryPath, ".contentSub > div > p", "Archives");
     if ($elem) {
@@ -55,6 +46,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
       $elem->remove();
     }
 
+    // Build selectors to remove.
     $selectors = array(
       "#PRhead1",
       // Remove menus.
@@ -80,183 +72,68 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     );
     HtmlCleanUp::removeElements($this->queryPath, $selectors);
 
-    parent::setBody();
+    $default_target_stack = array();
+
+    $body_stack = (!empty($this->getObtainerMethods('body'))) ? $this->getObtainerMethods('body') : $default_target_stack;
+    $this->setObtainerMethods(array('body' => $body_stack));
+
+    parent::setBody($override);
   }
 
-  /**
-   * Helper to check and sanitize strings that could become the title.
-   *
-   * @param string $text
-   *   The text that could be the title.
-   * @param null $elem
-   *   The querypath element from which the text was acquired.
-   *
-   * @return string
-   *   The text if it was approved. or empty string.
-   */
-  private function titleSetHelper($text, $elem = NULL) {
-    $text = StringCleanUp::superTrim($text);
-    if (!empty($text)) {
-      if ($elem) {
-        $elem->remove();
-      }
-
-      // If the title is too long, maybe they are putting both the title and
-      // subtitle together. But when the text get to us, I don't see an easy
-      // way to identify which is the title and which the subtitle. I will
-      // cut the string at the title limit, and put the rest of the string
-      // at the subtitle, so we are not throwing away data.
-      if (strlen($text) > 255) {
-        $pieces = $this->smartSplit($text, 255);
-        $text = $pieces[0];
-        $this->subtitle = $this->titleSetHelper($pieces[1]);
-      }
-
-      $uppercase_version = strtoupper($text);
-      if (strcmp($uppercase_version, $text) == 0) {
-        $text = ucwords(strtolower($text));
-      }
-
-      return $text;
-    }
-    return "";
-  }
 
   /**
-   * A common check to see if we need to continue to find a title or not.
+   * Sets $this->title.
    *
-   * return bool
-   *   TRUE if the title is essentially empty or worthless.
+   * This is duplicated so that we can use ObtainTitlePressRelease obtainer.
    */
-  public static function titleCheck($text) {
-    if (strcasecmp(trim($text), "News And Press Releases") == 0) {
-      return TRUE;
-    }
-    // If it got this far, send it to the parent for further checks.
-    return parent::titleCheck($text);
-  }
+  protected function setTitle($override = '') {
 
-  /**
-   * The title and subtitle should have, more or less, the same logic.
-   *
-   * In this method we will combine all the title/subtitle related logic, and
-   * what will make the different in what is what, will be the order in which
-   * the functions are called. The title gets first dibs at finding a match.
-   */
-  private function titlesHelper() {
-    $title = "";
-    $winner = '';
+    // QueryPathing our way through things can fail.
+    // In that case let's still set things and inform people about the issue.
+    try {
+      if (empty($override)) {
+        // Default stack: Use this if none was defined in
+        // $arguments['obtainer_methods'].
+        $default_target_stack = array(
+          'findAnyH1',
+          'findIdContentstartDivH2Sec',
+          'findH2First',
+          'findClassContentSubDivPCenterStrong',
+          'findClassContentSubDivDivPStrong',
+          'findIdHeadline',
+          'findPStrongEm',
+          'findIdContentstartDivH2',
+          'findDivClassContentSubDivDivCenter',
+        );
 
-    // Check the h1
-    foreach ($this->queryPath->find("h1") as $h1) {
-      // We don't want h1s to override each other.
-      if ($this->titleCheck($title)) {
-        $text = $h1->text();
-        $title = $this->titleSetHelper($text, $h1);
-        $winner = 'h1';
+        $title_find_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+        $obtained_title = new ObtainTitlePressRelease($this->queryPath, $title_find_stack);
+        $title = $obtained_title->getText();
+
+        // Check for discarded text and for a setSubTitle method.
+        // Some extensions may have them, but the base class does not.
+        if (!empty($obtained_title->getTextDiscarded()) && method_exists($this, 'setSubTitle')) {
+          // Put the discarded text into the subtitle.  It might not be right,
+          // but at least it is not lost.
+          $this->setSubTitle($obtained_title->getTextDiscarded());
+        }
+
       }
       else {
-        break;
+        // The override was invoked, so use it.
+        $title = $override;
+        $title = ObtainTitle::cleanPossibleText($title);
       }
+
+      $this->title = $title;
+      // Output to show progress to aid debugging.
+      drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
     }
-
-    // Check the second h2.
-    if ($this->titleCheck($title)) {
-      $counter = 1;
-      foreach ($this->queryPath->find("#contentstart > div > h2") as $h2) {
-        if ($counter == 2) {
-          $title = $this->titleSetHelper($h2->text(), $h2);
-          $winner = 'h2-2nd';
-          break;
-        }
-        $counter++;
-      }
+    catch (Exception $e) {
+      $this->title = "";
+      watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
+      drush_doj_migration_debug_output("ERROR DistrictPressReleaseSourceParser: {$this->fileId} failed to set title.");
     }
-
-    // Maybe the main title is just an h2.
-    if ($this->titleCheck($title)) {
-      $title = $this->titleSetHelper(HtmlCleanUp::extractFirstElement($this->queryPath, "h2"));
-      $winner = 'h2';
-    }
-
-    // Straight up matches.
-    $selectors = array(
-      ".contentSub > div > p[align='center'] > strong",
-      // @todo this rule is causing issues with the louisianan pr, can we
-      // target it better?
-      // ".contentSub > div > div > p > strong",
-      "#headline",
-      // "p > em",
-      "p > strong > em",
-      "#contentstart > div > h2",
-      // For usao-az.
-      'div.contentSub > div > div[align="center"]',
-      'div > div[align="center"] > div.Part > p',
-
-      // Hail Mary.
-      ".MsoNormal",
-    );
-
-    while ($this->titleCheck($title) && !empty($selectors)) {
-      $selector = array_shift($selectors);
-      if ($text = HtmlCleanUp::extractFirstElement($this->queryPath, $selector)) {
-        $winner = $selector;
-        $title = $this->titleSetHelper($text);
-
-      }
-    }
-
-    if (empty($title)) {
-      $elems = $this->queryPath->find("#Layer4")->siblings();
-      $pcounter = 0;
-      // The second p is the title.
-      foreach ($elems as $elem) {
-        if ($elem->is("p")) {
-          $pcounter++;
-          if ($pcounter == 6) {
-            $title = $elem->text();
-            $title = StringCleanUp::superTrim($title);
-            $elem->remove();
-            $winner = "p-#$pcounter";
-          }
-        }
-      }
-    }
-
-    // Maybe the main title is just an h3.
-    if ($this->titleCheck($title)) {
-      $title = $this->titleSetHelper(HtmlCleanUp::extractFirstElement($this->queryPath, "h3"));
-      $winner = 'h3';
-    }
-
-    // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("Match: {$winner}");
-    return $title;
-  }
-
-  /**
-   * Setter.
-   */
-  protected function setTitle() {
-    $this->title = $this->titlesHelper();
-    drush_doj_migration_debug_output("{$this->fileId}  --Title->  {$this->title}");
-  }
-
-  /**
-   * Setter.
-   */
-  private function setSubTitle() {
-    if (empty($this->subtitle)) {
-      $this->subtitle = $this->titlesHelper();
-      drush_doj_migration_debug_output("--Subtitle->  {$this->subtitle}");
-    }
-  }
-
-  /**
-   * Getter.
-   */
-  public function getSubtitle() {
-    return $this->subtitle;
   }
 
   /**
@@ -379,65 +256,42 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     $this->date = $date;
   }
 
-  /**
-   * Getter.
-   */
-  public function getDate() {
-    return $this->date;
-  }
 
   /**
    * Setter.
    */
-  protected function setNumber() {
-    $table = $this->queryPath->find("table");
-    $text = $this->getFromTable($table, 3, 1);
-    $this->number = $text;
+  protected function setID($override = '') {
+    $default_target_stack = array(
+      'findTable3y1x',
+    );
+
+    $id_stack = (!empty($this->getObtainerMethods('id'))) ? $this->getObtainerMethods('id') : $default_target_stack;
+    $this->setObtainerMethods(array('id' => $id_stack));
+
+    parent::setID($override);
   }
 
-  /**
-   * Getter.
-   */
-  public function getNumber() {
-    return $this->number;
-  }
 
   /**
-   * Split a string respecting a max lenght, but not destroying words.
-   *
-   * @param string $string
-   *   The string.
-   *
-   * @param int $max_length
-   *   The maximum length of the split.
+   * Setter.
    */
-  private function smartSplit($string, $max_length) {
-    $array = explode(' ', $string);
+  public function setSubTitle($override = '') {
+    // If the subttile has already been set, leave it alone.
+    if (empty($this->getSubTitle())) {
+      if (empty($override)) {
+        $default_target_stack = array();
 
-    $current_length = 0;
-    $index = 0;
-
-    foreach ($array as $word) {
-      // +1 because the word will receive back the space in the end that it
-      // loses in explode()
-      $word_length = strlen($word) + 1;
-
-      if (($current_length + $word_length) <= $max_length) {
-        $current_length += $word_length;
-        $index++;
+        $subtitle = $this->runObtainer('ObtainTitle', 'subtitle', $default_target_stack);
       }
       else {
-        break;
+        // The override was invoked, so use it.
+        $subtitle = $override;
+        $subtitle = ObtainTitle::cleanPossibleText($subtitle);
       }
-      $output[0] = array_slice($array, 0, $index);
-      $output[1] = array_slice($array, $index);
-
-      for ($i = 0; $i < 2; $i++) {
-        $output[$i] = implode(" ", $output[$i]);
-      }
-
+      $this->subTitle = $subtitle;
+      // Output to show progress to aid debugging.
+      drush_doj_migration_debug_output("--Subtitle->  {$this->getSubTitle()}");
     }
-
-    return $output;
   }
+
 }

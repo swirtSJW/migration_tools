@@ -26,7 +26,6 @@ abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigra
    *   core Drupal function for more information.
    */
   public function __construct($arguments, $source_dirs, $options = array()) {
-
     // Define the fields that will be derived from the static files.
     $source_fields = array(
       'title' => t('Title'),

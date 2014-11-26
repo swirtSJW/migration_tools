@@ -30,7 +30,6 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     );
 
     $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
-
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, $options);
@@ -53,6 +52,6 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     $row->field_pr_date = $this->sourceParser->getDate();
     $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
-    $row->field_pr_number = $this->sourceParser->getNumber();
+    $row->field_pr_number = $this->sourceParser->getID();
   }
 }

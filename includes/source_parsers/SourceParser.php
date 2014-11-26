@@ -16,10 +16,19 @@ require DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
  */
 class SourceParser {
 
-  protected $fileId;
-  protected $title;
+  /**
+   * @var array $args
+   *   Arguements array passed from migration class.
+   */
+  protected $arguments = array();
   protected $body;
+  protected $date;
+  protected $fileId;
+  protected $id;
   public $queryPath;
+  protected $subTitle = '';
+  protected $title;
+
 
   /**
    * Constructor.
@@ -32,8 +41,11 @@ class SourceParser {
    *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    * @param array $qp_options
    *   An associative array of options to be passed to the html_qp() function.
+   * @param array $arguments
+   *   An associative array arguements passed up from the migration class.
    */
-  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array()) {
+  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array(), $arguments = array()) {
+    $this->mergeArguments((array) $arguments);
 
     $html = StringCleanUp::fixEncoding($html);
 
@@ -45,16 +57,8 @@ class SourceParser {
     $this->initQueryPath($html, $qp_options);
 
     $this->fileId = $file_id;
-
-    // Getting the title relies on html that could be wiped during clean up
-    // so let's get it before we clean things up.
-    $this->setTitle();
-
-    // The title is set, so let's clean our html up.
-    $this->cleanHtml();
-
-    // With clean html we can get the body out, and set our var.
-    $this->setBody();
+    // Runs the methods defined in getParseOrder to set Title, date,  body...
+    $this->runParserOrder($this->getParseOrder());
   }
 
   /**
@@ -115,6 +119,68 @@ class SourceParser {
   }
 
   /**
+   * Getter.
+   */
+  public function getDate() {
+    return $this->date;
+  }
+
+
+  /**
+   * Setter.
+   */
+  protected function setDate($override = '') {
+    if (empty($override)) {
+      // Default stack: Use this if none was defined in
+      // $arguments['obtainer_methods'].
+      $default_target_stack = array();
+
+      $date = $this->runObtainer('ObtainDate', 'date', $default_target_stack);
+    }
+    else {
+      // The override was invoked, so use it.
+      $date = $override;
+      $date = ObtainDate::cleanPossibleText($date);
+    }
+
+    $this->date = $date;
+    // Output to show progress to aid debugging.
+    drush_doj_migration_debug_output("--date-->  {$this->getDate()}");
+  }
+
+
+  /**
+   * Getter.
+   */
+  public function getID() {
+    return $this->date;
+  }
+
+
+  /**
+   * Setter.
+   */
+  protected function setID($override = '') {
+    if (empty($override)) {
+      // Default stack: Use this if none was defined in
+      // $arguments['obtainer_methods'].
+      $default_target_stack = array();
+
+      $id = $this->runObtainer('ObtainID', 'id', $default_target_stack);
+    }
+    else {
+      // The override was invoked, so use it.
+      $id = $override;
+      $id = ObtainID::cleanPossibleText($id);
+    }
+
+    $this->id = $id;
+    // Output to show progress to aid debugging.
+    drush_doj_migration_debug_output("--id-->  {$this->getID()}");
+  }
+
+
+  /**
    * Sets $this->title using breadcrumb or <title>.
    */
   protected function setTitle($override = '') {
@@ -123,53 +189,33 @@ class SourceParser {
     // In that case let's still set things and inform people about the issue.
     try {
       if (empty($override)) {
-        // First attempt to get the title from the breadcrumb.
-        $query_path = $this->queryPath;
-        $wrapper = $query_path->find('.breadcrumbmenucontent')->first();
-        $wrapper->children('a, span, font')->remove();
-        $title = $wrapper->text();
+        // Default stack: Use this if none was defined in
+        // $arguments['obtainer_methods'].
+        $default_target_stack = array(
+          'findClassBreadcrumbMenuContentLast',
+          'findTitleTag',
+          'findH1First',
+        );
 
-        // If there was no breadcrumb title, get it from the <title> tag.
-        if (empty($title)) {
-          $title = $query_path->find('title')->innerHTML();
+        $title_find_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+        $obtained_title = new ObtainTitle($this->queryPath, $title_find_stack);
+        $title = $obtained_title->getText();
+
+        // Check for discarded text and for a setSubTitle method.
+        // Some extensions may have them, but the base class does not.
+        if (!empty($obtained_title->getTextDiscarded()) && method_exists($this, 'setSubTitle')) {
+          // Put the discarded text into the subtitle.  It might not be right,
+          // but at least it is not lost.
+          $this->setSubTitle($obtained_title->getTextDiscarded());
         }
 
-        // If there is still no title found, Look for the first H1.
-        if (empty($title)) {
-          $title = $this->queryPath->find("h1")->first()->text();
-          $this->queryPath->find("h1")->first()->remove();
-        }
       }
       else {
         // The override was invoked, so use it.
         $title = $override;
+        $title = ObtainTitle::cleanPossibleText($title);
       }
 
-      // If there are any html special chars let's change those to its char
-      // equivalent.
-      $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
-
-      // There are also numeric html special chars, let's change those.
-      module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-      $title = doj_migration_html_entity_decode_numeric($title);
-
-      // We want out titles to be only digits and ascii chars so we can produce
-      // clean aliases.
-      $title = StringCleanUp::convertNonASCIItoASCII($title);
-
-      // Remove undesirable chars.
-      $title = str_replace("»", "", $title);
-
-      // We also want to trim the string.
-      $title = StringCleanUp::superTrim($title);
-
-      // $title = $this->removeUndesirableChars($title);
-      // $title = $this->changeSpecialforRegularChars($title);
-
-      // Truncate title to max of 255 characters.
-      if (strlen($title) > 255) {
-        $title = substr($title, 0, 255);
-      }
       $this->title = $title;
       // Output to show progress to aid debugging.
       drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
@@ -177,58 +223,8 @@ class SourceParser {
     catch (Exception $e) {
       $this->title = "";
       watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
+      drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set title.");
     }
-  }
-
-
-  /**
-   * Sets a title retrieved using an array of selectors searched in order.
-   *
-   * The first selector to find something wins.
-   *
-   * @param array $selectors
-   *   Querypath selectors to use in order for finding title text.
-   * @param string $title_default
-   *   The title to use if all selectors come up empty.
-   *
-   * @return string
-   *   The current title text.
-   */
-  public function overrideSetTitle($selectors = array(), $title_default = '') {
-    $title = '';
-    foreach (is_array($selectors) ? $selectors : array() as $selector) {
-      // If we have a title, no more searching.
-      if (titleCheck($title)) {
-        break;
-      }
-      $found_text = trim($this->queryPath->find($selector)
-          ->first()
-          ->childrenText(' '));
-      if (!empty($found_text)) {
-        $title = $found_text;
-        $this->queryPath->find($selector)->first()->remove();
-      }
-      $title = (!empty($found_text)) ? $found_text : '';
-    }
-    $title = (titleCheck($title)) ? $title_default : $title;
-    // Set the found title only if we have no other.
-    if (titleCheck($title)) {
-      $this->setTitle($title);
-    }
-    return $this->getTitle();
-  }
-
-
-  /**
-   * A common check to see if we need to continue to find a title or not.
-   *
-   * return bool
-   *   TRUE if the title is essentially empty or worthless.
-   */
-  public static function titleCheck($text = '') {
-    // Remove any garbage that my make it look not empty.
-    $text = StringCleanUp::superTrim(html_entity_decode($text));
-    return empty($text);
   }
 
 
@@ -242,30 +238,43 @@ class SourceParser {
 
 
   /**
+   * Getter.
+   */
+  public function getSubTitle() {
+    return $this->subTitle;
+  }
+
+
+  /**
    * Get the body from html and set the body var.
    */
-  public function setBody() {
-    try {
-      $body = $this->queryPath->top('body')->innerHTML();
+  public function setBody($override = '') {
+    if (empty($override)) {
+      // Default stack: Use this if none was defined in
+      // $arguements['obtainer_methods'].
+      $default_target_stack = array(
+        'findTopBodyHtml',
+        'findClassContentSub',
+      );
 
-      // Checking again in case another process rendered it non UTF-8.
-      $is_utf8 = mb_check_encoding($body, 'UTF-8');
-
-      if (!$is_utf8) {
-        watchdog("doj_migration", "%file body needed its encoding fixed!!!", array('%file' => $this->fileId), WATCHDOG_NOTICE);
-        $body = StringCleanUp::fixEncoding($body);
-      }
-
-      $this->body = $body;
+      $body = $this->runObtainer('ObtainBody', 'body', $default_target_stack);
     }
-    catch (Exception $e) {
-      $this->body = "";
-      watchdog('doj_migration', '%file: failed to set the body because: %message', array(
-          '%file' => $this->fileId,
-          '%message' => $e->getMessage(),
-        ), WATCHDOG_ALERT);
+    else {
+      // The override was invoked, so use it.
+      $body = $override;
+      $body = ObtainID::cleanPossibleText($body);
+    }
+
+    $this->body = $body;
+    // Output to show progress to aid debugging.
+    if (!empty($this->getBody())) {
+      drush_doj_migration_debug_output("--body-->  found something");
+    }
+    else {
+      drush_doj_migration_debug_output("--body-->  FOUND NOTHING");
     }
   }
+
 
   /**
    * Return content of <body> element.
@@ -282,17 +291,17 @@ class SourceParser {
    *   The update date.
    */
   public function extractUpdatedDate() {
-    $query_path = $this->queryPath;
-    $element = trim($query_path->find('.lastupdate'));
-    $contents = $element->text();
-    if ($contents) {
-      $contents = trim(str_replace('Updated:', '', $contents));
-    }
+    // Default stack: Use this if none was defined in
+    // $arguements['obtainer_methods'].
+    $default_target_stack = array(
+      'findClassLastupdate',
+    );
 
-    // Here we are modifying html, so let's set our global again.
-    $element->remove();
+    $date_find_stack = (!empty($this->getObtainerMethods('date_updated'))) ? $this->getObtainerMethods('date_updated') : $default_target_stack;
+    $obtained_date = new ObtainDate($this->queryPath, $title_find_stack);
+    $date = $obtained_date->getText();
 
-    return $contents;
+    return $date;
   }
 
   /**
@@ -365,7 +374,7 @@ class SourceParser {
    * @return string
    *   The text inside of the wanted tr and td.
    */
-  protected function getFromTable($table, $tr_target, $td_target) {
+  public function getFromTable($table, $tr_target, $td_target) {
     $trcount = 1;
     $tdcount = 1;
 
@@ -383,40 +392,163 @@ class SourceParser {
 
     return "";
   }
-}
 
-/**
- * Don't think we need this code any more, but I will leave it in here
- * just in case
- */
-/**
-public function changeSpecialForHtmlSpecialChars($text) {
-  $special = array("»" => "&raquo;");
 
-  foreach ($special as $find => $replace) {
-    $text = str_replace($find, $replace, $text);
+  /**
+   * Basic getter for $arguments.
+   *
+   * @return array
+   *   Whatever has been stored in $this->arguments.
+   */
+  public function getArguments() {
+    return $this->arguments;
   }
 
-  return $text;
-}
 
-public function removeUndesirableChars($text, $exclusions = array()) {
-  $undesirables = array("Â");
-
-  $undesirables = array_diff($undesirables, $exclusions);
-
-  foreach ($undesirables as $remove_char) {
-    $text = str_replace($remove_char, "", $text);
+  /**
+   * Merges an array into the arguments array.
+   *
+   * @param array $new_args
+   *   An array matching the format of the arguments array, to be merged.
+   */
+  protected function mergeArguments($new_args = '') {
+    if (!empty($new_args) && is_array($new_args)) {
+      $this->arguments = array_merge($this->getArguments(), $new_args);
+    }
   }
 
-  return $text;
-}
 
-public function changeSpecialforRegularChars($text) {
-  $text = str_replace(array("“", "”", "<93>", "<94>"), '"', $text);
-  $text = str_replace(array("’", "‘", "<27>", "<91>", "<92>"), "'", $text);
-  $text = str_replace("–", "-", $text);
+  /**
+   * Gets a single argument from the arguments array.
+   *
+   * @param string $arg_key
+   *   The key of the item to return from the Arguments array.
+   *
+   * @return mixed
+   *   Whatever is stored in the $keys's value, or NULL if not in the arguments.
+   */
+  protected function getArgument($arg_key = '') {
+    if (!empty($arg_key)) {
+      $args = $this->getArguments();
+      if (array_key_exists($arg_key, $args)) {
+        return $args[$arg_key];
+      }
+    }
+    return array();
+  }
 
-  return $text;
+
+  /**
+   * Gets the specified obtainer methods from the arguments.
+   *
+   * @param string $obtainer_methods_key
+   *   The key for the obtainer methods (ex: title, body, date).
+   *
+   * @return array
+   *   Returns the array of obtainer methods for a specific key or empty array.
+   */
+  protected function getObtainerMethods($obtainer_methods_key = '') {
+    if (!empty($obtainer_methods_key)) {
+      $obtainer = $this->getArgument('obtainer_methods');
+      if (array_key_exists($obtainer_methods_key, $obtainer)) {
+        return $obtainer[$obtainer_methods_key];
+      }
+    }
+    return array();
+  }
+
+
+  /**
+   * Adds an array of obtainer method arrays overwriting existing methods.
+   *
+   * @param array $obtainer_methods
+   *   An array of obtainer method arrays.
+   */
+  protected function setObtainerMethods($obtainer_methods = '') {
+    if ((!empty($obtainer_methods)) && (is_array($obtainer_methods))) {
+      $args = $this->getArguments();
+      // Loop through new array of obtainer methods.
+      foreach ($obtainer_methods as $obtainer_methods_key => $stack) {
+        // Put the new into the original.
+        $args['obtainer_methods'][$obtainer_methods_key] = $stack;
+      }
+      // Put the newly formed args back.
+      $this->mergeArguments($args);
+    }
+  }
+
+  /**
+   * Defines and returns an array of parsing methods to call in order.
+   *
+   * @return array
+   *   An array of parssing methods to call in order.
+   */
+  public function getParseOrder() {
+    // Specify the parsing methods that should run in order.
+    return array(
+      // Getting the title relies on html that could be wiped during clean up
+      // so let's get it before we clean things up.
+      'setTitle',
+      // The title is set, so let's clean our html up.
+      'cleanHtml',
+      // With clean html we can get the body out.
+      'setBody',
+    );
+  }
+
+  /**
+   * Runs the parse methods prescribed by getParseOrder().
+   */
+  protected function runParserOrder() {
+    drush_doj_migration_debug_output('----------------------row-------------------');
+    $parse_methods = $this->getParseOrder();
+    foreach (is_array($parse_methods) ? $parse_methods : array() as $method) {
+      // Check to see if this $method is an available method.
+      if (method_exists($this, $method)) {
+        // Run the method to do its job.
+        $this->$method();
+      }
+      else {
+        // Output a message that the method does not exist.
+        drush_doj_migration_debug_output("The parser method '{$method}' in SourceParser and its children does not exist and was skipped.");
+      }
+    }
+  }
+
+
+  /**
+   * Runs an obtainer and returns the text it found.
+   *
+   * @param string $obtainer_class
+   *   The name of the obtainer class to use.
+   * @param string $obtainer_methods_key
+   *   The key for the obtainer arguments array to see which findMethods to run.
+   * @param array $default_stack
+   *   The default stack of findMethods to use if none is available from the
+   *   arguments.
+   *
+   * @return string
+   *   The string retrieved by executing the obtainer.
+   */
+  public function runObtainer($obtainer_class, $obtainer_methods_key, $default_stack = array()) {
+    // Must have a class and a key.
+    if ((!empty($obtainer_class)) && (!empty($obtainer_methods_key))) {
+      try {
+
+        $find_stack = (!empty($this->getObtainerMethods($obtainer_methods_key))) ? $this->getObtainerMethods($obtainer_methods_key) : $default_stack;
+        $obtained = new $obtainer_class($this->queryPath, $find_stack);
+        $text = $obtained->getText();
+      }
+      catch (Exception $e) {
+        $text = '';
+        watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
+             '%obtainer_methods_key' => $obtainer_methods_key,
+            '%file' => $this->fileId,
+            '%message' => $e->getMessage(),
+          ), WATCHDOG_ALERT);
+        drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set $obtainer_methods_key Exception: {$e->getMessage()}");
+      }
+    }
+    return (!empty($text)) ? $text : '';
+  }
 }
-*/

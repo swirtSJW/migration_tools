@@ -14,8 +14,8 @@ class HtmlToSpeechSourceParser extends SourceParser {
   /**
    * {@inheritdoc}
    */
-  public function __construct($file_id, $html, $fragment = FALSE) {
-    parent::__construct($file_id, $html, $fragment);
+  public function __construct($file_id, $html, $fragment = FALSE, $arguments = array()) {
+    parent::__construct($file_id, $html, $fragment, $arguments);
 
     // Get the location of the speech.
     $this->setLocation();
@@ -122,6 +122,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
       }
       catch(Exception $e) {
         watchdog('doj_migration', "{$this->fileId} failed to set title from speech body :error {$e->getMessage()}");
+        drush_doj_migration_debug_output("{$this->fileId} failed to set title from speech body :error {$e->getMessage()}");
       }
     }
   }
@@ -136,6 +137,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
     }
     catch(Exception $e) {
       watchdog("doj_migration", "{$this->fileId} failed to remove the justicenews header :error {$e->getMessage()}");
+      drush_doj_migration_debug_output("{$this->fileId} failed to remove the justicenews header :error {$e->getMessage()}");
     }
     parent::setBody();
   }

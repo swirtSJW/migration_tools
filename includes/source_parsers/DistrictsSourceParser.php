@@ -27,39 +27,24 @@ class DistrictsSourceParser extends SourceParser {
    */
   protected function setTitle($override = '') {
     if (empty($override)) {
-      // h1 is top priority.
-      $title = $this->queryPath->find("h1")->first()->text();
-      $this->queryPath->find("h1")->first()->remove();
-      $winner = 'h1';
-      // If no title, try to get it from the sub banner.
-      $subbanner = $this->getSubBanner();
-      if ($this->titleCheck($title) && $subbanner) {
-        $title = $subbanner->attr('alt');
-        $title = str_ireplace("banner", "", $title);
-        $winner = 'banner alt';
-        // Check to see if alt is just placeholder to discard.
-        if (stristr($title, 'placeholder')) {
-          $title = '';
-          $winner = '';
-        }
-      }
-      if ($this->titleCheck($title)) {
-        // Try the last item in the breadcrumb.
-        $breadcrumb = $this->queryPath->find(".breadcrumb");
-        // Remove the anchors.
-        $breadcrumb->find(a)->remove();
-        $title = trim($breadcrumb->first()->text());
-        $winner = 'breadcrumb last';
-      }
+      // Default stack: Use this if none was defined in migration class.
+      $default_target_stack = array(
+        'findH1First',
+        'findH1Any',
+        'findClassBreadcrumbLast',
+        'findClassBreadcrumbMenuContentLast',
+        'findSubBannerAlt',
+
+      );
+      $title_stack = (!empty($this->getObtainerMethods('title'))) ? $this->getObtainerMethods('title') : $default_target_stack;
+      $this->setObtainerMethods(array('title' => $title_stack));
     }
     else {
       // The override was invoked, so use it.
       $title = $override;
-      $winner = 'Forced override';
+      $title = ObtainTitle::cleanPossibleText($title);
     }
 
-    // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("Match: {$winner}");
     // Pass it to the parent::setTitle to process string cleanup or trigger
     // a fallback for title sources.
     parent::setTitle($title);
@@ -69,7 +54,7 @@ class DistrictsSourceParser extends SourceParser {
   /**
    * {@inheritdoc}
    */
-  public function setBody() {
+  public function setBody($override = '') {
     $subbanner = $this->getSubBanner();
     if ($subbanner) {
       $subbanner->remove();
@@ -84,7 +69,7 @@ class DistrictsSourceParser extends SourceParser {
     // Remove breadcrumbs.
     $this->queryPath->find('.breadcrumb')->first()->remove();
 
-    parent::setBody();
+    parent::setBody($override = '');
   }
 
 

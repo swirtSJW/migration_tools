@@ -114,8 +114,19 @@ class UsaoWdnyPressReleaseMigration extends DistrictPressReleaseMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
+    $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
     $arguments['district'] = "usao-wdny";
     $arguments['component'] = "Western District of New York (USAO)";
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1First',
+        'findSubBannerAlt',
+        'findLastBreadcrumb',
+      ),
+      'subtitle' => array(),
+      'date' => array(),
+      'id' => array(),
+    );
 
     $source_dirs = array(
       "usao/nyw/press/press_releases/2014",

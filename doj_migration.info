@@ -46,6 +46,15 @@ files[] = includes/source_parsers/OlaTestimonySourceParser.php
 files[] = includes/source_parsers/OlaWitnessSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
 
+; Obtainers
+files[] = includes/source_parsers/obtainers/Obtainer.php
+files[] = includes/source_parsers/obtainers/ObtainBody.php
+files[] = includes/source_parsers/obtainers/ObtainHtml.php
+files[] = includes/source_parsers/obtainers/ObtainDate.php
+files[] = includes/source_parsers/obtainers/ObtainID.php
+files[] = includes/source_parsers/obtainers/ObtainTitle.php
+files[] = includes/source_parsers/obtainers/ObtainTitlePressRelease.php
+
 ; Organizations
 files[] = organizations/doj.inc
 files[] = organizations/espanol.inc
