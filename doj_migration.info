@@ -53,6 +53,7 @@ files[] = includes/source_parsers/obtainers/ObtainHtml.php
 files[] = includes/source_parsers/obtainers/ObtainDate.php
 files[] = includes/source_parsers/obtainers/ObtainID.php
 files[] = includes/source_parsers/obtainers/ObtainTitle.php
+files[] = includes/source_parsers/obtainers/ObtainSubTitle.php
 files[] = includes/source_parsers/obtainers/ObtainTitlePressRelease.php
 
 ; Organizations

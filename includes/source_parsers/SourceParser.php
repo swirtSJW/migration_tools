@@ -140,7 +140,6 @@ class SourceParser {
     else {
       // The override was invoked, so use it.
       $date = $override;
-      $date = ObtainDate::cleanPossibleText($date);
     }
 
     $this->date = $date;
@@ -171,7 +170,6 @@ class SourceParser {
     else {
       // The override was invoked, so use it.
       $id = $override;
-      $id = ObtainID::cleanPossibleText($id);
     }
 
     $this->id = $id;
@@ -208,14 +206,13 @@ class SourceParser {
         if (!empty($discarded) && method_exists($this, 'setSubTitle')) {
           // Put the discarded text into the subtitle.  It might not be right,
           // but at least it is not lost.
-          $this->setSubTitle($obtained_title->getTextDiscarded());
+          $this->setSubTitle($discarded);
         }
 
       }
       else {
         // The override was invoked, so use it.
         $title = $override;
-        $title = ObtainTitle::cleanPossibleText($title);
       }
 
       $this->title = $title;
@@ -264,7 +261,6 @@ class SourceParser {
     else {
       // The override was invoked, so use it.
       $body = $override;
-      $body = ObtainID::cleanPossibleText($body);
     }
 
     $this->body = $body;
@@ -301,7 +297,7 @@ class SourceParser {
     );
 
     $method = $this->getObtainerMethods('date_updated');
-    $date_find_stack = (!empty($method)) ? $this->getObtainerMethods('date_updated') : $default_target_stack;
+    $date_find_stack = (!empty($method)) ? $method : $default_target_stack;
     $obtained_date = new ObtainDate($this->queryPath, $date_find_stack);
     $date = $obtained_date->getText();
 

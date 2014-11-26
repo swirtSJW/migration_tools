@@ -220,7 +220,16 @@ class Obtainer {
 
 
   /**
-   * Strips html, truncates to word boundary, saves discarded to $textDiscarded.
+   * Is essentially a truncation hook for each class to extend if needed.
+   */
+  protected function truncateThisPossibleText() {
+    // This does nothing in the base class.
+    // Add your own copy of this to extended classes to create a truncation.
+  }
+
+
+  /**
+   * Strips html, truncates to word boundary, and preserves what was left.
    *
    * @param string $text
    *   Html or plain text to be truncated.
@@ -229,25 +238,25 @@ class Obtainer {
    * @param int $min_word_length
    *   Minimum number of characters to consider something as a word.
    *
-   * @return string
-   *   Plain text that has been truncated.
+   * @return array
+   *   - truncated: Plain text that has been truncated.
+   *   - remaining: Plain text that was left.
    */
   public static function truncateThisWithoutHTML($text = '', $length = 255, $min_word_length = 2) {
     $text = strip_tags($text);
-
     $trunc_text = truncate_utf8($text, $length, TRUE, FALSE, $min_word_length);
     // Check to see if any truncation is made.
     if (strcmp($text, $trunc_text) != 0) {
       // There was truncation, so process it differently.
       // Grab the remaning text by removing $trunc_test.
       $remaining_text = str_replace($trunc_text, '', $text);
-      // Set the discarded text value.
-      if (!empty($remaining_text)) {
-        // @todo now that this is static, we can't set the discarded text.
-        // $this->setTextDiscarded($remaining_text);
-      }
     }
-    return $trunc_text;
+    $return = array(
+      'truncated' => $trunc_text,
+      'remaining' => (!empty($remaining_text)) ? $remaining_text : '',
+    );
+
+    return $return;
   }
 
 
@@ -276,6 +285,8 @@ class Obtainer {
           $this->setPossibleText($this->$target());
           // Clean up the $possibleText.
           $this->cleanThisPossibleText();
+          // Possible truncation available.
+          $this->truncateThisPossibleText();
           // Evaluate the $possibleText.
           if ($this->validatePossibleText()) {
             // Set $textToReturn to $possibleText.

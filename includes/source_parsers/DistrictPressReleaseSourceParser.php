@@ -75,7 +75,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     $default_target_stack = array();
 
     $om = $this->getObtainerMethods('body');
-    $body_stack = (!empty($om)) ? $this->getObtainerMethods('body') : $default_target_stack;
+    $body_stack = (!empty($om)) ? $om : $default_target_stack;
     $this->setObtainerMethods(array('body' => $body_stack));
 
     parent::setBody($override);
@@ -108,7 +108,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
         );
 
         $om = $this->getObtainerMethods('title');
-        $title_find_stack = (!empty($om)) ? $this->getObtainerMethods('title') : $default_target_stack;
+        $title_find_stack = (!empty($om)) ? $om : $default_target_stack;
         $obtained_title = new ObtainTitlePressRelease($this->queryPath, $title_find_stack);
         $title = $obtained_title->getText();
 
@@ -118,14 +118,13 @@ class DistrictPressReleaseSourceParser extends SourceParser {
         if (!empty($td) && method_exists($this, 'setSubTitle')) {
           // Put the discarded text into the subtitle.  It might not be right,
           // but at least it is not lost.
-          $this->setSubTitle($obtained_title->getTextDiscarded());
+          $this->setSubTitle($td);
         }
 
       }
       else {
         // The override was invoked, so use it.
         $title = $override;
-        $title = ObtainTitle::cleanPossibleText($title);
       }
 
       $this->title = $title;
@@ -164,6 +163,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    * Setter.
    */
   protected function setDate() {
+    // @TODO This whole function needs to have its process moved to ObtainDate.
 
     // Matches on tables.
     // Second td in the first tr of the table is the date.
@@ -269,7 +269,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
     );
 
     $om = $this->getObtainerMethods('id');
-    $id_stack = (!empty($om)) ? $this->getObtainerMethods('id') : $default_target_stack;
+    $id_stack = (!empty($om)) ? $om : $default_target_stack;
     $this->setObtainerMethods(array('id' => $id_stack));
 
     parent::setID($override);
@@ -280,18 +280,17 @@ class DistrictPressReleaseSourceParser extends SourceParser {
    * Setter.
    */
   public function setSubTitle($override = '') {
-    // If the subttile has already been set, leave it alone.
+    // If the subtitle has already been set, leave it alone.
     $st = $this->getSubTitle();
     if (empty($st)) {
       if (empty($override)) {
         $default_target_stack = array();
 
-        $subtitle = $this->runObtainer('ObtainTitle', 'subtitle', $default_target_stack);
+        $subtitle = $this->runObtainer('ObtainSubTitle', 'subtitle', $default_target_stack);
       }
       else {
         // The override was invoked, so use it.
         $subtitle = $override;
-        $subtitle = ObtainTitle::cleanPossibleText($subtitle);
       }
       $this->subTitle = $subtitle;
       // Output to show progress to aid debugging.

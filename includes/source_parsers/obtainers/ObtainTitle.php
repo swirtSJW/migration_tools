@@ -24,6 +24,16 @@ class ObtainTitle extends Obtainer {
     $this->processMethodStack($query_path, $target_stack, 'ObtainTitle');
   }
 
+  /**
+   * Truncates and sets the discarded if there is a remainder.
+   */
+  protected function truncateThisPossibleText() {
+    $text = $this->getPossibleText();
+    $split = $this->truncateThisWithoutHTML($text, 255, 2);
+    $this->setPossibleText($split['truncated']);
+    $this->setTextDiscarded($split['remaining']);
+  }
+
 
   // **************** Begin finder target definitions *************************
   // To create a new finder, use this template and put them in alpha order.
@@ -41,7 +51,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content from the last item in the breadcrumb.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findClassBreadcrumbLast() {
@@ -57,7 +67,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content from the last item in the breadcrumb.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findClassBreadcrumbMenuContentLast() {
@@ -74,7 +84,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder  first .contentSub > div > p[align='center'] > strong on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findClassContentSubDivPCenterStrong() {
@@ -86,7 +96,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder  first .contentSub > div > strong on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findClassContentSubDivDivPStrong() {
@@ -113,7 +123,7 @@ class ObtainTitle extends Obtainer {
    *
    * Added for AZ
    *
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findDivClassContentSubDivDivCenter() {
@@ -128,7 +138,7 @@ class ObtainTitle extends Obtainer {
    *
    * Added for AZ
    *
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findDivDivCenterDivClassPartP() {
@@ -140,7 +150,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to Loop through all h1 first H1 to evaluate gets it.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findH1Any() {
@@ -163,7 +173,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content of the first H1 on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findH1First() {
@@ -175,7 +185,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content of the first H2 on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findH2First() {
@@ -187,7 +197,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content of the first H3 on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findH3First() {
@@ -199,7 +209,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method "#contentstart > div > h2" first on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findIdContentstartDivH2() {
@@ -229,7 +239,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content of the first #headline on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findIdHeadline() {
@@ -241,11 +251,12 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find #Layer4 and the 2nd paragraph on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findIdLayer4P2() {
     $elems = $this->queryPath->find("#Layer4")->siblings();
+    $title = '';
 
     $pcounter = 0;
     // The sixth p is the title.
@@ -265,11 +276,12 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find #Layer4 and the 6th paragraph on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findIdLayer4P6() {
     $elems = $this->queryPath->find("#Layer4")->siblings();
+    $title = '';
 
     $pcounter = 0;
     // The sixth p is the title.
@@ -289,7 +301,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Find  the content of the first  "p > strong > em" on the page.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findPStrongEm() {
@@ -301,7 +313,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content sub-banner alt.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findSubBannerAlt() {
@@ -310,7 +322,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content sub-banner title.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findSubBannerTitle() {
@@ -320,7 +332,7 @@ class ObtainTitle extends Obtainer {
 
   /**
    * Finder method to find the content of the title.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function findTitleTag() {
@@ -370,15 +382,12 @@ class ObtainTitle extends Obtainer {
     // Remove undesirable chars.
     $text = str_replace('»', '', $text);
 
-    // Can not be longer than 255 chars. Trimming must be done LAST!
-    $text = self::truncateThisWithoutHTML($text, 255, 2);
-
     return $text;
   }
 
   /**
    * Grab method to find the content sub-banner attribute.
-   * @return text
+   * @return string
    *   The text found.
    */
   protected function grabSubBannerAttr($attribute = 'alt') {
@@ -413,6 +422,7 @@ class ObtainTitle extends Obtainer {
         return $image->attr($attribute);
       }
     }
+    return '';
   }
 
 

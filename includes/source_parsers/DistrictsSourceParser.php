@@ -37,13 +37,12 @@ class DistrictsSourceParser extends SourceParser {
 
       );
       $om = $this->getObtainerMethods('title');
-      $title_stack = (!empty($om)) ? $this->getObtainerMethods('title') : $default_target_stack;
+      $title_stack = (!empty($om)) ? $om : $default_target_stack;
       $this->setObtainerMethods(array('title' => $title_stack));
     }
     else {
       // The override was invoked, so use it.
       $title = $override;
-      $title = ObtainTitle::cleanPossibleText($title);
     }
 
     // Pass it to the parent::setTitle to process string cleanup or trigger
@@ -70,7 +69,7 @@ class DistrictsSourceParser extends SourceParser {
     // Remove breadcrumbs.
     $this->queryPath->find('.breadcrumb')->first()->remove();
 
-    parent::setBody($override = '');
+    parent::setBody($override);
   }
 
 
