@@ -163,7 +163,11 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['obtainer_methods'] = array(
       'title' => array(
         'findH1First',
+        'findIdLayer4P5UptoEmptyBr',
+        'findIdLayer4P5ShortEnough',
         'findIdLayer4P5Firstline',
+        'findIdLayer4P6ShortEnough',
+        'findIdLayer4P7ShortEnough',
       ),
       'body' => array(
         'findClassContentSub',
@@ -202,5 +206,43 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
     );
 
     parent::__construct($arguments, $source_dirs);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    $skip_these = array(
+      'usao/wvn/news/2013/january/january2013.html',
+      'usao/wvn/news/2013/february/february2013.html',
+      'usao/wvn/news/2013/march/march2013.html',
+      'usao/wvn/news/2013/april/april2013.html',
+      'usao/wvn/news/2013/may/may2013.html',
+      'usao/wvn/news/2013/june/june2013.html',
+      'usao/wvn/news/2013/july/july2013.html',
+      'usao/wvn/news/2013/august/august2013.html',
+      'usao/wvn/news/2013/september/september2013.html',
+      'usao/wvn/news/2013/october/october2013.html',
+      'usao/wvn/news/2013/november/november2013.html',
+      'usao/wvn/news/2013/december/december2013.html',
+      'usao/wvn/news/2014/january/january2014.html',
+      'usao/wvn/news/2014/february/february2014.html',
+      'usao/wvn/news/2014/march/march2014.html',
+      'usao/wvn/news/2014/april/april2014.html',
+      'usao/wvn/news/2014/may/may2014.html',
+      'usao/wvn/news/2014/june/june2014.html',
+      'usao/wvn/news/2014/july/july2014.html',
+      'usao/wvn/news/2014/august/august2014.html',
+      'usao/wvn/news/2014/september/september2014.html',
+      'usao/wvn/news/2014/october/october2014.html',
+      'usao/wvn/news/2014/november/november2014.html',
+      'usao/wvn/news/2014/december/december2014.html',
+    );
+
+    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+
   }
 }
