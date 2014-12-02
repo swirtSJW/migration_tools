@@ -33,6 +33,8 @@ class HtmlCleanUp {
       'div.thick-bar',
       'div.rightcolumn',
       'div.leftcolmenu',
+      // Remove all back to top links.
+      'a[href="#top"]',
     ));
 
     // Remove extraneous html wrapping elements, leaving children intact.
