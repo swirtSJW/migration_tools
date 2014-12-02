@@ -275,7 +275,7 @@ class ObtainTitle extends Obtainer {
 
 
   /**
-   * Finder method to find #Layer4 and the 6th paragraph on the page.
+   * Finder method to find #Layer4 and the 5th paragraph on the page.
    * @return string
    *   The text found.
    */
@@ -300,7 +300,7 @@ class ObtainTitle extends Obtainer {
 
 
   /**
-   * Finder method to find #Layer4 and the 6th paragraph on the page first line.
+   * Finder method to find #Layer4 and the 5th paragraph on the page first line.
    *
    * @return string
    *   The text found.
@@ -313,6 +313,83 @@ class ObtainTitle extends Obtainer {
     // so we have to evaluate the title and if it checks out, then remove the
     // the text and put the rest back.
     $this->extractAndPutBack($title, $elem);
+
+    return $title;
+  }
+
+
+  /**
+   * Finder method to find #Layer4 and the 5th paragraph on the page if short.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findIdLayer4P5ShortEnough() {
+    $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
+    $this->setJustFound($elem);
+    $title = $elem->innerHTML();
+    // If this value is fairly short, we can use the whole thing.
+    $length = drupal_strlen($title);
+    if ($length > 210) {
+      // Too long, so return empty so it will move on to the next finder.
+      $title = '';
+    }
+
+    return $title;
+  }
+
+
+  /**
+   * Method to find #Layer4 and the 5th paragraph up to the first empty br.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findIdLayer4P5UptoEmptyBr() {
+    $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
+    $title = $elem->innerHTML();
+    $title = $this->trimAtBrBlank($title, $elem, 210);
+    $length = drupal_strlen($title);
+
+    return $title;
+  }
+
+  /**
+   * Finder method to find #Layer4 and the 6th paragraph on the page if short.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findIdLayer4P6ShortEnough() {
+    $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(6)');
+    $this->setJustFound($elem);
+    $title = $elem->innerHTML();
+    // If this value is fairly short, we can use the whole thing.
+    $length = drupal_strlen($title);
+    if ($length > 210) {
+      // Too long, so return empty so it will move on to the next finder.
+      $title = '';
+    }
+
+    return $title;
+  }
+
+  /**
+   * Finder method to find #Layer4 and the 7th paragraph on the page if short.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findIdLayer4P7ShortEnough() {
+    $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(7)');
+    $this->setJustFound($elem);
+    $title = $elem->innerHTML();
+    // If this value is fairly short, we can use the whole thing.
+    $length = drupal_strlen($title);
+    if ($length > 210) {
+      // Too long, so return empty so it will move on to the next finder.
+      $title = '';
+    }
 
     return $title;
   }

@@ -271,6 +271,62 @@ class Obtainer {
   }
 
   /**
+   * Takes a string, returns anything before a lone <br> tag and its variants.
+   *
+   * @param string $text
+   *   The text to break at the first <br> variant.
+   * @param object $qp_element
+   *   The query path object that may need things removed from.
+   * @param int $max_length
+   *   The maximum length of the text to be considered valid.
+   *
+   * @return string
+   *   The string appearing before the blank <br> or the full string if no <br>.
+   */
+  protected function trimAtBrBlank($text, $qp_element, $max_length = 0) {
+    // Replace variations of br tag.
+    // @codingStandardsIgnoreStart
+    $search = array(
+      '<br>',
+      '<br />',
+      '<br/>',
+    );
+    $text = str_ireplace($search, '<br>', $text);
+    $texts = explode('<br>', $text);
+    // @codingStandardsIgnoreEnd
+    $trimmed = '';
+    $lines_used = 0;
+    foreach ($texts as $line_num => $line) {
+      if (!empty($line)) {
+        $lines_used = $line_num;
+        $trimmed .= ' ' . $line;
+      }
+      else {
+        break;
+      }
+    }
+    // Clean string.
+    $processed_text = $this->cleanPossibleText($trimmed);
+    // Evaluate string.
+    $this->setPossibleText($processed_text);
+    $valid = $this->validatePossibleText();
+    $length = drupal_strlen($processed_text);
+    if ($valid && ($max_length == 0 || $max_length >= $length)) {
+      // It was valid so strip out each line.
+      foreach ($texts as $line_num => $line) {
+        if ($line_num <= $lines_used) {
+          $this->extractAndPutBack($line, $qp_element);
+        }
+      }
+      return $trimmed;
+    }
+    else {
+      return '';
+    }
+  }
+
+
+  /**
    * Is essentially a truncation hook for each class to extend if needed.
    */
   protected function truncateThisPossibleText() {
