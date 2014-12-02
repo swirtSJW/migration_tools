@@ -152,7 +152,7 @@ class SourceParser {
    * Getter.
    */
   public function getID() {
-    return $this->date;
+    return $this->id;
   }
 
 

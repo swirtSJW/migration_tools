@@ -300,6 +300,25 @@ class ObtainTitle extends Obtainer {
 
 
   /**
+   * Finder method to find #Layer4 and the 6th paragraph on the page first line.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findIdLayer4P5Firstline() {
+    $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
+    $title = $elem->innerHTML();
+    $title = self::trimAtBr($title);
+    // Since this is a substring we can not remove the entire element,
+    // so we have to evaluate the title and if it checks out, then remove the
+    // the text and put the rest back.
+    $this->extractAndPutBack($title, $elem);
+
+    return $title;
+  }
+
+
+  /**
    * Find  the content of the first  "p > strong > em" on the page.
    * @return string
    *   The text found.
