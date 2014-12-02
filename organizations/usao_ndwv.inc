@@ -163,7 +163,7 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['obtainer_methods'] = array(
       'title' => array(
         'findH1First',
-        'findIdLayer4P6',
+        'findIdLayer4P5Firstline',
       ),
       'body' => array(
         'findClassContentSub',

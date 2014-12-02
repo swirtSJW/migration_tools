@@ -191,6 +191,33 @@ class Obtainer {
     $this->clearJustFound();
   }
 
+
+  /**
+   * Extracts, validates a string from html and puts remainder into the source.
+   *
+   * @param string $string
+   *   The string of text to validated and remove.
+   * @param object $qp_element
+   *   The queryPath element to alter and put back.
+   */
+  protected function extractAndPutBack($string, $qp_element) {
+    // Clean string.
+    $processed_text = $this->cleanPossibleText($string);
+    // Evaluate string.
+    $this->setPossibleText($processed_text);
+    $valid = $this->validatePossibleText();
+    if ($valid) {
+      // The string checks out, remove the original string from the element.
+      $full_source = $qp_element->html();
+      $new_source = str_replace($string, '', $full_source);
+      $qp_element->html($new_source);
+      // Since we have already surgically removed just the string, don't remove
+      // the entire element.
+      $this->removeMeNot();
+    }
+  }
+
+
   /**
    * Clean PossibleText prior to validation.
    */
@@ -218,6 +245,30 @@ class Obtainer {
     $this->clearJustFound();
   }
 
+
+  /**
+   * Takes a string, returns anything before a <br> tag and its many variants.
+   *
+   * @param string $text
+   *   The text to break at the first <br> variant.
+   *
+   * @return string
+   *   The string appearing before the <br> or the full string if no <br>.
+   */
+  public static function trimAtBr($text = '') {
+    // Replace variations of br tag.
+    // @codingStandardsIgnoreStart
+    $search = array(
+      '<br>',
+      '<br />',
+      '<br/>',
+    );
+    $text = str_ireplace($search, '<br>', $text);
+    $texts = explode('<br>', $text);
+    // @codingStandardsIgnoreEnd
+
+    return $texts[0];
+  }
 
   /**
    * Is essentially a truncation hook for each class to extend if needed.
@@ -318,5 +369,16 @@ class Obtainer {
       drush_doj_migration_debug_output("{$obtainer_name}-Matched: NO MATCHES FOUND");
     }
 
+  }
+
+
+  /**
+   * A default findMethod for use when you want nothing found.
+   *
+   * @return string
+   *   An empty text.
+   */
+  private function findNothing() {
+    return '';
   }
 }
