@@ -28,8 +28,9 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $options = array(
       'recurse' => TRUE,
     );
-
-    $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
+    if (empty($arguments['source_parser_class'])) {
+      $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
+    }
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, $options);

@@ -55,6 +55,7 @@ class HtmlCleanUp {
     HTMLCleanUp::removeEmptyElements($query_path, array(
       'div',
       'span',
+      'p',
     ));
 
     // Remove black title bar with eagle image (if present).
@@ -209,7 +210,7 @@ class HtmlCleanUp {
     foreach ($selectors as $selector) {
       $elements = $query_path->find($selector);
       foreach ($elements as $element) {
-        $contents = trim($element->innerXHTML());
+        $contents = StringCleanUp::superTrim($element->innerXHTML());
         $empty_values = array(
           '&nbsp;',
           '',

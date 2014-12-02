@@ -44,6 +44,8 @@ files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/OlaPageSourceParser.php
 files[] = includes/source_parsers/OlaTestimonySourceParser.php
 files[] = includes/source_parsers/OlaWitnessSourceParser.php
+files[] = includes/source_parsers/SdmsSourceParser.php
+files[] = includes/source_parsers/SdmsPressSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
 
 ; Obtainers
