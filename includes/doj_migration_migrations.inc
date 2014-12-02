@@ -101,6 +101,10 @@ return array (
     array (
       'title' => 'District of Massachusetts',
     ),
+    'usao-mdla' => 
+    array (
+      'title' => 'Middle District of Louisiana',
+    ),
   ),
   'migrations' => 
   array (
@@ -428,6 +432,21 @@ return array (
     array (
       'group_name' => 'usao-ma',
       'class_name' => 'UsaoMaPressReleaseMigration',
+    ),
+    'UsaoMdlaFile' => 
+    array (
+      'group_name' => 'usao-mdla',
+      'class_name' => 'UsaoMdlaFileMigration',
+    ),
+    'UsaoMdlaPage' => 
+    array (
+      'group_name' => 'usao-mdla',
+      'class_name' => 'UsaoMdlaPageMigration',
+    ),
+    'UsaoMdlaPressRelease' => 
+    array (
+      'group_name' => 'usao-mdla',
+      'class_name' => 'UsaoMdlaPressReleaseMigration',
     ),
   ),
 );
