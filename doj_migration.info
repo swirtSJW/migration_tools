@@ -80,3 +80,4 @@ files[] = organizations/usao_wdmo.inc
 files[] = organizations/usao_sdwv.inc
 files[] = organizations/usao_ma.inc
 files[] = organizations/usao_mdla.inc
+files[] = organizations/usao_sdms.inc
