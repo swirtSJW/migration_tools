@@ -28,7 +28,7 @@ class UsaoSdmsPageMigration extends JusticeHtmlToPageMigration {
       58 => 'usao/mss/usao/mss/includes',
     );
 
-    $arguments['source_parser_class'] = "DistrictsSourceParser";
+    $arguments['source_parser_class'] = "SdmsSourceParser";
 
     $options = array('recurse' => FALSE);
 
@@ -100,6 +100,7 @@ class UsaoSdmsPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-sdms";
     $arguments['component'] = "Southern District of Mississippi (USAO)";
+    $arguments['source_parser_class'] = "SdmsPressSourceParser";
 
     $source_dirs = array(
       2 => 'usao/mss/press/January2013',

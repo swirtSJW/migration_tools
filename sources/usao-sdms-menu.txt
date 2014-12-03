@@ -1,0 +1,19 @@
+HOME{"url":"usao-sdms"}
+ABOUT{"url":"usao-sdms/about-southern-district-mississppi-us-attorneys-office-0"}
+-About the Office{"url":"usao-sdms/about-southern-district-mississppi-us-attorneys-office-0"}
+-About the District{"url":"usao-sdms/about-southern-district-mississippi-0"}
+NEWS{"url":"usao-sdms/news-and-press-releases-4"}
+MEET THE U.S. ATTORNEY{"url":"usao-sdms/greg-davis-0"}
+DIVISIONS{"url":"usao-sdms/divisions-0"}
+-Civil Division {"url":"usao-sdms/civil-division-0"}
+-Criminal Division {"url":"usao-sdms/criminal-division-0"}
+PROGRAMS{"url":"usao-sdms/programs-2"}
+-Community Outreach{"url":"usao-sdms/community-outreach-0"}
+-LECC{"url":"usao-sdms/law-enforcement-coordinating-committee-0"}
+-Project Safe Childhood{"url":"usao-sdms/project-safe-childhood-0"}
+-Project Safe Neighborhoods{"url":"usao-sdms/project-safe-neighborhoods-0"}
+-Victim Witness Assistance {"url":"usao-sdms/victim-witness-assistance-program-0"}
+JOBS{"url":"usao-sdms/employment"}
+-USA JOBS{"url":"https://www.usajobs.gov/"}
+-Attorneys{"url":"legal-careers/vacancies"}
+CONTACT{"url":"usao-sdms/programs-1"}
