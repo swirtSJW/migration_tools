@@ -1,4 +1,4 @@
-district_abbreviation: usao-sdms
-district_full_name: Southern District of Mississippi
-migration_directory: usao/mss
-press_release_subdirectory: press
+abbreviation: usao-sdms
+full_name: Southern District of Mississippi
+directory: usao/mss
+pr_subdirectory: press
