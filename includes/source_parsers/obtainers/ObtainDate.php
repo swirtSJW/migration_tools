@@ -40,7 +40,21 @@ class ObtainDate extends Obtainer {
 
 
   /**
-   * Finder method to find the .lastupdate .
+   * Finder method to find the .BottomLeftContent.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findClassBottomLeftContent() {
+    $this->setJustFound($this->queryPath->top('.BottomLeftContent'));
+    $string = $this->getJustFound()->text();
+
+    return $string;
+  }
+
+
+  /**
+   * Finder method to find the .lastupdate.
    *
    * @return string
    *   The string that was found
@@ -52,15 +66,152 @@ class ObtainDate extends Obtainer {
     return $string;
   }
 
+  /**
+   * Finder method to find the #contentstart > p.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findIdContentstartFirst() {
+    $this->setJustFound($this->queryPath->find('#contentstart > p'));
+    $string = $this->getJustFound()->text();
+
+    return $string;
+  }
+
+
+  /**
+   * Finder method to find the .newsRight.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findClassNewsRight() {
+    $this->setJustFound($this->queryPath->top('.newsRight'));
+    $string = $this->getJustFound()->text();
+
+    return $string;
+  }
+
+
+  /**
+   * Method for returning the p that is aligned center.
+   * @return text
+   *   The string found.
+   */
+  protected function findPAlignCenter() {
+    foreach ($this->queryPath->find("p") as $p) {
+      $align = $p->attr('align');
+      if (strcmp($align, "right") == 0) {
+        $text = $p->text();
+        $this->setJustFound($p);
+        break;
+      }
+    }
+
+    return $text;
+  }
+
+
+  /**
+   * Finder method to find dates by its accompanying text.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findProbableDate() {
+    // Selectors paired with the text that accompanies dates.
+    $selectors = array(
+      '.BottomLeftContent',
+      '#dateline',
+      'p',
+      '.newsLeft',
+    );
+
+    $search_strings = array(
+      "FOR IMMEDIATE RELEASE",
+      "NEWS RELEASE SUMMARY",
+    );
+    // Loop through the selectors.
+    foreach ($selectors as $selector) {
+      // Loop through the search strings.
+      foreach ($search_strings as $search_string) {
+        // Search for the string.
+        $elem = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
+
+        if (!empty($elem)) {
+          $text = $elem->text();
+          // Clean string.
+          $processed_text = $this->cleanPossibleText($text);
+          // Evaluate string.
+          $this->setPossibleText($processed_text);
+          $valid = $this->validatePossibleText();
+          if ($valid) {
+            // We have a winner.
+            $this->setJustFound($elem);
+            $this->setCurrentFindMethod("findProbableDate| selector:$selector  search string:$search_string");
+
+            return $text;
+          }
+        }
+      }
+    }
+
+    return '';
+  }
+
+
+  /**
+   * Method for returning the table cell at row 1,  column 1.
+   * @return text
+   *   The string found.
+   */
+  protected function findTableRow1Col1() {
+    $table = $this->queryPath->find("table");
+    $text = $this->getFromTable($table, 1, 1);
+    return $text;
+  }
+
+
+  /**
+   * Method for returning the table cell at row 1,  column 2.
+   * @return text
+   *   The string found.
+   */
+  protected function findTableRow1Col2() {
+    $table = $this->queryPath->find("table");
+    $text = $this->getFromTable($table, 1, 2);
+    return $text;
+  }
+
+
+  /**
+   * Method for returning the 2nd table cell at row 2, column 2.
+   * @return text
+   *   The string found.
+   */
+  protected function findTable2Row2Col2() {
+    $table = $this->queryPath->find("table");
+    $counter = 1;
+    foreach ($table as $t) {
+      if ($counter == 2) {
+        $text = $this->getFromTable($t, 2, 2);
+        break;
+      }
+      $counter++;
+    }
+
+    return $text;
+  }
 
   /**
    * Method for returning the table cell at 3rd row, 1st column.
    * @return text
    *   The string found.
    */
-  protected function findTable3y1x() {
+  protected function findTableRow3Col1() {
     $table = $this->queryPath->find("table");
-    $text = SourceParser::getFromTable($table, 3, 1);
+    $text = $this->getFromTable($table, 3, 1);
     return $text;
   }
 
@@ -91,6 +242,18 @@ class ObtainDate extends Obtainer {
     if (!$is_utf8) {
       $text = StringCleanUp::fixEncoding($text);
     }
+
+    // Remove some strings that often accompany dates.
+    $remove = array(
+      'FOR IMMEDIATE RELEASE',
+      'NEWS RELEASE SUMMARY –',
+      'news',
+      'press',
+      'release',
+      'updated',
+      'update',
+    );
+    $text = str_ireplace($remove, '', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);

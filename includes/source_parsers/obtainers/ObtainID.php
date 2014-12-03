@@ -39,7 +39,7 @@ class ObtainID extends Obtainer {
    */
   protected function findTable3y1x() {
     $table = $this->queryPath->find("table");
-    $text = SourceParser::getFromTable($table, 3, 1);
+    $text = $this->getFromTable($table, 3, 1);
     return $text;
   }
 

@@ -238,6 +238,40 @@ class Obtainer {
 
 
   /**
+   * Get specific tds from a table, and lines it up to be removed.
+   *
+   * @param object $table
+   *   A query path object with a table as the root.
+   * @param int $tr_target
+   *   Which tr do you want. Starting the count from 1.
+   * @param int $td_target
+   *   Which td do you want. Starting the count from 1.
+   *
+   * @return string
+   *   The text inside of the wanted tr and td.
+   */
+  protected function getFromTable($table, $tr_target, $td_target) {
+    $trcount = 1;
+    $tdcount = 1;
+
+    foreach ($table->find("tr") as $tr) {
+      if ($trcount == $tr_target) {
+        foreach ($tr->find("td") as $td) {
+          if ($tdcount == $td_target) {
+            $this->setJustFound($td);
+            return $td->text();
+          }
+          $tdcount++;
+        }
+      }
+      $trcount++;
+    }
+
+    return "";
+  }
+
+
+  /**
    * Alias for clearJustFound.  Prevents removal of justFound from the QP.
    */
   protected function removeMeNot() {

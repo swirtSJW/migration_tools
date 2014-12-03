@@ -135,16 +135,21 @@ class SourceParser {
       // $arguments['obtainer_methods'].
       $default_target_stack = array();
 
-      $date = $this->runObtainer('ObtainDate', 'date', $default_target_stack);
+      $om = $this->getObtainerMethods('date');
+      $date_find_stack = (!empty($om)) ? $om : $default_target_stack;
+      $obtained_date = new ObtainDate($this->queryPath, $date_find_stack);
+      $date = $obtained_date->formatDate('n/d/Y');
+      $date_string_raw = $obtained_date->getText();
     }
     else {
       // The override was invoked, so use it.
       $date = $override;
+      $date_string_raw = $override;
     }
 
     $this->date = $date;
     // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("--date-->  {$this->getDate()}");
+    drush_doj_migration_debug_output("--date--> Raw:{$date_string_raw}  Formatted:{$this->getDate()}");
   }
 
 

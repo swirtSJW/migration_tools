@@ -366,13 +366,14 @@ class HtmlCleanUp {
    * General matching function.
    */
   private static function match($qp, $selector, $target, $function, $parameter = NULL) {
-    foreach ($qp->find($selector) as $elem) {
+    $elements = $qp->find($selector);
+    foreach ($elements as $key => $elem) {
       $stuff = $elem->$function($parameter);
       if (substr_count($stuff, $target) > 0) {
         return $elem;
       }
-      return FALSE;
     }
+    return FALSE;
   }
 
   /**

@@ -164,101 +164,25 @@ class DistrictPressReleaseSourceParser extends SourceParser {
   /**
    * Setter.
    */
-  protected function setDate() {
-    // @TODO This whole function needs to have its process moved to ObtainDate.
-
-    // Matches on tables.
-    // Second td in the first tr of the table is the date.
-    $table = $this->queryPath->find("table");
-
-    $date = $this->dateSetHelper($this->getFromTable($table, 1, 2));
-
-    if (empty($date)) {
-      if (substr_count($text = $this->getFromTable($table, 1, 1), "FOR IMMEDIATE RELEASE") > 0) {
-        $pieces = explode("\n", $text);
-        $date = $this->dateSetHelper($pieces[1]);
-      }
-    }
-
-    if (empty($date)) {
-      // We need the second table.
-      $counter = 1;
-      foreach ($table as $t) {
-        if ($counter == 2) {
-
-          $text = $this->getFromTable($t, 2, 2);
-
-          $date = $this->dateSetHelper($text);
-        }
-        $counter++;
-      }
-    }
-
-    if (empty($date)) {
-      foreach ($this->queryPath->find("p") as $p) {
-        $align = $p->attr('align');
-        if (strcmp($align, "right") == 0) {
-
-          $date = $this->dateSetHelper($p->text(), $p);
-
-          break;
-        }
-      }
-    }
-
-    // Straight up matches.
-    $selectors = array(
-      "#contentstart > p",
-      ".newsRight",
-    );
-    while (empty($date) && !empty($selectors)) {
-      $selector = array_shift($selectors);
-      $text = HtmlCleanUp::extractFirstElement($this->queryPath, $selector);
-      $date = $this->dateSetHelper($text);
-    }
-
-    // Matches with text conditionals.
-    $selectors = array(
-      ".BottomLeftContent" => "FOR IMMEDIATE RELEASE",
-      "#dateline" => "NEWS RELEASE SUMMARY –",
-      "p" => "FOR IMMEDIATE RELEASE",
+  protected function setDate($override = '') {
+    // Default stack: Use this if none was defined in
+    // $arguments['obtainer_methods'].
+    $default_target_stack = array(
+      'findTableRow1Col2',
+      'findTableRow1Col1',
+      'findTable2Row2Col2',
+      'findPAlignCenter',
+      'findIdContentstartFirst',
+      'findClassNewsRight',
+      'findClassBottomLeftContent',
+      'findProbableDate',
     );
 
-    while (empty($date) && !empty($selectors)) {
-      $selector = array_shift(array_keys($selectors));
-      $cleanup = array_shift($selectors);
-      if ($elem = HtmlCleanUp::matchText($this->queryPath, $selector, $cleanup)) {
-        $text = StringCleanUp::superTrim(str_replace($cleanup, "", $text = $elem->text()));
-        $date = $this->dateSetHelper($text, $elem);
-      }
-    }
+    $om = $this->getObtainerMethods('date');
+    $date_find_stack = (!empty($om)) ? $om : $default_target_stack;
+    $this->setObtainerMethods(array('date' => $date_find_stack));
 
-    // Other matches.
-    if (empty($date)) {
-      $pcounter = 0;
-      // The second p is the title.
-      foreach ($this->queryPath->find("#Layer4")->siblings() as $elem) {
-        if ($elem->is("p")) {
-          $pcounter++;
-          if ($pcounter == 5) {
-            $text = str_replace("FOR IMMEDIATE RELEASE", "", $elem->text());
-            $date = $this->dateSetHelper($text, $elem);
-            break;
-          }
-        }
-      }
-    }
-
-    if (empty($date)) {
-      $selector = ".newsLeft";
-      $cleanup = "FOR IMMEDIATE RELEASE";
-      if ($elem = HtmlCleanUp::matchText($this->queryPath, $selector, $cleanup)) {
-        $elem->find("a")->remove();
-        $text = StringCleanUp::superTrim(str_replace($cleanup, "", $text = $elem->text()));
-        $date = $this->dateSetHelper($text, $elem);
-      }
-    }
-    $this->date = $date;
+    return parent::setDate($override);
   }
 
 
