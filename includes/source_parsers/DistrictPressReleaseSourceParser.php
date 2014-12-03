@@ -98,7 +98,7 @@ class DistrictPressReleaseSourceParser extends SourceParser {
         // Default stack: Use this if none was defined in
         // $arguments['obtainer_methods'].
         $default_target_stack = array(
-          'findAnyH1',
+          'findH1Any',
           'findIdContentstartDivH2Sec',
           'findH2First',
           'findClassContentSubDivPCenterStrong',

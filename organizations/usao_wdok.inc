@@ -31,7 +31,7 @@ class UsaoWdokPageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('UsaoDistrict');
-    $this->description = t('Migrates pages from the Westerb District of Oklahoma.');
+    $this->description = t('Migrates pages from the Western District of Oklahoma.');
     $this->addFieldMapping('og_group_ref')
       ->defaultValue('usao-wdok')
       ->sourceMigration('UsaoDistrict');
