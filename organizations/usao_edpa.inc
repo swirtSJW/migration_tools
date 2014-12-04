@@ -153,4 +153,21 @@ class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
     );
     parent::__construct($arguments, $source_dirs);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    $skip_these = array(
+      'usao/pae/News/2013/Feb/index-news_2013.htm',
+      'usao/pae/News/index-news_2014.htm',
+
+    );
+
+    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+
+  }
 }

@@ -301,4 +301,35 @@ class StringCleanUp {
 
     return $string;
   }
+
+
+  /**
+   * Make each word start with a cap, but do not alter ALL-capped words.
+   *
+   * @param string $text
+   *   String of text to process.
+   *
+   * @return string
+   *   Processed text where each word should start with a cap, except Allcaps.
+   */
+  public static function makeWordsFirstCapital($text = '') {
+    if (!empty($text) && is_string($text)) {
+      $words = explode(' ', $text);
+      // Loop through words and capital if not all upper case.
+      foreach ($words as &$word) {
+        // Check for all caps?
+        if (strtoupper($word) != $word) {
+          // It is not all caps so process it.
+          $word = ucwords($word);
+        }
+      }
+      // Break the reference.
+      unset($word);
+
+      // Join them all back together.
+      $text = implode(' ', $words);
+    }
+
+    return $text;
+  }
 }

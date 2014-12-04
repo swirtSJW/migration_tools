@@ -28,4 +28,21 @@ class ObtainTitlePressRelease extends ObtainTitle {
     // Made it this far.  Send it to the parent for further validations.
     return parent::validatePossibleText();
   }
+
+  /**
+   * Cleans $text and returns it.
+   *
+   * @param string $text
+   *   Text to clean and return.
+   *
+   * @return string
+   *   The cleaned text.
+   */
+  public static function cleanPossibleText($text = '') {
+    // Pass it to the parent, then do any additional processing.
+    $text = parent::cleanPossibleText($text);
+    $text = StringCleanUp::makeWordsFirstCapital($text);
+
+    return $text;
+  }
 }
