@@ -1,4 +1,4 @@
-district_abbreviation: usao-mdla
-district_full_name: Middle District of Louisiana
-migration_directory: usao/lam
-press_release_subdirectory: news
+abbreviation: usao-mdla
+full_name: Middle District of Louisiana
+directory: usao/lam
+pr_subdirectory: news

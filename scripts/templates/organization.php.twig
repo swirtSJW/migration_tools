@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Defines migration classes for Office of the Pardon.
+ * Defines migration classes for {{ info.full_name }}.
  */
 
 /**
- * Migrates .html files from /pardon to page nodes.
+ * Migrates .html files from /{{ info.abbreviation }} to page nodes.
  *
  * @package doj_migration
- * @subpackage pardon
+ * @subpackage {{ info.abbreviation }}
  */
-class PardonPageMigration extends JusticeHtmlToPageMigration {
+class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -20,7 +20,7 @@ class PardonPageMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      'pardon',
+      '{{ info.directory }}',
     );
 
     $arguments['source_parser_class'] = "SourceParser";
@@ -31,9 +31,9 @@ class PardonPageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
-    $this->description = t('Migrates pages from the Office of the Pardon.');
+    $this->description = t('Migrates pages from the {{ info.full_name }}.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('pardon')
+    ->defaultValue('{{ info.abbreviation }}')
     ->sourceMigration('Organization');
   }
 
@@ -48,27 +48,27 @@ class PardonPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /pardon.
+ * Migrates files (*.pdf) from /{{ info.abbreviation }}.
  *
  * @package doj_migration
- * @subpackage pardon
+ * @subpackage {{ info.abbreviation }}
  */
-class PardonFileMigration extends JusticeDeployableBinaryFileMigration {
+class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the pardon subdirectory.');
+    $this->description = t('Migrates non-image files from the {{ info.directory }} subdirectory.');
     $this->dependencies = array('Organization');
 
     // Match .pdf files only.
     $source_dirs = array(
-      'pardon',
+      '{{ info.directory }}',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///pardon/docs';
+    $dest_dir = 'public:///{{ info.abbreviation }}/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -83,6 +83,6 @@ class PardonFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "pardon";
+    return "{{ info.abbreviation }}";
   }
 }

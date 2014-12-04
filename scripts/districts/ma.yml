@@ -1,4 +1,4 @@
-district_abbreviation: usao-ma
-district_full_name: District of Massachusetts
-migration_directory: usao/ma
-press_release_subdirectory: news
+abbreviation: usao-ma
+full_name: District of Massachusetts
+directory: usao/ma
+pr_subdirectory: news
