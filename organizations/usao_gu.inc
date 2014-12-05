@@ -98,7 +98,7 @@ class UsaoGuPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-gu";
-    $arguments['component'] = "District of Guam & Northern Mariana Islands (USAO)";
+    $arguments['component'] = "USAO - District of Guam & Northern Mariana Islands";
 
     $source_dirs = array(
       5 => 'usao/gu/news/2014',

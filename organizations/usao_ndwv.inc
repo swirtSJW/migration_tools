@@ -158,7 +158,7 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-ndwv";
-    $arguments['component'] = "Northern District of West Virginia (USAO)";
+    $arguments['component'] = "USAO - Northern District of West Virginia";
     $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
     $arguments['obtainer_methods'] = array(
       'title' => array(

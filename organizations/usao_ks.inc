@@ -96,7 +96,7 @@ class UsaoKsPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-ks";
-    $arguments['component'] = "District of Kansas (USAO)";
+    $arguments['component'] = "USAO - District of Kansas";
 
     $source_dirs = array(
       27 => 'usao/ks/PressReleases/2014',

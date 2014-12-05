@@ -94,7 +94,7 @@ class UsaoMdlaPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-mdla";
-    $arguments['component'] = "Middle District of Louisiana (USAO)";
+    $arguments['component'] = "USAO - Middle District of Louisiana";
 
     $source_dirs = array(
       3 => 'usao/lam/news/2014',
