@@ -196,6 +196,18 @@ class ObtainTitle extends Obtainer {
 
 
   /**
+   * Finder method to find the content of the first H2 on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findH2FirstCentered() {
+    $this->setJustFound($this->queryPath->find("h2[align='center']")->first());
+    $title = $this->getJustFound()->text();
+    return $title;
+  }
+
+
+  /**
    * Finder method to find the content of the first H3 on the page.
    * @return string
    *   The text found.
