@@ -104,8 +104,6 @@ class NsdOvtPageMigration extends JusticeHtmlToPageMigration {
     $t = str_replace("aa  aa", "", $t);
     $t = StringCleanUp::superTrim($t);
     $row->title = $t;
-
-    print_r($row->fileid . " ---> " . $row->title . "\n");
   }
 }
 
