@@ -65,12 +65,47 @@ class NsdOvtPageMigration extends JusticeHtmlToPageMigration {
     );
     $options = array('recurse' => FALSE);
 
+    $arguments['source_parser_class'] = "NsdOvtSourceParser";
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the National Security Division Office of Justice for Victims of Overseas Terrorism section.');
     $this->addFieldMapping('og_group_ref')->defaultValue('nsd-ovt')->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    // Do not bring in interactive maps.
+    if (substr_count($row->fileid, "interactive_map") > 0) {
+      return FALSE;
+    }
+
+    $skip_these = array(
+      '/nsd/ovt/ovt_vtasuggestions.html',
+      '/nsd/ovtmumbai/index.html',
+      '/nsd/ovtuganda/index.html',
+      '/nsd/ovtkenya/index.html',
+    );
+
+    module_load_include('inc', "doj_migration", "includes/doj_migration");
+    if (doj_migration_check_skip_this($row->fileid, $skip_these) === FALSE) {
+      return FALSE;
+    }
+
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    // Clean the title.
+    $t = str_replace("a    a", "", $row->title);
+    $t = str_replace("aa  aa", "", $t);
+    $t = StringCleanUp::superTrim($t);
+    $row->title = $t;
+
+    print_r($row->fileid . " ---> " . $row->title . "\n");
   }
 }
 
