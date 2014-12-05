@@ -124,7 +124,7 @@ class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-edpa";
-    $arguments['component'] = "Eastern District of Pennsylvania (USAO)";
+    $arguments['component'] = "USAO - Eastern District of Pennsylvania";
 
     $source_dirs = array(
       14 => 'usao/pae/News/2014/September',
