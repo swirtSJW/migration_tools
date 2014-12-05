@@ -62,6 +62,8 @@ class ObtainHtml extends Obtainer {
       $text = StringCleanUp::fixEncoding($text);
     }
 
+    $text = StringCleanUp::stripCmsLegacyMarkup($text);
+
     // Remove specific strings.
     // Strings to remove must be sorted by complexity.  More complex must come
     // before smaller or less complex things.
