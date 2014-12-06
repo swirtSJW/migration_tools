@@ -22,10 +22,8 @@ class UsaoSdwvPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       0 => 'usao/wvs',
       1 => 'usao/wvs/includes',
-      2 => 'usao/wvs/includes/_notes',
       3 => 'usao/wvs/_notes',
       6 => 'usao/wvs/press_releases',
-      64 => 'usao/wvs/images/_notes',
       65 => 'usao/wvs/images',
     );
 
@@ -50,6 +48,17 @@ class UsaoSdwvPageMigration extends JusticeHtmlToPageMigration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+    $skip_these = array(
+
+      'usao/wvs/includes/usao-header.html',
+      'usao/wvs/includes/usao-footer.html',
+      'usao/wvs/includes/index.html',
+      'usao/wvs/includes/newsfeed.html',
+      'usao/wvs/includes/usao-rightCol.html',
+    );
+
+    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+
   }
 }
 
