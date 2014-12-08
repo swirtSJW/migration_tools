@@ -96,6 +96,12 @@ class UsaoMdlaPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['district'] = "usao-mdla";
     $arguments['component'] = "USAO - Middle District of Louisiana";
 
+    $arguments['obtainer_methods'] = array(
+      'subtitle' => array(
+        'findH2FirstCentered',
+      ),
+    );
+
     $source_dirs = array(
       3 => 'usao/lam/news/2014',
       4 => 'usao/lam/news/2013',
