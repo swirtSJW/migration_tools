@@ -1,0 +1,21 @@
+EOIR Home{"url":"eoir"}
+Meet the Director{"url":"eoir/meet-director"}
+About the Office{"url":"eoir/about-office"}
+-Organization Chart{"url":"eoir/organization-chart"}
+-Office of the Director{"url":"eoir/office-director"}
+-Board of Immigration Appeals{"url":"eoir/board-immigration-appeals-3"}
+-Office of the Chief Immigration Judge{"url":"eoir/office-chief-immigration-judge-6"}
+-Office of the Chief Administrative Hearing Officer{"url":"eoir/office-chief-administrative-hearing-officer-3"}
+-Office of the General Counsel{"url":"eoir/office-general-counsel-0"}
+-Administration Division{"url":"eoir/administration-division-0"}
+-Office of Management Programs{"url":"eoir/office-management-programs-0"}
+-Office of Planning, Analysis & Technology{"url":"eoir/office-planning-analysis-and-technology-0"}
+News and Information{"url":"eoir/news-and-information-166"}
+-Subject Listing{"url":"eoir/subject-listing-news-releases-fact-sheets-2"}
+-Notices{"url":"eoir/notices"}
+-Archives{"url":"eoir/subject-listing-news-releases-fact-sheets-1"}
+Statistics and Publications{"url":"eoir/statistics-and-publications"}
+Immigration Judge Conduct and Professionalism{"url":"eoir/immigration-judge-conduct-and-professionalism"}
+Virtual Law Library{"url":"eoir/virtual-law-library-185"}
+EOIR FOIA{"url":"eoir/freedom-information-act"}
+Contact the Office{"url":"eoir/contact-office"}

@@ -88,3 +88,4 @@ files[] = organizations/usao_mdla.inc
 files[] = organizations/usao_sdms.inc
 files[] = organizations/pardon.inc
 files[] = organizations/uspc.inc
+files[] = organizations/eoir.inc

@@ -121,6 +121,10 @@ return array (
     array (
       'title' => 'U.S. Parole Commission',
     ),
+    'eoir' =>
+    array (
+      'title' => 'Executive Office for Immigration Review',
+    ),
   ),
   'migrations' =>
   array (
@@ -508,6 +512,16 @@ return array (
     array (
       'group_name' => 'uspc',
       'class_name' => 'UspcPageMigration',
+    ),
+    'EoirFile' =>
+    array (
+      'group_name' => 'eoir',
+      'class_name' => 'EoirFileMigration',
+    ),
+    'EoirPage' =>
+    array (
+      'group_name' => 'eoir',
+      'class_name' => 'EoirPageMigration',
     ),
   ),
 );
