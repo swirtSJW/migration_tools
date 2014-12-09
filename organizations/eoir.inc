@@ -23,7 +23,7 @@ class EoirPageMigration extends JusticeHtmlToPageMigration {
       'eoir',
     );
 
-    $arguments['source_parser_class'] = "SourceParser";
+    $arguments['source_parser_class'] = "EoirSourceParser";
 
     $options = array('recurse' => TRUE);
 
