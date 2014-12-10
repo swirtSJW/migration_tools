@@ -108,6 +108,44 @@ class NsdOvtPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
+ * Migrates files (*.pdf) from /nsd/ovt.
+ *
+ * @package doj_migration
+ * @subpackage nsd
+ */
+class NsdOvtFileMigration extends JusticeDeployableBinaryFileMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->description = t('Migrates files (*.pdf) from the nsd subdirectory.');
+    $this->dependencies = array('Organization');
+
+    // Match .pdf files only.
+    $source_dirs = array(
+      "nsd/ovt",
+    );
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $dest_dir = 'public:///nsd/ovt/docs';
+
+    $options = array('recurse' => TRUE);
+
+    // This will setup $this->map, $this->destination, and $this->source.
+    // It will also add field mappings for file location and redirects, which
+    // relies on prepareRow() defining $row->filepath and $row->legacy_path.
+    parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOrganizationAbbreviation() {
+    return "nsd-ovt";
+  }
+}
+
+/**
  * Migrates .html files from /nsd/newemployee to page nodes.
  *
  * @package doj_migration
