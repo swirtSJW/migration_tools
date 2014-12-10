@@ -120,7 +120,7 @@ class UsaoEdpaFileMigration extends JusticeDeployableBinaryFileMigration {
 
 class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
   /**
-   * {@inheritdoc} 
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-edpa";
@@ -151,6 +151,9 @@ class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
       35 => 'usao/pae/News/2013/December',
       36 => 'usao/pae/News/2013/July',
     );
+
+    $arguments["source_parser_class"] = "EdpaPressSourceParser";
+
     parent::__construct($arguments, $source_dirs);
   }
 
