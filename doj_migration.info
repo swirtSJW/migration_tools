@@ -38,6 +38,7 @@ files[] = includes/JusticeChunkParser.inc
 files[] = includes/source_parsers/DistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/DistrictsSourceParser.php
 files[] = includes/source_parsers/EdpaSourceParser.php
+files[] = includes/source_parsers/EdpaPressSourceParser.php
 files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
