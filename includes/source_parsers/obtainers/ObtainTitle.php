@@ -406,6 +406,17 @@ class ObtainTitle extends Obtainer {
     return $title;
   }
 
+  /**
+   * Find  the content of the first  "p[align="center"] > strong > u" on page.
+   * @return string
+   *   The text found.
+   */
+  protected function findPAlignCenterStrongU() {
+    $this->setJustFound($this->queryPath->find('p[align="center"] > strong > u')->first());
+    $title = $this->getJustFound()->text();
+    return $title;
+  }
+
 
   /**
    * Find  the content of the first  "p > strong > em" on the page.

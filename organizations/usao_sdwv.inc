@@ -110,6 +110,26 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-sdwv";
     $arguments['component'] = "USAO - Southern District of West Virginia";
+    $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findClassMultiU',
+        'findClassMultiStrongU',
+        'findPAlignCenterStrongU',
+        'findH1First',
+
+      ),
+      'body' => array(
+        'findClassContentSub',
+      ),
+      'subtitle' => array(),
+      'date' => array(
+        'findPAlignCenter',
+        'findProbableDate',
+      ),
+      // There are no ids.
+      'id' => array(),
+    );
 
     $source_dirs = array(
       4 => 'usao/wvs/press_releases/October2014/attachments',
@@ -138,5 +158,43 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       63 => 'usao/wvs/press_releases/2014-11-Nov/attachments',
     );
     parent::__construct($arguments, $source_dirs);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    $skip_these = array(
+      'usao/wvs/press_releases/Jan2013/attachments/Jan2013releases.html',
+      'usao/wvs/press_releases/Feb2013/attachments/Feb2013releases.html',
+      'usao/wvs/press_releases/March2013/attachments/March2013releases.html',
+      'usao/wvs/press_releases/April2013/attachments/April2013releases.html',
+      'usao/wvs/press_releases/June2013/attachments/June2013releases.html',
+      'usao/wvs/press_releases/July2013/attachments/July2013releases.html',
+      'usao/wvs/press_releases/Aug2013/attachments/Aug2013releases.html',
+      'usao/wvs/press_releases/Sept2013/attachments/Sept2013releases.html',
+      'usao/wvs/press_releases/Oct2013/attachments/Oct2013releases.html',
+      'usao/wvs/press_releases/Nov2013/attachments/Nov2013releases.html',
+      'usao/wvs/press_releases/Dec2013/attachments/Dec2013releases.html',
+
+      'usao/wvs/press_releases/Jan2014/attachments/_notes/Jan2014releases.html',
+      'usao/wvs/press_releases/Jan2014/attachments/Jan2014releases.html',
+      'usao/wvs/press_releases/Feb2014/attachments/Feb2014releases.html',
+      'usao/wvs/press_releases/March2014/attachments/March2014releases.html',
+      'usao/wvs/press_releases/April2014/attachments/April2014releases.html',
+      'usao/wvs/press_releases/May2014/attachments/May2014releases.html',
+      'usao/wvs/press_releases/June2014/attachments/June2014releases.html',
+      'usao/wvs/press_releases/July2014/attachments/July2014releases.html',
+      'usao/wvs/press_releases/August2014/attachments/Aug2014releases.html',
+      'usao/wvs/press_releases/September2014/attachments/Sept2014releases.html',
+      'usao/wvs/press_releases/October2014/attachments/OctoberReleases.html',
+      'usao/wvs/press_releases/2014-11-Nov/attachments/NovemberReleases.html',
+      'usao/wvs/press_releases/Jan2013/attachments/newsfeed.html',
+    );
+
+    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
   }
 }

@@ -322,6 +322,18 @@ class StringCleanUp {
           // It is not all caps so process it.
           $word = ucwords($word);
         }
+
+        // Check to see if it should be normalized.
+        $normalize = array(
+          'U.s.' => 'U.S.',
+          'u.s.' => 'U.S.',
+          'U.s.a.' => 'U.S.A.',
+          'Usa' => 'USA',
+        );
+        foreach ($normalize as $bad => $good) {
+          // Replace it with the good version if it is bad.
+          $word = ($word == $bad) ? $good : $word;
+        }
       }
       // Break the reference.
       unset($word);

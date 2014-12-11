@@ -120,17 +120,18 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findProbableDate() {
-    // Selectors paired with the text that accompanies dates.
+    // Selectors to run through.
     $selectors = array(
       '.BottomLeftContent',
       '#dateline',
       'p',
       '.newsLeft',
     );
-
+    // Text strings to search for.
     $search_strings = array(
       "FOR IMMEDIATE RELEASE",
       "NEWS RELEASE SUMMARY",
+      "FOR IMMEDIATE  RELEASE",
     );
     // Loop through the selectors.
     foreach ($selectors as $selector) {
@@ -246,6 +247,7 @@ class ObtainDate extends Obtainer {
     // Remove some strings that often accompany dates.
     $remove = array(
       'FOR IMMEDIATE RELEASE',
+      'FOR IMMEDIATE  RELEASE',
       'NEWS RELEASE SUMMARY –',
       'news',
       'press',
