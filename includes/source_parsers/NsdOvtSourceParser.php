@@ -28,6 +28,10 @@ class NsdOvtSourceParser extends SourceParser {
         }
       }
     }
-    parent::setBody();
+
+    // Convert h1 to h2.
+    HtmlCleanUp::rewrapElements($this->queryPath, array('h1'), '<h2 />');
+
+    parent::setBody($override);
   }
 }
