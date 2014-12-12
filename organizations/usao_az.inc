@@ -72,7 +72,7 @@ class UsaoAzFileMigration extends JusticeDeployableBinaryFileMigration {
       1 => 'usao/az/victimw',
       2 => 'usao/az/press_releases/2013',
       3 => 'usao/az/press_releases/2014',
-      4 => 'usao/az/press_releases/2012',
+      8 => 'usao/az/press_releases/2010',
       5 => 'usao/az/reports',
       6 => 'usao/az/reports/Newsletter',
     );
@@ -125,6 +125,7 @@ class UsaoAzPressReleaseMigration extends DistrictPressReleaseMigration {
       3 => 'usao/az/press_releases/2013',
       8 => 'usao/az/press_releases/2014',
       4 => 'usao/az/press_releases/2012',
+      5 => 'usao/az/press_releases/2011',
     );
 
     parent::__construct($arguments, $source_dirs);
