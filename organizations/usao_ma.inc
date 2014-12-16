@@ -140,6 +140,7 @@ class UsaoMaPressReleaseMigration extends DistrictPressReleaseMigration {
       85 => 'usao/ma/news/2013/June',
       86 => 'usao/ma/news/2013/December',
       87 => 'usao/ma/news/2013/July',
+      90 => 'usao/ma/news/2014/December',
     );
     parent::__construct($arguments, $source_dirs);
   }
