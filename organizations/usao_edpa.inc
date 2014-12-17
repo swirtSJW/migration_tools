@@ -150,6 +150,7 @@ class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
       34 => 'usao/pae/News/2013/Feb',
       35 => 'usao/pae/News/2013/December',
       36 => 'usao/pae/News/2013/July',
+      35 => 'usao/pae/News/2014/December',
     );
 
     $arguments["source_parser_class"] = "EdpaPressSourceParser";
