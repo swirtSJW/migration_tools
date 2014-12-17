@@ -27,7 +27,7 @@ $specific = get_configuration(get_config_path($argv, 2, "specific"), $specific_k
 doj_migration_info($specific['abbreviation']);
 print_r("Information have been added to doj_migration.info.\n");
 
-$pr_subdirectory = !empty($global['pr_subdirectory']) ? $global['pr_subdirectory'] : NULL;
+$pr_subdirectory = !empty($specific['pr_subdirectory']) ? $specific['pr_subdirectory'] : NULL;
 $pr = isset($pr_subdirectory) ? TRUE : FALSE;
 
 doj_migrate_migrate_inc($specific['abbreviation'], $specific['full_name'], $pr);
