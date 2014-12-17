@@ -44,6 +44,12 @@ class PardonPageMigration extends JusticeHtmlToPageMigration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+
+    // Clean up odd characters.
+    $body = $row->body;
+    $body = str_replace("Â", "", $body);
+
+    $row->body = $body;
   }
 }
 
