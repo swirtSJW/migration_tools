@@ -6,10 +6,10 @@
  */
 
 /**
- * Migrates .html files from /{{ info.district }} to page nodes.
+ * Migrates .html files from /{{ info.abbreviation }} to page nodes.
  *
  * @package doj_migration
- * @subpackage {{ info.district }}
+ * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
 
@@ -35,7 +35,7 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates pages from the {{ info.full_name }}.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('{{ info.district }}')
+    ->defaultValue('{{ info.abbreviation }}')
     ->sourceMigration('UsaoDistrict');
   }
 
@@ -50,10 +50,10 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /{{ info.district }}.
+ * Migrates files (*.pdf) from /{{ info.abbreviation }}.
  *
  * @package doj_migration
- * @subpackage {{ info.district }}
+ * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration {
 
@@ -70,7 +70,7 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///{{ info.district }}/docs';
+    $dest_dir = 'public:///{{ info.abbreviation }}/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -85,7 +85,7 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "{{ info.district }}";
+    return "{{ info.abbreviation }}";
   }
 }
 
@@ -95,8 +95,8 @@ class {{ info.class }}PressReleaseMigration extends DistrictPressReleaseMigratio
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['district'] = "{{ info.district }}";
-    $arguments['component'] = "{{ info.full_name }} (USAO)";
+    $arguments['district'] = "{{ info.abbreviation }}";
+    $arguments['component'] = "USAO - {{ info.full_name }}";
 
     $source_dirs = array(
     {% for item in info.press %}
