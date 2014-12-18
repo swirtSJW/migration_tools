@@ -120,6 +120,7 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findProbableDate() {
+    drush_print_r("I am in\n");
     // Selectors to run through.
     $selectors = array(
       '.BottomLeftContent',
@@ -129,6 +130,7 @@ class ObtainDate extends Obtainer {
     );
     // Text strings to search for.
     $search_strings = array(
+      "IMMEDIATE RELEASE",
       "FOR IMMEDIATE RELEASE",
       "NEWS RELEASE SUMMARY",
       "FOR IMMEDIATE  RELEASE",
@@ -216,6 +218,27 @@ class ObtainDate extends Obtainer {
     return $text;
   }
 
+  /**
+   * Get a very specific span.
+   *
+   * Check that it could be a date, and return it.
+   *
+   * @return string
+   *   Possible date.
+   */
+  protected function findSpanFontSize8() {
+    foreach ($this->queryPath->find("span[style = 'font-size:8.0pt']") as $elem) {
+      $text = $elem->text();
+      // Validate string.
+      if (substr_count($text, "IMMEDIATE RELEASE") > 0) {
+        $this->setJustFound($elem);
+        $this->setCurrentFindMethod("findSpanFontSize8");
+        return $text;
+      }
+    }
+    return "";
+  }
+
 
   // ***************** Helpers ***********************************************.
 
@@ -246,8 +269,9 @@ class ObtainDate extends Obtainer {
 
     // Remove some strings that often accompany dates.
     $remove = array(
-      'FOR IMMEDIATE RELEASE',
-      'FOR IMMEDIATE  RELEASE',
+      'FOR',
+      'IMMEDIATE',
+      'RELEASE',
       'NEWS RELEASE SUMMARY –',
       'news',
       'press',
@@ -259,6 +283,7 @@ class ObtainDate extends Obtainer {
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);
+    drush_print_r($text);
 
     return $text;
   }
