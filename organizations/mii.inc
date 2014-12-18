@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Defines migration classes for {{ info.full_name }}.
+ * Defines migration classes for Medical Integrity Institute.
  */
 
 /**
- * Migrates .html files from /{{ info.abbreviation }} to page nodes.
+ * Migrates .html files from /mii to page nodes.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage mii
  */
-class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
+class MiiPageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -20,9 +20,8 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-    {% for item in info.page %}
-      {{ item | raw }}
-    {% endfor %}
+      0 => 'usao/training/mii',
+      1 => 'usao/training/mii/includes',
     );
 
     $arguments['source_parser_class'] = "DistrictsSourceParser";
@@ -33,9 +32,9 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('UsaoDistrict');
-    $this->description = t('Migrates pages from the {{ info.full_name }}.');
+    $this->description = t('Migrates pages from the Medical Integrity Institute.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('{{ info.abbreviation }}')
+    ->defaultValue('mii')
     ->sourceMigration('UsaoDistrict');
   }
 
@@ -50,27 +49,27 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /{{ info.abbreviation }}.
+ * Migrates files (*.pdf) from /mii.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage mii
  */
-class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration {
+class MiiFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the {{ info.directory }} subdirectory.');
+    $this->description = t('Migrates non-image files from the usao/training/mii subdirectory.');
     $this->dependencies = array('UsaoDistrict');
 
     // Match .pdf files only.
     $source_dirs = array(
-      '{{ info.directory }}',
+      'usao/training/mii',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///{{ info.abbreviation }}/docs';
+    $dest_dir = 'public:///mii/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -85,24 +84,6 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "{{ info.abbreviation }}";
-  }
-}
-
-class {{ info.class }}PressReleaseMigration extends DistrictPressReleaseMigration {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($arguments) {
-    $arguments['district'] = "{{ info.abbreviation }}";
-    $arguments['component'] = "USAO - {{ info.full_name }}";
-
-    $source_dirs = array(
-    {% for item in info.press %}
-      {{ item | raw }}
-    {% endfor %}
-    );
-    parent::__construct($arguments, $source_dirs);
+    return "mii";
   }
 }

@@ -125,6 +125,10 @@ return array (
     array (
       'title' => 'Executive Office for Immigration Review',
     ),
+    'mii' =>
+    array (
+      'title' => 'Medical Integrity Institute',
+    ),
   ),
   'migrations' =>
   array (
@@ -522,6 +526,16 @@ return array (
     array (
       'group_name' => 'eoir',
       'class_name' => 'EoirPageMigration',
+    ),
+    'MiiFile' =>
+    array (
+      'group_name' => 'mii',
+      'class_name' => 'MiiFileMigration',
+    ),
+    'MiiPage' =>
+    array (
+      'group_name' => 'mii',
+      'class_name' => 'MiiPageMigration',
     ),
   ),
 );
