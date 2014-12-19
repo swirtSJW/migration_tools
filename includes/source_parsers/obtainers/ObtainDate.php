@@ -120,7 +120,6 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findProbableDate() {
-    drush_print_r("I am in\n");
     // Selectors to run through.
     $selectors = array(
       '.BottomLeftContent',
@@ -130,10 +129,10 @@ class ObtainDate extends Obtainer {
     );
     // Text strings to search for.
     $search_strings = array(
-      "IMMEDIATE RELEASE",
       "FOR IMMEDIATE RELEASE",
       "NEWS RELEASE SUMMARY",
       "FOR IMMEDIATE  RELEASE",
+      "IMMEDIATE RELEASE",
     );
     // Loop through the selectors.
     foreach ($selectors as $selector) {
@@ -283,7 +282,6 @@ class ObtainDate extends Obtainer {
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);
-    drush_print_r($text);
 
     return $text;
   }
