@@ -35,6 +35,7 @@ files[] = includes/JusticeUserMigration.inc
 files[] = includes/JusticeChunkParser.inc
 
 ; Source Parsers
+files[] = includes/source_parsers/AzSourceParser.php
 files[] = includes/source_parsers/DistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/DistrictsSourceParser.php
 files[] = includes/source_parsers/EdpaSourceParser.php

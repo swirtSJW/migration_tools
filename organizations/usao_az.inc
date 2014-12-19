@@ -133,6 +133,8 @@ class UsaoAzPressReleaseMigration extends DistrictPressReleaseMigration {
       5 => 'usao/az/press_releases/2011',
     );
 
+    $arguments['source_parser_class'] = "AzPressSourceParser";
+
     parent::__construct($arguments, $source_dirs);
   }
 }
