@@ -13,13 +13,10 @@
  */
 class ObtainTitle extends Obtainer {
 
-  // Properties declaration.
-
-
   /**
    * {@inheritdoc}
    */
-  public function __construct($query_path, $target_stack = array()) {
+  public function __construct($query_path, $target_stack) {
     parent::__construct($query_path, $target_stack);
     $this->processMethodStack($query_path, $target_stack, 'ObtainTitle');
   }

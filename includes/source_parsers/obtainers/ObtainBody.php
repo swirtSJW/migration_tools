@@ -9,26 +9,19 @@
  */
 
 /**
- * {@inheritdoc}
+ * Class ObtainBody
+ *
+ * Obtains the HTML body.
  */
 class ObtainBody extends ObtainHtml {
-
-  // Properties declaration.
-
 
   /**
    * {@inheritdoc}
    */
-  public function __construct($query_path, $target_stack) {
-    if (!empty($target_stack) && !empty($query_path) && is_array($target_stack)) {
-      $this->setTargetStack($target_stack);
-      $this->queryPath = $query_path;
-
-      $this->processMethodStack($query_path, $target_stack, 'ObtainBody');
-    }
-
+  public function __construct($query_path, $method_stack) {
+    parent::__construct($query_path, $method_stack);
+    $this->processMethodStack($query_path, $method_stack, 'ObtainBody');
   }
-
 
   // **************** Begin finder target definitions *************************
   // To create a new finder, use this template and put them in alpha order.
@@ -41,7 +34,6 @@ class ObtainBody extends ObtainHtml {
   }
   */
   // @codingStandardsIgnoreEnd
-
 
   /**
    * Finder method to find the top body.
@@ -56,7 +48,6 @@ class ObtainBody extends ObtainHtml {
     $this->removeMeNot();
     return $string;
   }
-
 
   /**
    * Finder method to find the body in .contentSub.
