@@ -137,6 +137,10 @@ return array (
     array (
       'title' => 'Northern District of Florida',
     ),
+    'usao-mdfl' => 
+    array (
+      'title' => 'Middle District of Florida',
+    ),
   ),
   'migrations' =>
   array (
@@ -574,6 +578,21 @@ return array (
     array (
       'group_name' => 'usao-ndfl',
       'class_name' => 'UsaoNdflPressReleaseMigration',
+    ),
+    'UsaoMdflFile' => 
+    array (
+      'group_name' => 'usao-mdfl',
+      'class_name' => 'UsaoMdflFileMigration',
+    ),
+    'UsaoMdflPage' => 
+    array (
+      'group_name' => 'usao-mdfl',
+      'class_name' => 'UsaoMdflPageMigration',
+    ),
+    'UsaoMdflPressRelease' => 
+    array (
+      'group_name' => 'usao-mdfl',
+      'class_name' => 'UsaoMdflPressReleaseMigration',
     ),
   ),
 );
