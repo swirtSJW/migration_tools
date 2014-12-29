@@ -460,6 +460,21 @@ class ObtainTitle extends Obtainer {
     return $title;
   }
 
+  /**
+   * Get the title in the fist centered thing in a table td.
+   * @return string
+   *   The possible title.
+   */
+  protected function findFirstCenterInTableTd() {
+    $center = $this->queryPath->find("table > td center")->first();
+    $title = '';
+    if ($center) {
+      $this->setJustFound($center);
+      $title = $center->text();
+    }
+    return $title;
+  }
+
 
   // ***************** Helpers ***********************************************.
 

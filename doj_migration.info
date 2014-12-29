@@ -96,3 +96,4 @@ files[] = organizations/usao_sdal.inc
 files[] = organizations/usao_ndfl.inc
 files[] = organizations/usao_mdfl.inc
 files[] = organizations/usao_sdin.inc
+files[] = organizations/usao_wdla.inc

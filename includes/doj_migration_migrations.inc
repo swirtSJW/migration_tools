@@ -145,6 +145,10 @@ return array (
     array (
       'title' => 'Southern District of Indiana',
     ),
+    'usao-wdla' =>
+    array (
+      'title' => 'Western District of Louisiana',
+    ),
   ),
   'migrations' =>
   array (
@@ -607,6 +611,21 @@ return array (
     array (
       'group_name' => 'usao-sdin',
       'class_name' => 'UsaoSdinPageMigration',
+    ),
+    'UsaoWdlaFile' =>
+    array (
+      'group_name' => 'usao-wdla',
+      'class_name' => 'UsaoWdlaFileMigration',
+    ),
+    'UsaoWdlaPage' =>
+    array (
+      'group_name' => 'usao-wdla',
+      'class_name' => 'UsaoWdlaPageMigration',
+    ),
+    'UsaoWdlaPressRelease' =>
+    array (
+      'group_name' => 'usao-wdla',
+      'class_name' => 'UsaoWdlaPressReleaseMigration',
     ),
   ),
 );

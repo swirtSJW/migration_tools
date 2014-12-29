@@ -34,7 +34,6 @@ class DistrictsSourceParser extends SourceParser {
         'findClassBreadcrumbLast',
         'findClassBreadcrumbMenuContentLast',
         'findSubBannerAlt',
-
       );
       $om = $this->getObtainerMethods('title');
       $title_stack = (!empty($om)) ? $om : $default_target_stack;
