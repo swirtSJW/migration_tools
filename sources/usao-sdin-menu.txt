@@ -1,0 +1,8 @@
+HOME{"url":"usao-sdin"}
+ABOUT{"url":"usao-sdin/about-district"}
+MEET THE U.S. ATTORNEY{"url":"usao-sdin/meet-us-attorney"}
+NEWS{"url":"usao-sdin/news-and-press-releases"}
+DIVISIONS{"url":"usao-sdin/divisions"}
+JOBS{"url":"usao-sdin/employment-opportunities"}
+LINKS{"url":"usao-sdin/links"}
+CONTACT US{"url":"usao-sdin/contact-us"}

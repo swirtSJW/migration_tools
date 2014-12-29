@@ -137,9 +137,13 @@ return array (
     array (
       'title' => 'Northern District of Florida',
     ),
-    'usao-mdfl' => 
+    'usao-mdfl' =>
     array (
       'title' => 'Middle District of Florida',
+    ),
+    'usao-sdin' =>
+    array (
+      'title' => 'Southern District of Indiana',
     ),
   ),
   'migrations' =>
@@ -579,20 +583,30 @@ return array (
       'group_name' => 'usao-ndfl',
       'class_name' => 'UsaoNdflPressReleaseMigration',
     ),
-    'UsaoMdflFile' => 
+    'UsaoMdflFile' =>
     array (
       'group_name' => 'usao-mdfl',
       'class_name' => 'UsaoMdflFileMigration',
     ),
-    'UsaoMdflPage' => 
+    'UsaoMdflPage' =>
     array (
       'group_name' => 'usao-mdfl',
       'class_name' => 'UsaoMdflPageMigration',
     ),
-    'UsaoMdflPressRelease' => 
+    'UsaoMdflPressRelease' =>
     array (
       'group_name' => 'usao-mdfl',
       'class_name' => 'UsaoMdflPressReleaseMigration',
+    ),
+    'UsaoSdinFile' =>
+    array (
+      'group_name' => 'usao-sdin',
+      'class_name' => 'UsaoSdinFileMigration',
+    ),
+    'UsaoSdinPage' =>
+    array (
+      'group_name' => 'usao-sdin',
+      'class_name' => 'UsaoSdinPageMigration',
     ),
   ),
 );
