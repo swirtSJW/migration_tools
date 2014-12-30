@@ -168,7 +168,12 @@ return array (
   ),
   'migrations' => 
   array (
-    'EspanolFile' => 
+    'DataJson' =>
+    array(
+      'group_name' => 'data',
+      'class_name' => 'JusticeJsonToDatasetMigration',
+    ),
+    'EspanolFile' =>
     array (
       'group_name' => 'espanol',
       'class_name' => 'EspanolFileMigration',

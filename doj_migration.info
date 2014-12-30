@@ -27,6 +27,7 @@ files[] = includes/JusticeHtmlToPressReleaseMigration.inc
 files[] = includes/JusticeHtmlToSpeechMigration.inc
 files[] = includes/JusticeHtmlToSpeechSpanishMigration.inc
 files[] = includes/JusticeHtmlToBlogEntryMigration.inc
+files[] = includes/JusticeJsonToDatasetMigration.inc
 files[] = includes/JusticeWordpressMigration.inc
 files[] = includes/JusticeCsvMigration.inc
 files[] = includes/JusticeUserMigration.inc
