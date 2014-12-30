@@ -9,20 +9,16 @@
  */
 
 /**
- * {@inheritdoc}
+ * Obtains HTML using and stack of finder methods.
  */
 class ObtainHtml extends Obtainer {
-
-  // Properties declaration.
-
 
   /**
    * {@inheritdoc}
    */
-  public function __construct($query_path, $target_stack) {
-    parent::__construct($query_path, $target_stack);
-
-    $this->processMethodStack($query_path, $target_stack, 'ObtainHtml');
+  public function __construct($query_path, $method_stack) {
+    parent::__construct($query_path, $method_stack);
+    $this->processMethodStack($query_path, $method_stack, 'ObtainHtml');
   }
 
 
@@ -104,5 +100,4 @@ class ObtainHtml extends Obtainer {
 
     }
   }
-
 }

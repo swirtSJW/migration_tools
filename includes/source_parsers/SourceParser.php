@@ -18,7 +18,7 @@ class SourceParser {
 
   /**
    * @var array $args
-   *   Arguements array passed from migration class.
+   *   Arguments array passed from migration class.
    */
   protected $arguments = array();
   protected $body;
@@ -28,7 +28,6 @@ class SourceParser {
   public $queryPath;
   protected $subTitle = '';
   protected $title;
-
 
   /**
    * Constructor.
@@ -42,7 +41,7 @@ class SourceParser {
    * @param array $qp_options
    *   An associative array of options to be passed to the html_qp() function.
    * @param array $arguments
-   *   An associative array arguements passed up from the migration class.
+   *   An associative array arguments passed up from the migration class.
    */
   public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array(), $arguments = array()) {
     $this->mergeArguments((array) $arguments);
@@ -213,7 +212,6 @@ class SourceParser {
           // but at least it is not lost.
           $this->setSubTitle($discarded);
         }
-
       }
       else {
         // The override was invoked, so use it.
@@ -251,27 +249,24 @@ class SourceParser {
 
   /**
    * Get the body from html and set the body var.
+   *
+   * @param string $body
    */
-  public function setBody($override = '') {
-    if (empty($override)) {
+  public function setBody($body = '') {
+    if (empty($body)) {
       // Default stack: Use this if none was defined in
-      // $arguements['obtainer_methods'].
-      $default_target_stack = array(
+      // $arguments['obtainer_methods'].
+      $default_method_stack = array(
         'findTopBodyHtml',
         'findClassContentSub',
       );
-
-      $body = $this->runObtainer('ObtainBody', 'body', $default_target_stack);
-    }
-    else {
-      // The override was invoked, so use it.
-      $body = $override;
+      $body = $this->runObtainer('ObtainBody', 'body', $default_method_stack);
     }
 
     $this->body = $body;
+
     // Output to show progress to aid debugging.
-    $var = $this->getBody();
-    if (!empty($var)) {
+    if (!empty($this->body)) {
       drush_doj_migration_debug_output("--body-->  found something");
     }
     else {
@@ -469,7 +464,7 @@ class SourceParser {
    * @param array $obtainer_methods
    *   An array of obtainer method arrays.
    */
-  protected function setObtainerMethods($obtainer_methods = '') {
+  protected function setObtainerMethods($obtainer_methods = array()) {
     if ((!empty($obtainer_methods)) && (is_array($obtainer_methods))) {
       $args = $this->getArguments();
       // Loop through new array of obtainer methods.
@@ -502,6 +497,44 @@ class SourceParser {
   }
 
   /**
+   * Runs an obtainer and returns the text it found.
+   *
+   * @param string $obtainer_class
+   *   The name of the obtainer class to use.
+   * @param string $obtainer_methods_key
+   *   The key for the obtainer arguments array to see which findMethods to run.
+   * @param array $default_method_stack
+   *   (optional) The default stack of findMethods to use if none is available
+   *   from the arguments.
+   *
+   * @return string
+   *   The string retrieved by executing the obtainer.
+   */
+  public function runObtainer($obtainer_class, $obtainer_methods_key, $default_method_stack = array()) {
+    $text = '';
+
+    try {
+      $method_stack = $this->getObtainerMethods($obtainer_methods_key);
+      if (empty($method_stack)) {
+        $method_stack = $default_method_stack;
+      }
+      $obtained = new $obtainer_class($this->queryPath, $method_stack);
+      $text = $obtained->getText();
+    }
+    catch (Exception $e) {
+      watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
+        '%obtainer_methods_key' => $obtainer_methods_key,
+        '%file' => $this->fileId,
+        '%message' => $e->getMessage(),
+      ), WATCHDOG_ALERT);
+      drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set $obtainer_methods_key Exception: {$e->getMessage()}");
+    }
+
+    return $text;
+  }
+
+
+  /**
    * Runs the parse methods prescribed by getParseOrder().
    */
   protected function runParserOrder() {
@@ -518,42 +551,5 @@ class SourceParser {
         drush_doj_migration_debug_output("The parser method '{$method}' in SourceParser and its children does not exist and was skipped.");
       }
     }
-  }
-
-
-  /**
-   * Runs an obtainer and returns the text it found.
-   *
-   * @param string $obtainer_class
-   *   The name of the obtainer class to use.
-   * @param string $obtainer_methods_key
-   *   The key for the obtainer arguments array to see which findMethods to run.
-   * @param array $default_stack
-   *   The default stack of findMethods to use if none is available from the
-   *   arguments.
-   *
-   * @return string
-   *   The string retrieved by executing the obtainer.
-   */
-  public function runObtainer($obtainer_class, $obtainer_methods_key, $default_stack = array()) {
-    // Must have a class and a key.
-    if ((!empty($obtainer_class)) && (!empty($obtainer_methods_key))) {
-      try {
-        $target_stack = $this->getObtainerMethods($obtainer_methods_key);
-        $find_stack = (!empty($target_stack)) ? $target_stack : $default_stack;
-        $obtained = new $obtainer_class($this->queryPath, $find_stack);
-        $text = $obtained->getText();
-      }
-      catch (Exception $e) {
-        $text = '';
-        watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
-             '%obtainer_methods_key' => $obtainer_methods_key,
-            '%file' => $this->fileId,
-            '%message' => $e->getMessage(),
-          ), WATCHDOG_ALERT);
-        drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set $obtainer_methods_key Exception: {$e->getMessage()}");
-      }
-    }
-    return (!empty($text)) ? $text : '';
   }
 }

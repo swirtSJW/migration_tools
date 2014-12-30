@@ -13,16 +13,12 @@
  */
 class ObtainDate extends Obtainer {
 
-  // Properties declaration.
-
-
   /**
    * {@inheritdoc}
    */
-  public function __construct($query_path, $target_stack) {
-    parent::__construct($query_path, $target_stack);
-
-    $this->processMethodStack($query_path, $target_stack, 'ObtainDate');
+  public function __construct($query_path, $method_stack) {
+    parent::__construct($query_path, $method_stack);
+    $this->processMethodStack($query_path, $method_stack, 'ObtainDate');
   }
 
 

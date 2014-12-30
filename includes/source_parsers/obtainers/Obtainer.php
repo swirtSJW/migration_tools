@@ -6,7 +6,7 @@
  */
 
 class Obtainer {
-  // Properties declaration.
+
   /**
    * @var object
    *   QueryPath element that was the last thing found.
@@ -33,9 +33,9 @@ class Obtainer {
 
   /**
    * @var array
-   *   Array of find methods to call, in order.  Passed in at instantiation.
+   *   Array of find methods to call, in order. Passed in at instantiation.
    */
-  protected $targetStack = array();
+  protected $methodStack = array();
 
   /**
    * @var string
@@ -57,13 +57,15 @@ class Obtainer {
    *
    * @param object $query_path
    *   The query path object to use as the source of possible content.
-   * @param array $target_stack
-   *   Array of find methods to run through.
+   *
+   * @param array $method_stack
+   *   (optional). Array of find methods to run through.
    */
-  public function __construct($query_path, $target_stack = '') {
-    if (!empty($target_stack) && !empty($query_path) && is_array($target_stack)) {
-      $this->setTargetStack($target_stack);
-      $this->queryPath = $query_path;
+  public function __construct($query_path, $method_stack = array()) {
+    $this->queryPath = $query_path;
+
+    if ($method_stack) {
+      $this->setMethodStack($method_stack);
     }
   }
 
@@ -87,7 +89,6 @@ class Obtainer {
     return $this->justFound;
   }
 
-
   /**
    * Basic setter for text found that might be returned if validated.
    */
@@ -102,7 +103,6 @@ class Obtainer {
     return $this->possibleText;
   }
 
-
   /**
    * Basic setter for the target finder method currently running/just ran.
    */
@@ -116,7 +116,6 @@ class Obtainer {
   protected function getCurrentFindMethod() {
     return $this->currentFindMethod;
   }
-
 
   /**
    * Basic setter for text that is discarded after truncation.
@@ -137,23 +136,21 @@ class Obtainer {
     return $this->textDiscarded;
   }
 
-
   /**
    * Basic setter for the target finder method that gave useable results.
    */
-  protected function setTargetStack($stack = array()) {
+  protected function setMethodStack($stack = array()) {
     if (is_array($stack)) {
-      $this->targetStack = $stack;
+      $this->methodStack = $stack;
     }
   }
 
   /**
    * Basic getter for the target finder method that gave useable results.
    */
-  protected function getTargetStack() {
-    return $this->targetStack;
+  protected function getMethodStack() {
+    return $this->methodStack;
   }
-
 
   /**
    * Basic setter for text that is validated and ready to return.
@@ -191,7 +188,6 @@ class Obtainer {
     $this->clearJustFound();
   }
 
-
   /**
    * Extracts, validates a string from html and puts remainder into the source.
    *
@@ -217,7 +213,6 @@ class Obtainer {
     }
   }
 
-
   /**
    * Clean PossibleText prior to validation.
    */
@@ -235,7 +230,6 @@ class Obtainer {
     // Just unset the $justFound so it can not be removed from the querypath.
     unset($this->justFound);
   }
-
 
   /**
    * Get specific tds from a table, and lines it up to be removed.
@@ -278,7 +272,6 @@ class Obtainer {
     // An alias for clearJustFound.
     $this->clearJustFound();
   }
-
 
   /**
    * Takes a string, returns anything before a <br> tag and its many variants.
@@ -417,7 +410,7 @@ class Obtainer {
     // Look for the target stack.
     if (!empty($target_stack) && !empty($query_path) && is_array($target_stack)) {
       // Loop through the stack.
-      foreach ($this->getTargetStack() as $target) {
+      foreach ($this->getMethodStack() as $target) {
         // Check to see if this target has a method.
         if (method_exists($this, $target)) {
           // Set CurrentFindMethod.

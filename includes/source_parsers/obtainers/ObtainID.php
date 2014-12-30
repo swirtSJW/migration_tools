@@ -15,10 +15,8 @@ class ObtainID extends Obtainer {
    */
   public function __construct($query_path, $target_stack) {
     parent::__construct($query_path, $target_stack);
-
     $this->processMethodStack($query_path, $target_stack, 'ObtainID');
   }
-
 
   // **************** Begin finder target definitions *************************
   // To create a new finder, use this template and put them in alpha order.
