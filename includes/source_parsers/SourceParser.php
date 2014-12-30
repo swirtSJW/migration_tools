@@ -251,6 +251,8 @@ class SourceParser {
    * Get the body from html and set the body var.
    *
    * @param string $body
+   *   (optional) The body value to be set. Defaults to finding body via
+   *   default method stack.
    */
   public function setBody($body = '') {
     if (empty($body)) {
