@@ -472,6 +472,26 @@ class ObtainTitle extends Obtainer {
     return $title;
   }
 
+  /**
+   * Find first centered aligned paragraph after the first hr.
+   */
+  protected function findFirstCenteredAlignPAfterHr() {
+    $hr = $this->queryPath->find("hr")->first();
+
+    if (!empty($hr)) {
+      $elem = $hr->next();
+      if ($elem->is('p') && ($elem->attr('align') == 'center'
+        || $elem->attr('style') == "text-align:center;")) {
+        $this->setJustFound($elem);
+        $text = $elem->text();
+        drush_print_r("HTML: " . $elem->html());
+        drush_print_r("TEXT: " . $text);
+        return $text;
+      }
+    }
+    return "";
+  }
+
 
   // ***************** Helpers ***********************************************.
 

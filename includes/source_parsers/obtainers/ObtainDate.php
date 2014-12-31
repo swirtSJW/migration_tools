@@ -234,6 +234,23 @@ class ObtainDate extends Obtainer {
     return "";
   }
 
+  /**
+   * A paragraph with the style1 class and a br in the inner html.
+   */
+  protected function findStyle1PwithBr() {
+    $elems = $this->queryPath->find("p.style1");
+    foreach ($elems as $p) {
+      $html = $p->html();
+      if (substr_count($html, "<br/>") > 0) {
+        $this->setJustFound($p);
+        $pieces = explode("<br/>", $html);
+        $text = strip_tags($pieces[1]);
+        return $text;
+      }
+    }
+    return "";
+  }
+
 
   // ***************** Helpers ***********************************************.
 
