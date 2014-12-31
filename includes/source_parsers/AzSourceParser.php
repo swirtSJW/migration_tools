@@ -16,7 +16,11 @@ class AzPressSourceParser extends DistrictPressReleaseSourceParser {
       $class = $div->attr('class');
 
       if ($class != "Part") {
-        $strings = array("WWW.JUSTICE.GOV/USAO/AZ", "Telephone", "Cell");
+        $strings = array(
+          "WWW.JUSTICE.GOV/USAO/AZ",
+          "Telephone",
+          "Public Affairs",
+        );
         $match = TRUE;
         foreach ($strings as $string) {
           if (substr_count($text, $string) <= 0) {
