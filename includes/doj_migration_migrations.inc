@@ -157,6 +157,10 @@ return array (
     array (
       'title' => 'District of New Mexico',
     ),
+    'usao-ndny' => 
+    array (
+      'title' => 'Northern District of New York',
+    ),
   ),
   'migrations' => 
   array (
@@ -664,6 +668,21 @@ return array (
     array (
       'group_name' => 'usao-nm',
       'class_name' => 'UsaoNmPressReleaseMigration',
+    ),
+    'UsaoNdnyFile' => 
+    array (
+      'group_name' => 'usao-ndny',
+      'class_name' => 'UsaoNdnyFileMigration',
+    ),
+    'UsaoNdnyPage' => 
+    array (
+      'group_name' => 'usao-ndny',
+      'class_name' => 'UsaoNdnyPageMigration',
+    ),
+    'UsaoNdnyPressRelease' => 
+    array (
+      'group_name' => 'usao-ndny',
+      'class_name' => 'UsaoNdnyPressReleaseMigration',
     ),
   ),
 );
