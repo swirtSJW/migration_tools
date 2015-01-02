@@ -153,6 +153,10 @@ return array (
     array (
       'title' => 'District of Maryland',
     ),
+    'usao-nm' => 
+    array (
+      'title' => 'District of New Mexico',
+    ),
   ),
   'migrations' => 
   array (
@@ -645,6 +649,21 @@ return array (
     array (
       'group_name' => 'usao-md',
       'class_name' => 'UsaoMdPressReleaseMigration',
+    ),
+    'UsaoNmFile' => 
+    array (
+      'group_name' => 'usao-nm',
+      'class_name' => 'UsaoNmFileMigration',
+    ),
+    'UsaoNmPage' => 
+    array (
+      'group_name' => 'usao-nm',
+      'class_name' => 'UsaoNmPageMigration',
+    ),
+    'UsaoNmPressRelease' => 
+    array (
+      'group_name' => 'usao-nm',
+      'class_name' => 'UsaoNmPressReleaseMigration',
     ),
   ),
 );

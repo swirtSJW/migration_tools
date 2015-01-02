@@ -1,0 +1,15 @@
+HOME{"url":"usao-nm"}
+ABOUT{"url":"usao-nm/about-district-new-mexico"}
+-Mission{"url":"usao-nm/mission-statement"}
+NEWS{"url":"usao-nm/news-and-press-releases"}
+MEET THE U.S. ATTORNEY{"url":"usao-nm/damon-p-martinez-united-states-attorney-district-new-mexico"}
+DIVISIONS{"url":"usao-nm/divisions"}
+PROGRAMS{"url":"usao-nm/programs"}
+-Project Safe Childhood{"url":"usao-nm/project-safe-childhood"}
+-Project Safe Neighborhoods{"url":"usao-nm/project-safe-neighborhoods"}
+-Victims' Rights{"url":"usao-nm/victim-witness-assistance-unit"}
+LINKS{"url":"usao-nm/links"}
+-ABQ PD Investigation{"url":"usao-nm/justice-department-and-city-albuquerque-announce-court-enforceable-settlement-agreement"}
+CONTACT US{"url":"usao-nm/contact-us"}
+-Bid Requests{"url":"usao-nm/request-bids"}
+-Employment{"url":"usao-nm/employment-opportunities"}

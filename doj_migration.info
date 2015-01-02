@@ -99,3 +99,4 @@ files[] = organizations/usao_mdfl.inc
 files[] = organizations/usao_sdin.inc
 files[] = organizations/usao_wdla.inc
 files[] = organizations/usao_md.inc
+files[] = organizations/usao_nm.inc
