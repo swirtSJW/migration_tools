@@ -8,11 +8,16 @@ class HtmlCleanUp {
 
   /**
    * Removes legacy elements from HTML that are no longer needed.
+   *
+   * @param QueryPath $query_path
+   *   A query path object.
+   *
+   * @param array $arguments
+   *   (optional). An array of arbitrary arguments to be used by HtmlCleanUp
+   *   methods. Defaults to empty array.
    */
-  public static function stripOrFixLegacyElements($query_path) {
-    // STRIP.
+  public static function stripOrFixLegacyElements($query_path, $arguments = array()) {
     // Strip comments.
-    // @TODO make sure $query_path is a $query_path object.
     foreach ($query_path->top()->xpath('//comment()')->get() as $comment) {
       $comment->parentNode->removeChild($comment);
     }
@@ -66,7 +71,8 @@ class HtmlCleanUp {
     HTMLCleanUp::fixNamedAnchors($query_path);
 
     // Some pages have images as subtitles. Turn those into html.
-    HTMLCleanUp::changeSubTitleImagesForHtml($query_path);
+    $header_element = !empty($arguments['header_element']) ? $arguments['header_element'] : 'h2';
+    HTMLCleanUp::changeSubTitleImagesForHtml($query_path, $header_element);
 
     // Removing scripts used when linking to outside sources.
     HtmlCleanUp::removeExtLinkJS($query_path);
@@ -75,7 +81,7 @@ class HtmlCleanUp {
   /**
    * Removes elements matching CSS selectors.
    *
-   * @param object $query_path
+   * @param QueryPath $query_path
    *   A query path object.
    * @param array $selectors
    *   An array of selectors to remove.
@@ -327,16 +333,23 @@ class HtmlCleanUp {
   }
 
   /**
-   * Change sub-header images to <h2> html titles.
+   * Change sub-header images to HTML headers. Defaults to <h2>.
+   *
+   * @param QueryPath $query_path
+   *   The instantiated QueryPath object for HTML markup.
+   *
+   * @param string $header_element
+   *   (optional). The HTML header element with which to replace the <img>.
+   *   Defaults to h2.
    */
-  protected static function changeSubTitleImagesForHtml($query_path) {
+  protected static function changeSubTitleImagesForHtml($query_path, $header_element = 'h2') {
     // Find all headline divs with an image inside.
     $elements = $query_path->find('div.headline > img')->parent();
 
     foreach ($elements as $element) {
       $image = $element->find('img');
       $alt = $image->attr('alt');
-      $element->html("<h2>{$alt}</h2>");
+      $element->html("<$header_element>$alt</$header_element>");
     }
 
     // Let's assume that images with 20 height are also subtitles.
@@ -347,17 +360,17 @@ class HtmlCleanUp {
       $alt = $image->attr('alt');
 
       if (strcasecmp($height, "20") == 0 && !empty($alt)) {
-        $image->wrap("<div class='h2-wrapper'></div>");
+        $image->wrap("<div class='$header_element-wrapper'></div>");
       }
     }
 
     // Let's assume that images with 20 height are also subtitles.
-    $wrappers = $query_path->find('.h2-wrapper');
+    $wrappers = $query_path->find(".$header_element-wrapper");
 
     foreach ($wrappers as $wrapper) {
       foreach ($wrapper->find('img') as $img) {
         $alt = $img->attr('alt');
-        $wrapper->html("<h2>{$alt}</h2>");
+        $wrapper->html("<$header_element>{$alt}</$header_element>");
       }
     }
   }

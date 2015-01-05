@@ -48,15 +48,14 @@ class SourceParser {
 
     $html = StringCleanUp::fixEncoding($html);
 
-    // Strip Windows'' CR chars.
+    // Strip Windows' CR chars.
     $html = StringCleanUp::stripWindowsCRChars($html);
-
     $html = StringCleanUp::fixWindowSpecificChars($html);
 
     $this->initQueryPath($html, $qp_options);
 
     $this->fileId = $file_id;
-    // Runs the methods defined in getParseOrder to set Title, date,  body...
+    // Runs the methods defined in getParseOrder to set Title, date, body, etc.
     $this->runParserOrder($this->getParseOrder());
   }
 
@@ -106,8 +105,7 @@ class SourceParser {
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
 
       // Clean up specific to the Justice site.
-      HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
-
+      HtmlCleanUp::stripOrFixLegacyElements($this->queryPath, $this->arguments);
     }
     catch (Exception $e) {
       watchdog('doj_migration', '%file: failed to clean the html, Error: %error', array(
