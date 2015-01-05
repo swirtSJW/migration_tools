@@ -76,6 +76,9 @@ class HtmlCleanUp {
 
     // Removing scripts used when linking to outside sources.
     HtmlCleanUp::removeExtLinkJS($query_path);
+
+    // Fix broken links to PDF anchors.
+    HTMLCleanUp::fixPdfLinkAnchors($query_path);
   }
 
   /**
@@ -277,6 +280,28 @@ class HtmlCleanUp {
             $element->attr('href', $new_url);
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Fixes anchor links to PDFs so that they work in IE.
+   *
+   * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
+   *
+   * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+   */
+  public static function fixPdfLinkAnchors($query_path) {
+    $anchors = $query_path->find('a');
+    foreach ($anchors as $anchor) {
+      $url = $anchor->attr('href');
+      $contains_pdf_anchor = preg_match('/\.pdf#(p|_PAGE)([0-9]+)/i', $url, $matches);
+      if ($contains_pdf_anchor) {
+        $old_anchor = $matches[1];
+        $page_num = $matches[3];
+        $new_anchor = 'page=' . $page_num;
+        $new_url = str_replace($old_anchor, $new_anchor, $url);
+        $anchor->attr('href', $new_url);
       }
     }
   }
