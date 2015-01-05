@@ -59,16 +59,19 @@ SET nr.status = 1 WHERE n.status = 1 AND nr.status = 0",
 /**
  * Implements hook_module_implements_alter().
  */
-function doj_migrate_module_implements_alter(&$implementations, $hook) {
+function doj_migration_module_implements_alter(&$implementations, $hook) {
+  global $_doj_migration_is_running;
+
   // Sadly, we cannot use the migrate module's $disable_hooks to disable
   // hook_node_update() from firing on `drush migrate-import` because
   // hook_node_update() is triggered too late, at which point
-  // Migration::currentMigration() returns FALSE.
+  // Migration::currentMigration() returns FALSE. This is due to workbench
+  // moderation calling node_update() from a shutdown function.
   if (class_exists('Migration') && $migration = Migration::currentMigration()) {
-    variable_set('doj_migration_is_running', TRUE);
+    $_doj_migration_is_running = TRUE;
   }
 
-  if ($hook == 'node_update' && variable_get('doj_migration_is_running')) {
+  if (in_array($hook, array('node_update', 'node_insert')) && $_doj_migration_is_running) {
     unset($implementations['akamai']);
     unset($implementations['expire']);
   }
