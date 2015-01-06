@@ -34,6 +34,15 @@ class AzPressSourceParser extends DistrictPressReleaseSourceParser {
         }
       }
     }
+
+    // Remove the div containing the empty anchor with id=top.
+    $elements = $this->queryPath->find("div > p > a#top");
+    $a = $elements->first();
+    if (isset($a)) {
+      $div = $a->parent()->parent();
+      $div->remove();
+    }
+
     parent::setBody();
   }
 }
