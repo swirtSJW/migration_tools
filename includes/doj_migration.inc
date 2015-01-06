@@ -461,15 +461,15 @@ function doj_migration_district_abbreviation_alias($abbreviation) {
  *   -TRUE if the row should not be skipped.
  *   -FALSE if the row should be skipped.
  */
-function doj_migration_check_skip_this($file_uid, $skip_these = array()) {
-  if ((!empty($file_uid)) && (in_array($file_uid, $skip_these))) {
+function doj_migration_check_skip_this($file_uid, $skip_these) {
+  if (in_array($file_uid, $skip_these)) {
     // This page should be skipped.
     $message = t('- @fileid  -> Skipped: intentionally.', array('@fileid' => $file_uid));
-    watchdog('doj_migration', $message, array('@fileid' => $row->legacy_path), WATCHDOG_WARNING);
+    watchdog('doj_migration', $message, array('@fileid' => $file_uid), WATCHDOG_WARNING);
+
     return FALSE;
   }
-  else {
-    // This page should not be skipped.
-    return TRUE;
-  }
+
+  // This page should not be skipped.
+  return TRUE;
 }

@@ -411,7 +411,7 @@ class SourceParser {
    * @param array $new_args
    *   An array matching the format of the arguments array, to be merged.
    */
-  protected function mergeArguments($new_args = '') {
+  protected function mergeArguments($new_args) {
     if (!empty($new_args) && is_array($new_args)) {
       $this->arguments = array_merge($this->getArguments(), $new_args);
     }
@@ -427,7 +427,7 @@ class SourceParser {
    * @return mixed
    *   Whatever is stored in the $keys's value, or NULL if not in the arguments.
    */
-  protected function getArgument($arg_key = '') {
+  protected function getArgument($arg_key) {
     if (!empty($arg_key)) {
       $args = $this->getArguments();
       if (array_key_exists($arg_key, $args)) {
@@ -447,13 +447,12 @@ class SourceParser {
    * @return array
    *   Returns the array of obtainer methods for a specific key or empty array.
    */
-  protected function getObtainerMethods($obtainer_methods_key = '') {
-    if (!empty($obtainer_methods_key)) {
-      $obtainer = $this->getArgument('obtainer_methods');
-      if (array_key_exists($obtainer_methods_key, $obtainer)) {
-        return $obtainer[$obtainer_methods_key];
-      }
+  protected function getObtainerMethods($obtainer_methods_key) {
+    $obtainer = $this->getArgument('obtainer_methods');
+    if (array_key_exists($obtainer_methods_key, $obtainer)) {
+      return $obtainer[$obtainer_methods_key];
     }
+
     return array();
   }
 

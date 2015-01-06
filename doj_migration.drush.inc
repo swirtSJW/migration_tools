@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drush commands for DOJ Deploy.
+ * Drush commands for DOJ Migration.
  */
 
 /**
@@ -123,6 +123,9 @@ function drush_doj_migration_doj_migrate_file_folders($organization) {
  * @return string
  *   A JSON string of an array containing all of the folders that contain files
  *   of the given extensions.
+ *
+ * @throws Exception
+ *   If migrate_html_base_dir variable is not set.
  */
 function doj_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
   $source_directory = variable_get("doj_migration_base_dir");
