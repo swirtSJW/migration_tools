@@ -10,13 +10,13 @@
  * We are just collecting all the files that match our regex and have a weird
  * encoding.
  */
-function do_things($dir) {
+function get_badly_encoded_files($dir) {
   $bad_files = array();
   $files = scandir($dir);
   foreach ($files as $file) {
     $full_file = "{$dir}/{$file}";
     if (is_dir($full_file) && ($file != "." && $file != "..")) {
-      $bad_files = array_merge($bad_files, do_things($full_file));
+      $bad_files = array_merge($bad_files, get_badly_encoded_files($full_file));
     }
     elseif (!is_dir($full_file)) {
       $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
@@ -39,7 +39,7 @@ if (!empty($argv[1]) && is_dir($argv[1])) {
 else {
   throw new Exception("Need a directory as the first argument for this script");
 }
-$bad_files = do_things($dir);
+$bad_files = get_badly_encoded_files($dir);
 
 $done = FALSE;
 while (!$done) {
