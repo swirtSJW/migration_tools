@@ -78,6 +78,27 @@ class EoirFileMigration extends JusticeDeployableBinaryFileMigration {
     parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $file_id = $row->fileid;
+    $enc = mb_detect_encoding($file_id);
+    if ($enc === FALSE) {
+      module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+      $row->fileid = doj_migration_random_string(10);
+      drush_doj_migration_debug_output("Ignored path: {$file_id} --> stored id: {$row->fileid}");
+      return FALSE;
+    }
+    else {
+      drush_doj_migration_debug_output("Path: {$file_id} --> encoding: {$enc}");
+    }
+
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+  }
+
 
   /**
    * {@inheritdoc}
