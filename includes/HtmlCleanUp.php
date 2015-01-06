@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Helper function to clean up html.
+ * Helper function to clean up HTML.
  */
 
 class HtmlCleanUp {
@@ -10,7 +10,7 @@ class HtmlCleanUp {
    * Removes legacy elements from HTML that are no longer needed.
    *
    * @param QueryPath $query_path
-   *   A query path object.
+   *   The QueryPath object with HTML markup.
    *
    * @param array $arguments
    *   (optional). An array of arbitrary arguments to be used by HtmlCleanUp
@@ -85,7 +85,8 @@ class HtmlCleanUp {
    * Removes elements matching CSS selectors.
    *
    * @param QueryPath $query_path
-   *   A query path object.
+   *   The QueryPath object with HTML markup.
+   *
    * @param array $selectors
    *   An array of selectors to remove.
    */
@@ -106,7 +107,7 @@ class HtmlCleanUp {
    * @return string
    *   Processed html.
    */
-  public static function removeElementsFromHtml($html = '', array $selectors = array()) {
+  public static function removeElementsFromHtml($html, array $selectors) {
     // Put the shell on the html to extract with more certainty later.
     $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
     $query_path = htmlqp($html, NULL, array());
@@ -120,8 +121,9 @@ class HtmlCleanUp {
   /**
    * Get the first element matching the CSS selector from html.
    *
-   * @param object $query_path
-   *   QueryPath object.
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
    * @param string $selector
    *   A css selector.
    *
@@ -147,8 +149,9 @@ class HtmlCleanUp {
    * Extraction means that we return the match, but we also return the
    * original html without the element that matched the search.
    *
-   * @param object $query_path
-   *   QueryPath object.
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
    * @param string $selector
    *   A CSS selector to extract.
    *
@@ -156,7 +159,7 @@ class HtmlCleanUp {
    *   The array contains the matched text, and the original html without the
    *   match.
    */
-  public static function extractFirstElement($query_path, $selector, $fragment = TRUE) {
+  public static function extractFirstElement($query_path, $selector) {
 
     $items = $query_path->find($selector);
     foreach ($items as $item) {
@@ -172,6 +175,8 @@ class HtmlCleanUp {
   /**
    * Removes a wrapping element, leaving child elements intact.
    *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    */
@@ -186,6 +191,9 @@ class HtmlCleanUp {
   /**
    * Rewraps an element, leaving child elements intact.
    *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    *
@@ -195,22 +203,22 @@ class HtmlCleanUp {
    *   - <h2 id="title" />
    *   - <div class="friends" />
    */
-  public static function rewrapElements($query_path, array $selectors, $new_wrapper = '') {
-    if (!empty($new_wrapper)  && is_string($new_wrapper)) {
-      // There is something to wrap it in, so begin the hunt.
-      foreach ($selectors as $selector) {
-        $elements = $query_path->find($selector);
-        foreach ($elements as $element) {
-          $element->wrapInner($new_wrapper);
-        }
+  public static function rewrapElements($query_path, array $selectors, $new_wrapper) {
+    // There is something to wrap it in, so begin the hunt.
+    foreach ($selectors as $selector) {
+      $elements = $query_path->find($selector);
+      foreach ($elements as $element) {
+        $element->wrapInner($new_wrapper);
       }
-      HTMLCleanUp::removeWrapperElements($query_path, $selectors);
     }
+    HTMLCleanUp::removeWrapperElements($query_path, $selectors);
   }
-
 
   /**
    * Removes empty elements matching selectors.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
    *
    * @param array $selectors
    *   An array of selectors to remove.
@@ -237,6 +245,9 @@ class HtmlCleanUp {
    * Eagle image bars are always inside '<div style="margin-bottom:(15|20)px">'.
    * It appears that they are the only elements with this style applied.
    * Nonetheless, if more than one match, remove only the first.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
    */
   protected static function removeTitleBarImage($query_path) {
     // Find divs that are immediately followed by img tags.
@@ -256,6 +267,9 @@ class HtmlCleanUp {
 
   /**
    * Removes legacy usage of javascript:exitWinOpen() for external links.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
    */
   protected static function removeExtLinkJS($query_path) {
     $elements = $query_path->find('a');
@@ -289,6 +303,9 @@ class HtmlCleanUp {
    *
    * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
    *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
    * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
    */
   public static function fixPdfLinkAnchors($query_path) {
@@ -308,6 +325,9 @@ class HtmlCleanUp {
 
   /**
    * Empty anchors without name attribute will be stripped by ckEditor.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
    */
   protected static function fixNamedAnchors($query_path) {
     $elements = $query_path->find('a');
@@ -326,6 +346,13 @@ class HtmlCleanUp {
 
   /**
    * Makes relative sources values on <a> and <img> tags absolute.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
+   * @param string $file_id
+   *   The full file path of the of the current file, used to determine
+   *   location of relative links.
    */
   public static function convertRelativeSrcsToAbsolute($query_path, $file_id) {
 
@@ -361,7 +388,7 @@ class HtmlCleanUp {
    * Change sub-header images to HTML headers. Defaults to <h2>.
    *
    * @param QueryPath $query_path
-   *   The instantiated QueryPath object for HTML markup.
+   *   The QueryPath object with HTML markup.
    *
    * @param string $header_element
    *   (optional). The HTML header element with which to replace the <img>.
@@ -402,12 +429,27 @@ class HtmlCleanUp {
 
   /**
    * General matching function.
+   *
+   * @param QueryPath $qp
+   *   A QueryPath object.
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $function
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value.
+   * @param string $parameter
+   *   A parameter to be passed into the defined $function.
+   *
+   * @return mixed
+   *   The matched QueryPath element or FALSE.
    */
-  private static function match($qp, $selector, $target, $function, $parameter = NULL) {
+  private static function match($qp, $selector, $needle, $function, $parameter = NULL) {
     $elements = $qp->find($selector);
     foreach ($elements as $key => $elem) {
-      $stuff = $elem->$function($parameter);
-      if (substr_count($stuff, $target) > 0) {
+      $haystack = $elem->$function($parameter);
+      if (substr_count($haystack, $needle) > 0) {
         return $elem;
       }
     }
@@ -415,38 +457,55 @@ class HtmlCleanUp {
   }
 
   /**
-   * Return an element if the text in the attribute matches a target.
+   * Return an element if the text in the attribute matches a search needle.
    *
-   * @param object $qp
+   * @param QueryPath $qp
    *   QueryPath object.
    * @param string $selector
-   *   The selector to look into.
-   * @param string $target
-   *   the target string to match.
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
    * @param string $attribute
-   *   the attribute to test.
+   *   The HTML attribute whose value will be searched.
    *
    * @return mixed
-   *   The matched querypath object or FALSE.
+   *   The matched QueryPath element or FALSE.
    */
-  public static function matchAttribute($qp, $selector, $target, $attribute) {
-    return HtmlCleanUp::match($qp, $selector, $target, "attr", $attribute);
+  public static function matchAttribute($qp, $selector, $needle, $attribute) {
+    return HtmlCleanUp::match($qp, $selector, $needle, "attr", $attribute);
   }
 
   /**
-   * Return an element if the text matches a target.
+   * Return an element if the text that it contains matches a search needle.
    *
-   * @param object $qp
-   *   QueryPath object.
+   * @param QueryPath $qp
+   *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
-   * @param string $target
-   *   the target string to match.
+   * @param string $needle
+   *   The text string for which to search.
    *
    * @return mixed
-   *   The matched querypath object or FALSE.
+   *   The matched QueryPath element or FALSE.
    */
-  public static function matchText($qp, $selector, $target) {
-    return HtmlCleanUp::match($qp, $selector, $target, "text");
+  public static function matchText($qp, $selector, $needle) {
+    return HtmlCleanUp::match($qp, $selector, $needle, "text");
+  }
+
+  /**
+   * Return an element if the HMTL that it contains matches a search needle.
+   *
+   * @param QueryPath $qp
+   *   A QueryPath object.
+   * @param string $selector
+   *   The selector to look into.
+   * @param string $needle
+   *   The text string for which to search.
+   *
+   * @return mixed
+   *   The matched QueryPath element or FALSE.
+   */
+  public static function matchHtml($qp, $selector, $needle) {
+    return HtmlCleanUp::match($qp, $selector, $needle, "html");
   }
 }
