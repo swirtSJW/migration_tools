@@ -161,6 +161,10 @@ return array (
     array (
       'title' => 'Northern District of New York',
     ),
+    'usao-me' => 
+    array (
+      'title' => 'District of Maine',
+    ),
   ),
   'migrations' => 
   array (
@@ -683,6 +687,21 @@ return array (
     array (
       'group_name' => 'usao-ndny',
       'class_name' => 'UsaoNdnyPressReleaseMigration',
+    ),
+    'UsaoMeFile' => 
+    array (
+      'group_name' => 'usao-me',
+      'class_name' => 'UsaoMeFileMigration',
+    ),
+    'UsaoMePage' => 
+    array (
+      'group_name' => 'usao-me',
+      'class_name' => 'UsaoMePageMigration',
+    ),
+    'UsaoMePressRelease' => 
+    array (
+      'group_name' => 'usao-me',
+      'class_name' => 'UsaoMePressReleaseMigration',
     ),
   ),
 );
