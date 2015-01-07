@@ -165,6 +165,10 @@ return array (
     array (
       'title' => 'District of Maine',
     ),
+    'usao-sc' => 
+    array (
+      'title' => 'District of South Carolina',
+    ),
   ),
   'migrations' => 
   array (
@@ -702,6 +706,21 @@ return array (
     array (
       'group_name' => 'usao-me',
       'class_name' => 'UsaoMePressReleaseMigration',
+    ),
+    'UsaoScFile' => 
+    array (
+      'group_name' => 'usao-sc',
+      'class_name' => 'UsaoScFileMigration',
+    ),
+    'UsaoScPage' => 
+    array (
+      'group_name' => 'usao-sc',
+      'class_name' => 'UsaoScPageMigration',
+    ),
+    'UsaoScPressRelease' => 
+    array (
+      'group_name' => 'usao-sc',
+      'class_name' => 'UsaoScPressReleaseMigration',
     ),
   ),
 );
