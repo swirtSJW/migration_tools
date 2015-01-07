@@ -42,7 +42,6 @@ class DistrictsSourceParser extends SourceParser {
     }
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -87,7 +86,7 @@ class DistrictsSourceParser extends SourceParser {
 
     // Rewrap p.greyHeadline and div.greyHeadline to h2.
     $selectors_to_rewrap = array('p.greyHeadline', 'div.greyHeadline');
-    $new_wrapper = '<h2 class="subheading" />';
+    $new_wrapper = '<h6 class="subheading" />';
     HtmlCleanup::rewrapElements($this->queryPath, $selectors_to_rewrap, $new_wrapper);
     // Remove breadcrumbs.
     $this->queryPath->find('.breadcrumb')->first()->remove();
