@@ -42,10 +42,23 @@ else {
 $bad_files = get_badly_encoded_files($dir);
 
 $done = FALSE;
-while (!$done) {
-  $delete = readline("Do you want to delete these files? (Y/N)");
 
-  if ($delete == "Y") {
+$ask = TRUE;
+if (!empty($argv[2]) && $argv[2] == "-y") {
+  $ask = FALSE;
+}
+
+while (!$done) {
+  $delete = "";
+
+  if ($ask) {
+    $delete = readline("Do you want to delete these files? (Y/N)");
+  }
+  else {
+    print_r("Fine! Won't ask if you want to delete them.\n");
+  }
+
+  if ($delete == "Y" || !$ask) {
     foreach ($bad_files as $file) {
       unlink($file);
       print_r("Deleted {$file}\n");
