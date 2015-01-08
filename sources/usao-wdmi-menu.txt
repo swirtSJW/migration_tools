@@ -1,0 +1,31 @@
+HOME{"url":"usao-wdmi/welcome"}
+ABOUT{"url":"usao-wdmi/about-office-united-states-attorney"}
+-About the District{"url":"usao-wdmi/united-states-attorneys-office-western-district-michigan"}
+-About the History{"url":"usao-wdmi/history-western-district-michigan"}
+-About Former United States Attorneys{"url":"usao-wdmi/former-united-states-attorneys-western-district-michigan"}
+-Year in Review{"url":"usao-wdmi"}
+NEWS{"url":"usao-wdmi/news-and-press-releases"}
+MEET THE U.S. ATTORNEY{"url":"usao-wdmi/united-states-attorney-patrick-miles-jr"}
+DIVISIONS{"url":"usao-wdmi/divisions"}
+-Administrative Division {"url":"usao-wdmi/administrative-division"}
+-Appellate Division {"url":"usao-wdmi/appellate-division"}
+-Civil Division {"url":"usao-wdmi/civil-division"}
+-Criminal Division {"url":"usao-wdmi/criminal-division"}
+PROGRAMS{"url":"usao-wdmi/programs-and-initiatives-western-district-michigan"}
+-ATAC{"url":"usao-wdmi/anti-terrorism-advisory-council"}
+-Community Outreach{"url":"usao-wdmi/community-outreach-initiatives-western-district-michigan"}
+-Environmental Crimes{"url":"usao-wdmi/environmental-crimes"}
+-ID Theft{"url":"usao-wdmi/identity-theft"}
+-Health Care Fraud{"url":"usao-wdmi/health-care-fraud"}
+-Project Safe Childhood{"url":"usao-wdmi/project-safe-childhood"}
+-Project Safe Neighborhoods{"url":"usao-wdmi/project-safe-neighborhoods"}
+-Victim Witness Assistance {"url":"usao-wdmi/victim-and-witness-assistance-program"}
+JOBS{"url":"usao-wdmi/jobs"}
+-Diversity and Inclusion{"url":"usao-wdmi/diversity-and-inclusion"}
+-Current USAO Jobs{"url":"usao-wdmi/current-us-attorneys-office-openings"}
+-Law Student Interns{"url":"usao-wdmi/law-student-intern-program"}
+-Other Government Jobs{"url":"usao-wdmi/other-government-jobs"}
+CONTACT US{"url":"usao-wdmi/you-may-contact-us-one-our-three-staffed-offices"}
+-Telephone{"url":"usao-wdmi/you-may-contact-us-phone-one-our-three-staffed-offices"}
+-Mail{"url":"usao-wdmi/you-may-contact-us-mail-one-our-three-staffed-offices"}
+-Webmaster{"url":"usao-wdmi/contact-webmaster-regarding-website-issues-only"}
