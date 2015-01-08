@@ -32,6 +32,10 @@ abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigra
       'field_pr_body' => t('Body'),
     );
 
+    if (empty($arguments['source_parser_class'])) {
+      $arguments['source_parser_class'] = "PressReleaseSourceParser";
+    }
+
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, NULL, $options);
 
@@ -45,6 +49,18 @@ abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigra
     $this->addFieldMapping('field_pr_component', 'field_pr_component');
     $this->addFieldMapping('field_pr_subtitle', 'field_pr_subtitle');
     $this->addFieldMapping('field_pr_date', 'field_pr_date');
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    $row->field_pr_date = $this->sourceParser->getDate();
+    $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
+    $row->field_pr_number = $this->sourceParser->getID();
   }
 }

@@ -41,18 +41,4 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $this->removeFieldMapping("field_pr_component");
     $this->addFieldMapping("field_pr_component")->defaultValue(array($component));
   }
-
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-
-    $row->field_pr_date = $this->sourceParser->getDate();
-    $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
-    $row->field_pr_number = $this->sourceParser->getID();
-  }
 }

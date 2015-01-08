@@ -408,6 +408,30 @@ class ObtainTitle extends Obtainer {
    * @return string
    *   The text found.
    */
+  protected function findSecondPAlignCenterStrong() {
+    $elems = $this->queryPath->find('p[align="center"]');
+    $counter = 0;
+    foreach ($elems as $elem) {
+      if ($counter == 1) {
+        $this->setJustFound($elem);
+        break;
+      }
+      $counter++;
+    }
+
+    $title_elem = $this->getJustFound();
+    if (isset($title_elem)) {
+      return $title_elem->text();
+    }
+
+    return "";
+  }
+
+  /**
+   * Find  the content of the first  "p[align="center"] > strong > u" on page.
+   * @return string
+   *   The text found.
+   */
   protected function findPAlignCenterStrongU() {
     $this->setJustFound($this->queryPath->find('p[align="center"] > strong > u')->first());
     $title = $this->getJustFound()->text();

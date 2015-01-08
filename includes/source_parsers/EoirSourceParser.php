@@ -27,3 +27,18 @@ class EoirSourceParser extends SourceParser {
     parent::setBody();
   }
 }
+
+class EoirPressSourceParser extends PressReleaseSourceParser {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setBody($override = '') {
+    // Remove all the tables.
+    HtmlCleanUp::removeElements($this->queryPath, array("table", "a[id='Top']"));
+
+    $this->queryPath->find("div.headline")->first()->parent()->remove();
+
+    parent::setBody($override);
+  }
+}

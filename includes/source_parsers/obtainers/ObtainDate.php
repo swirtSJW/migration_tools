@@ -214,6 +214,26 @@ class ObtainDate extends Obtainer {
   }
 
   /**
+   * Method for returning the table cell at 3rd row, 1st column.
+   * @return text
+   *   The string found.
+   */
+  protected function findTable3Row3Col2() {
+
+    $table = $this->queryPath->find("table");
+    $counter = 1;
+    foreach ($table as $t) {
+      if ($counter == 3) {
+        $text = $this->getFromTable($t, 3, 2);
+        break;
+      }
+      $counter++;
+    }
+
+    return $text;
+  }
+
+  /**
    * Get a very specific span.
    *
    * Check that it could be a date, and return it.

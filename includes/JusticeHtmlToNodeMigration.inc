@@ -14,7 +14,7 @@
  */
 abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
-  private $sourceParserClass;
+  protected $sourceParserClass;
 
   /**
    * @var SourceParser $source_parser

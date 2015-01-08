@@ -107,3 +107,39 @@ class EoirFileMigration extends JusticeDeployableBinaryFileMigration {
     return "eoir";
   }
 }
+
+class EoirPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    $source_dirs = array(
+      "eoir/press/2014",
+      "eoir/press/2013",
+    );
+
+    $options = array(
+      'recurse' => TRUE,
+    );
+
+    $arguments['source_parser_class'] = "EoirPressSourceParser";
+
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findSecondPAlignCenterStrong',
+      ),
+      'body' => array(),
+      'subtitle' => array(),
+      'date' => array(
+        'findTable3Row3Col2',
+      ),
+    );
+
+    parent::__construct($arguments, $source_dirs, $options);
+
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates Press Releases from EOIR.');
+    $this->addFieldMapping('og_group_ref')->defaultValue('eoir')->sourceMigration('Organization');
+  }
+}

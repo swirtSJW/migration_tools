@@ -572,6 +572,11 @@ return array (
       'group_name' => 'eoir',
       'class_name' => 'EoirPageMigration',
     ),
+    'EoirPressRelease' =>
+    array (
+        'group_name' => 'eoir',
+        'class_name' => 'EoirPressReleaseMigration',
+    ),
     'MiiFile' => 
     array (
       'group_name' => 'mii',
