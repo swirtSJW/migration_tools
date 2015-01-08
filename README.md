@@ -43,3 +43,76 @@ The following is a list of classes that exemplify various types of migrations.
     * OsgBriefMigration
 * Non-english node migration:
     * EspanolPageMigration
+
+### Migration Generation
+Since we have so much infrastructure developed around our html to node migrations, it made sense to automate some of the process.
+
+The generation code is in scripts/generate_migration.php
+
+This script takes 2 arguments:
+
+* A global configuration file
+* A migration specific configuration file
+
+#### Global configuration
+We have 2 global configuration files:
+
+* config/organization.yml
+* config/district.yml
+
+The configuration file can have the following keys:
+
+* twig: The name of the twig file inside scripts/templates that should generate the migration
+* required_keys: An array ([]) of extra keys that are required by the twig template.
+    * There are keys that are already required, so required_keys only need to have any __extra__ keys required by the template.
+* drush_local_alias: The drush alias used for your local site.
+
+#### Specific configuration
+The specific configuration have the information required by the script to generate a migration.
+We store district specific config in scripts/district, and organization specific configuration in scripts/organization.
+
+The following keys are required for all migrations:
+
+* abbreviation: the migration abbreviation (ex. usao-ma)
+* full_name: The full name of the migration (ex. District of Massachusetts)
+* directory: The directory inside of migration sources that contain the migration files (ex. usao/ma)
+
+The district migrations have an extra optional key for when press releases are part of the migration:
+
+* pr_subdirectory: A directory inside of the migration directory, that contain the press releases (ex.news)
+
+#### Command
+The final command to generate a migration after the specific configuration has been created will look like this:
+> php generate_migration.php ./config/district.yml ./districts/ma.yml
+
+This command will generate the migration for the District of Massachusetts. 
+
+### Generating and Importing Menus
+
+There are 2 drush commands to generate, and then import a menu.
+
+The generating command looks like this:
+> drush doj-generate-menu usao-az --css-selector='#navbar' --local-base-uri='usao-az' --menu-location-uri='usao/az'
+
+The only parameter required is the abbreviation of the migration, in this case usao-az. 
+
+Other configuration is optional:
+
+* css-selector should be a css selector pointing to the outer-most ul of the menu in justice.gov
+* local-base-uri should be the path to where the content is locally after a migration has been run (ex. ag or usao-nm)
+* menu-location-uri should be a page in justice.gov containing the menu that we want to generate (ex. oarm would be saying that the menu we care about is locate at justice.gov/oarm)
+
+After a migration is run, so the content is present locally (This is a prerequisite of menu generation), and the menu is generated, we can then import it.
+
+the import command is
+> drush doj-import-group-menu usao-ndny-menu.txt usao-ndny                                                              
+
+The command takes the file where the menu is (the script assumes this file is inside the sources directory) and the abbreviation of the migration.
+
+We have found 2 menu patterns in justice.gov (one mainly for orgs, and one for districts). 
+
+The process differences required by the different menus is encapsulated in the MenuGeneratorEngine classes.
+
+If you look at doj_migration.drush.inc you will see that the menu generation engine is currently hardcoded to use the district menu generation class.
+
+A possible improvement to the code would be to allow classes to be switched with an option, but for now, simply changing the class there for the MenuGeneratorEngineDefault class will work for organization menus.
