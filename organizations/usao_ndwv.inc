@@ -203,6 +203,8 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       62 => 'usao/wvn/news/2014/august',
       63 => 'usao/wvn/news/2014/september',
       64 => 'usao/wvn/news/2014/march',
+      65 => 'usao/wvn/news/2015/january',
+      66 => 'usao/wvn/news/2015/february',
     );
 
     parent::__construct($arguments, $source_dirs);
@@ -240,6 +242,8 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       'usao/wvn/news/2014/october/october2014.html',
       'usao/wvn/news/2014/november/november2014.html',
       'usao/wvn/news/2014/december/december2014.html',
+      'usao/wvn/news/2015/january/january2015.html',
+      'usao/wvn/news/2015/february/february2015.html',
     );
 
     return doj_migration_check_skip_this($row->legacy_path, $skip_these);
