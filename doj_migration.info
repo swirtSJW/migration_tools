@@ -47,6 +47,7 @@ files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/NsdOvtSourceParser.php
+files[] = includes/source_parsers/NdwvSourceParser.php
 files[] = includes/source_parsers/MdPressSourceParser.php
 files[] = includes/source_parsers/OlaPageSourceParser.php
 files[] = includes/source_parsers/OlaTestimonySourceParser.php
