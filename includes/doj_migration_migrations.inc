@@ -181,6 +181,10 @@ return array (
     array (
       'title' => 'Western District of Washington',
     ),
+    'usao-nv' => 
+    array (
+      'title' => 'District of Nevada',
+    ),
   ),
   'migrations' => 
   array (
@@ -788,6 +792,21 @@ return array (
     array (
       'group_name' => 'usao-ndms',
       'class_name' => 'UsaoNdmsPressReleaseMigration',
+    ),
+    'UsaoNvFile' => 
+    array (
+      'group_name' => 'usao-nv',
+      'class_name' => 'UsaoNvFileMigration',
+    ),
+    'UsaoNvPage' => 
+    array (
+      'group_name' => 'usao-nv',
+      'class_name' => 'UsaoNvPageMigration',
+    ),
+    'UsaoNvPressRelease' => 
+    array (
+      'group_name' => 'usao-nv',
+      'class_name' => 'UsaoNvPressReleaseMigration',
     ),
   ),
 );
