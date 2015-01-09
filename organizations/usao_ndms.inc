@@ -105,6 +105,7 @@ class UsaoNdmsPressReleaseMigration extends DistrictPressReleaseMigration {
     $source_dirs = array(
       5 => 'usao/msn/news/2014',
       6 => 'usao/msn/news/2013',
+      10 => 'usao/msn/news/2015',
     );
     parent::__construct($arguments, $source_dirs);
   }
