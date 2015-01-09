@@ -126,6 +126,9 @@ class UsaoSdmsPressReleaseMigration extends DistrictPressReleaseMigration {
       40 => 'usao/mss/press/June2013',
       41 => 'usao/mss/press/May2014',
       42 => 'usao/mss/press/FEBRUARY 2014',
+      43 => 'usao/mss/press/DECEMBER 2014',
+      44 => 'usao/mss/press/JANUARY 2015',
+      45 => 'usao/mss/press/FEBRUARY 2015',
     );
     parent::__construct($arguments, $source_dirs);
   }

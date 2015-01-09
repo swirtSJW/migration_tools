@@ -156,6 +156,9 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       59 => 'usao/wvs/press_releases/June2013/attachments',
       60 => 'usao/wvs/press_releases/May2014/attachments',
       63 => 'usao/wvs/press_releases/2014-11-Nov/attachments',
+      64 => 'usao/wvs/press_releases/2014-12-Dec/attachments',
+      65 => 'usao/wvs/press_releases/2015-01-Jan/attachments',
+      66 => 'usao/wvs/press_releases/2015-02-Feb/attachments',
     );
     parent::__construct($arguments, $source_dirs);
   }
@@ -192,6 +195,9 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       'usao/wvs/press_releases/September2014/attachments/Sept2014releases.html',
       'usao/wvs/press_releases/October2014/attachments/OctoberReleases.html',
       'usao/wvs/press_releases/2014-11-Nov/attachments/NovemberReleases.html',
+      'usao/wvs/press_releases/2014-12-Dec/attachments/DecemberReleases.html',
+      'usao/wvs/press_releases/2015-01-Jan/attachments/JanuaryReleases.html',
+      'usao/wvs/press_releases/2015-02-Feb/attachments/FebruaryReleases.html',
       'usao/wvs/press_releases/Jan2013/attachments/newsfeed.html',
     );
 
