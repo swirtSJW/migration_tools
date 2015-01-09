@@ -169,15 +169,19 @@ return array (
     array (
       'title' => 'District of South Carolina',
     ),
+    'usao-wdmi' => 
+    array (
+      'title' => 'Western District of Michigan',
+    ),
   ),
   'migrations' => 
   array (
-    'DataJson' =>
-    array(
+    'DataJson' => 
+    array (
       'group_name' => 'data',
       'class_name' => 'JusticeJsonToDatasetMigration',
     ),
-    'EspanolFile' =>
+    'EspanolFile' => 
     array (
       'group_name' => 'espanol',
       'class_name' => 'EspanolFileMigration',
@@ -572,10 +576,10 @@ return array (
       'group_name' => 'eoir',
       'class_name' => 'EoirPageMigration',
     ),
-    'EoirPressRelease' =>
+    'EoirPressRelease' => 
     array (
-        'group_name' => 'eoir',
-        'class_name' => 'EoirPressReleaseMigration',
+      'group_name' => 'eoir',
+      'class_name' => 'EoirPressReleaseMigration',
     ),
     'MiiFile' => 
     array (
@@ -731,6 +735,21 @@ return array (
     array (
       'group_name' => 'usao-sc',
       'class_name' => 'UsaoScPressReleaseMigration',
+    ),
+    'UsaoWdmiFile' => 
+    array (
+      'group_name' => 'usao-wdmi',
+      'class_name' => 'UsaoWdmiFileMigration',
+    ),
+    'UsaoWdmiPage' => 
+    array (
+      'group_name' => 'usao-wdmi',
+      'class_name' => 'UsaoWdmiPageMigration',
+    ),
+    'UsaoWdmiPressRelease' => 
+    array (
+      'group_name' => 'usao-wdmi',
+      'class_name' => 'UsaoWdmiPressReleaseMigration',
     ),
   ),
 );
