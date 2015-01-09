@@ -1,0 +1,24 @@
+HOME{"url":"usao-wdwa/welcome"}
+ABOUT{"url":"usao-wdwa/western-district-washington"}
+-Mission Statement{"url":"usao-wdwa/mission"}
+-About the Western District of Washington{"url":"usao-wdwa/western-district-washington"}
+-FAQ{"url":"usao-wdwa/frequently-asked-questions"}
+-How to Get Here{"url":"usao-wdwa/how-get-here"}
+MEET THE U.S. ATTORNEY{"url":"usao-wdwa/meet-us-attorney"}
+NEWS{"url":"usao-wdwa/news-and-press-releases"}
+DIVISIONS{"url":"usao-wdwa/divisions"}
+-Organizational Chart {"url":""}
+-Civil Division {"url":"usao-wdwa/civil-division-overview"}
+-Criminal Division {"url":"usao-wdwa/criminal-division"}
+PROGRAMS{"url":"usao-wdwa/programs"}
+-Civil Rights Program{"url":"usao-wdwa/civil-rights"}
+-Community Outreach{"url":"usao-wdwa/community-outreach"}
+-Project Safe Childhood{"url":"usao-wdwa/project-safe-childhood"}
+-Project Safe Neighborhood{"url":"usao-wdwa/project-safe-neighborhoods"}
+-Victim-Witness{"url":"usao-wdwa/victim-witness-program-16"}
+JOBS{"url":"usao-wdwa/employment"}
+-Attorneys{"url":"usao-wdwa/opportunities-lawyers"}
+-Non-Attorney Support{"url":"usao-wdwa/support-staff-positions"}
+-Law Students{"url":"usao-wdwa/law-clerk-program"}
+-Student Employment Programs{"url":"usao-wdwa/student-employment-programs"}
+CONTACT{"url":"usao-wdwa/contact-us"}

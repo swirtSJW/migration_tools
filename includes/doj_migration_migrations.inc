@@ -177,6 +177,10 @@ return array (
     array (
       'title' => 'Northern District of Mississippi',
     ),
+    'usao-wdwa' => 
+    array (
+      'title' => 'Western District of Washington',
+    ),
   ),
   'migrations' => 
   array (
@@ -754,6 +758,21 @@ return array (
     array (
       'group_name' => 'usao-wdmi',
       'class_name' => 'UsaoWdmiPressReleaseMigration',
+    ),
+    'UsaoWdwaFile' => 
+    array (
+      'group_name' => 'usao-wdwa',
+      'class_name' => 'UsaoWdwaFileMigration',
+    ),
+    'UsaoWdwaPage' => 
+    array (
+      'group_name' => 'usao-wdwa',
+      'class_name' => 'UsaoWdwaPageMigration',
+    ),
+    'UsaoWdwaPressRelease' => 
+    array (
+      'group_name' => 'usao-wdwa',
+      'class_name' => 'UsaoWdwaPressReleaseMigration',
     ),
     'UsaoNdmsFile' => 
     array (

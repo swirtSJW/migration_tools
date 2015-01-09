@@ -179,6 +179,17 @@ class ObtainTitle extends Obtainer {
     return $title;
   }
 
+  /**
+   * Finder method to find the content of the first centered H1 on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findH1FirstCentered() {
+    $this->setJustFound($this->queryPath->find("h1[align='center']")->first());
+    $title = $this->getJustFound()->text();
+    return $title;
+  }
+
 
   /**
    * Finder method to find the content of the first H2 on the page.
