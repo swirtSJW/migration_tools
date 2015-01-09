@@ -173,6 +173,10 @@ return array (
     array (
       'title' => 'Western District of Michigan',
     ),
+    'usao-ndms' => 
+    array (
+      'title' => 'Northern District of Mississippi',
+    ),
   ),
   'migrations' => 
   array (
@@ -750,6 +754,21 @@ return array (
     array (
       'group_name' => 'usao-wdmi',
       'class_name' => 'UsaoWdmiPressReleaseMigration',
+    ),
+    'UsaoNdmsFile' => 
+    array (
+      'group_name' => 'usao-ndms',
+      'class_name' => 'UsaoNdmsFileMigration',
+    ),
+    'UsaoNdmsPage' => 
+    array (
+      'group_name' => 'usao-ndms',
+      'class_name' => 'UsaoNdmsPageMigration',
+    ),
+    'UsaoNdmsPressRelease' => 
+    array (
+      'group_name' => 'usao-ndms',
+      'class_name' => 'UsaoNdmsPressReleaseMigration',
     ),
   ),
 );

@@ -1,0 +1,16 @@
+HOME{"url":"usao-ndms/welcome-0"}
+ABOUT{"url":"usao-ndms/about-office"}
+-Mission Statement{"url":"usao-ndms/mission-statement"}
+-The Office{"url":"usao-ndms/about-office"}
+PRESS RELEASES{"url":"usao-ndms/pr-1"}
+MEET THE U.S. ATTORNEY{"url":"usao-ndms/felicia-c-adams-0"}
+DIVISIONS{"url":"usao-ndms/divisions"}
+-Administrative Division{"url":"usao-ndms/administrative-division"}
+-Civil Division{"url":"usao-ndms/civil-division"}
+-Criminal Division{"url":"usao-ndms/criminal-division"}
+PROGRAMS{"url":"usao-ndms/programs"}
+-LECC{"url":"usao-ndms/law-enforcement-coordinating-committee"}
+-Project Safe Childhood{"url":"usao-ndms/project-safe-childhood"}
+-Project Safe Neighborhoods{"url":"usao-ndms/project-safe-neighborhoods"}
+-Victim Witness Assistance{"url":"usao-ndms/victim-witness-assistance-program"}
+CONTACT US{"url":"usao-ndms/contact-us-0"}
