@@ -197,6 +197,10 @@ return array (
     array (
       'title' => 'Eastern District of Washington',
     ),
+    'usao-edwi' => 
+    array (
+      'title' => 'Eastern District of Wisconsin',
+    ),
   ),
   'migrations' => 
   array (
@@ -864,6 +868,21 @@ return array (
     array (
       'group_name' => 'usao-edwa',
       'class_name' => 'UsaoEdwaPressReleaseMigration',
+    ),
+    'UsaoEdwiFile' => 
+    array (
+      'group_name' => 'usao-edwi',
+      'class_name' => 'UsaoEdwiFileMigration',
+    ),
+    'UsaoEdwiPage' => 
+    array (
+      'group_name' => 'usao-edwi',
+      'class_name' => 'UsaoEdwiPageMigration',
+    ),
+    'UsaoEdwiPressRelease' => 
+    array (
+      'group_name' => 'usao-edwi',
+      'class_name' => 'UsaoEdwiPressReleaseMigration',
     ),
   ),
 );
