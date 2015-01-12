@@ -205,6 +205,10 @@ return array (
     array (
       'title' => 'District of Alaska',
     ),
+    'usao-nd' => 
+    array (
+      'title' => 'District of North Dakota',
+    ),
   ),
   'migrations' => 
   array (
@@ -902,6 +906,21 @@ return array (
     array (
       'group_name' => 'usao-ak',
       'class_name' => 'UsaoAkPressReleaseMigration',
+    ),
+    'UsaoNdFile' => 
+    array (
+      'group_name' => 'usao-nd',
+      'class_name' => 'UsaoNdFileMigration',
+    ),
+    'UsaoNdPage' => 
+    array (
+      'group_name' => 'usao-nd',
+      'class_name' => 'UsaoNdPageMigration',
+    ),
+    'UsaoNdPressRelease' => 
+    array (
+      'group_name' => 'usao-nd',
+      'class_name' => 'UsaoNdPressReleaseMigration',
     ),
   ),
 );
