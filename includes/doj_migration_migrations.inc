@@ -189,6 +189,10 @@ return array (
     array (
       'title' => 'District of Nebraska',
     ),
+    'usao-or' => 
+    array (
+      'title' => 'District of Oregon',
+    ),
   ),
   'migrations' => 
   array (
@@ -826,6 +830,21 @@ return array (
     array (
       'group_name' => 'usao-ne',
       'class_name' => 'UsaoNePressReleaseMigration',
+    ),
+    'UsaoOrFile' => 
+    array (
+      'group_name' => 'usao-or',
+      'class_name' => 'UsaoOrFileMigration',
+    ),
+    'UsaoOrPage' => 
+    array (
+      'group_name' => 'usao-or',
+      'class_name' => 'UsaoOrPageMigration',
+    ),
+    'UsaoOrPressRelease' => 
+    array (
+      'group_name' => 'usao-or',
+      'class_name' => 'UsaoOrPressReleaseMigration',
     ),
   ),
 );
