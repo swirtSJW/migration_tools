@@ -142,7 +142,7 @@ function migration_file($abbreviation, $full_name, $directory, $twig, $pr_subdir
       // Ignore array things.
       if (substr_count($line, "(") == 0 && substr_count($line, ")") == 0 && !empty($line)) {
         if (substr_count($line, "{$pr_subdirectory}/") > 0) {
-          if (substr_count($line, "2013") > 0 || substr_count($line, "2014")) {
+          if (substr_count($line, "2013") > 0 || substr_count($line, "2014") || substr_count($line, "2015")) {
             $press[] = trim($line);
           }
         }

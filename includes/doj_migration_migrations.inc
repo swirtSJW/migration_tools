@@ -185,6 +185,10 @@ return array (
     array (
       'title' => 'District of Nevada',
     ),
+    'usao-ne' => 
+    array (
+      'title' => 'District of Nebraska',
+    ),
   ),
   'migrations' => 
   array (
@@ -807,6 +811,21 @@ return array (
     array (
       'group_name' => 'usao-nv',
       'class_name' => 'UsaoNvPressReleaseMigration',
+    ),
+    'UsaoNeFile' => 
+    array (
+      'group_name' => 'usao-ne',
+      'class_name' => 'UsaoNeFileMigration',
+    ),
+    'UsaoNePage' => 
+    array (
+      'group_name' => 'usao-ne',
+      'class_name' => 'UsaoNePageMigration',
+    ),
+    'UsaoNePressRelease' => 
+    array (
+      'group_name' => 'usao-ne',
+      'class_name' => 'UsaoNePressReleaseMigration',
     ),
   ),
 );
