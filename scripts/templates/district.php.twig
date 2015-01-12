@@ -89,6 +89,12 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
   }
 }
 
+/**
+ * Migrates press releases from /{{ info.abbreviation }}.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
 class {{ info.class }}PressReleaseMigration extends DistrictPressReleaseMigration {
 
   /**
