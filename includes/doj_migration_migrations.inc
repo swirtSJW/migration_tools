@@ -193,6 +193,10 @@ return array (
     array (
       'title' => 'District of Oregon',
     ),
+    'usao-edwa' => 
+    array (
+      'title' => 'Eastern District of Washington',
+    ),
   ),
   'migrations' => 
   array (
@@ -845,6 +849,21 @@ return array (
     array (
       'group_name' => 'usao-or',
       'class_name' => 'UsaoOrPressReleaseMigration',
+    ),
+    'UsaoEdwaFile' => 
+    array (
+      'group_name' => 'usao-edwa',
+      'class_name' => 'UsaoEdwaFileMigration',
+    ),
+    'UsaoEdwaPage' => 
+    array (
+      'group_name' => 'usao-edwa',
+      'class_name' => 'UsaoEdwaPageMigration',
+    ),
+    'UsaoEdwaPressRelease' => 
+    array (
+      'group_name' => 'usao-edwa',
+      'class_name' => 'UsaoEdwaPressReleaseMigration',
     ),
   ),
 );

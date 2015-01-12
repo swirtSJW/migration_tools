@@ -112,3 +112,4 @@ files[] = organizations/usao_wdwa.inc
 files[] = organizations/usao_nv.inc
 files[] = organizations/usao_ne.inc
 files[] = organizations/usao_or.inc
+files[] = organizations/usao_edwa.inc
