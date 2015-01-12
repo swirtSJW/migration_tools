@@ -1,0 +1,17 @@
+HOME{"url":"node/185791"}
+ABOUT{"url":"usao-ak/mission-statement"}
+-About the District{"url":"usao-ak/mission-statement"}
+NEWS{"url":"usao-ak/news-and-press-releases-3"}
+MEET THE U.S. ATTORNEY{"url":"usao-ak/karen-l-loeffler"}
+DIVISIONS{"url":"usao-ak/administrative"}
+-Administrative Division {"url":"usao-ak/administrative"}
+-Civil Division {"url":"usao-ak/about"}
+-Criminal Division {"url":"usao-ak/criminal"}
+PROGRAMS{"url":"usao-ak/programs"}
+-Internships{"url":"usao-ak/summer-internships"}
+-LECC{"url":"usao-ak/law-enforcement-coordinating-committee-lecc"}
+-Project Safe Childhood{"url":""}
+-Project Safe Neighborhoods{"url":""}
+-Victim Witness Assistance {"url":"usao-ak/victim-witness-1"}
+-Weed & Seed{"url":"usao-ak/weed-and-seed"}
+CONTACT US{"url":"usao-ak/contact-us"}

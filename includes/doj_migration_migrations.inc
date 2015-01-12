@@ -201,6 +201,10 @@ return array (
     array (
       'title' => 'Eastern District of Wisconsin',
     ),
+    'usao-ak' => 
+    array (
+      'title' => 'District of Alaska',
+    ),
   ),
   'migrations' => 
   array (
@@ -883,6 +887,21 @@ return array (
     array (
       'group_name' => 'usao-edwi',
       'class_name' => 'UsaoEdwiPressReleaseMigration',
+    ),
+    'UsaoAkFile' => 
+    array (
+      'group_name' => 'usao-ak',
+      'class_name' => 'UsaoAkFileMigration',
+    ),
+    'UsaoAkPage' => 
+    array (
+      'group_name' => 'usao-ak',
+      'class_name' => 'UsaoAkPageMigration',
+    ),
+    'UsaoAkPressRelease' => 
+    array (
+      'group_name' => 'usao-ak',
+      'class_name' => 'UsaoAkPressReleaseMigration',
     ),
   ),
 );
