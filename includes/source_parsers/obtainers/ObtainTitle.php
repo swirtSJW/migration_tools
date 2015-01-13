@@ -11,7 +11,7 @@
 /**
  * {@inheritdoc}
  */
-class ObtainTitle extends Obtainer {
+class ObtainTitle extends ObtainHtml {
 
   /**
    * {@inheritdoc}
@@ -179,7 +179,7 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH1FirstCentered() {
-    $this->setJustFound($this->queryPath->find("h1[align='center']")->first());
+    $element = $this->queryPath->find("h1[align='center']")->first();
     $this->setElementToRemove($element);
 
     return $element->text();
@@ -192,7 +192,7 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH2First() {
-    $this->setJustFound($this->queryPath->find("h2")->first());
+    $element = $this->queryPath->find("h2")->first();
     $this->setElementToRemove($element);
 
     return $element->text();
@@ -205,7 +205,7 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH2FirstCentered() {
-    $this->setJustFound($this->queryPath->find("h2[align='center']")->first());
+    $element = $this->queryPath->find("h2[align='center']")->first();
     $this->setElementToRemove($element);
 
     return $element->text();

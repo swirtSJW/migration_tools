@@ -23,7 +23,6 @@ class ObtainBody extends ObtainHtml {
    */
   protected function findTopBodyHtml() {
     $element = $this->queryPath->top('body');
-    $this->setElementToRemove($element);
 
     return $element->innerHtml();
   }
@@ -36,7 +35,6 @@ class ObtainBody extends ObtainHtml {
    */
   protected function findClassContentSub() {
     $element = $this->queryPath->top('.contentSub');
-    $this->setElementToRemove($element);
 
     return $element->innerHtml();
   }

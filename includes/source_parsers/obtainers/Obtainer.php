@@ -57,6 +57,7 @@ abstract class Obtainer {
         drush_doj_migration_debug_output("The target method '{$obtainer_class}' in {$obtainer_class} does not exist and was skipped.");
       }
     }
+    $this->methodStack = $method_stack;
   }
 
   /**
@@ -81,7 +82,7 @@ abstract class Obtainer {
   /**
    * Processes each method in method stack until a string is found.
    */
-  protected function obtain() {
+  public function obtain() {
     // Loop through the stack.
     foreach ($this->methodStack as $current_method) {
       // Run the method. It is expected that the method will return a string.
@@ -153,7 +154,7 @@ abstract class Obtainer {
    * @return bool
    *   TRUE if possibleText can be used as a title. FALSE if it can't.
    */
-  protected function validateString(string $string) {
+  protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
     switch (TRUE) {

@@ -8,7 +8,7 @@
 /**
  * {@inheritdoc}
  */
-class ObtainID extends Obtainer {
+class ObtainID extends ObtainHtml {
 
   /**
    * Method for returning the table cell at 3rd row, 1st column.

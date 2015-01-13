@@ -116,11 +116,13 @@ class ObtainDate extends ObtainHtml {
         // Search for the string.
         $element = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
 
-        if (!empty($elem)) {
-          $text = $elem->text();
-          // Clean string.
-          $processed_text = $this->cleanString($text);
-          $valid = $this->validateString($processed_text);
+        if (!empty($element)) {
+          $text = $element->text();
+
+          // Remove accompanying text and clean string.
+          $text = str_replace($search_string, '', $text);
+          $text = $this->cleanString($text);
+          $valid = $this->validateString($text);
 
           if ($valid) {
             $this->setElementToRemove($element);
@@ -134,7 +136,6 @@ class ObtainDate extends ObtainHtml {
 
     return '';
   }
-
 
   /**
    * Method for returning the table cell at row 1, column 1.
@@ -252,7 +253,6 @@ class ObtainDate extends ObtainHtml {
     return "";
   }
 
-
   // ***************** Helpers ***********************************************.
 
   /**
@@ -298,26 +298,6 @@ class ObtainDate extends ObtainHtml {
     $text = StringCleanUp::superTrim($text);
 
     return $text;
-  }
-
-
-  /**
-   * Convert an obtained date into another format.
-   *
-   * @param string $format
-   *   The format of the date to be returned.
-   *   http://php.net/manual/en/function.date.php
-   *
-   * @return string
-   *   The formatted date string.
-   */
-  public function formatDate($format = 'n/d/Y') {
-    $text = $this->getText();
-    if ((!empty($format)) && (!empty($text))) {
-      // We have a format and a date to use.
-      $date_string = date($format, strtotime($this->getText()));
-    }
-    return (!empty($date_string)) ? $date_string : '';
   }
 
   /**

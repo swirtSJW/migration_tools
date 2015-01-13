@@ -121,25 +121,23 @@ class SourceParser {
   }
 
   /**
-   * Setter.
+   * Sets the date.
    *
    * @param string $date
    *   (optional) The date. Defaults to obtainer-derived string.
    */
   protected function setDate($date = '') {
     if (empty($date)) {
-      $obtained_date = $this->runObtainer('ObtainDate', 'date');
-      $this->date = $obtained_date->formatDate('n/d/Y');
-      $date_string_raw = $obtained_date->getText();
-    }
-    else {
-      $this->date = $date;
-      $date_string_raw = $date;
+      $date_string = $this->runObtainer('ObtainDate', 'date');
+      drush_doj_migration_debug_output("Raw Date: $date_string");
+
+      $date = date('n/d/Y', strtotime($date_string));
     }
 
     $this->date = $date;
+
     // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("--date--> Raw:{$date_string_raw}, Formatted:{$this->getDate()}");
+    drush_doj_migration_debug_output("Formatted Date: $date");
   }
 
   /**
@@ -174,7 +172,7 @@ class SourceParser {
   protected function setTitle($title = '') {
 
     try {
-      if (empty($override)) {
+      if (empty($title)) {
         $method_stack = array(
           'findClassBreadcrumbMenuContentLast',
           'findTitleTag',
