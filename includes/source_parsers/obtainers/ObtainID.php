@@ -11,33 +11,15 @@
 class ObtainID extends Obtainer {
 
   /**
-   * {@inheritdoc}
-   */
-  public function __construct($query_path, $target_stack) {
-    parent::__construct($query_path, $target_stack);
-    $this->processMethodStack($query_path, $target_stack, 'ObtainID');
-  }
-
-  // **************** Begin finder target definitions *************************
-  // To create a new finder, use this template and put them in alpha order.
-  // @codingStandardsIgnoreStart
-  /*
-  protected function findMethod() {
-    $this->setJustFound($this->queryPath->find("{SELECTOR}")->first());
-    $text = $this->getJustFound()->text();
-    return $text;
-  }
-  */
-  // @codingStandardsIgnoreEnd
-
-  /**
    * Method for returning the table cell at 3rd row, 1st column.
+   *
    * @return text
    *   The string found.
    */
   protected function findTable3y1x() {
     $table = $this->queryPath->find("table");
     $text = $this->getFromTable($table, 3, 1);
+
     return $text;
   }
 
@@ -53,7 +35,7 @@ class ObtainID extends Obtainer {
    * @return string
    *   The cleaned text.
    */
-  public static function cleanPossibleText($text = '') {
+  public static function cleanString($text) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $text = doj_migration_html_entity_decode_numeric($text);
@@ -80,28 +62,5 @@ class ObtainID extends Obtainer {
     $text = StringCleanUp::superTrim($text);
 
     return $text;
-  }
-
-  /**
-   * Evaluates $possibleText and if it checks out, returns TRUE.
-   *
-   * @return bool
-   *   TRUE if possibleText can be used as a title.  FALSE if it cant.
-   */
-  protected function validatePossibleText() {
-    $text = $this->getPossibleText();
-    // Run through any evaluations.  If it makes it to the end, it is good.
-    // Case race, first to evaluate TRUE aborts the text.
-    switch (TRUE) {
-      // List any cases below that would cause it to fail validation.
-      case empty($text):
-      case is_object($text):
-      case is_array($text);
-        return FALSE;
-
-      default:
-        return TRUE;
-
-    }
   }
 }
