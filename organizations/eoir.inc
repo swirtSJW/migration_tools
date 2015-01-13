@@ -245,4 +245,14 @@ class EoirPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     $this->description = t('Migrates Press Releases from EOIR.');
     $this->addFieldMapping('og_group_ref')->defaultValue('eoir')->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+    $row->field_pr_component = "Executive Office for Immigration Review";
+  }
 }
