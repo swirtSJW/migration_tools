@@ -15,7 +15,7 @@ abstract class Obtainer {
    * @var object
    *   The QueryPath element to be tested.
    */
-  protected $element;
+  private $element;
 
   /**
    * @var QueryPath
@@ -27,13 +27,7 @@ abstract class Obtainer {
    * @var array
    *   Array of find methods to call, in order. Passed in at instantiation.
    */
-  protected $methodStack = array();
-
-  /**
-   * @var string
-   *   The string obtained from the most recently run finder method.
-   */
-  protected $obtainedString;
+  private $methodStack = array();
 
   /**
    * Constructor for the Obtainer.
@@ -47,7 +41,6 @@ abstract class Obtainer {
   public function __construct($query_path, $method_stack = array()) {
     $this->queryPath = $query_path;
     $this->setMethodStack($method_stack);
-    $this->obtain();
   }
 
   /**
@@ -91,8 +84,7 @@ abstract class Obtainer {
   protected function obtain() {
     // Loop through the stack.
     foreach ($this->methodStack as $current_method) {
-      // Run the method. It is expected that the call method will return
-      // $this->obtain($element).
+      // Run the method. It is expected that the method will return a string.
       $found_string = $this->$current_method();
       $found_string = $this->cleanString($found_string);
 
@@ -100,19 +92,16 @@ abstract class Obtainer {
         // Give child classes opportunity to process the string before return.
         $found_string = $this->processString($found_string);
 
+        drush_doj_migration_debug_output(get_class($this) . " matched: $current_method");
+
         // Remove the element from the DOM and exit loop.
-        $obtainer_class = get_class($this);
-        drush_doj_migration_debug_output("$obtainer_class matched: $current_method");
-        $this->obtainedString = $found_string;
         $this->removeElement();
 
-        break;
+        return $found_string;
       }
     }
 
-    if (empty($this->obtainedString)) {
-      drush_doj_migration_debug_output("{$obtainer_class}-Matched: NO MATCHES FOUND");
-    }
+    drush_doj_migration_debug_output(get_class($this) . " matched: NO MATCHES FOUND");
   }
 
   /**
