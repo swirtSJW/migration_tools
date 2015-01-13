@@ -36,14 +36,12 @@ class SourceParser {
    *   The file id, e.g. careers/legal/pm7205.html
    * @param string $html
    *   The full HTML data as loaded from the file.
-   * @param bool $fragment
-   *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    * @param array $qp_options
    *   An associative array of options to be passed to the html_qp() function.
    * @param array $arguments
    *   An associative array arguments passed up from the migration class.
    */
-  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array(), $arguments = array()) {
+  public function __construct($file_id, $html, $qp_options = array(), $arguments = array()) {
     $this->mergeArguments((array) $arguments);
 
     $html = StringCleanUp::fixEncoding($html);
@@ -495,6 +493,22 @@ class SourceParser {
     );
   }
 
+
+  /**
+   * Use an Obtainer class to obtain some markup.
+   *
+   * @param string $obtainer_class
+   *   The name of the obtainer class to use.
+   * @param object $query_path
+   *   The query path object to use as the source of possible content.
+   * @param array $method_stack
+   *   The stack of findMethods to use.
+   */
+  public function obtain($obtainer_class, $query_path, $method_stack) {
+    $obtained = new $obtainer_class($query_path, $method_stack);
+    return $obtained->getText();
+  }
+
   /**
    * Runs an obtainer and returns the text it found.
    *
@@ -517,8 +531,8 @@ class SourceParser {
       if (empty($method_stack)) {
         $method_stack = $default_method_stack;
       }
-      $obtained = new $obtainer_class($this->queryPath, $method_stack);
-      $text = $obtained->getText();
+
+      $text = $this->obtain($obtainer_class, $this->queryPath, $method_stack);
     }
     catch (Exception $e) {
       watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
