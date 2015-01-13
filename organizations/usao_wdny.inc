@@ -41,18 +41,15 @@ class UsaoWdnyPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
-
     $skip_these = array(
       'usao/nyw/usao-header.html',
       'usao/nyw/usao-rightCol.html',
       'usao/nyw/usao-footer.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }
 

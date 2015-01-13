@@ -162,16 +162,13 @@ class UsaoEdpaPressReleaseMigration extends DistrictPressReleaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
     $skip_these = array(
       'usao/pae/News/2013/Feb/index-news_2013.htm',
       'usao/pae/News/index-news_2014.htm',
-
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
-
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }

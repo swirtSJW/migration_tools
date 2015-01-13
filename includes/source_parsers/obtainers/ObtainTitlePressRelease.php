@@ -9,8 +9,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
   /**
    * {@inheritdoc}
    */
-  public function validatePossibleText() {
-    $text = $this->getPossibleText();
+  public function validateString($text) {
     // If the text it grabbed was 'News And Press Releases' then try again.
     if (strcasecmp(trim($text), "News And Press Releases") == 0) {
       return FALSE;
@@ -26,21 +25,15 @@ class ObtainTitlePressRelease extends ObtainTitle {
     }
 
     // Made it this far.  Send it to the parent for further validations.
-    return parent::validatePossibleText();
+    return parent::validateString($text);
   }
 
   /**
-   * Cleans $text and returns it.
-   *
-   * @param string $text
-   *   Text to clean and return.
-   *
-   * @return string
-   *   The cleaned text.
+   * {@inheritdoc}
    */
-  public static function cleanPossibleText($text = '') {
+  public static function cleanString($text) {
     // Pass it to the parent, then do any additional processing.
-    $text = parent::cleanPossibleText($text);
+    $text = parent::cleanString($text);
     $text = StringCleanUp::makeWordsFirstCapital($text);
 
     return $text;
@@ -86,12 +79,13 @@ class ObtainTitlePressRelease extends ObtainTitle {
       '.style11',
     );
     foreach ($classes as $class) {
-      $this->setJustFound($this->queryPath->find("$class > u")->first());
-      $text = $this->getJustFound()->text();
-      $this->setPossibleText($text);
-      $this->cleanThisPossibleText();
-      if ($this->validatePossibleText()) {
-        $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+      $element = $this->queryPath->find("$class > u")->first();
+      $this->setElementToRemove($element);
+      $text = $this->cleanString($element->text());
+      if ($this->validateString($text)) {
+        // Add debug message.
+        // $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+
         // Return the original string to avoid double cleanup causing issues.
         return $text;
       }
@@ -118,12 +112,12 @@ class ObtainTitlePressRelease extends ObtainTitle {
       '.style17',
     );
     foreach ($classes as $class) {
-      $this->setJustFound($this->queryPath->find("$class > strong > u")->first());
-      $text = $this->getJustFound()->text();
-      $this->setPossibleText($text);
-      $this->cleanThisPossibleText();
-      if ($this->validatePossibleText()) {
-        $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+      $element = $this->setElementToRemove($this->queryPath->find("$class > strong > u")->first());
+      $text = $this->cleanString($element->text());
+      if ($this->validateString($text)) {
+        // @todo Add debug message.
+        // $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+
         // Return the original string to avoid double cleanup causing issues.
         return $text;
       }
@@ -131,6 +125,4 @@ class ObtainTitlePressRelease extends ObtainTitle {
 
     return '';
   }
-
-
 }

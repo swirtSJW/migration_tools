@@ -36,14 +36,12 @@ class SourceParser {
    *   The file id, e.g. careers/legal/pm7205.html
    * @param string $html
    *   The full HTML data as loaded from the file.
-   * @param bool $fragment
-   *   Set to TRUE if there are no <html>,<head>, or <body> tags in the HTML.
    * @param array $qp_options
    *   An associative array of options to be passed to the html_qp() function.
    * @param array $arguments
    *   An associative array arguments passed up from the migration class.
    */
-  public function __construct($file_id, $html, $fragment = FALSE, $qp_options = array(), $arguments = array()) {
+  public function __construct($file_id, $html, $qp_options = array(), $arguments = array()) {
     $this->mergeArguments((array) $arguments);
 
     $html = StringCleanUp::fixEncoding($html);
@@ -122,33 +120,25 @@ class SourceParser {
     return $this->date;
   }
 
-
   /**
-   * Setter.
+   * Sets the date.
+   *
+   * @param string $date
+   *   (optional) The date. Defaults to obtainer-derived string.
    */
-  protected function setDate($override = '') {
-    if (empty($override)) {
-      // Default stack: Use this if none was defined in
-      // $arguments['obtainer_methods'].
-      $default_target_stack = array();
+  protected function setDate($date = '') {
+    if (empty($date)) {
+      $date_string = $this->runObtainer('ObtainDate', 'date');
+      drush_doj_migration_debug_output("Raw Date: $date_string");
 
-      $om = $this->getObtainerMethods('date');
-      $date_find_stack = (!empty($om)) ? $om : $default_target_stack;
-      $obtained_date = new ObtainDate($this->queryPath, $date_find_stack);
-      $date = $obtained_date->formatDate('n/d/Y');
-      $date_string_raw = $obtained_date->getText();
-    }
-    else {
-      // The override was invoked, so use it.
-      $date = $override;
-      $date_string_raw = $override;
+      $date = date('n/d/Y', strtotime($date_string));
     }
 
     $this->date = $date;
-    // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("--date--> Raw:{$date_string_raw}  Formatted:{$this->getDate()}");
-  }
 
+    // Output to show progress to aid debugging.
+    drush_doj_migration_debug_output("Formatted Date: $date");
+  }
 
   /**
    * Getter.
@@ -157,21 +147,15 @@ class SourceParser {
     return $this->id;
   }
 
-
   /**
    * Setter.
+   *
+   * @param string $id
+   *   The id.
    */
-  protected function setID($override = '') {
-    if (empty($override)) {
-      // Default stack: Use this if none was defined in
-      // $arguments['obtainer_methods'].
-      $default_target_stack = array();
-
-      $id = $this->runObtainer('ObtainID', 'id', $default_target_stack);
-    }
-    else {
-      // The override was invoked, so use it.
-      $id = $override;
+  protected function setID($id = '') {
+    if (empty($id)) {
+      $id = $this->runObtainer('ObtainID', 'id');
     }
 
     $this->id = $id;
@@ -179,54 +163,35 @@ class SourceParser {
     drush_doj_migration_debug_output("--id-->  {$this->getID()}");
   }
 
-
   /**
    * Sets $this->title using breadcrumb or <title>.
+   *
+   * @param string $title
+   *   (optional) The title. Defaults to obtainer-derived value.
    */
-  protected function setTitle($override = '') {
+  protected function setTitle($title = '') {
 
-    // QueryPathing our way through things can fail.
-    // In that case let's still set things and inform people about the issue.
     try {
-      if (empty($override)) {
-        // Default stack: Use this if none was defined in
-        // $arguments['obtainer_methods'].
-        $default_target_stack = array(
+      if (empty($title)) {
+        $method_stack = array(
           'findClassBreadcrumbMenuContentLast',
           'findTitleTag',
           'findH1First',
         );
-
-        $target_stack = $this->getObtainerMethods('title');
-        $title_find_stack = (!empty($target_stack)) ? $target_stack : $default_target_stack;
-        $obtained_title = new ObtainTitle($this->queryPath, $title_find_stack);
-        $title = $obtained_title->getText();
-
-        // Check for discarded text and for a setSubTitle method.
-        // Some extensions may have them, but the base class does not.
-        $discarded = $obtained_title->getTextDiscarded();
-        if (!empty($discarded) && method_exists($this, 'setSubTitle')) {
-          // Put the discarded text into the subtitle.  It might not be right,
-          // but at least it is not lost.
-          $this->setSubTitle($discarded);
-        }
-      }
-      else {
-        // The override was invoked, so use it.
-        $title = $override;
+        $title = $this->runObtainer('ObtainTitle', 'title', $method_stack);
       }
 
       $this->title = $title;
+
       // Output to show progress to aid debugging.
       drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
     }
     catch (Exception $e) {
-      $this->title = "";
+      $this->title = '';
       watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
       drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set title.");
     }
   }
-
 
   /**
    * Return the title for this content.
@@ -236,14 +201,12 @@ class SourceParser {
     return $this->title;
   }
 
-
   /**
    * Getter.
    */
   public function getSubTitle() {
     return $this->subTitle;
   }
-
 
   /**
    * Get the body from html and set the body var.
@@ -256,11 +219,11 @@ class SourceParser {
     if (empty($body)) {
       // Default stack: Use this if none was defined in
       // $arguments['obtainer_methods'].
-      $default_method_stack = array(
+      $method_stack = array(
         'findTopBodyHtml',
         'findClassContentSub',
       );
-      $body = $this->runObtainer('ObtainBody', 'body', $default_method_stack);
+      $body = $this->runObtainer('ObtainBody', 'body', $method_stack);
     }
 
     $this->body = $body;
@@ -290,16 +253,10 @@ class SourceParser {
    *   The update date.
    */
   public function extractUpdatedDate() {
-    // Default stack: Use this if none was defined in
-    // $arguements['obtainer_methods'].
-    $default_target_stack = array(
+    $method_stack = array(
       'findClassLastupdate',
     );
-
-    $method = $this->getObtainerMethods('date_updated');
-    $date_find_stack = (!empty($method)) ? $method : $default_target_stack;
-    $obtained_date = new ObtainDate($this->queryPath, $date_find_stack);
-    $date = $obtained_date->getText();
+    $date = $this->runObtainer('ObtainDate', 'date_updated', $method_stack);
 
     return $date;
   }
@@ -393,7 +350,6 @@ class SourceParser {
     return "";
   }
 
-
   /**
    * Basic getter for $arguments.
    *
@@ -403,7 +359,6 @@ class SourceParser {
   public function getArguments() {
     return $this->arguments;
   }
-
 
   /**
    * Merges an array into the arguments array.
@@ -416,7 +371,6 @@ class SourceParser {
       $this->arguments = array_merge($this->getArguments(), $new_args);
     }
   }
-
 
   /**
    * Gets a single argument from the arguments array.
@@ -437,7 +391,6 @@ class SourceParser {
     return array();
   }
 
-
   /**
    * Gets the specified obtainer methods from the arguments.
    *
@@ -456,34 +409,30 @@ class SourceParser {
     return array();
   }
 
-
   /**
    * Adds an array of obtainer method arrays overwriting existing methods.
    *
    * @param array $obtainer_methods
    *   An array of obtainer method arrays.
    */
-  protected function setObtainerMethods($obtainer_methods = array()) {
-    if ((!empty($obtainer_methods)) && (is_array($obtainer_methods))) {
-      $args = $this->getArguments();
-      // Loop through new array of obtainer methods.
-      foreach ($obtainer_methods as $obtainer_methods_key => $stack) {
-        // Put the new into the original.
-        $args['obtainer_methods'][$obtainer_methods_key] = $stack;
-      }
-      // Put the newly formed args back.
-      $this->mergeArguments($args);
+  protected function setObtainerMethods(array $obtainer_methods) {
+    $args = $this->getArguments();
+    // Loop through new array of obtainer methods.
+    foreach ($obtainer_methods as $obtainer_methods_key => $stack) {
+      // Put the new into the original.
+      $args['obtainer_methods'][$obtainer_methods_key] = $stack;
     }
+    // Put the newly formed args back.
+    $this->mergeArguments($args);
   }
 
   /**
    * Defines and returns an array of parsing methods to call in order.
    *
    * @return array
-   *   An array of parssing methods to call in order.
+   *   An array of parsing methods to call in order.
    */
   public function getParseOrder() {
-    // Specify the parsing methods that should run in order.
     return array(
       // Getting the title relies on html that could be wiped during clean up
       // so let's get it before we clean things up.
@@ -496,29 +445,44 @@ class SourceParser {
   }
 
   /**
+   * Use an Obtainer class to obtain some markup.
+   *
+   * @param string $obtainer_class
+   *   The name of the obtainer class to use.
+   * @param object $query_path
+   *   The query path object to use as the source of possible content.
+   * @param array $method_stack
+   *   The stack of findMethods to use.
+   */
+  public function obtain($obtainer_class, $query_path, $method_stack) {
+    $obtainer = new $obtainer_class($query_path, $method_stack);
+
+    return $obtainer->obtain();
+  }
+
+  /**
    * Runs an obtainer and returns the text it found.
    *
    * @param string $obtainer_class
    *   The name of the obtainer class to use.
    * @param string $obtainer_methods_key
    *   The key for the obtainer arguments array to see which findMethods to run.
-   * @param array $default_method_stack
-   *   (optional) The default stack of findMethods to use if none is available
-   *   from the arguments.
+   * @param array $method_stack
+   *   (optional) The stack of findMethods to use. Defaults to values from
+   *   $this->getObtainerMethods().
    *
    * @return string
    *   The string retrieved by executing the obtainer.
    */
-  public function runObtainer($obtainer_class, $obtainer_methods_key, $default_method_stack = array()) {
+  public function runObtainer($obtainer_class, $obtainer_methods_key, $method_stack = array()) {
     $text = '';
 
     try {
-      $method_stack = $this->getObtainerMethods($obtainer_methods_key);
       if (empty($method_stack)) {
-        $method_stack = $default_method_stack;
+        $method_stack = $this->getObtainerMethods($obtainer_methods_key);
       }
-      $obtained = new $obtainer_class($this->queryPath, $method_stack);
-      $text = $obtained->getText();
+
+      $text = $this->obtain($obtainer_class, $this->queryPath, $method_stack);
     }
     catch (Exception $e) {
       watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
@@ -532,23 +496,14 @@ class SourceParser {
     return $text;
   }
 
-
   /**
-   * Runs the parse methods prescribed by getParseOrder().
+   * Runs the parse methods defined in by getParseOrder().
    */
   protected function runParserOrder() {
     drush_doj_migration_debug_output('----------------------row-------------------');
     $parse_methods = $this->getParseOrder();
-    foreach (is_array($parse_methods) ? $parse_methods : array() as $method) {
-      // Check to see if this $method is an available method.
-      if (method_exists($this, $method)) {
-        // Run the method to do its job.
-        $this->$method();
-      }
-      else {
-        // Output a message that the method does not exist.
-        drush_doj_migration_debug_output("The parser method '{$method}' in SourceParser and its children does not exist and was skipped.");
-      }
+    foreach ($parse_methods as $method) {
+      $this->$method();
     }
   }
 }

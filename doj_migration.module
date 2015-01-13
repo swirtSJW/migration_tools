@@ -31,7 +31,7 @@ function doj_migration_menu_alter(&$items) {
 /**
  * Set workbench configuration for entity.
  *
- * This fixes a number of bugs that result from worbench revisions failing
+ * This fixes a number of bugs that result from workbench revisions failing
  * to be created or updated when entities are created or updated.
  */
 function doj_migration_prepare_workbench_settings($entity, $row) {
@@ -75,4 +75,30 @@ function doj_migration_module_implements_alter(&$implementations, $hook) {
     unset($implementations['akamai']);
     unset($implementations['expire']);
   }
+}
+
+/**
+ * Determine if a given file should be excluded from the current migration.
+ *
+ * @param string $file_id
+ *   The unique id for the row being processed. Typically legacy_path or fileid.
+ *
+ * @param array $files_to_skip
+ *   Array of values to skip and not migrate.
+ *
+ * @return bool
+ *   -TRUE if the row should be skipped.
+ *   -FALSE if the row should not be skipped.
+ */
+function doj_migration_skip_file($file_id, $files_to_skip) {
+  if (in_array($file_id, $files_to_skip)) {
+    // This page should be skipped.
+    $message = t('- @fileid  -> Skipped: intentionally.', array('@fileid' => $file_id));
+    watchdog('doj_migration', $message, array('@fileid' => $file_id), WATCHDOG_WARNING);
+
+    return TRUE;
+  }
+
+  // This page should not be skipped.
+  return FALSE;
 }

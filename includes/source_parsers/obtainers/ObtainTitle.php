@@ -11,40 +11,26 @@
 /**
  * {@inheritdoc}
  */
-class ObtainTitle extends Obtainer {
+class ObtainTitle extends ObtainHtml {
 
   /**
    * {@inheritdoc}
    */
-  public function __construct($query_path, $target_stack) {
-    parent::__construct($query_path, $target_stack);
-    $this->processMethodStack($query_path, $target_stack, 'ObtainTitle');
+  protected function processString($string) {
+    return $this->truncateString($string);
   }
 
   /**
    * Truncates and sets the discarded if there is a remainder.
    */
-  protected function truncateThisPossibleText() {
-    $text = $this->getPossibleText();
-    $split = $this->truncateThisWithoutHTML($text, 255, 2);
-    $this->setPossibleText($split['truncated']);
-    $this->setTextDiscarded($split['remaining']);
+  protected function truncateString($string) {
+    $split = $this->truncateThisWithoutHTML($string, 255, 2);
+
+    // @todo Add debugging to display $split['remaining'].
+    // $this->setTextDiscarded($split['remaining']);
+
+    return $split['truncated'];
   }
-
-
-  // **************** Begin finder target definitions *************************
-  // To create a new finder, use this template and put them in alpha order.
-  // @codingStandardsIgnoreStart
-  /*
-  protected function findMethod() {
-    $this->setJustFound($this->queryPath->find("{SELECTOR}")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
-  }
-  */
-  // @codingStandardsIgnoreEnd
-
-
 
   /**
    * Finder method to find the content from the last item in the breadcrumb.
@@ -58,12 +44,13 @@ class ObtainTitle extends Obtainer {
     // do not import breadcrumbs.
     $breadcrumb->find(a)->remove();
     $title = $breadcrumb->first()->text();
-    $this->removeMeNot();
+
     return $title;
   }
 
   /**
    * Finder method to find the content from the last item in the breadcrumb.
+   *
    * @return string
    *   The text found.
    */
@@ -74,7 +61,7 @@ class ObtainTitle extends Obtainer {
     // do not import breadcrumbs.
     $breadcrumb->children('a, span, font')->remove();;
     $title = $breadcrumb->text();
-    $this->removeMeNot();
+
     return $title;
   }
 
@@ -85,21 +72,24 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findClassContentSubDivPCenterStrong() {
-    $this->setJustFound($this->queryPath->find(".contentSub > div > p[align='center'] > strong")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find(".contentSub > div > p[align='center'] > strong")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
   /**
-   * Finder  first .contentSub > div > strong on the page.
+   * Finder first .contentSub > div > strong on the page.
+   *
    * @return string
    *   The text found.
    */
   protected function findClassContentSubDivDivPStrong() {
-    $this->setJustFound($this->queryPath->find(".contentSub > div > div > p > strong")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find(".contentSub > div > div > p > strong")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -109,9 +99,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findClassMsoNormal() {
-    $this->setJustFound($this->queryPath->find(".MsoNormal")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find(".MsoNormal")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -124,9 +115,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findDivClassContentSubDivDivCenter() {
-    $this->setJustFound($this->queryPath->find("div.contentSub > div > div[align='center']")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("div.contentSub > div > div[align='center']")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -139,9 +131,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findDivDivCenterDivClassPartP() {
-    $this->setJustFound($this->queryPath->find("div > div[align='center'] > div.Part > p")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("div > div[align='center'] > div.Part > p")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -154,12 +147,12 @@ class ObtainTitle extends Obtainer {
 
     // Check all h1
     foreach ($this->queryPath->find("h1") as $key => $h1) {
-      $this->setJustFound($h1);
+      $this->setElementToRemove($h1);
       $text = $h1->text();
-      $this->setPossibleText($text);
-      $this->cleanThisPossibleText();
-      if ($this->validatePossibleText()) {
-        $this->setCurrentFindMethod("findAnyH1-i={$key}");
+      $text = $this->cleanString($text);
+      if ($this->validateString($text)) {
+        // @todo Add debug message.
+        // $this->setCurrentFindMethod("findAnyH1-i={$key}");
         // Return the original string to avoid double cleanup causing issues.
         return $text;
       }
@@ -174,9 +167,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH1First() {
-    $this->setJustFound($this->queryPath->find("h1")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("h1")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
   /**
@@ -185,9 +179,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH1FirstCentered() {
-    $this->setJustFound($this->queryPath->find("h1[align='center']")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("h1[align='center']")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -197,9 +192,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH2First() {
-    $this->setJustFound($this->queryPath->find("h2")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("h2")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -209,9 +205,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH2FirstCentered() {
-    $this->setJustFound($this->queryPath->find("h2[align='center']")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("h2[align='center']")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -221,9 +218,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findH3First() {
-    $this->setJustFound($this->queryPath->find("h3")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("h3")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -233,9 +231,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findIdContentstartDivH2() {
-    $this->setJustFound($this->queryPath->find("#contentstart > div > h2")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("#contentstart > div > h2")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -245,8 +244,8 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findIdContentstartDivH2Sec() {
-    $this->setJustFound($this->queryPath->find("#contentstart > div > h2"));
-    foreach ($this->justFound as $key => $h2) {
+    $elements = $this->queryPath->find("#contentstart > div > h2");
+    foreach ($elements as $key => $h2) {
       // Key starts at 0.
       if ($key == 1) {
         $text = $h2->text();
@@ -263,9 +262,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findIdHeadline() {
-    $this->setJustFound($this->queryPath->find("#headline")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("#headline")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -284,7 +284,7 @@ class ObtainTitle extends Obtainer {
       if ($elem->is("p")) {
         $pcounter++;
         if ($pcounter == 2) {
-          $this->setJustFound($elem);
+          $this->setElementToRemove($elem);
           $title = $elem->text();
           break;
         }
@@ -309,7 +309,7 @@ class ObtainTitle extends Obtainer {
       if ($elem->is("p")) {
         $pcounter++;
         if ($pcounter == 6) {
-          $this->setJustFound($elem);
+          $this->setElementToRemove($elem);
           $title = $elem->text();
           break;
         }
@@ -346,7 +346,7 @@ class ObtainTitle extends Obtainer {
    */
   protected function findIdLayer4P5ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
-    $this->setJustFound($elem);
+    $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
     // If this value is fairly short, we can use the whole thing.
     $length = drupal_strlen($title);
@@ -369,7 +369,6 @@ class ObtainTitle extends Obtainer {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
     $title = $elem->innerHTML();
     $title = $this->trimAtBrBlank($title, $elem, 210);
-    $length = drupal_strlen($title);
 
     return $title;
   }
@@ -382,7 +381,7 @@ class ObtainTitle extends Obtainer {
    */
   protected function findIdLayer4P6ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(6)');
-    $this->setJustFound($elem);
+    $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
     // If this value is fairly short, we can use the whole thing.
     $length = drupal_strlen($title);
@@ -402,7 +401,7 @@ class ObtainTitle extends Obtainer {
    */
   protected function findIdLayer4P7ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(7)');
-    $this->setJustFound($elem);
+    $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
     // If this value is fairly short, we can use the whole thing.
     $length = drupal_strlen($title);
@@ -424,18 +423,10 @@ class ObtainTitle extends Obtainer {
     $counter = 0;
     foreach ($elems as $elem) {
       if ($counter == 1) {
-        $this->setJustFound($elem);
-        break;
+        $this->setElementToRemove($elem);
+        return $elem->text();
       }
-      $counter++;
     }
-
-    $title_elem = $this->getJustFound();
-    if (isset($title_elem)) {
-      return $title_elem->text();
-    }
-
-    return "";
   }
 
   /**
@@ -444,9 +435,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findPAlignCenterStrongU() {
-    $this->setJustFound($this->queryPath->find('p[align="center"] > strong > u')->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find('p[align="center"] > strong > u')->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -456,9 +448,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findPStrongEm() {
-    $this->setJustFound($this->queryPath->find("p > strong > em")->first());
-    $title = $this->getJustFound()->text();
-    return $title;
+    $element = $this->queryPath->find("p > strong > em")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
 
@@ -487,9 +480,10 @@ class ObtainTitle extends Obtainer {
    *   The text found.
    */
   protected function findTitleTag() {
-    $this->setJustFound($this->queryPath->find("title"));
-    $title = $this->getJustFound()->innerHTML();
-    return $title;
+    $element = $this->queryPath->find("title");
+    $this->setElementToRemove($element);
+
+    return $element->text();
   }
 
   /**
@@ -501,7 +495,7 @@ class ObtainTitle extends Obtainer {
     $center = $this->queryPath->find("table > td center")->first();
     $title = '';
     if ($center) {
-      $this->setJustFound($center);
+      $this->setElementToRemove($center);
       $title = $center->text();
     }
     return $title;
@@ -517,7 +511,7 @@ class ObtainTitle extends Obtainer {
       $elem = $hr->next();
       if ($elem->is('p') && ($elem->attr('align') == 'center'
         || $elem->attr('style') == "text-align:center;")) {
-        $this->setJustFound($elem);
+        $this->setElementToRemove($elem);
         $text = $elem->text();
         drush_print_r("HTML: " . $elem->html());
         drush_print_r("TEXT: " . $text);
@@ -531,15 +525,9 @@ class ObtainTitle extends Obtainer {
   // ***************** Helpers ***********************************************.
 
   /**
-   * Cleans $text and returns it.
-   *
-   * @param string $text
-   *   Text to clean and return.
-   *
-   * @return string
-   *   The cleaned text.
+   * {@inheritdoc}
    */
-  public static function cleanPossibleText($text = '') {
+  public static function cleanString($text) {
     $text = strip_tags($text);
     // Titles can not have html entities.
     $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
@@ -592,7 +580,7 @@ class ObtainTitle extends Obtainer {
         $title = '';
       }
     }
-    $this->removeMeNot();
+
     return $title;
   }
 
@@ -613,13 +601,9 @@ class ObtainTitle extends Obtainer {
 
 
   /**
-   * Evaluates $possibleText and if it checks out, returns TRUE.
-   *
-   * @return bool
-   *   TRUE if possibleText can be used as a title.  FALSE if it cant.
+   * {@inheritdoc}
    */
-  protected function validatePossibleText() {
-    $text = $this->getPossibleText();
+  protected function validateString($text) {
     // Run through any evaluations.  If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
     switch (TRUE) {
