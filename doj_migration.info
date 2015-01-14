@@ -16,24 +16,24 @@ files[] = includes/StringCleanUp.php
 files[] = includes/MenuGenerator.php
 
 ; Migrations
-files[] = includes/DistrictPressReleaseMigration.inc
-files[] = includes/JusticeBaseMigration.inc
-files[] = includes/JusticeHtmlToNodeMigration.inc
-files[] = includes/JusticeFileSourceMigration.inc
-files[] = includes/JusticeBinaryFileMigration.inc
-files[] = includes/JusticeHtmlToCaseMigration.inc
-files[] = includes/JusticeHtmlToPageMigration.inc
-files[] = includes/JusticeHtmlToPressReleaseMigration.inc
-files[] = includes/JusticeHtmlToSpeechMigration.inc
-files[] = includes/JusticeHtmlToSpeechSpanishMigration.inc
-files[] = includes/JusticeHtmlToBlogEntryMigration.inc
-files[] = includes/JusticeJsonToDatasetMigration.inc
-files[] = includes/JusticeWordpressMigration.inc
-files[] = includes/JusticeCsvMigration.inc
-files[] = includes/JusticeUserMigration.inc
+files[] = includes/base_classes/DistrictPressReleaseMigration.inc
+files[] = includes/base_classes/JusticeBaseMigration.inc
+files[] = includes/base_classes/JusticeHtmlToNodeMigration.inc
+files[] = includes/base_classes/JusticeFileSourceMigration.inc
+files[] = includes/base_classes/JusticeBinaryFileMigration.inc
+files[] = includes/base_classes/JusticeHtmlToCaseMigration.inc
+files[] = includes/base_classes/JusticeHtmlToPageMigration.inc
+files[] = includes/base_classes/JusticeHtmlToPressReleaseMigration.inc
+files[] = includes/base_classes/JusticeHtmlToSpeechMigration.inc
+files[] = includes/base_classes/JusticeHtmlToSpeechSpanishMigration.inc
+files[] = includes/base_classes/JusticeHtmlToBlogEntryMigration.inc
+files[] = includes/base_classes/JusticeJsonToDatasetMigration.inc
+files[] = includes/base_classes/JusticeWordpressMigration.inc
+files[] = includes/base_classes/JusticeCsvMigration.inc
+files[] = includes/base_classes/JusticeUserMigration.inc
 
 ; Chunk Parsers
-files[] = includes/JusticeChunkParser.inc
+files[] = includes/base_classes/JusticeChunkParser.inc
 
 ; Source Parsers
 files[] = includes/source_parsers/AzSourceParser.php
@@ -57,14 +57,14 @@ files[] = includes/source_parsers/SdmsPressSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
 
 ; Obtainers
-files[] = includes/source_parsers/obtainers/Obtainer.php
-files[] = includes/source_parsers/obtainers/ObtainBody.php
-files[] = includes/source_parsers/obtainers/ObtainHtml.php
-files[] = includes/source_parsers/obtainers/ObtainDate.php
-files[] = includes/source_parsers/obtainers/ObtainID.php
-files[] = includes/source_parsers/obtainers/ObtainTitle.php
-files[] = includes/source_parsers/obtainers/ObtainSubTitle.php
-files[] = includes/source_parsers/obtainers/ObtainTitlePressRelease.php
+files[] = includes/obtainers/Obtainer.php
+files[] = includes/obtainers/ObtainBody.php
+files[] = includes/obtainers/ObtainHtml.php
+files[] = includes/obtainers/ObtainDate.php
+files[] = includes/obtainers/ObtainID.php
+files[] = includes/obtainers/ObtainTitle.php
+files[] = includes/obtainers/ObtainSubTitle.php
+files[] = includes/obtainers/ObtainTitlePressRelease.php
 
 ; Organizations
 files[] = organizations/doj.inc
