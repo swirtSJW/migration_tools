@@ -92,14 +92,14 @@ class UsaoMtFileMigration extends JusticeDeployableBinaryFileMigration {
 
 class UsaoMtPressReleaseMigration extends DistrictPressReleaseMigration {
   /**
-   * {@inheritdoc} 
+   * {@inheritdoc}
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-mt";
     $arguments['component'] = "USAO - District of Montana";
 
     $source_dirs = array(
-      2 => 'usao/mt/pressreleases',
+      2 => 'usao/mt/news',
     );
     parent::__construct($arguments, $source_dirs);
   }
