@@ -45,15 +45,14 @@ class SourceParser {
     $this->mergeArguments((array) $arguments);
 
     $html = StringCleanUp::fixEncoding($html);
-
-    // Strip Windows' CR chars.
     $html = StringCleanUp::stripWindowsCRChars($html);
     $html = StringCleanUp::fixWindowSpecificChars($html);
 
     $this->initQueryPath($html, $qp_options);
-
     $this->fileId = $file_id;
+
     // Runs the methods defined in getParseOrder to set Title, date, body, etc.
+    $this->drushPrintSeparator();
     $this->runParserOrder($this->getParseOrder());
   }
 
@@ -106,10 +105,7 @@ class SourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath, $this->arguments);
     }
     catch (Exception $e) {
-      watchdog('doj_migration', '%file: failed to clean the html, Error: %error', array(
-          '%file' => $this->fileId,
-          '%error' => $e->getMessage(),
-        ), WATCHDOG_ERROR);
+      $this->sourceParserMessage('Failed to clean the html, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 
@@ -129,7 +125,7 @@ class SourceParser {
   protected function setDate($date = '') {
     if (empty($date)) {
       $date_string = $this->runObtainer('ObtainDate', 'date');
-      drush_doj_migration_debug_output("Raw Date: $date_string");
+      $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
       $date = date('n/d/Y', strtotime($date_string));
     }
@@ -137,7 +133,7 @@ class SourceParser {
     $this->date = $date;
 
     // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("Formatted Date: $date");
+    $this->sourceParserMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
   }
 
   /**
@@ -159,8 +155,6 @@ class SourceParser {
     }
 
     $this->id = $id;
-    // Output to show progress to aid debugging.
-    drush_doj_migration_debug_output("--id-->  {$this->getID()}");
   }
 
   /**
@@ -184,12 +178,11 @@ class SourceParser {
       $this->title = $title;
 
       // Output to show progress to aid debugging.
-      drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
+      $this->sourceParserMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 2);
     }
     catch (Exception $e) {
       $this->title = '';
-      watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
-      drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set title.");
+      $this->sourceParserMessage("Error setting title.", array(), WATCHDOG_ERROR);
     }
   }
 
@@ -217,8 +210,6 @@ class SourceParser {
    */
   public function setBody($body = '') {
     if (empty($body)) {
-      // Default stack: Use this if none was defined in
-      // $arguments['obtainer_methods'].
       $method_stack = array(
         'findTopBodyHtml',
         'findClassContentSub',
@@ -227,16 +218,7 @@ class SourceParser {
     }
 
     $this->body = $body;
-
-    // Output to show progress to aid debugging.
-    if (!empty($this->body)) {
-      drush_doj_migration_debug_output("--body-->  found something");
-    }
-    else {
-      drush_doj_migration_debug_output("--body-->  FOUND NOTHING");
-    }
   }
-
 
   /**
    * Return content of <body> element.
@@ -482,15 +464,14 @@ class SourceParser {
         $method_stack = $this->getObtainerMethods($obtainer_methods_key);
       }
 
+      $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $obtainer_methods_key, '@obtainer_class' => $obtainer_class));
       $text = $this->obtain($obtainer_class, $this->queryPath, $method_stack);
     }
     catch (Exception $e) {
-      watchdog('doj_migration', '%file: failed to set the %obtainer_methods_key because: %message', array(
-        '%obtainer_methods_key' => $obtainer_methods_key,
-        '%file' => $this->fileId,
-        '%message' => $e->getMessage(),
-      ), WATCHDOG_ALERT);
-      drush_doj_migration_debug_output("ERROR: {$this->fileId} failed to set $obtainer_methods_key Exception: {$e->getMessage()}");
+      $this->sourceParserMessage("Failed to set @key, Exception: @error_message", array(
+        '@key' => $obtainer_methods_key,
+        '@error_message' => $e->getMessage(),
+      ), WATCHDOG_ERROR);
     }
 
     return $text;
@@ -500,10 +481,58 @@ class SourceParser {
    * Runs the parse methods defined in by getParseOrder().
    */
   protected function runParserOrder() {
-    drush_doj_migration_debug_output('----------------------row-------------------');
     $parse_methods = $this->getParseOrder();
     foreach ($parse_methods as $method) {
       $this->$method();
+    }
+  }
+
+  /**
+   * Prints a log message separator to drush.
+   */
+  protected function drushPrintSeparator() {
+    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+      drush_print(str_repeat('-', 40));
+      $this->sourceParserMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
+    }
+  }
+
+  /**
+   * Logs a system message.
+   *
+   * @param string $message
+   *   The message to store in the log. Keep $message translatable
+   *   by not concatenating dynamic values into it! Variables in the
+   *   message should be added by using placeholder strings alongside
+   *   the variables argument to declare the value of the placeholders.
+   *   See t() for documentation on how $message and $variables interact.
+   * @param array $variables
+   *   Array of variables to replace in the message on display or
+   *   NULL if message is already translated or not possible to
+   *   translate.
+   * @param int $severity
+   *   The severity of the message; one of the following values as defined in
+   *   - WATCHDOG_EMERGENCY: Emergency, system is unusable.
+   *   - WATCHDOG_ALERT: Alert, action must be taken immediately.
+   *   - WATCHDOG_CRITICAL: Critical conditions.
+   *   - WATCHDOG_ERROR: Error conditions.
+   *   - WATCHDOG_WARNING: Warning conditions.
+   *   - WATCHDOG_NOTICE: (default) Normal but significant conditions.
+   *   - WATCHDOG_INFO: Informational messages.
+   *   - WATCHDOG_DEBUG: Debug-level messages.
+   *
+   * @param int $indent
+   *   (optional). Sets indentation for drush output. Defaults to 1.
+   *
+   * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
+   */
+  protected function sourceParserMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+    $type = get_class($this);
+    watchdog($type, $message, $variables, $severity);
+
+    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+      $formatted_message = format_string($message, $variables);
+      drush_print($formatted_message, $indent);
     }
   }
 }

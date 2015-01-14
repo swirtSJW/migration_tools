@@ -92,12 +92,11 @@ class PressReleaseSourceParser extends SourceParser {
 
       $this->title = $title;
       // Output to show progress to aid debugging.
-      drush_doj_migration_debug_output("{$this->fileId}  --->  {$this->title}");
+      $this->sourceParserMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 1);
     }
     catch (Exception $e) {
-      $this->title = "";
-      watchdog('doj_migration', '%file: failed to set the title', array('%file' => $this->fileId), WATCHDOG_ALERT);
-      drush_doj_migration_debug_output("ERROR DistrictPressReleaseSourceParser: {$this->fileId} failed to set title.");
+      $this->title = '';
+      $this->sourceParserMessage("Error setting title.", array(), WATCHDOG_ERROR, 1);
     }
   }
 

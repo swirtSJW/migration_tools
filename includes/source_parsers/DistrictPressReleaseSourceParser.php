@@ -54,17 +54,13 @@ class DistrictPressReleaseSourceParser extends PressReleaseSourceParser {
     $st = $this->getSubTitle();
     if (empty($st)) {
       if (empty($override)) {
-        $default_target_stack = array();
-
-        $subtitle = $this->runObtainer('ObtainSubTitle', 'subtitle', $default_target_stack);
+        $subtitle = $this->runObtainer('ObtainSubTitle', 'subtitle');
       }
       else {
         // The override was invoked, so use it.
         $subtitle = $override;
       }
       $this->subTitle = $subtitle;
-      // Output to show progress to aid debugging.
-      drush_doj_migration_debug_output("--Subtitle->  {$this->getSubTitle()}");
     }
   }
 }

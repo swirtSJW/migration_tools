@@ -53,8 +53,7 @@ abstract class Obtainer {
     foreach ($method_stack as $key => $method) {
       if (!method_exists($this, $method)) {
         unset($method_stack[$key]);
-        $obtainer_class = get_class($this);
-        drush_doj_migration_debug_output("The target method '{$obtainer_class}' in {$obtainer_class} does not exist and was skipped.");
+        $this->obtainerMessage('The target method @method does not exist and was skipped.', array('@method' => $method), WATCHDOG_DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -93,7 +92,7 @@ abstract class Obtainer {
         // Give child classes opportunity to process the string before return.
         $found_string = $this->processString($found_string);
 
-        drush_doj_migration_debug_output(get_class($this) . " matched: $current_method");
+        $this->obtainerMessage('@method found a string.', array('@method' => $current_method), WATCHDOG_DEBUG);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -102,7 +101,7 @@ abstract class Obtainer {
       }
     }
 
-    drush_doj_migration_debug_output(get_class($this) . " matched: NO MATCHES FOUND");
+    $this->obtainerMessage('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
   }
 
   /**
@@ -180,5 +179,41 @@ abstract class Obtainer {
    */
   protected function processString($string) {
     return $string;
+  }
+
+  /**
+   * Logs a system message.
+   *
+   * @param string $message
+   *   The message to store in the log. Keep $message translatable
+   *   by not concatenating dynamic values into it! Variables in the
+   *   message should be added by using placeholder strings alongside
+   *   the variables argument to declare the value of the placeholders.
+   *   See t() for documentation on how $message and $variables interact.
+   * @param array $variables
+   *   Array of variables to replace in the message on display or
+   *   NULL if message is already translated or not possible to
+   *   translate.
+   * @param int $severity
+   *   The severity of the message; one of the following values as defined in
+   *   - WATCHDOG_EMERGENCY: Emergency, system is unusable.
+   *   - WATCHDOG_ALERT: Alert, action must be taken immediately.
+   *   - WATCHDOG_CRITICAL: Critical conditions.
+   *   - WATCHDOG_ERROR: Error conditions.
+   *   - WATCHDOG_WARNING: Warning conditions.
+   *   - WATCHDOG_NOTICE: (default) Normal but significant conditions.
+   *   - WATCHDOG_INFO: Informational messages.
+   *   - WATCHDOG_DEBUG: Debug-level messages.
+   *
+   * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
+   */
+  protected function obtainerMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE) {
+    $type = get_class($this);
+    watchdog($type, $message, $variables, $severity);
+
+    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+      $formatted_message = format_string($message, $variables);
+      drush_print("$type: $formatted_message", 2);
+    }
   }
 }

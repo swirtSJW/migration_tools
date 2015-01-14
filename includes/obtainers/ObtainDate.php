@@ -126,7 +126,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            drush_doj_migration_debug_output("findProbableDate| selector:$selector  search string:$search_string");
+            $this->obtainerMessage("findProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }
