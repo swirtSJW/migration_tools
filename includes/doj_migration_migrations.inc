@@ -209,6 +209,10 @@ return array (
     array (
       'title' => 'District of North Dakota',
     ),
+    'tax' => 
+    array (
+      'title' => 'Tax Division',
+    ),
   ),
   'migrations' => 
   array (
@@ -921,6 +925,21 @@ return array (
     array (
       'group_name' => 'usao-nd',
       'class_name' => 'UsaoNdPressReleaseMigration',
+    ),
+    'TaxFile' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxFileMigration',
+    ),
+    'TaxPage' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxPageMigration',
+    ),
+    'TaxPressRelease' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxPressReleaseMigration',
     ),
   ),
 );
