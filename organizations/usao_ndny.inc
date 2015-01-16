@@ -66,13 +66,22 @@ class UsaoNdnyFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = array(
-      'usao/nyn',
+      0 => 'usao/nyn/VictimWitness',
+      1 => 'usao/nyn/VictimWitness/Cases/StuioPay',
+      2 => 'usao/nyn/VictimWitness/Cases/Kane',
+      3 => 'usao/nyn/VictimWitness/Cases/CES',
+      4 => 'usao/nyn/Vacancy Announcements',
+      6 => 'usao/nyn/vw/cases/StudioPay',
+      7 => 'usao/nyn/vw/documents',
+      8 => 'usao/nyn/USA Events/Troy Peer Court',
+      9 => 'usao/nyn/_notes',
+      10 => 'usao/nyn/images/_notes',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///usao-ndny/docs';
 
-    $options = array('recurse' => TRUE);
+    $options = array('recurse' => FALSE);
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
