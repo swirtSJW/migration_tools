@@ -37,6 +37,7 @@ files[] = includes/base_classes/JusticeChunkParser.inc
 
 ; Source Parsers
 files[] = includes/source_parsers/AzSourceParser.php
+files[] = includes/source_parsers/ScSourceParser.php
 files[] = includes/source_parsers/PressReleaseSourceParser.php
 files[] = includes/source_parsers/DistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/DistrictsSourceParser.php
