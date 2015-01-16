@@ -127,17 +127,6 @@ abstract class Obtainer {
 
     $string = StringCleanUp::stripCmsLegacyMarkup($string);
 
-    // Remove specific strings.
-    // Strings to remove must be sorted by complexity.  More complex must come
-    // before smaller or less complex things.
-    $strings_to_remove = array(
-      'updated:',
-      'updated',
-    );
-    foreach ($strings_to_remove as $string_to_remove) {
-      $string = str_ireplace($string_to_remove, '', $string);
-    }
-
     // Remove white space-like things from the ends and decodes html entities.
     $string = StringCleanUp::superTrim($string);
 
