@@ -41,7 +41,8 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
+    $skip_these = array();
+    if (!parent::prepareRow($row) || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
   }
