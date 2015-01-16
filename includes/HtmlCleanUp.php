@@ -42,6 +42,9 @@ class HtmlCleanUp {
       'a[href="#top"]',
     ));
 
+    // Remove external icon images.
+    HtmlCleanUp::matchRemoveAll($query_path, "img", "externalicon.gif", "attr", 'src');
+
     // Remove extraneous html wrapping elements, leaving children intact.
     HTMLCleanUp::removeWrapperElements($query_path, array(
       'body > blockquote',
@@ -454,6 +457,18 @@ class HtmlCleanUp {
       }
     }
     return FALSE;
+  }
+
+  /**
+   * Like match, but returns all matching elements.
+   */
+  private static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
+    do {
+      $match = HtmlCleanUp::match($qp, $selector, $needle, $function, $parameter);
+      if ($match) {
+        $match->remove();
+      }
+    } while ($match);
   }
 
   /**
