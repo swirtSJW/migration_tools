@@ -598,26 +598,4 @@ class ObtainTitle extends ObtainHtml {
     }
     return '';
   }
-
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function validateString($text) {
-    // Run through any evaluations.  If it makes it to the end, it is good.
-    // Case race, first to evaluate TRUE aborts the text.
-    switch (TRUE) {
-      // List any cases below that would cause it to fail validation.
-      case empty($text):
-      case is_object($text):
-      case is_array($text);
-
-        return FALSE;
-
-      default:
-        return TRUE;
-
-    }
-  }
-
 }
