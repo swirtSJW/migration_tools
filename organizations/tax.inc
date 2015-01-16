@@ -50,15 +50,6 @@ class TaxPageMigration extends JusticeHtmlToPageMigration {
     ->defaultValue('tax')
     ->sourceMigration('Organization');
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-  }
 }
 
 /**
