@@ -32,10 +32,10 @@ class UsaoWdwaPageMigration extends JusticeHtmlToPageMigration {
       9 => 'usao/waw/Programs/Victim Witness/victim info',
       10 => 'usao/waw/Programs/Victim Witness/witness info',
       11 => 'usao/waw/Programs/Victim Witness/witt-lowe-griffin',
-
       13 => 'usao/waw/Jobs',
       14 => 'usao/waw/Jobs/law clerks',
       28 => 'usao/waw/press',
+      50 => 'usao/waw/press/categories',
       44 => 'usao/waw/Divisions',
       45 => 'usao/waw/Divisions/flu',
       46 => 'usao/waw/footer links',

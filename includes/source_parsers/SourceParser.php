@@ -167,12 +167,14 @@ class SourceParser {
 
     try {
       if (empty($title)) {
-        $method_stack = array(
+        $default_target_stack = array(
           'findClassBreadcrumbMenuContentLast',
           'findTitleTag',
           'findH1First',
         );
-        $title = $this->runObtainer('ObtainTitle', 'title', $method_stack);
+        $om = $this->getObtainerMethods('title');
+        $title_stack = (!empty($om)) ? $om : $default_target_stack;
+        $title = $this->runObtainer('ObtainTitle', 'title', $title_stack);
       }
 
       $this->title = $title;
