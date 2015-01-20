@@ -686,6 +686,11 @@ return array (
       'group_name' => 'usao-sdin',
       'class_name' => 'UsaoSdinPageMigration',
     ),
+    'UsaoSdinPressRelease' =>
+      array (
+        'group_name' => 'usao-sdin',
+        'class_name' => 'UsaoSdinPressReleaseMigration',
+      ),
     'UsaoWdlaFile' => 
     array (
       'group_name' => 'usao-wdla',

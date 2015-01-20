@@ -87,3 +87,21 @@ class UsaoSdinFileMigration extends JusticeDeployableBinaryFileMigration {
     return "usao-sdin";
   }
 }
+
+class UsaoSdinPressReleaseMigration extends DistrictPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-sdin";
+    $arguments['component'] = "USAO - Southern District of Indiana";
+
+    $source_dirs = array(
+      1 => 'usao/ins/press_releases/Pressrelease14',
+      2 => 'usao/ins/press_releases/Pressrelease15',
+      4 => 'usao/ins/press_releases/Pressrelease13',
+    );
+    parent::__construct($arguments, $source_dirs);
+  }
+}
