@@ -108,4 +108,15 @@ class UsaoEdwaPressReleaseMigration extends DistrictPressReleaseMigration {
     );
     parent::__construct($arguments, $source_dirs);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    $row->title = str_replace('"', '', $row->title);
+  }
 }
