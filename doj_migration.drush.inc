@@ -19,6 +19,20 @@ function doj_migration_drush_command() {
     ),
   );
 
+  $items['doj-generate-migrate-commands'] = array(
+    'description' => "Generates a list of migrate commands for one or more organic groups.",
+    'aliases' => array('dgmc'),
+    'arguments' => array(
+      groups => 'The abbreviation of the groups to migrate, separated by commas',
+    ),
+    'examples' => array(
+      'drush dgmc usao-als,tax' => 'Generate commands for the usao-als and tax groups.',
+    ),
+    'options' => array(
+      'brackets' => 'Prefixes each command with a bracketed checkbox. E.g., "[] command".',
+    ),
+  );
+
   $items['doj-migrate-html-folders'] = array(
     'description' => "Find all folders that contain html files.",
     'aliases' => array('dmhf'),
@@ -87,6 +101,38 @@ function drush_doj_migration_doj_migrate_images($organization) {
   }
 
   doj_migration_move_images($source_directory, $organization, $output_directory);
+}
+
+/**
+ * Drush command callback for doj-generate-migrate-commands.
+ *
+ * @param string $groups
+ *   A string of group abbreviations, separated by commas.
+ */
+function drush_doj_migration_doj_generate_migrate_commands($groups) {
+  drush_print("");
+  drush_print('drush migrate-register');
+  drush_print("");
+
+  $groups = explode(',', $groups);
+  $brackets = drush_get_option('brackets');
+  $prefix = '';
+  if ($brackets) {
+    $prefix = '[] ';
+  }
+
+  foreach ($groups as $group) {
+    $group = trim($group);
+    drush_print($prefix . "drush mi --group=$group");
+    drush_print($prefix . "drush digm $group-menu.txt $group");
+
+    $directory = $group;
+    if (strpos($group, 'usao-') === 0) {
+      $directory = str_replace('usao-', 'usao/', $group);
+    }
+    drush_print($prefix . "drush dmi $directory");
+    drush_print("");
+  }
 }
 
 /**
