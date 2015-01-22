@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Defines migration classes for District of Nevada.
+ * Defines migration classes for Middle District of Alabama.
  */
 
 /**
- * Migrates .html files from /usao-nv to page nodes.
+ * Migrates .html files from /usao-mdal to page nodes.
  *
  * @package doj_migration
- * @subpackage usao-nv
+ * @subpackage usao-mdal
  */
-class UsaoNvPageMigration extends JusticeHtmlToPageMigration {
+class UsaoMdalPageMigration extends JusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -20,8 +20,13 @@ class UsaoNvPageMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      0 => 'usao/nv',
-      1 => 'usao/nv/includes',
+      0 => 'usao/alm',
+      11 => 'usao/alm/divisions',
+      12 => 'usao/alm/includes',
+      13 => 'usao/alm/about',
+      14 => 'usao/alm/about/employment',
+      15 => 'usao/alm/programs',
+      16 => 'usao/alm/programs/vwa',
     );
 
     $arguments['source_parser_class'] = "DistrictsSourceParser";
@@ -32,9 +37,9 @@ class UsaoNvPageMigration extends JusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('UsaoDistrict');
-    $this->description = t('Migrates pages from the District of Nevada.');
+    $this->description = t('Migrates pages from the Middle District of Alabama.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-nv')
+    ->defaultValue('usao-mdal')
     ->sourceMigration('UsaoDistrict');
   }
 
@@ -49,27 +54,27 @@ class UsaoNvPageMigration extends JusticeHtmlToPageMigration {
 }
 
 /**
- * Migrates files (*.pdf) from /usao-nv.
+ * Migrates files (*.pdf) from /usao-mdal.
  *
  * @package doj_migration
- * @subpackage usao-nv
+ * @subpackage usao-mdal
  */
-class UsaoNvFileMigration extends JusticeDeployableBinaryFileMigration {
+class UsaoMdalFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the usao/nv subdirectory.');
+    $this->description = t('Migrates non-image files from the usao/alm subdirectory.');
     $this->dependencies = array('UsaoDistrict');
 
     // Match .pdf files only.
     $source_dirs = array(
-      'usao/nv',
+      'usao/alm',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///usao-nv/docs';
+    $dest_dir = 'public:///usao-mdal/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -84,25 +89,29 @@ class UsaoNvFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "usao-nv";
+    return "usao-mdal";
   }
 }
 
-class UsaoNvPressReleaseMigration extends DistrictPressReleaseMigration {
+/**
+ * Migrates press releases from /usao-mdal.
+ *
+ * @package doj_migration
+ * @subpackage usao-mdal
+ */
+class UsaoMdalPressReleaseMigration extends DistrictPressReleaseMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['district'] = "usao-nv";
-    $arguments['component'] = "USAO - District of Nevada";
-    $arguments['source_parser_class'] = "NvPressSourceParser";
+    $arguments['district'] = "usao-mdal";
+    $arguments['component'] = "USAO - Middle District of Alabama";
 
     $source_dirs = array(
-      2 => 'usao/nv/Justice/news/2014',
-      3 => 'usao/nv/news/2014',
-      4 => 'usao/nv/news/2013',
-      10 => 'usao/nv/news/2015',
+      7 => 'usao/alm/press/2015',
+      8 => 'usao/alm/press/2014',
+      9 => 'usao/alm/press/2013',
     );
     parent::__construct($arguments, $source_dirs);
   }

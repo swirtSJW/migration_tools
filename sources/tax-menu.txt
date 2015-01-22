@@ -1,0 +1,26 @@
+Tax Division Home{"url":"tax"}
+About the Division{"url":"tax/about-division"}
+-Organization{"url":"tax/organization"}
+-Civil Trial Sections Geographical Map{"url":"tax/civil-trial-sections-geographical-map"}
+-Criminal Enforcement Sections Geographical Map{"url":"tax/criminal-enforcement-sections-geographical-map"}
+Meet the AAG{"url":"tax/meet-assistant-attorney-general"}
+What We Do{"url":"tax/what-we-do"}
+Working for Us{"url":"tax/working-us"}
+-Current Vacancies{"url":"tax/current-vacancies"}
+-Human Resources Forms{"url":"tax/human-resources-forms"}
+-Attorneys{"url":"tax/attorneys"}
+-Students{"url":"tax/students-0"}
+-Paralegals{"url":"tax/paralegals"}
+-Administrative Support{"url":"tax/administrative-support"}
+-Diversity Committee{"url":"tax/diversity-committee"}
+Press Room{"url":"tax/tax-news-0"}
+-Tax Division Press Releases{"url":"tax/press-releases-2015"}
+-U.S. Attorneys' Press Releases{"url":"http://www.justice.gov/tax/usaopress/uspress2015.htm"}
+Offshore Compliance Initiative{"url":"tax/offshore-compliance-initiative"}
+Stolen Identity Refund Fraud{"url":"tax/stolen-identity-refund-fraud"}
+-Stolen Identity Refund Fraud Press Releases{"url":"tax/stolen-identity-refund-fraud-press-releases"}
+Schemes/Scams{"url":"tax/schemesscams-0"}
+Tax Division FOIA{"url":"tax/foia"}
+-FOIA Library{"url":"tax/foia-library"}
+-Major Information Systems{"url":"tax/major-information-systems"}
+Contact the Division{"url":"tax/contact-division"}

@@ -42,10 +42,6 @@ class UsaoNdwvPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
 
     $skip_these = array(
       '',
@@ -72,8 +68,9 @@ class UsaoNdwvPageMigration extends JusticeHtmlToPageMigration {
       'usao/wvn/meetmgtteam-x.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
-
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }
 
@@ -214,9 +211,6 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
     $skip_these = array(
       'usao/wvn/news/2013/january/january2013.html',
       'usao/wvn/news/2013/february/february2013.html',
@@ -246,7 +240,8 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       'usao/wvn/news/2015/february/february2015.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
-
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }

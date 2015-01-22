@@ -32,10 +32,10 @@ class UsaoWdwaPageMigration extends JusticeHtmlToPageMigration {
       9 => 'usao/waw/Programs/Victim Witness/victim info',
       10 => 'usao/waw/Programs/Victim Witness/witness info',
       11 => 'usao/waw/Programs/Victim Witness/witt-lowe-griffin',
-
       13 => 'usao/waw/Jobs',
       14 => 'usao/waw/Jobs/law clerks',
       28 => 'usao/waw/press',
+      50 => 'usao/waw/press/categories',
       44 => 'usao/waw/Divisions',
       45 => 'usao/waw/Divisions/flu',
       46 => 'usao/waw/footer links',
@@ -59,10 +59,6 @@ class UsaoWdwaPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-
     $skip_these = array(
       'usao/waw/footer links/legal.html',
       'usao/waw/footer links/privacy.html',
@@ -75,7 +71,9 @@ class UsaoWdwaPageMigration extends JusticeHtmlToPageMigration {
       'usao/waw/indexoriginal.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }
 

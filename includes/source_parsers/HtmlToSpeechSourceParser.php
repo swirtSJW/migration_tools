@@ -121,8 +121,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
         }
       }
       catch(Exception $e) {
-        watchdog('doj_migration', "{$this->fileId} failed to set title from speech body :error {$e->getMessage()}");
-        drush_doj_migration_debug_output("{$this->fileId} failed to set title from speech body :error {$e->getMessage()}");
+        $this->sourceParserMessage('@file_id failed to set title from speech body, error: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
       }
     }
   }
@@ -136,8 +135,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
       HtmlCleanUp::removeElements($this->queryPath, array('.justicenews-header'));
     }
     catch(Exception $e) {
-      watchdog("doj_migration", "{$this->fileId} failed to remove the justicenews header :error {$e->getMessage()}");
-      drush_doj_migration_debug_output("{$this->fileId} failed to remove the justicenews header :error {$e->getMessage()}");
+      $this->sourceParserMessage("@file_id failed to remove the justicenews-header, error: @error_message", array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
     parent::setBody();
   }

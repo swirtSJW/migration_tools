@@ -41,7 +41,8 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
+    $skip_these = array();
+    if (!parent::prepareRow($row) || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
   }
@@ -86,3 +87,28 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
     return "{{ info.abbreviation }}";
   }
 }
+
+{% if info.press is defined %}
+/**
+ * Migrates press releases from /{{ info.abbreviation }}.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class }}PressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['component'] = "{{ info.full_name }}";
+
+    $source_dirs = array(
+    {% for item in info.press %}
+      {{ item | raw }}
+    {% endfor %}
+    );
+    parent::__construct($arguments, $source_dirs);
+  }
+}
+{% endif %}

@@ -209,6 +209,14 @@ return array (
     array (
       'title' => 'District of North Dakota',
     ),
+    'tax' => 
+    array (
+      'title' => 'Tax Division',
+    ),
+    'usao-mdal' => 
+    array (
+      'title' => 'Middle District of Alabama',
+    ),
   ),
   'migrations' => 
   array (
@@ -682,6 +690,11 @@ return array (
       'group_name' => 'usao-sdin',
       'class_name' => 'UsaoSdinPageMigration',
     ),
+    'UsaoSdinPressRelease' => 
+    array (
+      'group_name' => 'usao-sdin',
+      'class_name' => 'UsaoSdinPressReleaseMigration',
+    ),
     'UsaoWdlaFile' => 
     array (
       'group_name' => 'usao-wdla',
@@ -921,6 +934,36 @@ return array (
     array (
       'group_name' => 'usao-nd',
       'class_name' => 'UsaoNdPressReleaseMigration',
+    ),
+    'TaxFile' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxFileMigration',
+    ),
+    'TaxPage' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxPageMigration',
+    ),
+    'TaxPressRelease' => 
+    array (
+      'group_name' => 'tax',
+      'class_name' => 'TaxPressReleaseMigration',
+    ),
+    'UsaoMdalFile' => 
+    array (
+      'group_name' => 'usao-mdal',
+      'class_name' => 'UsaoMdalFileMigration',
+    ),
+    'UsaoMdalPage' => 
+    array (
+      'group_name' => 'usao-mdal',
+      'class_name' => 'UsaoMdalPageMigration',
+    ),
+    'UsaoMdalPressRelease' => 
+    array (
+      'group_name' => 'usao-mdal',
+      'class_name' => 'UsaoMdalPressReleaseMigration',
     ),
   ),
 );

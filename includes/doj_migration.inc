@@ -169,7 +169,7 @@ function doj_migrate_standardize_component_terms($legacy_term) {
 }
 
 /**
- * Helper function to audit thre redirects of an organization's content.
+ * Helper function to audit the redirects of an organization's content.
  *
  * This function checks all of the content for a given organization. The
  * default report (a bunch of print statements) let us know when there is a
@@ -316,7 +316,7 @@ function doj_migration_chr_utf8($num) {
  *   A legacy uri gets redirected to a node.
  *
  * @return string
- *   The alias matching the legacy uri, or an empty sting.
+ *   The alias matching the legacy uri, or an empty sting. g
  */
 function doj_migration_legacy_to_uri($legacy_uri) {
   $redirect = redirect_load_by_source($legacy_uri);
@@ -445,31 +445,4 @@ function doj_migration_district_abbreviation_alias($abbreviation) {
 
   // Otherwise, removing the prefix is good enough.
   return $abbreviation;
-}
-
-
-/**
- * Compare current row to an array of values to skip. Log message if skipped.
- *
- * @param string $file_uid
- *   The unique id for the row being processed. Typically legacy_path or fileid.
- *
- * @param array $skip_these
- *   Array of values to skip and not migrate.
- *
- * @return bool
- *   -TRUE if the row should not be skipped.
- *   -FALSE if the row should be skipped.
- */
-function doj_migration_check_skip_this($file_uid, $skip_these) {
-  if (in_array($file_uid, $skip_these)) {
-    // This page should be skipped.
-    $message = t('- @fileid  -> Skipped: intentionally.', array('@fileid' => $file_uid));
-    watchdog('doj_migration', $message, array('@fileid' => $file_uid), WATCHDOG_WARNING);
-
-    return FALSE;
-  }
-
-  // This page should not be skipped.
-  return TRUE;
 }

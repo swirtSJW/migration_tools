@@ -11,29 +11,7 @@
 /**
  * {@inheritdoc}
  */
-class ObtainDate extends Obtainer {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($query_path, $method_stack) {
-    parent::__construct($query_path, $method_stack);
-    $this->processMethodStack($query_path, $method_stack, 'ObtainDate');
-  }
-
-
-  // **************** Begin finder target definitions *************************
-  // To create a new finder, use this template and put them in alpha order.
-  // @codingStandardsIgnoreStart
-  /*
-  protected function findMethod() {
-    $this->setJustFound($this->queryPath->find("{SELECTOR}")->first());
-    $text = $this->getJustFound()->text();
-    return $text;
-  }
-  */
-  // @codingStandardsIgnoreEnd
-
+class ObtainDate extends ObtainHtml {
 
   /**
    * Finder method to find the .BottomLeftContent.
@@ -42,10 +20,10 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findClassBottomLeftContent() {
-    $this->setJustFound($this->queryPath->top('.BottomLeftContent'));
-    $string = $this->getJustFound()->text();
+    $element = $this->queryPath->top('.BottomLeftContent');
+    $this->setElementToRemove($element);
 
-    return $string;
+    return $element->text();
   }
 
 
@@ -56,10 +34,11 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findClassLastupdate() {
-    $this->setJustFound($this->queryPath->top('.lastupdate'));
-    $string = $this->getJustFound()->text();
+    $element = $this->queryPath->top('.lastupdate');
+    $this->setElementToRemove($element);
+    $element->text();
 
-    return $string;
+    return $element->text();
   }
 
   /**
@@ -69,10 +48,10 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findIdContentstartFirst() {
-    $this->setJustFound($this->queryPath->find('#contentstart > p'));
-    $string = $this->getJustFound()->text();
+    $element = $this->queryPath->find('#contentstart > p');
+    $this->setElementToRemove($element);
 
-    return $string;
+    return $element->text();
   }
 
 
@@ -83,15 +62,16 @@ class ObtainDate extends Obtainer {
    *   The string that was found
    */
   protected function findClassNewsRight() {
-    $this->setJustFound($this->queryPath->top('.newsRight'));
-    $string = $this->getJustFound()->text();
+    $element = $this->queryPath->top('.newsRight');
+    $this->setElementToRemove($element);
 
-    return $string;
+    return $element->text();
   }
 
 
   /**
    * Method for returning the p that is aligned center.
+   *
    * @return text
    *   The string found.
    */
@@ -100,14 +80,13 @@ class ObtainDate extends Obtainer {
       $align = $p->attr('align');
       if (strcmp($align, "right") == 0) {
         $text = $p->text();
-        $this->setJustFound($p);
+        $this->setElementToRemove($p);
         break;
       }
     }
 
     return $text;
   }
-
 
   /**
    * Finder method to find dates by its accompanying text.
@@ -135,19 +114,19 @@ class ObtainDate extends Obtainer {
       // Loop through the search strings.
       foreach ($search_strings as $search_string) {
         // Search for the string.
-        $elem = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
+        $element = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
 
-        if (!empty($elem)) {
-          $text = $elem->text();
-          // Clean string.
-          $processed_text = $this->cleanPossibleText($text);
-          // Evaluate string.
-          $this->setPossibleText($processed_text);
-          $valid = $this->validatePossibleText();
+        if (!empty($element)) {
+          $text = $element->text();
+
+          // Remove accompanying text and clean string.
+          $text = str_replace($search_string, '', $text);
+          $text = $this->cleanString($text);
+          $valid = $this->validateString($text);
+
           if ($valid) {
-            // We have a winner.
-            $this->setJustFound($elem);
-            $this->setCurrentFindMethod("findProbableDate| selector:$selector  search string:$search_string");
+            $this->setElementToRemove($element);
+            $this->obtainerMessage("findProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }
@@ -158,34 +137,38 @@ class ObtainDate extends Obtainer {
     return '';
   }
 
-
   /**
-   * Method for returning the table cell at row 1,  column 1.
-   * @return text
+   * Method for returning the table cell at row 1, column 1.
+   *
+   * @return string
    *   The string found.
    */
   protected function findTableRow1Col1() {
     $table = $this->queryPath->find("table");
     $text = $this->getFromTable($table, 1, 1);
+
     return $text;
   }
 
 
   /**
    * Method for returning the table cell at row 1,  column 2.
-   * @return text
+   *
+   * @return string
    *   The string found.
    */
   protected function findTableRow1Col2() {
     $table = $this->queryPath->find("table");
     $text = $this->getFromTable($table, 1, 2);
+
     return $text;
   }
 
 
   /**
    * Method for returning the 2nd table cell at row 2, column 2.
-   * @return text
+   *
+   * @return string
    *   The string found.
    */
   protected function findTable2Row2Col2() {
@@ -246,8 +229,7 @@ class ObtainDate extends Obtainer {
       $text = $elem->text();
       // Validate string.
       if (substr_count($text, "IMMEDIATE RELEASE") > 0) {
-        $this->setJustFound($elem);
-        $this->setCurrentFindMethod("findSpanFontSize8");
+        $this->setElementToRemove($elem);
         return $text;
       }
     }
@@ -262,7 +244,7 @@ class ObtainDate extends Obtainer {
     foreach ($elems as $p) {
       $html = $p->html();
       if (substr_count($html, "<br/>") > 0) {
-        $this->setJustFound($p);
+        $this->setElementToRemove($p);
         $pieces = explode("<br/>", $html);
         $text = strip_tags($pieces[1]);
         return $text;
@@ -270,7 +252,6 @@ class ObtainDate extends Obtainer {
     }
     return "";
   }
-
 
   // ***************** Helpers ***********************************************.
 
@@ -283,7 +264,7 @@ class ObtainDate extends Obtainer {
    * @return string
    *   The cleaned text.
    */
-  public static function cleanPossibleText($text = '') {
+  public static function cleanText($text) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $text = doj_migration_html_entity_decode_numeric($text);
@@ -319,43 +300,25 @@ class ObtainDate extends Obtainer {
     return $text;
   }
 
-
-  /**
-   * Convert an obtained date into another format.
-   *
-   * @param string $format
-   *   The format of the date to be returned.
-   *   http://php.net/manual/en/function.date.php
-   *
-   * @return string
-   *   The formatted date string.
-   */
-  public function formatDate($format = 'n/d/Y') {
-    $text = $this->getText();
-    if ((!empty($format)) && (!empty($text))) {
-      // We have a format and a date to use.
-      $date_string = date($format, strtotime($this->getText()));
-    }
-    return (!empty($date_string)) ? $date_string : '';
-  }
-
   /**
    * Evaluates $possibleText and if it checks out, returns TRUE.
+   *
+   * @param string $string
+   *   The string to validate.
    *
    * @return bool
    *   TRUE if possibleText can be used as a title.  FALSE if it cant.
    */
-  protected function validatePossibleText() {
-    $text = $this->getPossibleText();
+  protected function validateString($string) {
     // Run through any evaluations.  If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
-      case empty($text):
-      case is_object($text):
-      case is_array($text);
+      case empty($string):
+      case is_object($string):
+      case is_array($string);
         // If we can't form a date out of it, it must not be a date.
-      case !strtotime($text);
+      case !strtotime($string);
         return FALSE;
 
       default:

@@ -101,6 +101,7 @@ class UsaoScPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-sc";
     $arguments['component'] = "USAO - District of South Carolina";
+    $arguments['source_parser_class'] = "ScPressSourceParser";
 
     $source_dirs = array(
       5 => 'usao/sc/news',

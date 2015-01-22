@@ -91,7 +91,7 @@ class NsdOvtPageMigration extends JusticeHtmlToPageMigration {
     );
 
     module_load_include('inc', "doj_migration", "includes/doj_migration");
-    if (doj_migration_check_skip_this($row->fileid, $skip_these) === FALSE) {
+    if (doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
 

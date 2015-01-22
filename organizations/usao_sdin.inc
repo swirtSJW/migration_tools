@@ -71,7 +71,7 @@ class UsaoSdinFileMigration extends JusticeDeployableBinaryFileMigration {
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///usao-sdin/docs';
 
-    $options = array('recurse' => TRUE);
+    $options = array('recurse' => FALSE);
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
@@ -85,5 +85,23 @@ class UsaoSdinFileMigration extends JusticeDeployableBinaryFileMigration {
    */
   public function getOrganizationAbbreviation() {
     return "usao-sdin";
+  }
+}
+
+class UsaoSdinPressReleaseMigration extends DistrictPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-sdin";
+    $arguments['component'] = "USAO - Southern District of Indiana";
+
+    $source_dirs = array(
+      1 => 'usao/ins/press_releases/Pressrelease14',
+      2 => 'usao/ins/press_releases/Pressrelease15',
+      4 => 'usao/ins/press_releases/Pressrelease13',
+    );
+    parent::__construct($arguments, $source_dirs);
   }
 }

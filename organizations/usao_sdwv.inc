@@ -45,11 +45,7 @@ class UsaoSdwvPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
     $skip_these = array(
-
       'usao/wvs/includes/usao-header.html',
       'usao/wvs/includes/usao-footer.html',
       'usao/wvs/includes/index.html',
@@ -57,8 +53,9 @@ class UsaoSdwvPageMigration extends JusticeHtmlToPageMigration {
       'usao/wvs/includes/usao-rightCol.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
-
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }
 
@@ -167,9 +164,6 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
     $skip_these = array(
       'usao/wvs/press_releases/Jan2013/attachments/Jan2013releases.html',
       'usao/wvs/press_releases/Feb2013/attachments/Feb2013releases.html',
@@ -182,7 +176,6 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       'usao/wvs/press_releases/Oct2013/attachments/Oct2013releases.html',
       'usao/wvs/press_releases/Nov2013/attachments/Nov2013releases.html',
       'usao/wvs/press_releases/Dec2013/attachments/Dec2013releases.html',
-
       'usao/wvs/press_releases/Jan2014/attachments/_notes/Jan2014releases.html',
       'usao/wvs/press_releases/Jan2014/attachments/Jan2014releases.html',
       'usao/wvs/press_releases/Feb2014/attachments/Feb2014releases.html',
@@ -201,6 +194,8 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
       'usao/wvs/press_releases/Jan2013/attachments/newsfeed.html',
     );
 
-    return doj_migration_check_skip_this($row->legacy_path, $skip_these);
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
   }
 }

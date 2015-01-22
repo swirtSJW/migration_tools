@@ -1,0 +1,17 @@
+HOME{"url":"usao-mdal"}
+ABOUT{"url":"<nolink>"}
+-The District{"url":"usao-mdal/middle-district-alabama"}
+-Our Mission{"url":"usao-mdal/united-states-attorneys-mission-statement"}
+-Employment{"url":"usao-mdal/middle-district-alabama-vacancy-announcements"}
+-Resources{"url":"usao-mdal/resources"}
+PRESS RELEASES{"url":"usao-mdal/press-releases"}
+MEET THE U.S. ATTORNEY{"url":"usao-mdal/meet-us-attorney"}
+DIVISIONS{"url":"<nolink>"}
+-Administrative Division{"url":"usao-mdal/administrative-division"}
+PROGRAMS{"url":"<nolink>"}
+-LECC{"url":"usao-mdal/law-enforcement-coordinating-committee"}
+-Project Safe Childhood{"url":"node/6211"}
+-Project Safe Neighborhoods{"url":""}
+-Victim Witness Assistance {"url":"usao-mdal/victim-and-witness-assistance-program"}
+CONTACT US{"url":"usao-mdal/contact-us"}
+EN ESPAÑOL{"url":"usao-espanol"}
