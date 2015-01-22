@@ -59,6 +59,10 @@ class JusticeJsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
 
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
     $this->addFieldMapping('workbench_moderation_state_current')->defaultValue('published');
+
+    $this->addFieldMapping('og_group_ref')
+    ->defaultValue('open')
+    ->sourceMigration('Organization');
   }
 
   /**
