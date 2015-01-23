@@ -217,6 +217,10 @@ return array (
     array (
       'title' => 'Middle District of Alabama',
     ),
+    'opr' => 
+    array (
+      'title' => 'Office of Professional Responsibility',
+    ),
   ),
   'migrations' => 
   array (
@@ -964,6 +968,16 @@ return array (
     array (
       'group_name' => 'usao-mdal',
       'class_name' => 'UsaoMdalPressReleaseMigration',
+    ),
+    'OprFile' => 
+    array (
+      'group_name' => 'opr',
+      'class_name' => 'OprFileMigration',
+    ),
+    'OprPage' => 
+    array (
+      'group_name' => 'opr',
+      'class_name' => 'OprPageMigration',
     ),
   ),
 );
