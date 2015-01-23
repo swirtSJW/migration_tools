@@ -119,7 +119,7 @@ class UsaoAzPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-az";
-    $arguments['component'] = "USAO - District of Arizona";
+    $arguments['component_tid'] = 1716;
     $arguments['obtainer_methods'] = array(
       'date' => array(
         'findSpanFontSize8',

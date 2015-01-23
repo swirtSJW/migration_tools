@@ -106,7 +106,7 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-sdwv";
-    $arguments['component'] = "USAO - Southern District of West Virginia";
+    $arguments['component_tid'] = 2151;
     $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
     $arguments['obtainer_methods'] = array(
       'title' => array(

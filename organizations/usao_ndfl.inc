@@ -98,7 +98,7 @@ class UsaoNdflPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-ndfl";
-    $arguments['component'] = "USAO - Northern District of Florida";
+    $arguments['component_tid'] = 1766;
 
     $source_dirs = array(
       1 => 'usao/fln/press/2014/feb',
