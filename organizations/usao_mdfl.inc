@@ -101,7 +101,7 @@ class UsaoMdflPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-mdfl";
-    $arguments['component'] = "USAO - Middle District of Florida";
+    $arguments['component_tid'] = 1761;
 
     $source_dirs = array(
       3 => 'usao/flm/press/2014/Nov',

@@ -95,7 +95,7 @@ class UsaoNmPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-nm";
-    $arguments['component'] = "USAO - District of New Mexico";
+    $arguments['component_tid'] = 1961;
 
     $source_dirs = array(
       30 => 'usao/nm/press-releases/2014/Dec',

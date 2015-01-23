@@ -47,6 +47,7 @@ abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigra
     $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_pr_number', 'field_pr_number');
     $this->addFieldMapping('field_pr_component', 'field_pr_component');
+    $this->addFieldMapping('field_pr_component:source_type')->defaultValue("tid");
     $this->addFieldMapping('field_pr_subtitle', 'field_pr_subtitle');
     $this->addFieldMapping('field_pr_date', 'field_pr_date');
   }

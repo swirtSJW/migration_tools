@@ -102,7 +102,7 @@ class {{ info.class }}PressReleaseMigration extends DistrictPressReleaseMigratio
    */
   public function __construct($arguments) {
     $arguments['district'] = "{{ info.abbreviation }}";
-    $arguments['component'] = "USAO - {{ info.full_name }}";
+    $arguments['component_tid'] = {{ info.component_tid }};
 
     $source_dirs = array(
     {% for item in info.press %}

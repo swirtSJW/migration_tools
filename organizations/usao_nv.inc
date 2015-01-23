@@ -95,7 +95,7 @@ class UsaoNvPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-nv";
-    $arguments['component'] = "USAO - District of Nevada";
+    $arguments['component_tid'] = 1966;
     $arguments['source_parser_class'] = "NvPressSourceParser";
 
     $source_dirs = array(

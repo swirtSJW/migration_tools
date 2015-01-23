@@ -109,7 +109,7 @@ class UsaoMaPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-ma";
-    $arguments['component'] = "USAO - District of Massachusetts";
+    $arguments['component_tid'] = 1871;
 
     $source_dirs = array(
       31 => 'usao/ma/news/events/2014/March',

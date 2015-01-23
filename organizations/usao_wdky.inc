@@ -99,7 +99,7 @@ class UsaoWdkyPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdky";
-    $arguments['component'] = "USAO - Western District of Kentucky";
+    $arguments['component_tid'] = 1851;
 
     $source_dirs = array(
       5 => 'usao/kyw/news/2014',

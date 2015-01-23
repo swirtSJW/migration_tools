@@ -103,7 +103,7 @@ class UsaoWdmoPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdmo";
-    $arguments['component'] = "USAO - Western District of Missouri";
+    $arguments['component_tid'] = 1906;
 
     $source_dirs = array(
       7 => 'usao/mow/news2014',

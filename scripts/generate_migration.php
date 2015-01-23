@@ -34,8 +34,8 @@ doj_migrate_migrate_inc($specific['abbreviation'], $specific['full_name'], $pr);
 print_r("The group and migrations have been registered in the api array.\n");
 
 $drush_alias = !empty($global['drush_local_alias']) ? $global['drush_local_alias'] : NULL;
-
-migration_file($specific['abbreviation'], $specific['full_name'], $specific['directory'], $global['twig'], $pr_subdirectory, $drush_alias);
+$component_tid = !empty($specific['component_tid']) ? $specific['component_tid'] : NULL;
+migration_file($specific['abbreviation'], $specific['full_name'], $specific['directory'], $global['twig'], $component_tid, $pr_subdirectory, $drush_alias);
 print_r("File with migrations was created.");
 
 /**
@@ -120,7 +120,7 @@ function doj_migrate_migrate_inc($abbreviation, $full_name, $pr = FALSE) {
 /**
  * Generate the migrations file.
  */
-function migration_file($abbreviation, $full_name, $directory, $twig, $pr_subdirectory = NULL, $drush_alias = NULL) {
+function migration_file($abbreviation, $full_name, $directory, $twig, $component_tid, $pr_subdirectory = NULL, $drush_alias = NULL) {
   // Generate the classes with twig.
   $loader = new Twig_Loader_Filesystem('.');
   $twig_env = new Twig_Environment($loader, array(
@@ -163,6 +163,10 @@ function migration_file($abbreviation, $full_name, $directory, $twig, $pr_subdir
   if (isset($page)) {
     $info['page'] = $page;
     $info['press'] = $press;
+  }
+
+  if (isset($component_tid)) {
+    $info['component_tid'] = $component_tid;
   }
 
   $classes_file_data = $twig_env->render("templates/{$twig}", array('info' => $info));

@@ -95,7 +95,7 @@ class UsaoSdinPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-sdin";
-    $arguments['component'] = "USAO - Southern District of Indiana";
+    $arguments['component_tid'] = 1836;
 
     $source_dirs = array(
       1 => 'usao/ins/press_releases/Pressrelease14',

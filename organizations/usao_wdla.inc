@@ -114,7 +114,7 @@ class UsaoWdlaPressReleaseMigration extends DistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdla";
-    $arguments['component'] = "USAO - Western District of Louisiana";
+    $arguments['component_tid'] = 1866;
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
