@@ -42,7 +42,7 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
    */
   public function prepareRow($row) {
     $skip_these = array();
-    if (!parent::prepareRow($row) || doj_migration_skip_file($row->fileid, $skip_these)) {
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
   }
