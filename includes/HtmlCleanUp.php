@@ -43,7 +43,10 @@ class HtmlCleanUp {
     ));
 
     // Remove external icon images.
-    HtmlCleanUp::matchRemoveAll($query_path, "img", "externalicon.gif", "attr", 'src');
+    $matches = HtmlCleanUp::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
+    foreach ($matches as $key => $match) {
+      $match->parent()->parent()->remove();
+    }
 
     // Remove extraneous html wrapping elements, leaving children intact.
     HTMLCleanUp::removeWrapperElements($query_path, array(
@@ -448,12 +451,16 @@ class HtmlCleanUp {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  private static function match($qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function match($qp, $selector, $needle, $function, $parameter = NULL, $index = 0) {
     $elements = $qp->find($selector);
+    $counter = 0;
     foreach ($elements as $key => $elem) {
       $haystack = $elem->$function($parameter);
       if (substr_count($haystack, $needle) > 0) {
-        return $elem;
+        if ($counter == $index) {
+          return $elem;
+        }
+        $counter++;
       }
     }
     return FALSE;
@@ -462,13 +469,27 @@ class HtmlCleanUp {
   /**
    * Like match, but returns all matching elements.
    */
-  private static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function matchAll($qp, $selector, $needle, $function, $parameter = NULL) {
+    $counter = 0;
+    $matches = array();
     do {
-      $match = HtmlCleanUp::match($qp, $selector, $needle, $function, $parameter);
+      $match = HtmlCleanUp::match($qp, $selector, $needle, $function, $parameter, $counter);
       if ($match) {
-        $match->remove();
+        $matches[] = $match;
+        $counter++;
       }
     } while ($match);
+    return $matches;
+  }
+
+  /**
+   * Like match, but returns all matching elements.
+   */
+  public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
+    $matches = HtmlCleanUp::matchAll($qp, $selector, $needle, $function, $parameter);
+    foreach ($matches as $match) {
+      $match->remove();
+    }
   }
 
   /**
