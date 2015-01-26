@@ -221,6 +221,10 @@ return array (
     array (
       'title' => 'Office of Professional Responsibility',
     ),
+    'usao-mdga' => 
+    array (
+      'title' => 'Middle District of Georgia',
+    ),
   ),
   'migrations' => 
   array (
@@ -978,6 +982,21 @@ return array (
     array (
       'group_name' => 'opr',
       'class_name' => 'OprPageMigration',
+    ),
+    'UsaoMdgaFile' => 
+    array (
+      'group_name' => 'usao-mdga',
+      'class_name' => 'UsaoMdgaFileMigration',
+    ),
+    'UsaoMdgaPage' => 
+    array (
+      'group_name' => 'usao-mdga',
+      'class_name' => 'UsaoMdgaPageMigration',
+    ),
+    'UsaoMdgaPressRelease' => 
+    array (
+      'group_name' => 'usao-mdga',
+      'class_name' => 'UsaoMdgaPressReleaseMigration',
     ),
   ),
 );
