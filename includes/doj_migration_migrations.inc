@@ -237,6 +237,10 @@ return array (
     array (
       'title' => 'Southern District of Iowa',
     ),
+    'usao-ut' => 
+    array (
+      'title' => 'District of Utah',
+    ),
   ),
   'migrations' => 
   array (
@@ -1054,6 +1058,21 @@ return array (
     array (
       'group_name' => 'usao-sdia',
       'class_name' => 'UsaoSdiaPressReleaseMigration',
+    ),
+    'UsaoUtFile' => 
+    array (
+      'group_name' => 'usao-ut',
+      'class_name' => 'UsaoUtFileMigration',
+    ),
+    'UsaoUtPage' => 
+    array (
+      'group_name' => 'usao-ut',
+      'class_name' => 'UsaoUtPageMigration',
+    ),
+    'UsaoUtPressRelease' => 
+    array (
+      'group_name' => 'usao-ut',
+      'class_name' => 'UsaoUtPressReleaseMigration',
     ),
   ),
 );

@@ -58,6 +58,7 @@ files[] = includes/source_parsers/OlaWitnessSourceParser.php
 files[] = includes/source_parsers/SdmsSourceParser.php
 files[] = includes/source_parsers/SdmsPressSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
+files[] = includes/source_parsers/UtSourceParser.php
 
 ; Obtainers
 files[] = includes/obtainers/Obtainer.php
@@ -126,3 +127,4 @@ files[] = organizations/usao_mdga.inc
 files[] = organizations/usao_dc.inc
 files[] = organizations/usao_sdil.inc
 files[] = organizations/usao_sdia.inc
+files[] = organizations/usao_ut.inc
