@@ -225,6 +225,10 @@ return array (
     array (
       'title' => 'Middle District of Georgia',
     ),
+    'usao-dc' => 
+    array (
+      'title' => 'District of District of Columbia',
+    ),
     'usao-sdil' => 
     array (
       'title' => 'Southern District of Illinois',
@@ -1001,6 +1005,21 @@ return array (
     array (
       'group_name' => 'usao-mdga',
       'class_name' => 'UsaoMdgaPressReleaseMigration',
+    ),
+    'UsaoDcFile' => 
+    array (
+      'group_name' => 'usao-dc',
+      'class_name' => 'UsaoDcFileMigration',
+    ),
+    'UsaoDcPage' => 
+    array (
+      'group_name' => 'usao-dc',
+      'class_name' => 'UsaoDcPageMigration',
+    ),
+    'UsaoDcPressRelease' => 
+    array (
+      'group_name' => 'usao-dc',
+      'class_name' => 'UsaoDcPressReleaseMigration',
     ),
     'UsaoSdilFile' => 
     array (

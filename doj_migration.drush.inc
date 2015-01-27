@@ -303,7 +303,7 @@ function drush_doj_migration_doj_generate_menu($organization) {
     $parameters->setUriMenuLocation($menu_location_uri);
   }
 
-  $engine = new MenuGeneratorEngineDefault($parameters);
+  $engine = new MenuGeneratorEngineDistrict($parameters);
 
   if ($css_selector) {
     $engine->setInitialCssSelector($css_selector);
