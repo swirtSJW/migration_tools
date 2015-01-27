@@ -15,10 +15,12 @@ function doj_migration_migrate_api() {
   $disable_hooks = array(
     'node_update' => array(
       'akamai',
+      'doj_purge',
       'expire',
     ),
     'node_delete' => array(
       'akamai',
+      'doj_purge',
       'expire',
     ),
   );
