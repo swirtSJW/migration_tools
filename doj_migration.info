@@ -122,3 +122,4 @@ files[] = organizations/tax.inc
 files[] = organizations/usao_mdal.inc
 files[] = organizations/opr.inc
 files[] = organizations/usao_mdga.inc
+files[] = organizations/usao_sdil.inc
