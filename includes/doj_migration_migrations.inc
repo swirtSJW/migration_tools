@@ -233,6 +233,10 @@ return array (
     array (
       'title' => 'Southern District of Illinois',
     ),
+    'usao-sdia' => 
+    array (
+      'title' => 'Southern District of Iowa',
+    ),
   ),
   'migrations' => 
   array (
@@ -1035,6 +1039,21 @@ return array (
     array (
       'group_name' => 'usao-sdil',
       'class_name' => 'UsaoSdilPressReleaseMigration',
+    ),
+    'UsaoSdiaFile' => 
+    array (
+      'group_name' => 'usao-sdia',
+      'class_name' => 'UsaoSdiaFileMigration',
+    ),
+    'UsaoSdiaPage' => 
+    array (
+      'group_name' => 'usao-sdia',
+      'class_name' => 'UsaoSdiaPageMigration',
+    ),
+    'UsaoSdiaPressRelease' => 
+    array (
+      'group_name' => 'usao-sdia',
+      'class_name' => 'UsaoSdiaPressReleaseMigration',
     ),
   ),
 );

@@ -125,3 +125,4 @@ files[] = organizations/opr.inc
 files[] = organizations/usao_mdga.inc
 files[] = organizations/usao_dc.inc
 files[] = organizations/usao_sdil.inc
+files[] = organizations/usao_sdia.inc
