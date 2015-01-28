@@ -249,6 +249,10 @@ return array (
     array (
       'title' => 'Western District of North Carolina',
     ),
+    'usao-ndia' =>
+    array (
+      'title' => 'Northern District of Iowa',
+    ),
   ),
   'migrations' =>
   array (
@@ -1111,6 +1115,21 @@ return array (
     array (
       'group_name' => 'usao-wdnc',
       'class_name' => 'UsaoWdncPressReleaseMigration',
+    ),
+    'UsaoNdiaFile' =>
+    array (
+      'group_name' => 'usao-ndia',
+      'class_name' => 'UsaoNdiaFileMigration',
+    ),
+    'UsaoNdiaPage' =>
+    array (
+      'group_name' => 'usao-ndia',
+      'class_name' => 'UsaoNdiaPageMigration',
+    ),
+    'UsaoNdiaPressRelease' =>
+    array (
+      'group_name' => 'usao-ndia',
+      'class_name' => 'UsaoNdiaPressReleaseMigration',
     ),
   ),
 );
