@@ -23,7 +23,7 @@ function doj_migration_drush_command() {
     'description' => "Generates a list of migrate commands for one or more organic groups.",
     'aliases' => array('dgmc'),
     'arguments' => array(
-      groups => 'The abbreviation of the groups to migrate, separated by commas',
+      'groups' => 'The abbreviation of the groups to migrate, separated by commas',
     ),
     'examples' => array(
       'drush dgmc usao-als,tax' => 'Generate commands for the usao-als and tax groups.',
