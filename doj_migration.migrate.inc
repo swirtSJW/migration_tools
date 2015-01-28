@@ -13,6 +13,15 @@
 function doj_migration_migrate_api() {
 
   $disable_hooks = array(
+    'redirect_insert' => array(
+      'doj_purge',
+    ),
+    'redirect_update' => array(
+      'doj_purge',
+    ),
+    'redirect_delete' => array(
+      'doj_purge',
+    ),
     'node_update' => array(
       'akamai',
       'doj_purge',
