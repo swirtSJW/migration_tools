@@ -241,6 +241,10 @@ return array (
     array (
       'title' => 'District of Utah',
     ),
+    'usao-edtx' => 
+    array (
+      'title' => 'Eastern District of Texas',
+    ),
   ),
   'migrations' => 
   array (
@@ -1073,6 +1077,21 @@ return array (
     array (
       'group_name' => 'usao-ut',
       'class_name' => 'UsaoUtPressReleaseMigration',
+    ),
+    'UsaoEdtxFile' => 
+    array (
+      'group_name' => 'usao-edtx',
+      'class_name' => 'UsaoEdtxFileMigration',
+    ),
+    'UsaoEdtxPage' => 
+    array (
+      'group_name' => 'usao-edtx',
+      'class_name' => 'UsaoEdtxPageMigration',
+    ),
+    'UsaoEdtxPressRelease' => 
+    array (
+      'group_name' => 'usao-edtx',
+      'class_name' => 'UsaoEdtxPressReleaseMigration',
     ),
   ),
 );
