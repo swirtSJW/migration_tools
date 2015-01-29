@@ -253,6 +253,10 @@ return array (
     array (
       'title' => 'Northern District of Iowa',
     ),
+    'usao-ndoh' => 
+    array (
+      'title' => 'Northern District of Ohio',
+    ),
   ),
   'migrations' =>
   array (
@@ -1130,6 +1134,21 @@ return array (
     array (
       'group_name' => 'usao-ndia',
       'class_name' => 'UsaoNdiaPressReleaseMigration',
+    ),
+    'UsaoNdohFile' => 
+    array (
+      'group_name' => 'usao-ndoh',
+      'class_name' => 'UsaoNdohFileMigration',
+    ),
+    'UsaoNdohPage' => 
+    array (
+      'group_name' => 'usao-ndoh',
+      'class_name' => 'UsaoNdohPageMigration',
+    ),
+    'UsaoNdohPressRelease' => 
+    array (
+      'group_name' => 'usao-ndoh',
+      'class_name' => 'UsaoNdohPressReleaseMigration',
     ),
   ),
 );
