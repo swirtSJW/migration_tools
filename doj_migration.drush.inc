@@ -26,7 +26,7 @@ function doj_migration_drush_command() {
       'groups' => 'The abbreviation of the groups to migrate, separated by commas',
     ),
     'examples' => array(
-      'drush dgmc usao-als,tax' => 'Generate commands for the usao-als and tax groups.',
+      'drush dgmc usao-sdal|als,tax' => 'Generate commands for the usao-sdal (source dir als) and tax groups.',
     ),
     'options' => array(
       'brackets' => 'Prefixes each command with a bracketed checkbox. E.g., "[] command".',
@@ -123,13 +123,22 @@ function drush_doj_migration_doj_generate_migrate_commands($groups) {
 
   foreach ($groups as $group) {
     $group = trim($group);
+
+    // Argument may be passed as "group-name|old-dir", or simply "group-name".
+    if (strpos($group, '|')) {
+      list($group, $directory) = explode('|', $group);
+    }
+    else {
+      $directory = $group;
+    }
+    // Add usao/" prefix for district directories.
+    if (strpos($group, 'usao-') === 0) {
+      $directory = 'usao/' . $directory;
+    }
+
     drush_print($prefix . "drush mi --group=$group");
     drush_print($prefix . "drush digm $group-menu.txt $group");
 
-    $directory = $group;
-    if (strpos($group, 'usao-') === 0) {
-      $directory = str_replace('usao-', 'usao/', $group);
-    }
     drush_print($prefix . "drush dmi $directory");
     drush_print("");
   }
