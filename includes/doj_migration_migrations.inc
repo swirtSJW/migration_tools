@@ -245,6 +245,9 @@ return array (
     array (
       'title' => 'Eastern District of Texas',
     ),
+    'usao-edok' => 
+    array (
+      'title' => 'Eastern District of Oklahoma',
     'usao-wdnc' =>
     array (
       'title' => 'Western District of North Carolina',
@@ -1123,6 +1126,20 @@ return array (
     array (
       'group_name' => 'usao-wdnc',
       'class_name' => 'UsaoWdncPressReleaseMigration',
+    'UsaoEdokFile' => 
+    array (
+      'group_name' => 'usao-edok',
+      'class_name' => 'UsaoEdokFileMigration',
+    ),
+    'UsaoEdokPage' => 
+    array (
+      'group_name' => 'usao-edok',
+      'class_name' => 'UsaoEdokPageMigration',
+    ),
+    'UsaoEdokPressRelease' => 
+    array (
+      'group_name' => 'usao-edok',
+      'class_name' => 'UsaoEdokPressReleaseMigration',
     ),
     'UsaoNdiaFile' =>
     array (
