@@ -253,9 +253,13 @@ return array (
     array (
       'title' => 'Northern District of Iowa',
     ),
-    'usao-ndoh' => 
+    'usao-ndoh' =>
     array (
       'title' => 'Northern District of Ohio',
+    ),
+    'usao-hi' =>
+    array (
+      'title' => 'District of Hawaii',
     ),
   ),
   'migrations' =>
@@ -1135,20 +1139,35 @@ return array (
       'group_name' => 'usao-ndia',
       'class_name' => 'UsaoNdiaPressReleaseMigration',
     ),
-    'UsaoNdohFile' => 
+    'UsaoNdohFile' =>
     array (
       'group_name' => 'usao-ndoh',
       'class_name' => 'UsaoNdohFileMigration',
     ),
-    'UsaoNdohPage' => 
+    'UsaoNdohPage' =>
     array (
       'group_name' => 'usao-ndoh',
       'class_name' => 'UsaoNdohPageMigration',
     ),
-    'UsaoNdohPressRelease' => 
+    'UsaoNdohPressRelease' =>
     array (
       'group_name' => 'usao-ndoh',
       'class_name' => 'UsaoNdohPressReleaseMigration',
+    ),
+    'UsaoHiFile' =>
+    array (
+      'group_name' => 'usao-hi',
+      'class_name' => 'UsaoHiFileMigration',
+    ),
+    'UsaoHiPage' =>
+    array (
+      'group_name' => 'usao-hi',
+      'class_name' => 'UsaoHiPageMigration',
+    ),
+    'UsaoHiPressRelease' =>
+    array (
+      'group_name' => 'usao-hi',
+      'class_name' => 'UsaoHiPressReleaseMigration',
     ),
   ),
 );
