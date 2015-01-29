@@ -245,9 +245,10 @@ return array (
     array (
       'title' => 'Eastern District of Texas',
     ),
-    'usao-edok' => 
+    'usao-edok' =>
     array (
       'title' => 'Eastern District of Oklahoma',
+    ),
     'usao-wdnc' =>
     array (
       'title' => 'Western District of North Carolina',
@@ -263,6 +264,10 @@ return array (
     'usao-hi' =>
     array (
       'title' => 'District of Hawaii',
+    ),
+    'usao-edky' =>
+    array (
+      'title' => 'Eastern District of Kentucky',
     ),
   ),
   'migrations' =>
@@ -1126,17 +1131,17 @@ return array (
     array (
       'group_name' => 'usao-wdnc',
       'class_name' => 'UsaoWdncPressReleaseMigration',
-    'UsaoEdokFile' => 
+    'UsaoEdokFile' =>
     array (
       'group_name' => 'usao-edok',
       'class_name' => 'UsaoEdokFileMigration',
     ),
-    'UsaoEdokPage' => 
+    'UsaoEdokPage' =>
     array (
       'group_name' => 'usao-edok',
       'class_name' => 'UsaoEdokPageMigration',
     ),
-    'UsaoEdokPressRelease' => 
+    'UsaoEdokPressRelease' =>
     array (
       'group_name' => 'usao-edok',
       'class_name' => 'UsaoEdokPressReleaseMigration',
@@ -1185,6 +1190,21 @@ return array (
     array (
       'group_name' => 'usao-hi',
       'class_name' => 'UsaoHiPressReleaseMigration',
+    ),
+    'UsaoEdkyFile' =>
+    array (
+      'group_name' => 'usao-edky',
+      'class_name' => 'UsaoEdkyFileMigration',
+    ),
+    'UsaoEdkyPage' =>
+    array (
+      'group_name' => 'usao-edky',
+      'class_name' => 'UsaoEdkyPageMigration',
+    ),
+    'UsaoEdkyPressRelease' =>
+    array (
+      'group_name' => 'usao-edky',
+      'class_name' => 'UsaoEdkyPressReleaseMigration',
     ),
   ),
 );

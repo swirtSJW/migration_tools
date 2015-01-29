@@ -135,3 +135,4 @@ files[] = organizations/usao_wdnc.inc
 files[] = organizations/usao_ndia.inc
 files[] = organizations/usao_ndoh.inc
 files[] = organizations/usao_hi.inc
+files[] = organizations/usao_edky.inc
