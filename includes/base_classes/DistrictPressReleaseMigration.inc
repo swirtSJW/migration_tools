@@ -10,7 +10,7 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments, $source_dirs) {
+  public function __construct($arguments, $source_dirs, $options = array()) {
     if (array_key_exists('district', $arguments)) {
       $district = $arguments['district'];
     }
@@ -25,9 +25,8 @@ class DistrictPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
       throw new Exception("DistrictPressReleaseMigration requires the component_tid argument.");
     }
 
-    $options = array(
-      'recurse' => TRUE,
-    );
+    $options['recurse'] = (isset($options['recurse'])) ? $options['recurse'] : TRUE;
+
     if (empty($arguments['source_parser_class'])) {
       $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
     }
