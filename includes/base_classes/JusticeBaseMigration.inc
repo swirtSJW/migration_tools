@@ -90,7 +90,7 @@ abstract class JusticeBaseMigration extends Migration {
    */
   protected function mergeArguments($new_args = '') {
     if (!empty($new_args) && is_array($new_args)) {
-      return array_merge($this->getArguments(), $new_args);
+      $this->arguments = array_merge($this->arguments, $new_args);
     }
   }
 

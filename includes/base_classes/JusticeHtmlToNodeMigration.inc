@@ -108,7 +108,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Create a new SourceParser to handle HTML content.
-    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata, FALSE, array(), $this->getArguments());
+    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata, array(), $this->getArguments());
 
     // We check that everything has been initialized correctly to keep children
     // classes from having to do all this checks.

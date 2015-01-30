@@ -473,6 +473,18 @@ class ObtainTitle extends ObtainHtml {
     return $this->grabSubBannerAttr('title');
   }
 
+  /**
+   * Find the first image in the very specific contentSub div, and get the alt.
+   */
+  protected function findFirstContentSubImageAlt() {
+    $elem = $this->queryPath->find('.contentSub > div > img')->first();
+    if ($elem) {
+      $this->setElementToRemove($elem);
+      return $elem->attr('alt');
+    }
+    return "";
+  }
+
 
   /**
    * Finder method to find the content of the title.

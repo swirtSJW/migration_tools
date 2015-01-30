@@ -273,6 +273,10 @@ return array (
     array (
       'title' => 'Southern District of Florida',
     ),
+    'usao-nj' =>
+    array (
+      'title' => 'District of New Jersey',
+    ),
   ),
   'migrations' =>
   array (
@@ -1235,6 +1239,21 @@ return array (
     array (
       'group_name' => 'usao-edky',
       'class_name' => 'UsaoEdkyPressReleaseMigration',
+    ),
+    'UsaoNjFile' =>
+    array (
+      'group_name' => 'usao-nj',
+      'class_name' => 'UsaoNjFileMigration',
+    ),
+    'UsaoNjPage' =>
+    array (
+      'group_name' => 'usao-nj',
+      'class_name' => 'UsaoNjPageMigration',
+    ),
+    'UsaoNjPressRelease' =>
+    array (
+      'group_name' => 'usao-nj',
+      'class_name' => 'UsaoNjPressReleaseMigration',
     ),
   ),
 );
