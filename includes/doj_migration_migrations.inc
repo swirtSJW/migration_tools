@@ -269,6 +269,10 @@ return array (
     array (
       'title' => 'Eastern District of Kentucky',
     ),
+    'usao-sdfl' =>
+    array (
+      'title' => 'Southern District of Florida',
+    ),
   ),
   'migrations' =>
   array (
@@ -1131,6 +1135,7 @@ return array (
     array (
       'group_name' => 'usao-wdnc',
       'class_name' => 'UsaoWdncPressReleaseMigration',
+    ),
     'UsaoEdokFile' =>
     array (
       'group_name' => 'usao-edok',
@@ -1190,6 +1195,21 @@ return array (
     array (
       'group_name' => 'usao-hi',
       'class_name' => 'UsaoHiPressReleaseMigration',
+    ),
+    'UsaoSdflFile' =>
+    array (
+      'group_name' => 'usao-sdfl',
+      'class_name' => 'UsaoSdflFileMigration',
+    ),
+    'UsaoSdflPage' =>
+    array (
+      'group_name' => 'usao-sdfl',
+      'class_name' => 'UsaoSdflPageMigration',
+    ),
+    'UsaoSdflPressRelease' =>
+    array (
+      'group_name' => 'usao-sdfl',
+      'class_name' => 'UsaoSdflPressReleaseMigration',
     ),
     'UsaoEdkyFile' =>
     array (
