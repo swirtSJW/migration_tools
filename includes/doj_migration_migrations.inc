@@ -1211,6 +1211,11 @@ return array (
       'group_name' => 'usao-sdfl',
       'class_name' => 'UsaoSdflPageEspanolMigration',
     ),
+    'UsaoSdflPageHt' =>
+    array (
+      'group_name' => 'usao-sdfl',
+      'class_name' => 'UsaoSdflPageCreoleMigration',
+    ),
     'UsaoSdflPressRelease' =>
     array (
       'group_name' => 'usao-sdfl',

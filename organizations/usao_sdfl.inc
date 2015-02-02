@@ -95,6 +95,50 @@ class UsaoSdflPageEspanolMigration extends JusticeHtmlToPageMigration {
 
 
 /**
+ * Migrates creol .html files from /usao-sdfl to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdfl
+ */
+class UsaoSdflPageCreoleMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    // Define source directories.
+    $source_dirs = array(
+      0 => 'usao/fls/Languages/Creole',
+    );
+
+    $arguments['source_parser_class'] = "DistrictsSourceParser";
+
+    $options = array('recurse' => TRUE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, NULL, $options);
+    $this->dependencies = array('UsaoDistrict');
+    $this->description = t('Migrates Creole pages from the Southern District of Florida.');
+    $this->addFieldMapping('og_group_ref')
+    ->defaultValue('usao-sdfl')
+    ->sourceMigration('UsaoDistrict');
+    $this->addFieldMapping('language')->defaultValue('ht');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+  }
+}
+
+
+/**
  * Migrates files (*.pdf) from /usao-sdfl.
  *
  * @package doj_migration
