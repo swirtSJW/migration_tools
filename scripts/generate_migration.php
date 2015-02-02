@@ -114,7 +114,11 @@ function doj_migrate_migrate_inc($abbreviation, $full_name, $pr = FALSE) {
 
   // Save the modifications.
   $header = "<?php\n/**\n * @file\n * Migrations.\n */\n\n// @codingStandardsIgnoreStart\nreturn ";
-  file_put_contents("../includes/doj_migration_migrations.inc", $header . var_export($api, TRUE) . ";\n// @codingStandardsIgnoreEnd\n");
+  $footer = ";\n// @codingStandardsIgnoreEnd\n";
+  $definitions = str_replace("=> \n", "=>\n", var_export($api, TRUE));
+  $contents = $header . $definitions . $footer;
+  $migrations_filepath = "../includes/doj_migration_migrations.inc";
+  file_put_contents($migrations_filepath, $contents);
 }
 
 /**
