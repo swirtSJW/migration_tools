@@ -78,7 +78,7 @@ class UsaoSdflPageEspanolMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Spanish pages from the Southern District of Florida.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-sdfl')
+    ->defaultValue('usao-sdfl-espanol')
     ->sourceMigration('UsaoDistrict');
     $this->addFieldMapping('language')->defaultValue('es');
   }
@@ -122,7 +122,7 @@ class UsaoSdflPageCreoleMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Creole pages from the Southern District of Florida.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-sdfl')
+    ->defaultValue('usao-sdfl-creole')
     ->sourceMigration('UsaoDistrict');
     $this->addFieldMapping('language')->defaultValue('ht');
   }
