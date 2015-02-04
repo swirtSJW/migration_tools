@@ -17,6 +17,12 @@ return array (
     array (
       'title' => 'DOJ - Department of Justice',
     ),
+    'afp' => array(
+      'title' => 'Asset Forfeiture Program',
+    ),
+    'atr-espanol' => array(
+      'title' => 'División Antimonopolios en español',
+    ),
     'eousa' =>
     array (
       'title' => 'EOUSA - Executive Office for United States Attorneys',
@@ -112,6 +118,10 @@ return array (
     'usao-sdms' =>
     array (
       'title' => 'Southern District of Mississippi',
+    ),
+    'ust-regions' =>
+    array(
+      'title' => 'U.S. Trustee Program Regions and Offices',
     ),
     'pardon' =>
     array (
@@ -272,6 +282,14 @@ return array (
     'usao-sdfl' =>
     array (
       'title' => 'Southern District of Florida',
+    ),
+    'usao-sdfl-creole' =>
+    array (
+      'title' => 'Southern District of Florida Creole',
+    ),
+    'usao-sdfl-espanol' =>
+    array (
+      'title' => 'Southern District of Florida Espanol',
     ),
     'usao-nj' =>
     array (
