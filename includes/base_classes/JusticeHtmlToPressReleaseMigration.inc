@@ -61,6 +61,15 @@ abstract class JusticeHtmlToPressReleaseMigration extends JusticeHtmlToNodeMigra
     }
 
     $row->field_pr_date = $this->sourceParser->getDate();
+
+    // Validate that the date is not in the future.
+    $date = $row->field_pr_date;
+    $time = strtotime($date);
+    if ($time > time()) {
+      drush_doj_migration_debug_output("IGNORING: The press release date for {$row->fileid} was in the future");
+      return FALSE;
+    }
+
     $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
     $row->field_pr_number = $this->sourceParser->getID();
   }
