@@ -83,10 +83,10 @@ function doj_migration_drush_command() {
     'description' => "Fix links utilizing anchors.",
     'aliases' => array('dmfll'),
     'arguments' => array(
-      'migration-name' => 'The name of the migration',
+      'migration-group' => 'The migration group we want to process',
     ),
     'examples' => array(
-      'drush dmfll UsaoNjPage' => 'Fix links with anchors in nodes from the UsaoNjPage migration',
+      'drush dmfll usao-nj' => 'Fix links with anchors in nodes from the Page, PressRelease, and Case migration from the given group',
     ),
   );
 
@@ -96,12 +96,32 @@ function doj_migration_drush_command() {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_fix_legacy_links($migration_name) {
-  // We want to do this for nodes in page migrations.
-  if (substr_count($migration_name, "Page") == 0) {
-    drush_set_error("doj_migration", "We only handle Page migrations");
+function drush_doj_migration_doj_migrate_fix_legacy_links($migration_group) {
+  $migrations_info = migrate_get_module_apis();
+  $migrations = array();
+
+  foreach ($migrations_info as $implementor => $info) {
+    if (!empty($info['migrations'])) {
+      foreach ($info['migrations'] as $migration_name => $migration_info) {
+        if ($migration_info['group_name'] == $migration_group) {
+          $migrations[] = $migration_name;
+        }
+      }
+    }
   }
 
+  foreach ($migrations as $migration) {
+    if (substr_count($migration, "Page") > 0 || substr_count($migration, "PressRelease") > 0 || substr_count($migration, "Case") > 0) {
+      _drush_doj_migration_doj_migrate_fix_legacy_links_helper($migration);
+    }
+  }
+}
+
+/**
+ * Helpder function for the fix legacy links with anchors drush command.
+ */
+function _drush_doj_migration_doj_migrate_fix_legacy_links_helper($migration_name) {
+  drush_doj_migration_debug_output("Fixing links with anchors for: {$migration_name}");
   // Validate the migration by checking for the existance of the migration map
   // table.
   $table_name = "migrate_map_" . strtolower($migration_name);
