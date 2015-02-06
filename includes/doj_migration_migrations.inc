@@ -17,10 +17,12 @@ return array (
     array (
       'title' => 'DOJ - Department of Justice',
     ),
-    'afp' => array(
+    'afp' =>
+    array (
       'title' => 'Asset Forfeiture Program',
     ),
-    'atr-espanol' => array(
+    'atr-espanol' =>
+    array (
       'title' => 'División Antimonopolios en español',
     ),
     'eousa' =>
@@ -120,7 +122,7 @@ return array (
       'title' => 'Southern District of Mississippi',
     ),
     'ust-regions' =>
-    array(
+    array (
       'title' => 'U.S. Trustee Program Regions and Offices',
     ),
     'pardon' =>
@@ -1272,6 +1274,16 @@ return array (
     array (
       'group_name' => 'usao-nj',
       'class_name' => 'UsaoNjPressReleaseMigration',
+    ),
+    'AfpFile' =>
+    array (
+      'group_name' => 'afp',
+      'class_name' => 'AfpFileMigration',
+    ),
+    'AfpPage' =>
+    array (
+      'group_name' => 'afp',
+      'class_name' => 'AfpPageMigration',
     ),
   ),
 );
