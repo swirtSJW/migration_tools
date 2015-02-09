@@ -297,6 +297,10 @@ return array (
     array (
       'title' => 'District of New Jersey',
     ),
+    'usao-edca' =>
+    array (
+      'title' => 'Eastern District of California',
+    ),
   ),
   'migrations' =>
   array (
@@ -1284,6 +1288,21 @@ return array (
     array (
       'group_name' => 'afp',
       'class_name' => 'AfpPageMigration',
+    ),
+    'UsaoEdcaFile' =>
+    array (
+      'group_name' => 'usao-edca',
+      'class_name' => 'UsaoEdcaFileMigration',
+    ),
+    'UsaoEdcaPage' =>
+    array (
+      'group_name' => 'usao-edca',
+      'class_name' => 'UsaoEdcaPageMigration',
+    ),
+    'UsaoEdcaPressRelease' =>
+    array (
+      'group_name' => 'usao-edca',
+      'class_name' => 'UsaoEdcaPressReleaseMigration',
     ),
   ),
 );
