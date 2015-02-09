@@ -23,6 +23,8 @@ files[] = includes/base_classes/JusticeHtmlToNodeMigration.inc
 files[] = includes/base_classes/JusticeFileSourceMigration.inc
 files[] = includes/base_classes/JusticeBinaryFileMigration.inc
 files[] = includes/base_classes/JusticeHtmlToCaseMigration.inc
+files[] = includes/base_classes/JusticeHtmlToGalleryMigration.inc
+files[] = includes/base_classes/JusticeHtmlToGalleryImagesMigration.inc
 files[] = includes/base_classes/JusticeHtmlToPageMigration.inc
 files[] = includes/base_classes/JusticeHtmlToPressReleaseMigration.inc
 files[] = includes/base_classes/JusticeHtmlToSpeechMigration.inc
@@ -73,6 +75,7 @@ files[] = includes/obtainers/ObtainSubTitle.php
 files[] = includes/obtainers/ObtainTitlePressRelease.php
 
 ; Organizations
+files[] = organizations/atr.inc
 files[] = organizations/doj.inc
 files[] = organizations/espanol.inc
 files[] = organizations/organizations.inc

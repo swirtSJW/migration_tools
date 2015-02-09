@@ -21,6 +21,10 @@ return array (
     array (
       'title' => 'Asset Forfeiture Program',
     ),
+    'atr' =>
+    array (
+      'title' => 'Antitrust Division',
+    ),
     'atr-espanol' =>
     array (
       'title' => 'División Antimonopolios en español',
@@ -1360,6 +1364,16 @@ return array (
     array (
       'group_name' => 'usao-edva',
       'class_name' => 'UsaoEdvaPressReleaseMigration',
+    ),
+    'AtrGallery' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrGalleryMigration',
+    ),
+    'AtrGalleryImages' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrGalleryImagesMigration',
     ),
   ),
 );
