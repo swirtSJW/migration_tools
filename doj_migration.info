@@ -14,6 +14,7 @@ dependencies[] = pathauto
 files[] = includes/HtmlCleanUp.php
 files[] = includes/StringCleanUp.php
 files[] = includes/MenuGenerator.php
+files[] = includes/LegacyUrlWithAnchorFixer.php
 
 ; Migrations
 files[] = includes/base_classes/DistrictPressReleaseMigration.inc
