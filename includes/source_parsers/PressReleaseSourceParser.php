@@ -72,22 +72,24 @@ class PressReleaseSourceParser extends SourceParser {
    * This is duplicated so that we can use ObtainTitlePressRelease obtainer.
    */
   protected function setTitle($title = '') {
-
     try {
       if (empty($title)) {
-        $method_stack = array(
-          'findH1Any',
-          'findIdContentstartDivH2Sec',
-          'findH2First',
-          'findClassContentSubDivPCenterStrong',
-          'findClassContentSubDivDivPStrong',
-          'findIdHeadline',
-          'findPStrongEm',
-          'findIdContentstartDivH2',
-          'findDivClassContentSubDivDivCenter',
-        );
+        if (empty($this->getObtainerMethods('title'))) {
+          $method_stack = array(
+            'findH1Any',
+            'findIdContentstartDivH2Sec',
+            'findH2First',
+            'findClassContentSubDivPCenterStrong',
+            'findClassContentSubDivDivPStrong',
+            'findIdHeadline',
+            'findPStrongEm',
+            'findIdContentstartDivH2',
+            'findDivClassContentSubDivDivCenter',
+          );
+          $this->setObtainerMethods(array('title' => $method_stack));
+        }
 
-        $title = $this->runObtainer('ObtainTitlePressRelease', 'title', $method_stack);
+        $title = $this->runObtainer('ObtainTitlePressRelease', 'title');
       }
 
       $this->title = $title;

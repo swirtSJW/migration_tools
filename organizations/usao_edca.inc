@@ -56,7 +56,28 @@ class UsaoEdcaPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
+    $skip_these = array(
+      '/usao/cae/google66201ba8283a65e2.html',
+      '/usao/cae/index_SP.html',
+      '/usao/cae/Archive_sp.html',
+      '/usao/cae/district_SP.html',
+      '/usao/cae/news_sp.html',
+      '/usao/cae/reports_SP.html',
+      '/usao/cae/_changed/usao-rightCol.html',
+      '/usao/cae/BackupMain/divisions/civil/divisionscivil_SP.htmlusao/cae/_changed/usao-footer.html',
+      '/usao/cae/_changed/usao-header.html',
+      '/usao/cae/us_attorney/index_SP.html',
+      '/usao/cae/BackupMain/divisions/civil/index_SP.html',
+      '/usao/cae/links/index_SP.html',
+      '/usao/cae/vicitm_witness/VictimsRightsAct_SP.html',
+      '/usao/cae/vicitm_witness/index_SP.html',
+      '/usao/cae/about_us/index_SP.html',
+      '/usao/cae/about_us/about_SP.html',
+      '/usao/cae/offices/fresno/index_SP.html',
+      '/usao/cae/offices/sacramento/index_SP.html',
+    );
+
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
   }
@@ -116,6 +137,11 @@ class UsaoEdcaPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-edca";
     $arguments['component_tid'] = 1726;
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1Second',
+      ),
+    );
 
     $source_dirs = array(
       27 => 'usao/cae/news/docs/2014/2014_07',

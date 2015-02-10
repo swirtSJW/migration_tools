@@ -187,6 +187,23 @@ class ObtainTitle extends ObtainHtml {
 
 
   /**
+   * Finder method to find the content of the second H1 on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findH1Second() {
+    $elements = $this->queryPath->find("h1");
+    foreach ($elements as $key => $elem) {
+      if ($key == 1) {
+        $this->setElementToRemove($elem);
+
+        return $elem->text();
+      }
+    }
+  }
+
+
+  /**
    * Finder method to find the content of the first H2 on the page.
    * @return string
    *   The text found.
