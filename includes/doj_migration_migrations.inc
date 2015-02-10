@@ -317,6 +317,10 @@ return array (
     array (
       'title' => 'Eastern District of Virginia',
     ),
+    'usao-ct' =>
+    array (
+      'title' => 'District of Connecticut',
+    ),
   ),
   'migrations' =>
   array (
@@ -1374,6 +1378,21 @@ return array (
     array (
       'group_name' => 'atr',
       'class_name' => 'AtrGalleryImagesMigration',
+    ),
+    'UsaoCtFile' =>
+    array (
+      'group_name' => 'usao-ct',
+      'class_name' => 'UsaoCtFileMigration',
+    ),
+    'UsaoCtPage' =>
+    array (
+      'group_name' => 'usao-ct',
+      'class_name' => 'UsaoCtPageMigration',
+    ),
+    'UsaoCtPressRelease' =>
+    array (
+      'group_name' => 'usao-ct',
+      'class_name' => 'UsaoCtPressReleaseMigration',
     ),
   ),
 );

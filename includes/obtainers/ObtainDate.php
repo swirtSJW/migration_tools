@@ -56,6 +56,19 @@ class ObtainDate extends ObtainHtml {
 
 
   /**
+   * Finder method to find the .newsLeft.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findClassNewsLeft() {
+    $element = $this->queryPath->top('.newsLeft');
+    $this->setElementToRemove($element);
+
+    return $element->text();
+  }
+
+  /**
    * Finder method to find the .newsRight.
    *
    * @return string

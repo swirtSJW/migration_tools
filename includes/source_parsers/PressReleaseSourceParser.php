@@ -87,7 +87,7 @@ class PressReleaseSourceParser extends SourceParser {
           'findDivClassContentSubDivDivCenter',
         );
 
-        $title = $this->runObtainer('ObtainTitle', 'title', $method_stack);
+        $title = $this->runObtainer('ObtainTitlePressRelease', 'title', $method_stack);
       }
 
       $this->title = $title;
@@ -104,17 +104,20 @@ class PressReleaseSourceParser extends SourceParser {
    * Setter.
    */
   protected function setDate($date = '') {
-    $method_stack = array(
-      'findTableRow1Col2',
-      'findTableRow1Col1',
-      'findTable2Row2Col2',
-      'findPAlignCenter',
-      'findIdContentstartFirst',
-      'findClassNewsRight',
-      'findClassBottomLeftContent',
-      'findProbableDate',
-    );
-    $this->setObtainerMethods(array('date' => $method_stack));
+    if (empty($date) && empty($this->getObtainerMethods('date'))) {
+      // Set obtainer date stack to use if one has not been set by arguments.
+      $date_method_stack = array(
+        'findTableRow1Col2',
+        'findTableRow1Col1',
+        'findTable2Row2Col2',
+        'findPAlignCenter',
+        'findIdContentstartFirst',
+        'findClassNewsRight',
+        'findClassBottomLeftContent',
+        'findProbableDate',
+      );
+      $this->setObtainerMethods(array('date' => $date_method_stack));
+    }
 
     return parent::setDate($date);
   }
