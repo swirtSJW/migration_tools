@@ -305,6 +305,10 @@ return array (
     array (
       'title' => 'Middle District of North Carolina',
     ),
+    'usao-mdtn' =>
+    array (
+      'title' => 'Middle District of Tennessee',
+    ),
   ),
   'migrations' =>
   array (
@@ -1322,6 +1326,21 @@ return array (
     array (
       'group_name' => 'usao-mdnc',
       'class_name' => 'UsaoMdncPressReleaseMigration',
+    ),
+    'UsaoMdtnFile' =>
+    array (
+      'group_name' => 'usao-mdtn',
+      'class_name' => 'UsaoMdtnFileMigration',
+    ),
+    'UsaoMdtnPage' =>
+    array (
+      'group_name' => 'usao-mdtn',
+      'class_name' => 'UsaoMdtnPageMigration',
+    ),
+    'UsaoMdtnPressRelease' =>
+    array (
+      'group_name' => 'usao-mdtn',
+      'class_name' => 'UsaoMdtnPressReleaseMigration',
     ),
   ),
 );
