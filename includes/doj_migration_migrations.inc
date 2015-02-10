@@ -301,6 +301,10 @@ return array (
     array (
       'title' => 'Eastern District of California',
     ),
+    'usao-mdnc' =>
+    array (
+      'title' => 'Middle District of North Carolina',
+    ),
   ),
   'migrations' =>
   array (
@@ -1303,6 +1307,21 @@ return array (
     array (
       'group_name' => 'usao-edca',
       'class_name' => 'UsaoEdcaPressReleaseMigration',
+    ),
+    'UsaoMdncFile' =>
+    array (
+      'group_name' => 'usao-mdnc',
+      'class_name' => 'UsaoMdncFileMigration',
+    ),
+    'UsaoMdncPage' =>
+    array (
+      'group_name' => 'usao-mdnc',
+      'class_name' => 'UsaoMdncPageMigration',
+    ),
+    'UsaoMdncPressRelease' =>
+    array (
+      'group_name' => 'usao-mdnc',
+      'class_name' => 'UsaoMdncPressReleaseMigration',
     ),
   ),
 );

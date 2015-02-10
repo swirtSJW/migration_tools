@@ -462,6 +462,7 @@ function drush_doj_migration_doj_generate_menu_district($organization) {
  */
 function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
   module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+  module_load_include('inc', 'doj_sitewide', 'includes/doj_sitewide.groups');
 
   $group = doj_sitewide_load_org_by_abbrev($group_abbrev);
   $group_menu_name = 'menu-og-' . $group->nid;
