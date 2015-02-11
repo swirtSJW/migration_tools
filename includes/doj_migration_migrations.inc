@@ -309,6 +309,10 @@ return array (
     array (
       'title' => 'Middle District of Tennessee',
     ),
+    'usao-edva' =>
+    array (
+      'title' => 'Eastern District of Virginia',
+    ),
   ),
   'migrations' =>
   array (
@@ -1341,6 +1345,21 @@ return array (
     array (
       'group_name' => 'usao-mdtn',
       'class_name' => 'UsaoMdtnPressReleaseMigration',
+    ),
+    'UsaoEdvaFile' =>
+    array (
+      'group_name' => 'usao-edva',
+      'class_name' => 'UsaoEdvaFileMigration',
+    ),
+    'UsaoEdvaPage' =>
+    array (
+      'group_name' => 'usao-edva',
+      'class_name' => 'UsaoEdvaPageMigration',
+    ),
+    'UsaoEdvaPressRelease' =>
+    array (
+      'group_name' => 'usao-edva',
+      'class_name' => 'UsaoEdvaPressReleaseMigration',
     ),
   ),
 );
