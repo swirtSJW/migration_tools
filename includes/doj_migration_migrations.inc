@@ -321,6 +321,10 @@ return array (
     array (
       'title' => 'District of Connecticut',
     ),
+    'usao-edca-espanol' =>
+    array (
+      'title' => 'Eastern District of California Espanol',
+    ),
   ),
   'migrations' =>
   array (
@@ -1393,6 +1397,16 @@ return array (
     array (
       'group_name' => 'usao-ct',
       'class_name' => 'UsaoCtPressReleaseMigration',
+    ),
+    'UsaoEdcaPageEspanol' =>
+    array (
+      'group_name' => 'usao-edca',
+      'class_name' => 'UsaoEdcaPageEspanolMigration',
+    ),
+    'UsaoEdcaPressReleaseEspanol' =>
+    array (
+      'group_name' => 'usao-edca',
+      'class_name' => 'UsaoEdcaPressReleaseEspanolMigration',
     ),
   ),
 );

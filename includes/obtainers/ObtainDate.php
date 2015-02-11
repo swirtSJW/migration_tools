@@ -81,6 +81,18 @@ class ObtainDate extends ObtainHtml {
     return $element->text();
   }
 
+  /**
+   * Finder method to find the .style2.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findClassStyle2() {
+    $element = $this->queryPath->top('.style2');
+    $this->setElementToRemove($element);
+
+    return $element->text();
+  }
 
   /**
    * Method for returning the p that is aligned center.

@@ -64,7 +64,8 @@ class UsaoEdcaPageMigration extends JusticeHtmlToPageMigration {
       '/usao/cae/news_sp.html',
       '/usao/cae/reports_SP.html',
       '/usao/cae/_changed/usao-rightCol.html',
-      '/usao/cae/BackupMain/divisions/civil/divisionscivil_SP.htmlusao/cae/_changed/usao-footer.html',
+      '/usao/cae/BackupMain/divisions/civil/divisionscivil_SP.html',
+      'usao/cae/_changed/usao-footer.html',
       '/usao/cae/_changed/usao-header.html',
       '/usao/cae/us_attorney/index_SP.html',
       '/usao/cae/BackupMain/divisions/civil/index_SP.html',
@@ -162,5 +163,149 @@ class UsaoEdcaPressReleaseMigration extends DistrictPressReleaseMigration {
       42 => 'usao/cae/news/docs/2015/2015_04',
     );
     parent::__construct($arguments, $source_dirs);
+  }
+}
+
+/**
+ * Migrates .html files from /usao-edca spanish to page nodes.
+ *
+ * @package doj_migration
+ * @subpackage usao-edca
+ */
+class UsaoEdcaPageEspanolMigration extends JusticeHtmlToPageMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    // Define source directories.
+    $source_dirs = array(
+      'usao/cae/Spanish/',
+      'usao/cae/',
+      'usao/cae/about_us',
+      'usao/cae/links',
+      'usao/cae/offices/fresno',
+      'usao/cae/offices/sacramento',
+      'usao/cae/us_attorney',
+      'usao/cae/victim_witness',
+    );
+
+    $arguments['source_parser_class'] = "DistrictsSourceParser";
+
+    $options = array('recurse' => FALSE);
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, NULL, $options);
+    $this->dependencies = array('UsaoDistrict');
+    $this->description = t('Migrates Spanish pages from the Eastern District of California.');
+    $this->addFieldMapping('og_group_ref')
+    ->defaultValue('usao-edca-espanol')
+    ->sourceMigration('UsaoDistrict');
+    $this->addFieldMapping('language')->defaultValue('es');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array(
+      '/usao/cae/google66201ba8283a65e2.html',
+      '/usao/cae/index.html',
+      '/usao/cae/about.html',
+      '/usao/cae/Archive_Prior.html',
+      '/usao/cae/careers.html',
+      '/usao/cae/civil.html',
+      '/usao/cae/contact.html',
+      '/usao/cae/criminal.html',
+      '/usao/cae/divisions.html',
+      '/usao/cae/faq.html',
+      '/usao/cae/hatecrimes.html',
+      '/usao/cae/index2013.html',
+      '/usao/cae/index2014.html',
+      '/usao/cae/lecc.html',
+      '/usao/cae/Links_Resources.html',
+      '/usao/cae/meetattorney.html',
+      '/usao/cae/office.html',
+      '/usao/cae/office_Fre.html',
+      '/usao/cae/office_Sac.html',
+      '/usao/cae/photogallery.html',
+      '/usao/cae/sitemap.html',
+      '/usao/cae/Testtemplate.html',
+      '/usao/cae/TPDA_Summit.html',
+      '/usao/cae/Archive.html',
+      '/usao/cae/district.html',
+      '/usao/cae/news.html',
+      '/usao/cae/reports.html',
+      '/usao/cae/_changed/usao-rightCol.html',
+      '/usao/cae/BackupMain/divisions/civil/divisionscivil.html',
+      'usao/cae/_changed/usao-footer.html',
+      '/usao/cae/_changed/usao-header.html',
+      '/usao/cae/us_attorney/index.html',
+      '/usao/cae/BackupMain/divisions/civil/index.html',
+      '/usao/cae/links/index.html',
+      '/usao/cae/vicitm_witness/VictimsRightsAct.html',
+      '/usao/cae/vicitm_witness/index.html',
+      '/usao/cae/about_us/index.html',
+      '/usao/cae/about_us/about.html',
+    );
+
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
+  }
+}
+
+/**
+ * Migrates spanish press releases from /usao-edca.
+ *
+ * @package doj_migration
+ * @subpackage usao-edca
+ */
+class UsaoEdcaPressReleaseEspanolMigration extends DistrictPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-edca";
+
+    // @TODO Nees to set this to the tid of the new group.
+   $arguments['component_tid'] = 1726;
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1Second',
+        'findH1First',
+      ),
+      'date' => array(
+        'findClassStyle2',
+      ),
+    );
+
+    $source_dirs = array(
+      1 => 'usao/cae/Spanish/News',
+    );
+    parent::__construct($arguments, $source_dirs);
+    $this->dependencies = array('UsaoDistrict');
+    $this->description = t('Migrates Spanish PressReleases from the Eastern District of California.');
+    $this->addFieldMapping('og_group_ref')
+    ->defaultValue('usao-edca-espanol')
+    ->sourceMigration('UsaoDistrict');
+    $this->addFieldMapping('language')->defaultValue('es');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array(
+      '/usao/cae/Spanish/News/2013/news_2013_sp.html',
+      '/usao/cae/Spanish/News/2013/news_sp.html',
+    );
+
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
   }
 }
