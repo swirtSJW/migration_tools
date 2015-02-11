@@ -127,7 +127,12 @@ class SourceParser {
       $date_string = $this->runObtainer('ObtainDate', 'date');
       $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
-      $date = date('n/d/Y', strtotime($date_string));
+      if (empty($date_string)) {
+        $date = '';
+      }
+      else {
+        $date = date('n/d/Y', strtotime($date_string));
+      }
     }
 
     $this->date = $date;
