@@ -74,7 +74,8 @@ class PressReleaseSourceParser extends SourceParser {
   protected function setTitle($title = '') {
     try {
       if (empty($title)) {
-        if (empty($this->getObtainerMethods('title'))) {
+        $method_stack = $this->getObtainerMethods('title');
+        if (empty($method_stack)) {
           $method_stack = array(
             'findH1Any',
             'findIdContentstartDivH2Sec',
@@ -86,9 +87,8 @@ class PressReleaseSourceParser extends SourceParser {
             'findIdContentstartDivH2',
             'findDivClassContentSubDivDivCenter',
           );
-          $this->setObtainerMethods(array('title' => $method_stack));
         }
-
+        $this->setObtainerMethods(array('title' => $method_stack));
         $title = $this->runObtainer('ObtainTitlePressRelease', 'title');
       }
 
@@ -106,19 +106,22 @@ class PressReleaseSourceParser extends SourceParser {
    * Setter.
    */
   protected function setDate($date = '') {
-    if (empty($date) && empty($this->getObtainerMethods('date'))) {
-      // Set obtainer date stack to use if one has not been set by arguments.
-      $date_method_stack = array(
-        'findTableRow1Col2',
-        'findTableRow1Col1',
-        'findTable2Row2Col2',
-        'findPAlignCenter',
-        'findIdContentstartFirst',
-        'findClassNewsRight',
-        'findClassBottomLeftContent',
-        'findProbableDate',
-      );
-      $this->setObtainerMethods(array('date' => $date_method_stack));
+    if (empty($date)) {
+      $method_stack = $this->getObtainerMethods('date');
+      if (empty($method_stack)) {
+        // Set obtainer date stack to use if one has not been set by arguments.
+        $method_stack = array(
+          'findTableRow1Col2',
+          'findTableRow1Col1',
+          'findTable2Row2Col2',
+          'findPAlignCenter',
+          'findIdContentstartFirst',
+          'findClassNewsRight',
+          'findClassBottomLeftContent',
+          'findProbableDate',
+        );
+      }
+      $this->setObtainerMethods(array('date' => $method_stack));
     }
 
     return parent::setDate($date);
