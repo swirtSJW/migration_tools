@@ -59,7 +59,10 @@ class HtmlCleanUp {
       $matches = HtmlCleanUp::matchAll($query_path, "a", $incorrect, "attr", 'href');
       foreach ($matches as $key => $match) {
         $href = $match->attr('href');
-        $href = str_replace($incorrect, "http://www.justice.gov", $href);
+        $href = str_replace($incorrect, "", $href);
+        if (empty($href)) {
+          $href = "/";
+        }
         $match->attr('href', $href);
       }
     }
