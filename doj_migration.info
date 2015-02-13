@@ -49,6 +49,7 @@ files[] = includes/source_parsers/DistrictsSourceParser.php
 files[] = includes/source_parsers/DcSourceParser.php
 files[] = includes/source_parsers/EdpaSourceParser.php
 files[] = includes/source_parsers/EdpaPressSourceParser.php
+files[] = includes/source_parsers/EdcaDistrictPressReleaseSpanishSourceParser.php
 files[] = includes/source_parsers/EoirSourceParser.php
 files[] = includes/source_parsers/EspanolSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSourceParser.php

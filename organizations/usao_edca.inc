@@ -181,8 +181,8 @@ class UsaoEdcaPageEspanolMigration extends JusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      'usao/cae/Spanish/',
-      'usao/cae/',
+      'usao/cae/Spanish',
+      'usao/cae',
       'usao/cae/about_us',
       'usao/cae/links',
       'usao/cae/offices/fresno',
@@ -201,7 +201,7 @@ class UsaoEdcaPageEspanolMigration extends JusticeHtmlToPageMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Spanish pages from the Eastern District of California.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-edca-espanol')
+    ->defaultValue('usao-edca-es')
     ->sourceMigration('UsaoDistrict');
     $this->addFieldMapping('language')->defaultValue('es');
   }
@@ -263,16 +263,19 @@ class UsaoEdcaPageEspanolMigration extends JusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage usao-edca
  */
-class UsaoEdcaPressReleaseEspanolMigration extends DistrictPressReleaseMigration {
+class UsaoEdcaPressReleaseEspanolMigration extends JusticeHtmlToPressReleaseSpanishMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-edca";
+    $arguments['source_parser_class'] = "EdcaDistrictPressReleaseSpanishSourceParser";
 
-    // @TODO Nees to set this to the tid of the new group.
-   $arguments['component_tid'] = 1726;
+    // @TODO Needs to set this to the tid of the new group when the naming is
+    // finalized.  This value is temporary!
+    $arguments['component_tid'] = 1726;
+
     $arguments['obtainer_methods'] = array(
       'title' => array(
         'findH1Second',
@@ -280,6 +283,7 @@ class UsaoEdcaPressReleaseEspanolMigration extends DistrictPressReleaseMigration
       ),
       'date' => array(
         'findClassStyle2',
+        'findTable1Row2Col1',
       ),
     );
 
@@ -290,22 +294,22 @@ class UsaoEdcaPressReleaseEspanolMigration extends DistrictPressReleaseMigration
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Spanish PressReleases from the Eastern District of California.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-edca-espanol')
+    ->defaultValue('usao-edca-es')
     ->sourceMigration('UsaoDistrict');
-    $this->addFieldMapping('language')->defaultValue('es');
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+
     $skip_these = array(
       '/usao/cae/Spanish/News/2013/news_2013_sp.html',
-      '/usao/cae/Spanish/News/2013/news_sp.html',
     );
 
     if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
+
   }
 }
