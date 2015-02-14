@@ -117,7 +117,6 @@ abstract class Obtainer {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $string = doj_migration_html_entity_decode_numeric($string);
-
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
@@ -126,7 +125,6 @@ abstract class Obtainer {
     }
 
     $string = StringCleanUp::stripCmsLegacyMarkup($string);
-
     // Remove white space-like things from the ends and decodes html entities.
     $string = StringCleanUp::superTrim($string);
 

@@ -29,18 +29,6 @@ class ObtainTitlePressRelease extends ObtainTitle {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public static function cleanString($text) {
-    // Pass it to the parent, then do any additional processing.
-    $text = parent::cleanString($text);
-    $text = StringCleanUp::makeWordsFirstCapital($text);
-
-    return $text;
-  }
-
-
-  /**
    * Finder method ".some class > u" first on the page.
    *
    * This is created custom for usao-sdwv.

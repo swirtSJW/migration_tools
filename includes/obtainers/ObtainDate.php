@@ -88,7 +88,7 @@ class ObtainDate extends ObtainHtml {
    *   The string that was found
    */
   protected function findClassStyle2() {
-    $element = $this->queryPath->top('.style2');
+    $element = $this->queryPath->top('.style2')->first();
     $this->setElementToRemove($element);
 
     return $element->text();
@@ -189,6 +189,24 @@ class ObtainDate extends ObtainHtml {
     return $text;
   }
 
+
+  /**
+   * Method for returning the 1st table, cell at row 2, column 1.
+   *
+   * @return string
+   *   The string found.
+   */
+  protected function findTable1Row2Col1() {
+    $table = $this->queryPath->find("table");
+    foreach ($table as $key => $t) {
+      if ($key == 0) {
+        $text = $this->getFromTable($t, 2, 1);
+        break;
+      }
+    }
+
+    return $text;
+  }
 
   /**
    * Method for returning the 2nd table cell at row 2, column 2.

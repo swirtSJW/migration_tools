@@ -577,10 +577,12 @@ class ObtainTitle extends ObtainHtml {
     // for preservation of acronyms.
     // Caveat: will obliterate acronyms if the entire title is caps.
     $uppercase_version = strtoupper($text);
-    if (strcmp($uppercase_version, $text) == 0) {
-      // The entire thing is caps.
-      $text = ucwords(strtolower($text));
+    similar_text($uppercase_version, $text, $percent);
+    if ($percent > 95.5) {
+      // Nearly the entire thing is caps.
+      $text = strtolower($text);
     }
+    $text = StringCleanUp::makeWordsFirstCapital($text);
 
     // Remove undesirable chars.
     $text = str_replace('»', '', $text);
