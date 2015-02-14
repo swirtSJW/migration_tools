@@ -7,7 +7,7 @@ usao-edar,Eastern District of Arkansas,Christopher R. Thyer
 usao-wdar,Western District of Arkansas,Conner Eldridge
 usao-cdca,Central District of California,"André Birotte, Jr."
 usao-edca,Eastern District of California,Benjamin B. Wagner
-usao-edca-espanol,Eastern District of California Espanol,Benjamin B. Wagner
+usao-edca-es,Eastern District of California Espanol,Benjamin B. Wagner
 usao-ndca,Northern District of California,Melinda L. Haag
 usao-sdca,Southern District of California,Laura E. Duffy
 usao-co,District of Colorado,John F. Walsh
@@ -17,8 +17,8 @@ usao-dc,District of District of Columbia,Ronald C. Machen
 usao-mdfl,Middle District of Florida,Lee  Bentley
 usao-ndfl,Northern District of Florida,Pamela C. Marsh
 usao-sdfl,Southern District of Florida,Wifredo A. Ferrer
-usao-sdfl-creole,Southern District of Florida Creole,Wifredo A. Ferrer
-usao-sdfl-espanol,Southern District of Florida Espanol,Wifredo A. Ferrer
+usao-sdfl-ht,Southern District of Florida Creole,Wifredo A. Ferrer
+usao-sdfl-es,Southern District of Florida Espanol,Wifredo A. Ferrer
 usao-mdga,Middle District of Georgia,Michael J. Moore
 usao-ndga,Northern District of Georgia,Sally Quillian Yates
 usao-sdga,Southern District of Georgia,Edward J. Tarver
