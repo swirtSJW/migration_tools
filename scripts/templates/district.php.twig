@@ -11,7 +11,7 @@
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
+class {{ info.class }}PageMigration extends NGJusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -25,7 +25,7 @@ class {{ info.class }}PageMigration extends JusticeHtmlToPageMigration {
     {% endfor %}
     );
 
-    $arguments['source_parser_class'] = "DistrictsSourceParser";
+    $arguments['source_parser_class'] = "NGDistrictPageSourceParser";
 
     $options = array('recurse' => FALSE);
 
@@ -95,7 +95,7 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class }}PressReleaseMigration extends DistrictPressReleaseMigration {
+class {{ info.class }}PressReleaseMigration extends NGDistrictPressReleaseMigration {
 
   /**
    * {@inheritdoc}
