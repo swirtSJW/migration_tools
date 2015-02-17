@@ -325,6 +325,10 @@ return array (
     array (
       'title' => 'Eastern District of California Espanol',
     ),
+	'usao-edmo' =>
+    array (
+      'title' => 'Eastern District of Missouri',
+    ),
   ),
   'migrations' =>
   array (
@@ -1407,6 +1411,21 @@ return array (
     array (
       'group_name' => 'usao-edca',
       'class_name' => 'UsaoEdcaPressReleaseEspanolMigration',
+    ),
+	'UsaoEdmoFile' =>
+    array (
+      'group_name' => 'usao-edmo',
+      'class_name' => 'UsaoEdmoFileMigration',
+    ),
+    'UsaoEdmoPage' =>
+    array (
+      'group_name' => 'usao-edmo',
+      'class_name' => 'UsaoEdmoPageMigration',
+    ),
+    'UsaoEdmoPressRelease' =>
+    array (
+      'group_name' => 'usao-edmo',
+      'class_name' => 'UsaoEdmoPressReleaseMigration',
     ),
   ),
 );

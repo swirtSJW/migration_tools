@@ -163,3 +163,4 @@ files[] = organizations/usao_ct.inc
 files[] = organizations/usao_mdnc.inc
 files[] = organizations/usao_mdtn.inc
 files[] = organizations/usao_edva.inc
+files[] = organizations/usao_edmo.inc
