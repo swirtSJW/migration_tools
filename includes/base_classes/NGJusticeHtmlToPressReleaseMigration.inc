@@ -1,14 +1,14 @@
 <?php
-
 /**
  * @file
- * Defines JusticeHtmlToPressReleaseMigration class.
+ * Defines NGJusticeHtmlToPressReleaseMigration class.
  */
 
 /**
- * Class JusticeHtmlToPressReleaseMigration.
+ * Class NGJusticeHtmlToPressReleaseMigration.
  *
- * Parent class for all migrations from static HTML to page content type.
+ * Parent class for all migrations from static HTML to press release
+ * content type.
  *
  * @package doj_migration
  */
@@ -64,7 +64,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
     $date = $row->field_pr_date;
     $time = strtotime($date);
     if ($time > time()) {
-      drush_doj_migration_debug_output("IGNORING: The press release date for {$row->fileid} was in the future");
+      $this->migrationMessage("IGNORING: The press release date for @file_id was in the future", array("@file_id" => $row->fileid), WATCHDOG_ALERT);
       return FALSE;
     }
 

@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Defines JusticeHtmlToPageMigration class.
+ * Defines NGJusticeHtmlToPageMigration class.
  */
 
 /**
- * Class JusticeHtmlToPageMigration.
+ * Class NGJusticeHtmlToPageMigration.
  *
  * Parent class for all migrations from static HTML to page content type.
  *

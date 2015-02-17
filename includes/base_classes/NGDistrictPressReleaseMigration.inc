@@ -1,10 +1,16 @@
 <?php
-
 /**
  * @file
- * Class DistrictPressReleaseMigration
+ * Defines NGDistrictPressReleaseMigration
  */
 
+/**
+ * Class NGDistrictPressReleaseMigration.
+ *
+ * Parent class for all district press releases from static HTML.
+ *
+ * @package doj_migration
+ */
 class NGDistrictPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
   /**

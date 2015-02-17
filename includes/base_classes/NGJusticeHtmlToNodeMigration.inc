@@ -1,12 +1,11 @@
 <?php
-
 /**
  * @file
- * Defines JusticeHtmlToNodeMigration class.
+ * Defines NGJusticeHtmlToNodeMigration class.
  */
 
 /**
- * Class JusticeHtmlToNodeMigration.
+ * Class NGJusticeHtmlToNodeMigration.
  *
  * Parent class for all migrations from static HTML to any content type.
  *
@@ -59,9 +58,6 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       $this->sourceParserClass = "NGNodeSourceParser";
     }
 
-    // The destination is the page content type.
-    $this->destination = new MigrateDestinationNode('page');
-
     // Map fields where source field name is same as destination field name.
     $this->addSimpleMappings(array(
       'uid',
@@ -107,7 +103,17 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     // Set to admin for now.
     $row->uid = 1;
 
-    // Create a new SourceParser to handle HTML content.
+    // Get the source parser ready.
+    $this->initializeSourceParser($row);
+
+    // Get the properties from the source parser.
+    $this->setProperties($row);
+  }
+
+  /**
+   * Create a new SourceParser to handle HTML content.
+   */
+  protected function initializeSourceParser($row) {
     $source_parser = new $this->sourceParserClass($row->url_path, $row->filedata);
 
     $obtainers_info = $this->getArgument("obtainers_info");
@@ -117,7 +123,6 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       }
     }
     $this->sourceParser = $source_parser;
-    $this->setProperties($row);
   }
 
   /**
@@ -152,7 +157,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
   }
 
   /**
-   * Is this document a duplicate? Determine this by using redirect objects.
+   * Determines if the current row is a duplicate using redirects as reference.
    *
    * Legacy paths from justice, should not be pointing to more than one node,
    * If this is happening, it is a good sign that we are bringing in duplicate
@@ -175,5 +180,44 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       return TRUE;
     }
     return FALSE;
+  }
+
+  /**
+   * Logs a system message.
+   *
+   * @param string $message
+   *   The message to store in the log. Keep $message translatable
+   *   by not concatenating dynamic values into it! Variables in the
+   *   message should be added by using placeholder strings alongside
+   *   the variables argument to declare the value of the placeholders.
+   *   See t() for documentation on how $message and $variables interact.
+   * @param array $variables
+   *   Array of variables to replace in the message on display or
+   *   NULL if message is already translated or not possible to
+   *   translate.
+   * @param int $severity
+   *   The severity of the message; one of the following values as defined in
+   *   - WATCHDOG_EMERGENCY: Emergency, system is unusable.
+   *   - WATCHDOG_ALERT: Alert, action must be taken immediately.
+   *   - WATCHDOG_CRITICAL: Critical conditions.
+   *   - WATCHDOG_ERROR: Error conditions.
+   *   - WATCHDOG_WARNING: Warning conditions.
+   *   - WATCHDOG_NOTICE: (default) Normal but significant conditions.
+   *   - WATCHDOG_INFO: Informational messages.
+   *   - WATCHDOG_DEBUG: Debug-level messages.
+   *
+   * @param int $indent
+   *   (optional). Sets indentation for drush output. Defaults to 1.
+   *
+   * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
+   */
+  protected function migrationMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+    $type = get_class($this);
+    watchdog($type, $message, $variables, $severity);
+
+    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+      $formatted_message = format_string($message, $variables);
+      drush_print($formatted_message, $indent);
+    }
   }
 }

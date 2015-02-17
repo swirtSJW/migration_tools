@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Includes SourceParser class, which parses static HTML files via queryPath.
+ * Includes NGSourceParser class, which parses static HTML files via queryPath.
  */
 
 // composer_manager is supposed to take care of including this library, but

@@ -1,10 +1,17 @@
 <?php
-
 /**
  * @file
- * Class NGDistrictPressReleaseSourceParser
+ * Includes NGDistrictPressReleaseSourceParser class.
+ *
+ * This class contains the customization for NGPrssReleaseSourceParser to
+ * parse District press releases.
  */
 
+/**
+ * Class NGDicstrictPressReleaseSourceParser.
+ *
+ * @package doj_migration
+ */
 class NGDistrictPressReleaseSourceParser extends NGPressReleaseSourceParser {
 
   /**

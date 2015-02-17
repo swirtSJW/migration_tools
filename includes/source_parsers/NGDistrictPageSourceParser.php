@@ -1,9 +1,17 @@
 <?php
 /**
  * @file
- * DistrictSourceParser.
+ * Includes NGDistrictPageSourceParser class.
+ *
+ * This class customizes NGNodeSourceParse with the specific needs for District
+ * Pages.
  */
 
+/**
+ * Class NGDistrictPageSourceParser.
+ *
+ * @package doj_migration
+ */
 class NGDistrictPageSourceParser extends NGNodeSourceParser {
 
   /**
@@ -21,12 +29,19 @@ class NGDistrictPageSourceParser extends NGNodeSourceParser {
 
     $this->removeTableBackgrounds();
 
-    // Rewrap p.greyHeadline and div.greyHeadline to h2.
+    $this->rewrapHtml();
+
+    // Remove breadcrumbs.
+    $this->queryPath->find('.breadcrumb')->first()->remove();
+  }
+
+  /**
+   * Rewrap p.greyHeadline and div.greyHeadline to h2.
+   */
+  protected function rewrapHtml() {
     $selectors_to_rewrap = array('p.greyHeadline', 'div.greyHeadline');
     $new_wrapper = '<h6 class="subheading" />';
     HtmlCleanup::rewrapElements($this->queryPath, $selectors_to_rewrap, $new_wrapper);
-    // Remove breadcrumbs.
-    $this->queryPath->find('.breadcrumb')->first()->remove();
   }
 
   /**
