@@ -27,6 +27,13 @@ class UsaoEdvaPageMigration extends JusticeHtmlToPageMigration {
     );
 
     $arguments['source_parser_class'] = "DistrictsSourceParser";
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1Any',
+        'findH2First',
+        'findClassBreadcrumbLast',
+      ),
+    );
 
     $options = array('recurse' => FALSE);
 
@@ -44,7 +51,13 @@ class UsaoEdvaPageMigration extends JusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
+    $skip_these = array(
+      '/usao/vae/vw/cases/cat_v_dog.html',
+      '/usao/vae/victimwitness/david_maloy.html',
+      '/usao/vae/2013_news_index.html',
+      'http://www.justice.gov/usao/vae/vw/caseupdates.html',
+    );
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
   }
@@ -104,6 +117,19 @@ class UsaoEdvaPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-edva";
     $arguments['component_tid'] = 2106;
+    $arguments['obtainer_methods'] = array(
+      'title' => array(
+        'findH1Any',
+        'findFirstPAlignCenterStrong',
+        'findH2First',
+        'findClassBreadcrumbLast',
+      ),
+      'date' => array(
+        'findClassNewsRightLast',
+        'findClassNewsRight',
+        'findProbableDate',
+      ),
+    );
 
     $source_dirs = array(
       0 => 'usao/vae/news/2014/12',

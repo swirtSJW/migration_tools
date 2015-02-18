@@ -69,13 +69,26 @@ class ObtainDate extends ObtainHtml {
   }
 
   /**
-   * Finder method to find the .newsRight.
+   * Finder method to find the first .newsRight.
    *
    * @return string
    *   The string that was found
    */
   protected function findClassNewsRight() {
     $element = $this->queryPath->top('.newsRight');
+    $this->setElementToRemove($element);
+
+    return $element->text();
+  }
+
+  /**
+   * Finder method to find the first .newsRight.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findClassNewsRightLast() {
+    $element = $this->queryPath->top('.newsRight')->last();
     $this->setElementToRemove($element);
 
     return $element->text();
@@ -126,6 +139,7 @@ class ObtainDate extends ObtainHtml {
       '#dateline',
       'p',
       '.newsLeft',
+      '.newsRight',
     );
     // Text strings to search for.
     $search_strings = array(
@@ -307,7 +321,7 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The cleaned text.
    */
-  public static function cleanText($text) {
+  public static function cleanString($text) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $text = doj_migration_html_entity_decode_numeric($text);
@@ -334,6 +348,7 @@ class ObtainDate extends ObtainHtml {
       'release',
       'updated',
       'update',
+      ',',
     );
     $text = str_ireplace($remove, '', $text);
 

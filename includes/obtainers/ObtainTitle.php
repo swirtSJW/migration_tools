@@ -435,6 +435,22 @@ class ObtainTitle extends ObtainHtml {
    * @return string
    *   The text found.
    */
+  protected function findFirstPAlignCenterStrong() {
+    $elems = $this->queryPath->find('p[align="center"]');
+    $counter = 0;
+    foreach ($elems as $elem) {
+      if ($counter == 0) {
+        $this->setElementToRemove($elem);
+        return $elem->text();
+      }
+    }
+  }
+
+  /**
+   * Find  the content of the first  "p[align="center"] > strong > u" on page.
+   * @return string
+   *   The text found.
+   */
   protected function findSecondPAlignCenterStrong() {
     $elems = $this->queryPath->find('p[align="center"]');
     $counter = 0;
