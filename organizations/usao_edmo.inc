@@ -106,6 +106,8 @@ class UsaoEdmoPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $source_dirs = array(
       2 => 'usao/moe/news/2015/january',
       3 => 'usao/moe/news/2015/february',
+      40 => 'usao/moe/news/2015/march',
+      41 => 'usao/moe/news/2015/april',
       4 => 'usao/moe/news/2015',
       5 => 'usao/moe/news/2014/november',
       6 => 'usao/moe/news/2014/july',
