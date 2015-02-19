@@ -239,8 +239,8 @@ class ObtainerInfo {
       $class = "";
       foreach ($pieces as $piece) {
         $class .= ucfirst($piece);
-        $class = "Obtain{$class}";
       }
+      $class = "Obtain{$class}";
     }
     $this->setClass($class);
   }

@@ -337,6 +337,10 @@ return array (
     array (
       'title' => 'Middle District of Pennsylvania',
     ),
+    'usao-mn' =>
+    array (
+      'title' => 'District of Minnesota',
+    ),
     'usao-edtn' =>
     array (
       'title' => 'Eastern District of Tennessee',
@@ -1468,6 +1472,21 @@ return array (
     array (
       'group_name' => 'usao-mdpa',
       'class_name' => 'UsaoMdpaPressReleaseMigration',
+    ),
+    'UsaoMnFile' =>
+    array (
+      'group_name' => 'usao-mn',
+      'class_name' => 'UsaoMnFileMigration',
+    ),
+    'UsaoMnPage' =>
+    array (
+      'group_name' => 'usao-mn',
+      'class_name' => 'UsaoMnPageMigration',
+    ),
+    'UsaoMnPressRelease' =>
+    array (
+      'group_name' => 'usao-mn',
+      'class_name' => 'UsaoMnPressReleaseMigration',
     ),
     'UsaoEdtnFile' =>
     array (

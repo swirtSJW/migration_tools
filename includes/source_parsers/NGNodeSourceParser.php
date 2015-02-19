@@ -61,4 +61,5 @@ class NGNodeSourceParser extends NGSourceParser {
     $body->addMethod('findClassContentSub');
     $this->addObtainerInfo($body);
   }
+
 }

@@ -1,0 +1,23 @@
+HOME{"url":"usao-mn"}
+ABOUT{"url":"usao-mn/history"}
+-About History{"url":"http://www.justice.gov/usao/mn/about.html#history"}
+-About the District{"url":"http://www.justice.gov/usao/mn/about.html#district"}
+-About the Office{"url":"http://www.justice.gov/usao/mn/about.html#office"}
+-About the Mission{"url":"http://www.justice.gov/usao/mn/about.html#mission"}
+-About Former U.S. Attorneys{"url":"http://www.justice.gov/usao/mn/about.html#former"}
+-Links{"url":"http://www.justice.gov/usao/mn/about.html#links"}
+-FAQ{"url":"usao-mn/faq"}
+NEWS{"url":"usao-mn/news-and-press-releases-262"}
+-News Releases{"url":"usao-mn/news-and-press-releases-262"}
+-Publications{"url":"usao-mn/publications"}
+PROCEDURES{"url":"usao-mn/federal-procedures"}
+-Criminal Procedures {"url":"usao-mn/criminal-procedures"}
+-Civil Procedures {"url":"usao-mn/civil-procedures"}
+MEET THE U.S. ATTORNEY{"url":"usao-mn/andrew-m-luger-us-attorney"}
+PROGRAMS{"url":"usao-mn/programs"}
+-Community Outreach{"url":"usao-mn/overview"}
+-LECC Training{"url":"usao-mn/training"}
+-Victim Witness{"url":"usao-mn/services"}
+-Grants{"url":"usao-mn/grant-writing"}
+JOBS{"url":"node/1632"}
+CONTACT US{"url":"usao-mn/telephone"}
