@@ -38,4 +38,17 @@ class ObtainBody extends ObtainHtml {
 
     return $element->innerHtml();
   }
+
+
+  /**
+   * Finder method to find the div contents in a table.
+   *
+   * @return string
+   *   The string that was found
+   */
+  protected function findIdContent3TableTd() {
+    $element = $this->queryPath->find('#content3 > table > tbody > tr > td')->first();
+    return $element->innerHtml();
+  }
+
 }

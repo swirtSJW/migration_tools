@@ -437,9 +437,8 @@ class ObtainTitle extends ObtainHtml {
    */
   protected function findFirstPAlignCenterStrong() {
     $elems = $this->queryPath->find('p[align="center"]');
-    $counter = 0;
-    foreach ($elems as $elem) {
-      if ($counter == 0) {
+    foreach ($elems as $i => $elem) {
+      if ($i == 0) {
         $this->setElementToRemove($elem);
         return $elem->text();
       }
@@ -453,9 +452,8 @@ class ObtainTitle extends ObtainHtml {
    */
   protected function findSecondPAlignCenterStrong() {
     $elems = $this->queryPath->find('p[align="center"]');
-    $counter = 0;
-    foreach ($elems as $elem) {
-      if ($counter == 1) {
+    foreach ($elems as $i => $elem) {
+      if ($i == 1) {
         $this->setElementToRemove($elem);
         return $elem->text();
       }
