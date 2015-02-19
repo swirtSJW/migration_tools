@@ -234,11 +234,15 @@ class ObtainerInfo {
     $this->property = $property;
 
     $pieces = explode("_", $property);
-    $class = "";
-    foreach ($pieces as $piece) {
-      $class .= ucfirst($piece);
+
+    if (empty($class)) {
+      $class = "";
+      foreach ($pieces as $piece) {
+        $class .= ucfirst($piece);
+        $class = "Obtain{$class}";
+      }
     }
-    $this->setClass("Obtain{$class}");
+    $this->setClass($class);
   }
 
   /**

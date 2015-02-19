@@ -113,4 +113,24 @@ class ObtainTitlePressRelease extends ObtainTitle {
 
     return '';
   }
+
+  /**
+   * Finder method to find the content of the first H2 on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findH2Third() {
+    $counter = 0;
+    $elem = NULL;
+    foreach ($this->queryPath->find("h2") as $element) {
+      $counter++;
+      if ($counter == 3) {
+        $elem = $element;
+        break;
+      }
+    }
+    $this->setElementToRemove($elem);
+
+    return isset($elem) ? $elem->text() : "";
+  }
 }

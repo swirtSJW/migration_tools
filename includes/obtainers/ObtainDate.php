@@ -48,10 +48,11 @@ class ObtainDate extends ObtainHtml {
    *   The string that was found
    */
   protected function findIdContentstartFirst() {
-    $element = $this->queryPath->find('#contentstart > p');
+    $element = $this->queryPath->find('#contentstart > p')->first();
+    $text = $element->text();
     $this->setElementToRemove($element);
 
-    return $element->text();
+    return $text;
   }
 
 
