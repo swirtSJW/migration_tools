@@ -24,8 +24,8 @@ class NGDistrictPressReleaseSourceParser extends NGPressReleaseSourceParser {
   /**
    * {@inheritdoc}
    */
-  protected function setDefaultObatinersInfo() {
-    parent::setDefaultObatinersInfo();
+  protected function setDefaultObtainersInfo() {
+    parent::setDefaultObtainersInfo();
 
     $id = new ObtainerInfo("id");
     $id->addMethod('findTable3y1x');

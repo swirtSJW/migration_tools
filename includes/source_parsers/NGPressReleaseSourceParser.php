@@ -90,8 +90,8 @@ class NGPressReleaseSourceParser extends NGNodeSourceParser {
   /**
    * {@inheritdoc}
    */
-  protected function setDefaultObatinersInfo() {
-    parent::setDefaultObatinersInfo();
+  protected function setDefaultObtainersInfo() {
+    parent::setDefaultObtainersInfo();
 
     $title = new ObtainerInfo("title", 'ObtainTitlePressRelease');
     $title->addMethod('findH1Any');

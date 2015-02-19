@@ -25,7 +25,7 @@ abstract class NGSourceParser {
   /**
    * A specific source parser class should set useful set of obtainers info.
    */
-  abstract protected function setDefaultObatinersInfo();
+  abstract protected function setDefaultObtainersInfo();
 
   /**
    * Constructor.
@@ -43,7 +43,7 @@ abstract class NGSourceParser {
     $html = StringCleanUp::fixWindowSpecificChars($html);
     $this->html = $html;
 
-    $this->setDefaultObatinersInfo();
+    $this->setDefaultObtainersInfo();
     $this->drushPrintSeparator();
   }
 
@@ -101,7 +101,16 @@ abstract class NGSourceParser {
       $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
 
       $text = $obtainer->obtain();
-      $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+      $length = strlen($text);
+      if ($length < 256) {
+        // It is short enough to be helpful in debug output.
+        $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+      }
+      else {
+        // It it too long to be helpful in debug output so just show the length.
+        $this->sourceParserMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
+      }
+
     }
     catch (Exception $e) {
       $this->sourceParserMessage("Failed to set @key, Exception: @error_message", array(

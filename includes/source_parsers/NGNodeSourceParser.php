@@ -49,7 +49,7 @@ class NGNodeSourceParser extends NGSourceParser {
   /**
    * {@inheritdoc}
    */
-  protected function setDefaultObatinersInfo() {
+  protected function setDefaultObtainersInfo() {
     $title = new ObtainerInfo("title");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findTitleTag');
