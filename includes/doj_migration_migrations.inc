@@ -333,6 +333,10 @@ return array (
     array (
       'title' => 'Eastern District of Michigan',
     ),
+    'usao-mdpa' =>
+    array (
+      'title' => 'Middle District of Pennsylvania',
+    ),
   ),
   'migrations' =>
   array (
@@ -1445,6 +1449,21 @@ return array (
     array (
       'group_name' => 'usao-edmi',
       'class_name' => 'UsaoEdmiPressReleaseMigration',
+    ),
+    'UsaoMdpaFile' =>
+    array (
+      'group_name' => 'usao-mdpa',
+      'class_name' => 'UsaoMdpaFileMigration',
+    ),
+    'UsaoMdpaPage' =>
+    array (
+      'group_name' => 'usao-mdpa',
+      'class_name' => 'UsaoMdpaPageMigration',
+    ),
+    'UsaoMdpaPressRelease' =>
+    array (
+      'group_name' => 'usao-mdpa',
+      'class_name' => 'UsaoMdpaPressReleaseMigration',
     ),
   ),
 );
