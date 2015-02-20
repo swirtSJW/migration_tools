@@ -78,6 +78,7 @@ files[] = includes/source_parsers/specific/OlaWitnessSourceParser.php
 files[] = includes/source_parsers/specific/SdmsSourceParser.php
 files[] = includes/source_parsers/specific/SdmsPressSourceParser.php
 files[] = includes/source_parsers/specific/UtSourceParser.php
+files[] = includes/source_parsers/specific/WdncPressSourceParser.php
 
 ; Obtainers
 files[] = includes/obtainers/Obtainer.php

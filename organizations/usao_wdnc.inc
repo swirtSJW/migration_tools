@@ -104,6 +104,16 @@ class UsaoWdncPressReleaseMigration extends DistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-wdnc";
     $arguments['component_tid'] = 1936;
+    $arguments['source_parser_class'] = 'WdncPressSourceParser';
+    $arguments['obtainer_methods'] = array(
+      'body' => array(
+        'findIdContent3TableTd',
+      ),
+      'subtitle' => array(
+        'findSecondPAlignCenterStrong',
+        'findFirstPAlignCenterStrong',
+      ),
+    );
 
     $source_dirs = array(
       5 => 'usao/ncw/pressreleases/2013',

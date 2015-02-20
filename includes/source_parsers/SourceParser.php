@@ -156,7 +156,12 @@ class SourceParser {
    */
   protected function setID($id = '') {
     if (empty($id)) {
-      $id = $this->runObtainer('ObtainID', 'id');
+
+      // ID's are pretty specific markup so there are no defaults set.
+      $default_target_stack = array();
+      $om = $this->getObtainerMethods('id');
+      $id_stack = (!empty($om)) ? $om : $default_target_stack;
+      $id = $this->runObtainer('ObtainID', 'id', $id_stack);
     }
 
     $this->id = $id;
@@ -217,11 +222,13 @@ class SourceParser {
    */
   public function setBody($body = '') {
     if (empty($body)) {
-      $method_stack = array(
+      $default_target_stack = array(
         'findTopBodyHtml',
         'findClassContentSub',
       );
-      $body = $this->runObtainer('ObtainBody', 'body', $method_stack);
+      $om = $this->getObtainerMethods('body');
+      $body_stack = (!empty($om)) ? $om : $default_target_stack;
+      $body = $this->runObtainer('ObtainBody', 'body', $body_stack);
     }
 
     $this->body = $body;
