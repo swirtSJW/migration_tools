@@ -262,7 +262,7 @@ function drush_doj_migration_doj_generate_migrate_commands($groups) {
       $directory = 'usao/' . $directory;
     }
 
-    drush_print($prefix . "drush mi --group=$group");
+    drush_print($prefix . "drush mi --group=$group --feedback='30 seconds'");
     drush_print($prefix . "drush digm $group-menu.txt $group");
 
     drush_print($prefix . "drush dmi $directory");
