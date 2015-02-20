@@ -274,7 +274,7 @@ class UsaoEdcaPressReleaseEspanolMigration extends JusticeHtmlToPressReleaseSpan
 
     // @TODO Needs to set this to the tid of the new group when the naming is
     // finalized.  This value is temporary!
-    $arguments['component_tid'] = 1726;
+    $arguments['component_tid'] = 4081;
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
