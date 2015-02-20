@@ -47,4 +47,31 @@ abstract class JusticeHtmlToPageMigration extends JusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_page_body', 'body');
     $this->addFieldMapping('field_page_body:format')->defaultValue('wysiwyg');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postImport() {
+    $report_rows = $this->generateReportData();
+    parent::postImport($report_rows);
+  }
+
+  /**
+   * Generates migration class-specific report data.
+   *
+   * @return array
+   *   Rows of data to be passed to drush_print_table for the migration report.
+   */
+  public function generateReportData() {
+    // Count migrated nodes with empty bodies.
+    $map_table = $this->map->getMapTable();
+    $query = db_query("SELECT COUNT(n.nid) FROM {node} n RIGHT JOIN {$map_table} m ON m.destid1 = n.nid LEFT JOIN {field_data_field_page_body} fdfpb on fdfpb.entity_id = n.nid WHERE TRIM(fdfpb.field_page_body_value) = ''");
+    $empty_titles = $query->fetchField();
+
+    $report_rows = array(
+      array(t('Missing body'), $empty_titles),
+    );
+
+    return $report_rows;
+  }
 }
