@@ -337,6 +337,10 @@ return array (
     array (
       'title' => 'Middle District of Pennsylvania',
     ),
+    'usao-edtn' =>
+    array (
+      'title' => 'Eastern District of Tennessee',
+    ),
   ),
   'migrations' =>
   array (
@@ -1464,6 +1468,21 @@ return array (
     array (
       'group_name' => 'usao-mdpa',
       'class_name' => 'UsaoMdpaPressReleaseMigration',
+    ),
+    'UsaoEdtnFile' =>
+    array (
+      'group_name' => 'usao-edtn',
+      'class_name' => 'UsaoEdtnFileMigration',
+    ),
+    'UsaoEdtnPage' =>
+    array (
+      'group_name' => 'usao-edtn',
+      'class_name' => 'UsaoEdtnPageMigration',
+    ),
+    'UsaoEdtnPressRelease' =>
+    array (
+      'group_name' => 'usao-edtn',
+      'class_name' => 'UsaoEdtnPressReleaseMigration',
     ),
   ),
 );
