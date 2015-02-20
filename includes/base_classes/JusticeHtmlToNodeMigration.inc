@@ -191,6 +191,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $duplicates = $this->countDuplicateTitles();
     $output_rows = array(
       array(t('Total records'), $this->sourceCount()),
+      array(t('Migrate messages'), $this->messageCount()),
       array(t('Missing titles'), $this->countEmptyTitles()),
       array(t('Duplicate titles'), $duplicates),
       array(t('Unpublished'), $this->countUnpublishedNodes()),
