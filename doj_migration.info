@@ -60,6 +60,7 @@ files[] = includes/source_parsers/NGNodeSourceParser.php
 files[] = includes/source_parsers/NGPressReleaseSourceParser.php
 
 files[] = includes/source_parsers/specific/AzSourceParser.php
+files[] = includes/source_parsers/specific/EdcaDistrictPressReleaseSpanishSourceParser.php
 files[] = includes/source_parsers/specific/ScSourceParser.php
 files[] = includes/source_parsers/specific/NvSourceParser.php
 files[] = includes/source_parsers/specific/NdiaSourceParser.php
