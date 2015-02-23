@@ -18,7 +18,11 @@ class NGNodeSourceParser extends NGSourceParser {
    * Getter.
    */
   public function getTitle() {
-    return $this->getProperty('title');
+    $title = $this->getProperty('title');
+    if (empty($title)) {
+      $this->sourceParserMessage("The title for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+    }
+    return $title;
   }
 
   /**
@@ -26,7 +30,11 @@ class NGNodeSourceParser extends NGSourceParser {
    */
   public function getBody() {
     $this->cleanHtml();
-    return $this->getProperty('body');
+    $body = $this->getProperty('body');
+    if (empty($body)) {
+      $this->sourceParserMessage("The body for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+    }
+    return $body;
   }
 
   /**
