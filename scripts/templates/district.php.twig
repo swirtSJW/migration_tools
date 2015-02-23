@@ -25,7 +25,17 @@ class {{ info.class }}PageMigration extends NGJusticeHtmlToPageMigration {
     {% endfor %}
     );
 
-    $arguments['source_parser_class'] = "NGDistrictPageSourceParser";
+    $arguments['source_parser_class'] = "{{ info.class }}PageSourceParser";
+    
+     // Configuring Obtainers.
+    $title = new ObtainerInfo('title', "{{ info.class }}ObtainTitlePage");
+    $title->addMethod('findH1First');
+    $title->addMethod('findH1Any');
+    $title->addMethod('findClassBreadcrumbLast');
+    $title->addMethod('findClassBreadcrumbMenuContentLast');
+    $title->addMethod('findSubBannerAlt');
+
+    $arguments['obtainers_info'][] = $title;
 
     $options = array('recurse' => FALSE);
 
@@ -103,7 +113,33 @@ class {{ info.class }}PressReleaseMigration extends NGDistrictPressReleaseMigrat
   public function __construct($arguments) {
     $arguments['district'] = "{{ info.abbreviation }}";
     $arguments['component_tid'] = {{ info.component_tid }};
+    $arguments['source_parser_class'] = "{{ info.class }}PressSourceParser";
 
+    // Configuring Obtainers.
+    $title = new ObtainerInfo('title', "{{ info.class }}ObtainTitlePress");
+    $title->addMethod('findH1Any');
+    $title->addMethod('findIdContentstartDivH2Sec');
+    $title->addMethod('findH2First');
+    $title->addMethod('findClassContentSubDivPCenterStrong');
+    $title->addMethod('findClassContentSubDivDivPStrong');
+    $title->addMethod('findIdHeadline');
+    $title->addMethod('findPStrongEm');
+    $title->addMethod('findIdContentstartDivH2');
+    $title->addMethod('findDivClassContentSubDivDivCenter');
+
+    $date = new ObtainerInfo('date', "{{ info.class }}ObtainDate");
+    $date->addMethod('findTableRow1Col2');
+    $date->addMethod('findTableRow1Col1');
+    $date->addMethod('findTable2Row2Col2');
+    $date->addMethod('findPAlignCenter');
+    $date->addMethod('findIdContentstartFirst');
+    $date->addMethod('findClassNewsRight');
+    $date->addMethod('findClassBottomLeftContent');
+    $date->addMethod('findProbableDate');
+
+    $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $date;
+    
     $source_dirs = array(
     {% for item in info.press %}
       {{ item | raw }}
@@ -111,4 +147,31 @@ class {{ info.class }}PressReleaseMigration extends NGDistrictPressReleaseMigrat
     );
     parent::__construct($arguments, $source_dirs);
   }
+}
+
+class {{ info.class }}PageSourceParser  extends NGDistrictPageSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+}
+
+class {{ info.class }}PressSourceParser extends NGDistrictPressReleaseSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+}
+
+class {{ info.class }}ObtainTitlePage extends ObtainTitle {
+}
+
+class {{ info.class }}ObtainTitlePress extends ObtainTitlePressRelease {
+}
+
+class {{ info.class }}ObtainDate extends ObtainDate {
 }
