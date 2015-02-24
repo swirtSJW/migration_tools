@@ -169,4 +169,111 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     }
     return FALSE;
   }
+
+  /**
+   * {@inheritdoc}
+   *
+   * @param array $report_rows
+   *   Additional rows of information to be added to the migration report.
+   */
+  public function postImport($report_rows = array()) {
+    parent::postImport();
+    $this->printMigrationReport($report_rows);
+  }
+
+  /**
+   * Prints a migration report via drush.
+   *
+   * @param array $report_rows
+   *   Additional rows of information to be added to the migration report.
+   */
+  public function printMigrationReport($report_rows = array()) {
+    $duplicates = $this->countDuplicateTitles();
+    $output_rows = array(
+      array(t('Total records'), $this->sourceCount()),
+      array(t('Migrate messages'), $this->messageCount()),
+      array(t('Missing titles'), $this->countEmptyTitles()),
+      array(t('Duplicate titles'), $duplicates),
+      array(t('Unpublished'), $this->countUnpublishedNodes()),
+    );
+    $output_rows = array_merge($output_rows, $report_rows);
+    drush_print(t('Migration report:'));
+    drush_print_table($output_rows);
+
+    if (!empty($duplicates)) {
+      $this->printDuplicateTitleReport();
+    }
+  }
+
+  /**
+   * Counts the number of unpublished nodes in current migration.
+   *
+   * @return int
+   *   The number of  unpublished nodes.
+   */
+  public function countUnpublishedNodes() {
+    // Count migrated, unpublished nodes.
+    $map_table = $this->map->getMapTable();
+    $query = db_query("SELECT COUNT(n.nid) FROM {node} n RIGHT JOIN {$map_table} m ON m.destid1 = n.nid WHERE n.status = 0");
+
+    return $query->fetchField();
+  }
+
+  /**
+   * Counts the number of nodes with empty titles in current migration.
+   *
+   * @return int
+   *   The number of nodes with empty titles.
+   */
+  public function countEmptyTitles() {
+    // Count migrated nodes with empty titles.
+    $map_table = $this->map->getMapTable();
+    $query = db_query("SELECT COUNT(n.nid) FROM {node} n RIGHT JOIN {$map_table} m ON m.destid1 = n.nid WHERE TRIM(n.title) = ''");
+
+    return $query->fetchField();
+  }
+
+  /**
+   * Counts the number of nodes with shared titles in current migration.
+   *
+   * @return int
+   *   The number of nodes with shared titles.
+   */
+  public function countDuplicateTitles() {
+    $map_table = $this->map->getMapTable();
+
+    // Count many migrated nodes that share titles with each other.
+    $query = db_query("SELECT SUM(title_group_count) as duplicates
+                        FROM (SELECT COUNT(n.nid) as title_group_count
+                        FROM node n
+                        RIGHT JOIN {$map_table} m
+                        ON m.destid1 = n.nid
+                        WHERE TRIM(n.title) != ''
+                        GROUP BY n.title
+                        HAVING title_group_count > 1
+                        ) src");
+
+    return $query->fetchField();
+  }
+
+  /**
+   * Prints a report of all nodes with duplicate titles, via drush.
+   */
+  public function printDuplicateTitleReport() {
+    $map_table = $this->map->getMapTable();
+    $query = db_query("SELECT n.title, COUNT(n.nid) as title_group_count
+                        FROM node n
+                        RIGHT JOIN {$map_table} m
+                        ON m.destid1 = n.nid
+                        WHERE TRIM(n.title) != ''
+                        GROUP BY n.title
+                        HAVING title_group_count > 1");
+
+    $duplicate_titles = array(array(t('Title'), t('Count')));
+    while ($row = $query->fetchAssoc()) {
+      $duplicate_titles[] = array($row['title'], $row['title_group_count']);
+    }
+    drush_print(t('Duplicate title report:'));
+    drush_print_table($duplicate_titles, TRUE);
+  }
 }
