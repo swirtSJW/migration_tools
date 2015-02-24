@@ -398,7 +398,16 @@ class HtmlCleanUp {
 
         if ($is_relative) {
           $dir_path = dirname($file_id);
-          $new_url = '/' . $dir_path . '/' . $url['path'];
+
+          $options = array();
+          if (!empty($url['fragment'])) {
+            $options['fragment'] = $url['fragment'];
+          }
+          if (!empty($url['query'])) {
+            $options['query'] = $url['query'];
+          }
+
+          $new_url = '/' . url($dir_path . '/' . $url['path'], $options);
 
           // We might get some double '//', let's clean them.
           $new_url = str_replace("//", "/", $new_url);
