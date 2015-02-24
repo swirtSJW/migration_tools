@@ -345,6 +345,10 @@ return array (
     array (
       'title' => 'Eastern District of Tennessee',
     ),
+    'enrd' =>
+    array (
+      'title' => 'Environment and Natural Resources Division',
+    ),
   ),
   'migrations' =>
   array (
@@ -1502,6 +1506,21 @@ return array (
     array (
       'group_name' => 'usao-edtn',
       'class_name' => 'UsaoEdtnPressReleaseMigration',
+    ),
+    'EnrdFile' =>
+    array (
+      'group_name' => 'enrd',
+      'class_name' => 'EnrdFileMigration',
+    ),
+    'EnrdPage' =>
+    array (
+      'group_name' => 'enrd',
+      'class_name' => 'EnrdPageMigration',
+    ),
+    'EnrdPressRelease' =>
+    array (
+      'group_name' => 'enrd',
+      'class_name' => 'EnrdPressReleaseMigration',
     ),
   ),
 );
