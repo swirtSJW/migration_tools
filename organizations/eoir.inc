@@ -253,6 +253,6 @@ class EoirPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
-    $row->field_pr_component = "Executive Office for Immigration Review";
+    $row->field_pr_component = 476;
   }
 }
