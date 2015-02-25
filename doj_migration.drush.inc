@@ -80,13 +80,24 @@ function doj_migration_drush_command() {
   );
 
   $items['doj-migrate-fix-legacy-links'] = array(
-    'description' => "Fix links utilizing anchors.",
+    'description' => "Fix links utilizing anchors in a migration group.",
     'aliases' => array('dmfll'),
     'arguments' => array(
       'migration-group' => 'The migration group we want to process',
     ),
     'examples' => array(
       'drush dmfll usao-nj' => 'Fix links with anchors in nodes from the Page, PressRelease, and Case migration from the given group',
+    ),
+  );
+
+  $items['doj-migrate-fix-legacy-links-nids'] = array(
+    'description' => "Fix links utilizing anchors for specific nodes.",
+    'aliases' => array('dmflln'),
+    'arguments' => array(
+      'nids' => 'A comma separeted list of nids',
+    ),
+    'examples' => array(
+      'drush dmflln 1,2,3,4,5' => 'Fix links with anchors in the respective nodes',
     ),
   );
 
@@ -133,13 +144,44 @@ function _drush_doj_migration_doj_migrate_fix_legacy_links_helper($migration_nam
   $query = db_select($table_name, "t");
   $query->fields("t", array('destid1'));
   $results = $query->execute();
-
-  $save_info_for_debug = array();
+  $nids = array();
   foreach ($results as $result) {
-    $nid = $result->destid1;
+    $nids[] = $result->destid1;
+  }
+  drush_doj_migration_doj_migrate_fix_legacy_links_nids($nids);
+}
+
+/**
+ * Drush command callback.
+ */
+function drush_doj_migration_doj_migrate_fix_legacy_links_nids($nids) {
+  if (is_string($nids)) {
+    $nids = explode(",", $nids);
+  }
+  $save_info_for_debug = array();
+  foreach ($nids as $nid) {
     $node = node_load($nid);
 
-    $items = field_get_items("node", $node, "field_page_body");
+    $items = FALSE;
+    try {
+      $type = $node->type;
+
+      // Check the node is of the supported types.
+      if ($type != "page" && $type != "press_release" && $type != "case") {
+        drush_doj_migration_debug_output("Node {$node->nid} is of the unsupported type {$type}.");
+        continue;
+      }
+
+      if ($type == "press_release") {
+        $type = "pr";
+      }
+      $items = field_get_items("node", $node, "field_{$type}_body");
+    }
+    catch(Exception $e) {
+      // This node is malformed, lets not process it.
+      drush_doj_migration_debug_output("Node {$node->nid} is malformed.");
+    }
+
     if ($items == FALSE) {
       $items = array();
     }
