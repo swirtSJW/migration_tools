@@ -41,10 +41,7 @@ class UsaoMnPageMigration extends NGJusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if (parent::prepareRow($row) === FALSE) {
-      return FALSE;
-    }
-    if ($row->content_type != "page") {
+    if ((parent::prepareRow($row) === FALSE) || ($row->content_type == "press_release")) {
       return FALSE;
     }
   }

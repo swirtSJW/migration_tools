@@ -225,6 +225,9 @@ class UsaoMdpaVwPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
 }
 
+/**
+ *  Extends the sourceparser for custom obtainer method stacks in usao-mdpa.
+ */
 class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
 
 
@@ -236,7 +239,6 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
     $ct = new ObtainerInfo('content_type');
     $ct->addMethod("findPRClassBreadcrumbPressRelease");
     $ct->addMethod("findPRImmediateRelease");
-
     $this->addObtainerInfo($ct);
 
     $date = new ObtainerInfo('date');
