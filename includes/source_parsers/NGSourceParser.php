@@ -90,7 +90,7 @@ abstract class NGSourceParser {
     $obtainer_info = $this->obtainersInfo[$property];
 
     if (!isset($obtainer_info)) {
-      throw new Exception("NGSourceParser does not have obatinaer info for the {$property} property");
+      throw new Exception("NGSourceParser does not have obtainer info for the {$property} property");
     }
 
     try {

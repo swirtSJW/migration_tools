@@ -13,6 +13,9 @@
 class NGNodeSourceParser extends NGSourceParser {
   protected $body;
   protected $title;
+  // @codingStandardsIgnoreStart
+  protected $content_type;
+  // @codingStandardsIgnoreEnd
 
   /**
    * Getter.
@@ -38,6 +41,13 @@ class NGNodeSourceParser extends NGSourceParser {
   }
 
   /**
+   * Getter.
+   */
+  public function getContentType() {
+    return $this->getProperty('content_type');
+  }
+
+  /**
    * Set the html var after some cleaning.
    *
    * @todo this is specific to justice so it should not be here.
@@ -58,6 +68,9 @@ class NGNodeSourceParser extends NGSourceParser {
    * {@inheritdoc}
    */
   protected function setDefaultObtainersInfo() {
+    $type = new ObtainerInfo("content_type");
+    $this->addObtainerInfo($type);
+
     $title = new ObtainerInfo("title");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findTitleTag');

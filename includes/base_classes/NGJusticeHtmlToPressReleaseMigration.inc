@@ -56,6 +56,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
    * {@inheritdoc}
    */
   protected function setProperties($row) {
+    $row->content_type = $this->sourceParser->getContentType();
     $row->title = $this->sourceParser->getTitle();
 
     $row->field_pr_date = $this->sourceParser->getDate();
