@@ -1477,6 +1477,11 @@ return array (
       'group_name' => 'usao-mdpa',
       'class_name' => 'UsaoMdpaPressReleaseMigration',
     ),
+    'UsaoMdpaVwPressRelease' =>
+    array (
+      'group_name' => 'usao-mdpa',
+      'class_name' => 'UsaoMdpaVwPressReleaseMigration',
+    ),
     'UsaoMnFile' =>
     array (
       'group_name' => 'usao-mn',

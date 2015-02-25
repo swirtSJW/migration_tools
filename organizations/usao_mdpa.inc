@@ -180,6 +180,82 @@ class UsaoMdpaPressReleaseMigration extends NGDistrictPressReleaseMigration {
       72 => 'usao/pam/news/2014',
       73 => 'usao/pam/news/2015',
     );
+    parent::__construct($arguments, $source_dirs, $options);
+  }
+
+}
+
+
+/**
+ * Migrates PRs from /usao-mdpa/Victim_Witness/Luzerne_County_Corruption.
+ *
+ * @package doj_migration
+ * @subpackage usao-mdpa
+ */
+class UsaoMdpaVwPressReleaseMigration extends NGDistrictPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-mdpa";
+    $arguments['component_tid'] = 2031;
+    $arguments['source_parser_class'] = "MdpaPressSourceParser";
+    $options = array('recurse' => TRUE);
+
+    $source_dirs = array(
+      1 => 'usao/pam/Corruption',
+    );
     parent::__construct($arguments, $source_dirs);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array(
+      'usao/pam/Corruption/Musto/musto_index.html',
+      'usao/pam/Corruption/Ostrowski/ostrowski_index.html',
+    );
+
+    if ((parent::prepareRow($row) === FALSE) || ($row->content_type !== 'press_release') || doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
+  }
+
+}
+
+class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
+
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setDefaultObtainersInfo() {
+    parent::setDefaultObtainersInfo();
+    $ct = new ObtainerInfo('content_type');
+    $ct->addMethod("findPRClassBreadcrumbPressRelease");
+    $ct->addMethod("findPRImmediateRelease");
+
+    $this->addObtainerInfo($ct);
+
+    $date = new ObtainerInfo('date');
+    $date->addMethod("findDivPAlignLeft");
+    $date->addMethod("findClassNewsRight");
+    $date->addMethod("findDivClassContentSubDiv3");
+    $date->addMethod("findProbableDate");
+    $this->addObtainerInfo($date);
+
+    $title = new ObtainerInfo('title');
+    $title->addMethod('findH1Any');
+    $title->addMethod('findIdContentstartDivH2Sec');
+    $title->addMethod('findH2First');
+    $title->addMethod('findClassContentSubDivPCenterStrong');
+    $title->addMethod('findClassContentSubDivDivPStrong');
+    $title->addMethod('findPStrongEm');
+    $title->addMethod('findIdContentstartDivH2');
+    $title->addMethod('findDivClassContentSubDivDivCenter');
+    $title->addMethod("findFirstPAlignCenter");
+    $this->addObtainerInfo($title);
   }
 }

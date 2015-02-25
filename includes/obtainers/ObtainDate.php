@@ -109,6 +109,25 @@ class ObtainDate extends ObtainHtml {
   }
 
   /**
+   * Method for returning the div > p that is aligned left.
+   *
+   * @return text
+   *   The string found.
+   */
+  protected function findDivPAlignLeft() {
+    foreach ($this->queryPath->find("div > p") as $p) {
+      $align = $p->attr('align');
+      if (strcmp($align, "left") == 0) {
+        $text = $p->text();
+        $this->setElementToRemove($p);
+        break;
+      }
+    }
+
+    return $text;
+  }
+
+  /**
    * Method for returning the p that is aligned center.
    *
    * @return text
@@ -123,6 +142,22 @@ class ObtainDate extends ObtainHtml {
         break;
       }
     }
+
+    return $text;
+  }
+
+  /**
+   * Method for returning the div.contentSub > div.
+   *
+   * @return text
+   *   The string found.
+   */
+  protected function findDivClassContentSubDiv3() {
+    // Due to the nature of the text extraction, it can not be removed.
+    $text = $this->queryPath->find("div.contentSub > div")->next()->next()->text();
+    $text = trim(trim($text));
+    $pos = strpos($text, "\n");
+    $text = substr($text, 0, $pos);
 
     return $text;
   }
@@ -352,6 +387,10 @@ class ObtainDate extends ObtainHtml {
       ',',
     );
     $text = str_ireplace($remove, '', $text);
+    $remove = array(
+      '.',
+    );
+    $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);

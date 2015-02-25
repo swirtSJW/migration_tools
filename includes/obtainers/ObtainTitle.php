@@ -430,6 +430,22 @@ class ObtainTitle extends ObtainHtml {
     return $title;
   }
 
+
+  /**
+   * Find  the content of the first  "div > p[align="center"]" on page.
+   * @return string
+   *   The text found.
+   */
+  protected function findFirstPAlignCenter() {
+    $elems = $this->queryPath->find('div > p[align="center"]');
+    foreach ($elems as $i => $elem) {
+      if ($i == 0) {
+        $this->setElementToRemove($elem);
+        return $elem->text();
+      }
+    }
+  }
+
   /**
    * Find  the content of the first  "p[align="center"] > strong > u" on page.
    * @return string
