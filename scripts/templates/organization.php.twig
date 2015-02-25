@@ -11,7 +11,7 @@
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class }}PageMigration extends NGJusticeHtmlToPageMigration {
+class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -24,11 +24,11 @@ class {{ info.class }}PageMigration extends NGJusticeHtmlToPageMigration {
     );
 
     $options = array('recurse' => TRUE);
-    
-    $arguments['source_parser_class'] = "{{ info.class }}PageSourceParser";
-    
+
+    $arguments['source_parser_class'] = "{{ info.class_base_name }}PageSourceParser";
+
     // Configuring Obtainers.
-    $title = new ObtainerInfo('title', "{{ info.class }}ObtainTitlePage");
+    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findTitleTag');
     $title->addMethod('findH1First');
@@ -62,7 +62,7 @@ class {{ info.class }}PageMigration extends NGJusticeHtmlToPageMigration {
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration {
+class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
@@ -103,17 +103,17 @@ class {{ info.class }}FileMigration extends JusticeDeployableBinaryFileMigration
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
+class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
     $arguments['component'] = "{{ info.full_name }}";
-    $arguments['source_parser_class'] = "{{ info.class }}PressSourceParser";
-    
+    $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
+
     // Configuring Obtainers.
-    $title = new ObtainerInfo('title', "{{ info.class }}ObtainTitlePress");
+    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePress");
     $title->addMethod('findH1Any');
     $title->addMethod('findIdContentstartDivH2Sec');
     $title->addMethod('findH2First');
@@ -124,7 +124,7 @@ class {{ info.class }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseM
     $title->addMethod('findIdContentstartDivH2');
     $title->addMethod('findDivClassContentSubDivDivCenter');
 
-    $date = new ObtainerInfo('date', "{{ info.class }}ObtainDate");
+    $date = new ObtainerInfo('date', "{{ info.class_base_name }}ObtainDate");
     $date->addMethod('findTableRow1Col2');
     $date->addMethod('findTableRow1Col1');
     $date->addMethod('findTable2Row2Col2');
@@ -136,7 +136,7 @@ class {{ info.class }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseM
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
-    
+
     $source_dirs = array(
     {% for item in info.press %}
       {{ item | raw }}
@@ -147,7 +147,13 @@ class {{ info.class }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseM
 }
 {% endif %}
 
-class {{ info.class }}PageSourceParser  extends NGNodeSourceParser {
+/**
+ * SourceParser for /{{ info.abbreviation }} pages.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}PageSourceParser  extends NGNodeSourceParser {
   /**
    * {@inheritdoc}
    */
@@ -156,7 +162,13 @@ class {{ info.class }}PageSourceParser  extends NGNodeSourceParser {
   }
 }
 
-class {{ info.class }}PressSourceParser extends NGPressReleaseSourceParser {
+/**
+ * SourceParser for /{{ info.abbreviation }} press releases.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}PressSourceParser extends NGPressReleaseSourceParser {
   /**
    * {@inheritdoc}
    */
@@ -165,11 +177,29 @@ class {{ info.class }}PressSourceParser extends NGPressReleaseSourceParser {
   }
 }
 
-class {{ info.class }}ObtainTitlePage extends ObtainTitle {
+/**
+ * Obtainer for title property for /{{ info.abbreviation }} pages.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
 }
 
-class {{ info.class }}ObtainTitlePress extends ObtainTitlePressRelease {
+/**
+ * Obtainer for title property for /{{ info.abbreviation }} press releases.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}ObtainTitlePress extends ObtainTitlePressRelease {
 }
 
-class {{ info.class }}ObtainDate extends ObtainDate {
+/**
+ * Custom obtainer for date property for /{{ info.abbreviation }}.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}ObtainDate extends ObtainDate {
 }

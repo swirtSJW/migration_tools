@@ -1522,6 +1522,16 @@ return array (
       'group_name' => 'enrd',
       'class_name' => 'EnrdPressReleaseMigration',
     ),
+    'AtrPage' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrPageMigration',
+    ),
+    'AtrFile' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrFileMigration',
+    ),
   ),
 );
 // @codingStandardsIgnoreEnd

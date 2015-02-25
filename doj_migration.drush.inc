@@ -95,6 +95,21 @@ function doj_migration_drush_command() {
     ),
   );
 
+  $items['doj-generate-migration-class'] = array(
+    'description' => "Generates a DOJ migration class.",
+    'aliases' => array('dgm'),
+    'arguments' => array(
+      'config' => 'A yml file referencing the organization configuration to be used.',
+    ),
+    'options' => array(
+      'type' => '(optional) The type of migration to generate. Valid values are district, organization. Defaults to organization.',
+    ),
+    'examples' => array(
+      'drush dgm atr.yml' => 'Generate a standard migration class using atr.yml for configuration.',
+      'drush dgm ak.yml --type=district' => 'Generate a district migration class using ak.yml for configuration.',
+    ),
+  );
+
   return $items;
 }
 
@@ -395,6 +410,31 @@ function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
   $file_path = DRUPAL_ROOT . '/' . drupal_get_path('module', 'doj_migration') . '/sources/' . $file_name;
 
   drush_menu_import_import($file_path, $group_menu_name);
+}
+
+/**
+ * Drush command callback for doj-generate-migration-class.
+ *
+ * @param string $config_filename
+ *   The filename of the YML file containing the organization configuration.
+ */
+function drush_doj_migration_doj_generate_migration_class($config_filename) {
+  module_load_include('inc', 'doj_migration', 'includes/drush/DojMigrationGenerator');
+
+  // Default type option to 'organization'.
+  $org_type = drush_get_option('type');
+  if (empty($org_type)) {
+    $org_type = 'organization';
+  }
+
+  try {
+    $generator = new DojMigrationGenerator($config_filename, $org_type);
+    $generator->generate();
+  }
+  catch (Exception $e) {
+    drush_print('Migration generation failed with error: ' . $e->getMessage());
+  }
+
 }
 
 /**
