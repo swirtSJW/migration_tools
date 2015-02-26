@@ -83,21 +83,15 @@ function doj_migration_drush_command() {
     'description' => "Fix links utilizing anchors in a migration group.",
     'aliases' => array('dmfll'),
     'arguments' => array(
-      'migration-group' => 'The migration group we want to process',
+      'migration' => 'The name of a specific migration.',
+    ),
+    'options' => array(
+      'group' => "A migration group.",
+      'idlist' => "A comma separeted list of nids.",
+      'extradebug' => "Show more debugging information.",
     ),
     'examples' => array(
-      'drush dmfll usao-nj' => 'Fix links with anchors in nodes from the Page, PressRelease, and Case migration from the given group',
-    ),
-  );
-
-  $items['doj-migrate-fix-legacy-links-nids'] = array(
-    'description' => "Fix links utilizing anchors for specific nodes.",
-    'aliases' => array('dmflln'),
-    'arguments' => array(
-      'nids' => 'A comma separeted list of nids',
-    ),
-    'examples' => array(
-      'drush dmflln 1,2,3,4,5' => 'Fix links with anchors in the respective nodes',
+      'drush dmfll EoirPage' => 'Fix links with anchors in nodes from the given migration',
     ),
   );
 
@@ -107,149 +101,39 @@ function doj_migration_drush_command() {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_fix_legacy_links($migration_group) {
-  $migrations_info = migrate_get_module_apis();
-  $migrations = array();
+function drush_doj_migration_doj_migrate_fix_legacy_links($migration = NULL) {
+  $fixer = new MigrationNodesLegacyLinksFixer();
 
-  foreach ($migrations_info as $implementor => $info) {
-    if (!empty($info['migrations'])) {
-      foreach ($info['migrations'] as $migration_name => $migration_info) {
-        if ($migration_info['group_name'] == $migration_group) {
-          $migrations[] = $migration_name;
-        }
-      }
+  $nid_list = drush_get_option('idlist');
+  $migration_name = $migration;
+  $migration_group = drush_get_option('group');
+
+  try {
+    if ($nid_list) {
+      $nids = explode(",", $nid_list);
+      $fixer->setNids($nids);
+    }
+    elseif ($migration_name) {
+      $fixer->getNidsFromMigration($migration_name);
+    }
+    elseif ($migration_group) {
+      $fixer->getNidsFromMigrationGroup($migration_group);
+    }
+    else {
+      drush_set_error("Either the \$argument or one of the 2 options (idlist, group) are required by this drush command");
     }
   }
-
-  foreach ($migrations as $migration) {
-    if (substr_count($migration, "Page") > 0 || substr_count($migration, "PressRelease") > 0 || substr_count($migration, "Case") > 0) {
-      _drush_doj_migration_doj_migrate_fix_legacy_links_helper($migration);
-    }
-  }
-}
-
-/**
- * Helpder function for the fix legacy links with anchors drush command.
- */
-function _drush_doj_migration_doj_migrate_fix_legacy_links_helper($migration_name) {
-  drush_doj_migration_debug_output("Fixing links with anchors for: {$migration_name}");
-  // Validate the migration by checking for the existance of the migration map
-  // table.
-  $table_name = "migrate_map_" . strtolower($migration_name);
-  if (!db_table_exists($table_name)) {
-    drush_set_error("doj_migration", "The migration map table does not exist for this migration");
+  catch (Exception $e) {
+    drush_doj_migration_debug_output($e->getMessage());
   }
 
-  // Lets get all the nodes relevant to this migration.
-  $query = db_select($table_name, "t");
-  $query->fields("t", array('destid1'));
-  $results = $query->execute();
-  $nids = array();
-  foreach ($results as $result) {
-    $nids[] = $result->destid1;
-  }
-  drush_doj_migration_doj_migrate_fix_legacy_links_nids($nids);
-}
+  $fixer->fix();
 
-/**
- * Drush command callback.
- */
-function drush_doj_migration_doj_migrate_fix_legacy_links_nids($nids) {
-  if (is_string($nids)) {
-    $nids = explode(",", $nids);
-  }
-  $save_info_for_debug = array();
-  foreach ($nids as $nid) {
-    $node = node_load($nid);
-
-    $items = FALSE;
-    try {
-      $type = $node->type;
-
-      // Check the node is of the supported types.
-      if ($type != "page" && $type != "press_release" && $type != "case") {
-        drush_doj_migration_debug_output("Node {$node->nid} is of the unsupported type {$type}.");
-        continue;
-      }
-
-      if ($type == "press_release") {
-        $type = "pr";
-      }
-      $items = field_get_items("node", $node, "field_{$type}_body");
-    }
-    catch(Exception $e) {
-      // This node is malformed, lets not process it.
-      drush_doj_migration_debug_output("Node {$node->nid} is malformed.");
-    }
-
-    if ($items == FALSE) {
-      $items = array();
-    }
-    $item = reset($items);
-
-    // Whether any changes have been made to the body.
-    $changed = FALSE;
-    if ($item != FALSE) {
-      require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
-      $body = $item['value'];
-
-      $qp = htmlqp($body);
-
-      // Check all the links.
-      foreach ($qp->find("a") as $a) {
-        $href = $a->attr('href');
-        $fixer = NULL;
-        try {
-          $fixer = new LegacyUrlWithAnchorFixer($href);
-        }
-        catch(Exception $e) {
-          // Here we can see what is being ignored.
-          // drush_doj_migration_debug_output("URL IGNORED: {$href} \n");
-        }
-
-        $new_href = NULL;
-        if (isset($fixer)) {
-
-          try {
-            $new_href = $fixer->fix();
-          }
-          catch(Exception $e) {
-            drush_doj_migration_debug_output("URL WITHOUT REDIRECT: {$href}");
-          }
-        }
-
-        if (isset($new_href)) {
-          $a->attr('href', $new_href);
-          $save_info_for_debug[$href] = $new_href;
-          $changed = TRUE;
-        }
-      }
-
-      // If something was changed, we need to save the node.
-      if ($changed) {
-        $body = $qp->html();
-
-        // Need to remove the extras querypath added.
-        $body = str_replace('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">', "", $body);
-        $body = str_replace('<html><body>', "", $body);
-        $body = str_replace('</body></html>', "", $body);
-        $wrapper = entity_metadata_wrapper('node', $node);
-        $wrapper->field_page_body->value->set($body);
-        node_save($node);
-        drush_doj_migration_debug_output("Modified Node: " . $node->nid);
-
-        drush_doj_migration_debug_output("Changed links:");
-        foreach ($save_info_for_debug as $href => $new_href) {
-
-          drush_doj_migration_debug_output("Legacy: " . $href);
-          drush_doj_migration_debug_output("New: " . $new_href);
-        }
-
-        drush_doj_migration_debug_output("------------------------------");
-      }
-    }
+  if (drush_get_option('extradebug')) {
+    $fixer->printExtraDebugging();
   }
 }
+
 
 /**
  * Drush command callback.
