@@ -74,8 +74,6 @@ class DojMigrationGenerator {
 
     $required = array('twig');
     $this->templateConfig = $this->getConfiguration($template_config_filepath, $required);
-
-    return $this->templateConfig;
   }
 
   /**
@@ -100,8 +98,6 @@ class DojMigrationGenerator {
       'directory',
     );
     $this->orgConfig = $this->getConfiguration($org_config_filepath, $required);
-
-    return $this->orgConfig;
   }
 
   /**
@@ -151,7 +147,7 @@ class DojMigrationGenerator {
 
     $migrations = array('Page', 'File');
     if (!empty($this->orgConfig['pr_subdirectory'])) {
-      $migrations['PressRelease'];
+      $migrations[] = 'PressRelease';
     }
 
     // Add the group definition.
@@ -192,12 +188,15 @@ class DojMigrationGenerator {
       'full_name' => $this->orgConfig['full_name'],
       'class_base_name' => $this->getBaseMigrationClassName($this->orgConfig['abbreviation']),
       'directory' => $this->orgConfig['directory'],
+      'recurse' => TRUE,
     );
 
     $source_directories = $this->getSourceDirectories();
-    if (!empty($source_directories['page'])) {
-      $info['page'] = $source_directories['page'];
+    $info['page'] = $source_directories['page'];
+
+    if (!empty($source_directories['press'])) {
       $info['press'] = $source_directories['press'];
+      $info['recurse'] = FALSE;
     }
 
     if (!empty($this->orgConfig['component_tid'])) {
@@ -205,7 +204,7 @@ class DojMigrationGenerator {
     }
 
     $classes_file_data = $twig_env->render("{$this->templateConfig['twig']}", array('info' => $info));
-    file_put_contents("{$this->modulePath}/organizations/{$this->getMigrationClassFileName()}", $classes_file_data . "\n");
+    file_put_contents("{$this->modulePath}/organizations/{$this->getMigrationClassFileName()}", $classes_file_data);
 
     drush_print("File with migrations was created.");
   }
@@ -219,33 +218,36 @@ class DojMigrationGenerator {
    * directory structure is used.
    */
   protected function getSourceDirectories() {
-    $directories = array();
+    $directories = array('page' => array());
 
-    if ($this->orgConfig['pr_subdirectory']) {
+    if (!empty($this->orgConfig['pr_subdirectory'])) {
+
       // Generate an array of all subdirectories containing HTML.
       if ($this->orgConfig['drush_alias']) {
-        $html_array_data = shell_exec("drush @{$this->orgConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']}");
+        $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']}");
       }
       else {
         $html_array_data = shell_exec("drush doj-migrate-html-folders {$this->orgConfig['directory']}");
       }
       $data = explode("\n", $html_array_data);
 
-      $page = array();
-      $press = array();
+      $directories['press'] = array();
       foreach ($data as $line) {
         // Ignore array things.
         if (substr_count($line, "(") == 0 && substr_count($line, ")") == 0 && !empty($line)) {
           if (substr_count($line, "{$this->orgConfig['pr_subdirectory']}/") > 0) {
             if (substr_count($line, "2013") > 0 || substr_count($line, "2014") || substr_count($line, "2015")) {
-              $press[] = trim($line);
+              $directories['press'][] = trim($line);
             }
           }
           else {
-            $page[] = trim($line);
+            $directories['page'][] = trim($line);
           }
         }
       }
+    }
+    else {
+      $directories['page'][] = trim("0 => '{$this->orgConfig['directory']}',");
     }
 
     return $directories;

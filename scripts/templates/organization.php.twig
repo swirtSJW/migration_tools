@@ -20,10 +20,12 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     // Define source directories.
     $source_dirs = array(
-      '{{ info.directory }}',
-    );
+  {% for item in info.page %}
+    {{ item | raw }}
+  {% endfor %}
+  );
 
-    $options = array('recurse' => TRUE);
+    $options = array('recurse' => {{ info.recurse ? 'TRUE' : 'FALSE' }});
 
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PageSourceParser";
 
@@ -138,10 +140,11 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
     $arguments['obtainers_info'][] = $date;
 
     $source_dirs = array(
-    {% for item in info.press %}
-      {{ item | raw }}
-    {% endfor %}
-    );
+  {% for item in info.press %}
+    {{ item | raw }}
+  {% endfor %}
+  );
+
     parent::__construct($arguments, $source_dirs);
   }
 }

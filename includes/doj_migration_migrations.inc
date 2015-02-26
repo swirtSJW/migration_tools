@@ -1532,6 +1532,11 @@ return array (
       'group_name' => 'atr',
       'class_name' => 'AtrFileMigration',
     ),
+    'AtrPressRelease' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrPressReleaseMigration',
+    ),
   ),
 );
 // @codingStandardsIgnoreEnd
