@@ -77,15 +77,15 @@ class PressReleaseSourceParser extends SourceParser {
         $method_stack = $this->getObtainerMethods('title');
         if (empty($method_stack)) {
           $method_stack = array(
-            'findH1Any',
-            'findIdContentstartDivH2Sec',
-            'findH2First',
-            'findClassContentSubDivPCenterStrong',
-            'findClassContentSubDivDivPStrong',
-            'findIdHeadline',
-            'findPStrongEm',
-            'findIdContentstartDivH2',
-            'findDivClassContentSubDivDivCenter',
+            'findH1Any' => array(),
+            'findIdContentstartDivH2Sec' => array(),
+            'findH2First' => array(),
+            'findClassContentSubDivPCenterStrong' => array(),
+            'findClassContentSubDivDivPStrong' => array(),
+            'findIdHeadline' => array(),
+            'findPStrongEm' => array(),
+            'findIdContentstartDivH2' => array(),
+            'findDivClassContentSubDivDivCenter' => array(),
           );
         }
         $this->setObtainerMethods(array('title' => $method_stack));
@@ -111,14 +111,14 @@ class PressReleaseSourceParser extends SourceParser {
       if (empty($method_stack)) {
         // Set obtainer date stack to use if one has not been set by arguments.
         $method_stack = array(
-          'findTableRow1Col2',
-          'findTableRow1Col1',
-          'findTable2Row2Col2',
-          'findPAlignCenter',
-          'findIdContentstartFirst',
-          'findClassNewsRight',
-          'findClassBottomLeftContent',
-          'findProbableDate',
+          'findTableRow1Col2' => array(),
+          'findTableRow1Col1' => array(),
+          'findTable2Row2Col2' => array(),
+          'findPAlignCenter' => array(),
+          'findIdContentstartFirst' => array(),
+          'findClassNewsRight' => array(),
+          'findClassBottomLeftContent' => array(),
+          'findProbableDate' => array(),
         );
       }
       $this->setObtainerMethods(array('date' => $method_stack));

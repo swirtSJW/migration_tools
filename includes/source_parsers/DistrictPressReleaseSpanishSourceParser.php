@@ -15,14 +15,14 @@ class DistrictPressReleaseSpanishSourceParser extends DistrictPressReleaseSource
       if (empty($method_stack)) {
         // Set obtainer date stack to use if one has not been set by arguments.
         $method_stack = array(
-          'findTableRow1Col2',
-          'findTableRow1Col1',
-          'findTable2Row2Col2',
-          'findPAlignCenter',
-          'findIdContentstartFirst',
-          'findClassNewsRight',
-          'findClassBottomLeftContent',
-          'findProbableDate',
+          'findTableRow1Col2' => array(),
+          'findTableRow1Col1' => array(),
+          'findTable2Row2Col2' => array(),
+          'findPAlignCenter' => array(),
+          'findIdContentstartFirst' => array(),
+          'findClassNewsRight' => array(),
+          'findClassBottomLeftContent' => array(),
+          'findProbableDate' => array(),
         );
       }
       $this->setObtainerMethods(array('date' => $method_stack));
