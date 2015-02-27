@@ -501,6 +501,18 @@ class ObtainTitle extends ObtainHtml {
     return $element->text();
   }
 
+  /**
+   * Find  the content of the first  "p > strong > u" on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findPStrongU() {
+    $element = $this->queryPath->find("p > strong > u")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
+  }
+
 
   /**
    * Finder method to find the content sub-banner alt.

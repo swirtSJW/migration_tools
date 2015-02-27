@@ -50,9 +50,9 @@ abstract class Obtainer {
    *   The stack of methods to be run.
    */
   public function setMethodStack($method_stack) {
-    foreach ($method_stack as $key => $method) {
+    foreach ($method_stack as $method => $arguments) {
       if (!method_exists($this, $method)) {
-        unset($method_stack[$key]);
+        unset($method_stack[$method]);
         $this->obtainerMessage('The target method @method does not exist and was skipped.', array('@method' => $method), WATCHDOG_DEBUG);
       }
     }
@@ -83,9 +83,10 @@ abstract class Obtainer {
    */
   public function obtain() {
     // Loop through the stack.
-    foreach ($this->methodStack as $current_method) {
+    foreach ($this->methodStack as $current_method => $arguments) {
       // Run the method. It is expected that the method will return a string.
-      $found_string = $this->$current_method();
+      // Call $this->$current_method($arguments);
+      $found_string  = call_user_func_array(array($this, $current_method), $arguments);
       $found_string = $this->cleanString($found_string);
 
       if ($this->validateString($found_string)) {
@@ -143,6 +144,7 @@ abstract class Obtainer {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
+
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($string):

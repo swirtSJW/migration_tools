@@ -68,7 +68,7 @@ abstract class NGSourceParser {
   /**
    * Set a property.
    */
-  protected function setProperty($property) {
+  public function setProperty($property) {
     // If it is set, no need to do it again.
     if (isset($this->{$property})) {
       return;
@@ -84,7 +84,7 @@ abstract class NGSourceParser {
   /**
    * Use the obtainers mechanism to extract text from the html.
    */
-  private function obtainProperty($property) {
+  public function obtainProperty($property) {
     $text = '';
 
     $obtainer_info = $this->obtainersInfo[$property];
@@ -269,10 +269,17 @@ class ObtainerInfo {
 
   /**
    * Add a new method to be called during obtainer processing.
+   *
+   * @param string $method_name
+   *   The name of the method to call.
+   *
+   * @param array $arguments
+   *   (optional) An array of arguments to be passed to the $method. Defaults
+   *   to an empty array.
    */
-  public function addMethod($method_name) {
+  public function addMethod($method_name, $arguments = array()) {
     // @todo Maybe we should validate the method names here?
-    $this->methods[] = $method_name;
+    $this->methods[$method_name] = $arguments;
   }
 
   /**

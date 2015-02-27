@@ -220,4 +220,9 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       drush_print($formatted_message, $indent);
     }
   }
+
+  /**
+   * This method is used to modify the source code before properties are set.
+   */
+  protected function prepareSource() {}
 }

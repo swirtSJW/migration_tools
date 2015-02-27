@@ -14,7 +14,32 @@
 class ObtainHtml extends Obtainer {
 
   /**
-   * Get specific tds from a table, and lines it up to be removed.
+   * Find the text in a specific row and column in a specific table.
+   *
+   * @param int $table_num
+   *   The value of n where the table is the nth table on the page. E.g., 2 for
+   *   the second table on a page.
+   * @param int $row
+   *   The row number.
+   * @param int $col
+   *   The column number
+   *
+   * @return string
+   *   The found text.
+   */
+  protected function findTableContents($table_num, $row, $col) {
+    $tables = $this->queryPath->find("table");
+    foreach ($tables as $key => $table) {
+      if ($key == $table_num) {
+        $text = $this->getFromTable($table, $row, $col);
+
+        return $text;
+      }
+    }
+  }
+
+  /**
+   * Get td text from a table, and lines it up to be removed.
    *
    * @param object $table
    *   A query path object with a table as the root.
@@ -47,15 +72,51 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Get td from a table.
+   *
+   * @param object $table
+   *   A query path object with a table as the root.
+   * @param int $tr_target
+   *   Which tr do you want. Starting the count from 1.
+   * @param int $td_target
+   *   Which td do you want. Starting the count from 1.
+   *
+   * @return string
+   *   The text inside of the wanted tr and td.
+   */
+  protected function getTableCell($table, $tr_target, $td_target) {
+    $trcount = 1;
+    $tdcount = 1;
+
+    foreach ($table->find("tr") as $tr) {
+      if ($trcount == $tr_target) {
+        foreach ($tr->find("td") as $td) {
+          if ($tdcount == $td_target) {
+            $this->setElementToRemove($td);
+            return $td;
+          }
+          $tdcount++;
+        }
+      }
+      $trcount++;
+    }
+
+    return "";
+  }
+
+  /**
    * Takes a string, returns anything before a <br> tag and its many variants.
    *
    * @param string $text
    *   The text to break at the first <br> variant.
+   * @param string $position
+   *   (optional). Determines whether snippet 'before' or 'after' <br> is
+   *   returned. Defaults to 'before'.
    *
    * @return string
    *   The string appearing before the <br> or the full string if no <br>.
    */
-  public static function trimAtBr($text = '') {
+  public static function trimAtBr($text = '', $position = 'before') {
     // Replace variations of br tag.
     // @codingStandardsIgnoreStart
     $search = array(
@@ -67,7 +128,11 @@ class ObtainHtml extends Obtainer {
     $texts = explode('<br>', $text);
     // @codingStandardsIgnoreEnd
 
-    return $texts[0];
+    if ($position == 'before') {
+      return $texts[0];
+    }
+
+    return $texts[1];
   }
 
   /**

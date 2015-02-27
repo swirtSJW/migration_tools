@@ -250,7 +250,7 @@ class SourceParser {
    */
   public function extractUpdatedDate() {
     $method_stack = array(
-      'findClassLastupdate',
+      'findClassLastupdate' => array(),
     );
     $date = $this->runObtainer('ObtainDate', 'date_updated', $method_stack);
 

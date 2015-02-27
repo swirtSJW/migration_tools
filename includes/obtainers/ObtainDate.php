@@ -225,7 +225,6 @@ class ObtainDate extends ObtainHtml {
     return $text;
   }
 
-
   /**
    * Method for returning the table cell at row 1,  column 2.
    *
@@ -238,7 +237,6 @@ class ObtainDate extends ObtainHtml {
 
     return $text;
   }
-
 
   /**
    * Method for returning the 1st table, cell at row 2, column 1.
