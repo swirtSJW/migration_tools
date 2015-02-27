@@ -174,4 +174,3 @@ files[] = organizations/usao_mdpa.inc
 files[] = organizations/usao_mn.inc
 files[] = organizations/usao_edtn.inc
 files[] = organizations/enrd.inc
-files[] = organizations/atr.inc

@@ -37,6 +37,7 @@ The following is a list of classes that exemplify various types of migrations.
 * Image and File field migrations:
     * OlcOpinionMigration
     * GalleryImagesMigration
+    * AgHistoricalBioMigration
 * Location migration:
     * OpaSpeechMigration
 * PDF parsing:

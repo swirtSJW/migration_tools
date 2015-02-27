@@ -146,6 +146,10 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
   );
 
     parent::__construct($arguments, $source_dirs);
+
+    $this->addFieldMapping('og_group_ref')
+    ->defaultValue('{{ info.abbreviation }}')
+    ->sourceMigration('Organization');
   }
 }
 {% endif %}

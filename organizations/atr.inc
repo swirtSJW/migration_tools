@@ -238,13 +238,12 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     $title->addMethod('findClassContentSubDivDivPStrong');
     $title->addMethod('findIdHeadline');
     $title->addMethod('findPStrongEm');
+    $title->addMethod('findPStrongU');
     $title->addMethod('findIdContentstartDivH2');
     $title->addMethod('findDivClassContentSubDivDivCenter');
 
     $date = new ObtainerInfo('date', "AtrObtainDate");
-    $date->addMethod('findTableRow1Col2');
-    $date->addMethod('findTableRow1Col1');
-    $date->addMethod('findTable2Row2Col2');
+    $date->addMethod('findDateInTableAfterBr');
     $date->addMethod('findPAlignCenter');
     $date->addMethod('findIdContentstartFirst');
     $date->addMethod('findClassNewsRight');
@@ -261,6 +260,45 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     );
 
     parent::__construct($arguments, $source_dirs);
+
+    $this->addFieldMapping('og_group_ref')
+      ->defaultValue('atr')
+      ->sourceMigration('Organization');
+
+    // Add file attachment.
+    $this->addFieldMapping('field_pr_attachment', 'filename');
+    $this->addFieldMapping('field_pr_attachment:file_class')->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_pr_attachment:source_dir', 'source_dir');
+    $this->addFieldMapping('field_pr_attachment:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_pr_attachment:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    // Generate filepath based on article date.
+    $year_created = date('Y', $row->field_pr_date);
+    $month_created = date('m', $row->field_pr_date);
+    $date_created = date('d', $row->field_pr_date);
+
+    // Set up our attachment-related arrays.
+    $row->attachmentRedirects = array();
+    $row->filename = array();
+    $row->source_dir = array();
+    $row->destination_dir = array();
+
+    // An array of pdfLinks is created when the source parse is initialized,
+    // in AtrPressReleaseSourceParser::cleanHtml().
+    foreach ($this->sourceParser->pdfLinks as $pdf_link) {
+      // Add redirects for the attachment's legacy URL.
+      $row->attachmentRedirects[] = $pdf_link;
+      $row->filename[] = basename($pdf_link);
+      $row->source_dir[] = variable_get("doj_migration_base_dir") . '/' . dirname($pdf_link) . '/';
+      $row->destination_dir[] = "public:///atr/press_release/$year_created/$month_created/$date_created";
+    }
   }
 }
 
@@ -321,6 +359,38 @@ class AtrPressSourceParser extends NGPressReleaseSourceParser {
    */
   protected function cleanHtml() {
     parent::cleanHtml();
+
+    $this->pdfLinks = $this->findPdfLinks();
+    $this->removeDocumentNotice();
+  }
+
+  /**
+   * Removes the press release notice from the header.
+   */
+  public function removeDocumentNotice() {
+    // Remove header block.
+    $table = $this->queryPath->find('table')->first();
+    if ($table->attr('bgcolor') == '#c0c0c0') {
+      $table->remove();
+    }
+  }
+
+  /**
+   * Finds all anchor links point to PDFs.
+   *
+   * @return array
+   *   An array of PDF link URLs.
+   */
+  public function findPdfLinks() {
+    $pdf_links = array();
+    $links = $this->queryPath->find('a');
+    foreach ($links as $link) {
+      if (strpos($link->attr('href'), 'pdf') !== FALSE) {
+        $pdf_links[] = $link->attr('href');
+      }
+    }
+
+    return $pdf_links;
   }
 }
 
@@ -365,4 +435,26 @@ class AtrObtainTitlePress extends ObtainTitlePressRelease {
  * @subpackage atr
  */
 class AtrObtainDate extends ObtainDate {
+
+  /**
+   * Finds date in table, after <br>.
+   *
+   * @return string
+   *   The date!
+   */
+  protected function findDateInTableAfterBr() {
+
+    $tables = $this->queryPath->find("table");
+    $table_num = 2;
+    foreach ($tables as $key => $table) {
+      if ($key == $table_num) {
+        $td = $this->getTableCell($table, 1, 1);
+        $td->find('a')->remove();
+        $text = $td->find('font')->html();
+        $text = $this->trimAtBr($text, 'after');
+
+        return $text;
+      }
+    }
+  }
 }
