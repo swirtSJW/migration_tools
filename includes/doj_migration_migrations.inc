@@ -1542,6 +1542,16 @@ return array (
       'group_name' => 'atr',
       'class_name' => 'AtrPressReleaseMigration',
     ),
+    'UstRegionsPage' =>
+    array (
+      'group_name' => 'ust-regions',
+      'class_name' => 'UstRegionsPageMigration',
+    ),
+    'UstRegionsFile' =>
+    array (
+      'group_name' => 'ust-regions',
+      'class_name' => 'UstRegionsFileMigration',
+    ),
   ),
 );
 // @codingStandardsIgnoreEnd
