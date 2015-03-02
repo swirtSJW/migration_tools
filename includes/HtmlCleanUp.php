@@ -570,4 +570,17 @@ class HtmlCleanUp {
   public static function matchHtml($qp, $selector, $needle) {
     return HtmlCleanUp::match($qp, $selector, $needle, "html");
   }
+
+  /**
+   * Removes the background from tables in markup by adding class.
+   *
+   * @param QueryPath $query_path
+   *   A QueryPath object.
+   */
+  public static function removeTableBackgrounds($query_path) {
+    $tables = $query_path->find('table');
+    foreach ($tables as $table) {
+      $table->addClass('no-background');
+    }
+  }
 }

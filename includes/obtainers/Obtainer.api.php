@@ -43,4 +43,3 @@ class ObtainExample extends ObtainHtml {
     return $element->text();
   }
 }
-

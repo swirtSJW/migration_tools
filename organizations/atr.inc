@@ -250,8 +250,12 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     $date->addMethod('findClassBottomLeftContent');
     $date->addMethod('findProbableDate');
 
+    $pr_number = new ObtainerInfo('prNumber', "AtrObtainPrNumber");
+    $pr_number->addMethod('findLastP');
+
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
+    $arguments['obtainers_info'][] = $pr_number;
 
     $source_dirs = array(
       797 => 'atr/public/press_releases/2013',
@@ -271,6 +275,8 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     $this->addFieldMapping('field_pr_attachment:source_dir', 'source_dir');
     $this->addFieldMapping('field_pr_attachment:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_pr_attachment:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
 
   /**
@@ -280,9 +286,10 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     parent::prepareRow($row);
 
     // Generate filepath based on article date.
-    $year_created = date('Y', $row->field_pr_date);
-    $month_created = date('m', $row->field_pr_date);
-    $date_created = date('d', $row->field_pr_date);
+    $time_created = strtotime($row->field_pr_date);
+    $year_created = date('Y', $time_created);
+    $month_created = date('m', $time_created);
+    $date_created = date('d', $time_created);
 
     // Set up our attachment-related arrays.
     $row->attachmentRedirects = array();
@@ -292,11 +299,11 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
     // An array of pdfLinks is created when the source parse is initialized,
     // in AtrPressReleaseSourceParser::cleanHtml().
-    foreach ($this->sourceParser->pdfLinks as $pdf_link) {
+    foreach ($this->sourceParser->fileLinks as $file_link) {
       // Add redirects for the attachment's legacy URL.
-      $row->attachmentRedirects[] = $pdf_link;
-      $row->filename[] = basename($pdf_link);
-      $row->source_dir[] = variable_get("doj_migration_base_dir") . '/' . dirname($pdf_link) . '/';
+      $row->attachmentRedirects[] = $file_link;
+      $row->filename[] = basename($file_link);
+      $row->source_dir[] = variable_get("doj_migration_base_dir") . '/' . dirname($file_link) . '/';
       $row->destination_dir[] = "public:///atr/press_release/$year_created/$month_created/$date_created";
     }
   }
@@ -354,14 +361,22 @@ class AtrPageSourceParser  extends NGNodeSourceParser {
  * @subpackage atr
  */
 class AtrPressSourceParser extends NGPressReleaseSourceParser {
+
+  /**
+   * @var array
+   *   A flat array of file links from markup.
+   */
+  public $fileLinks;
+
   /**
    * {@inheritdoc}
    */
   protected function cleanHtml() {
     parent::cleanHtml();
 
-    $this->pdfLinks = $this->findPdfLinks();
+    $this->fileLinks = $this->findFileLinks();
     $this->removeDocumentNotice();
+    HtmlCleanUp::removeTableBackgrounds($this->queryPath);
   }
 
   /**
@@ -376,16 +391,16 @@ class AtrPressSourceParser extends NGPressReleaseSourceParser {
   }
 
   /**
-   * Finds all anchor links point to PDFs.
+   * Finds all anchor links point to a pdf, wpd, or docx extension.
    *
    * @return array
-   *   An array of PDF link URLs.
+   *   An array of file link URLs.
    */
-  public function findPdfLinks() {
+  public function findFileLinks() {
     $pdf_links = array();
     $links = $this->queryPath->find('a');
     foreach ($links as $link) {
-      if (strpos($link->attr('href'), 'pdf') !== FALSE) {
+      if (preg_match('/\.(pdf|wpd|docx)/', $link->attr('href'))) {
         $pdf_links[] = $link->attr('href');
       }
     }
@@ -426,6 +441,31 @@ class AtrObtainTitlePage extends ObtainTitle {
  * @subpackage atr
  */
 class AtrObtainTitlePress extends ObtainTitlePressRelease {
+}
+
+/**
+ * Obtainer for id property for /atr press releases.
+ *
+ * @package doj_migration
+ * @subpackage atr
+ */
+class AtrObtainPrNumber extends ObtainId {
+
+  /**
+   * Finds last <p> tag in markup.
+   *
+   * @return string
+   *   Found text.
+   */
+  protected function findLastP() {
+    $element = $this->queryPath->find('p')->last();
+    $this->setElementToRemove($element);
+    $text = $element->text();
+
+    if (preg_match('/([0-9]+)-([0-9]+)/', $text)) {
+      return $text;
+    }
+  }
 }
 
 /**

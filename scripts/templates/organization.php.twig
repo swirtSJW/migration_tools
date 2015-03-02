@@ -221,7 +221,12 @@ class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
    * Finds the press release number from markup.
    */
   protected function findPrNumber() {
-    return '';
+    $text =  '';
+    // $element = $this->queryPath->find('p')->last();
+    // $this->setElementToRemove($element);
+    // $text = $element->text();
+
+    return $text;
   }
 }
 
