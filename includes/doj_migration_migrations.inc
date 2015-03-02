@@ -349,6 +349,10 @@ return array (
     array (
       'title' => 'Environment and Natural Resources Division',
     ),
+    'ust' =>
+    array (
+      'title' => 'U.S. Trustee Program',
+    ),
   ),
   'migrations' =>
   array (
@@ -1551,6 +1555,21 @@ return array (
     array (
       'group_name' => 'ust-regions',
       'class_name' => 'UstRegionsFileMigration',
+    ),
+    'UstFile' =>
+    array (
+      'group_name' => 'ust',
+      'class_name' => 'UstFileMigration',
+    ),
+    'UstPage' =>
+    array (
+      'group_name' => 'ust',
+      'class_name' => 'UstPageMigration',
+    ),
+    'UstPressRelease' =>
+    array (
+      'group_name' => 'ust',
+      'class_name' => 'UstPressReleaseMigration'
     ),
   ),
 );
