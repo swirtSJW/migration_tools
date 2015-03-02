@@ -118,5 +118,9 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
     $date->addMethod('findClassBottomLeftContent');
     $date->addMethod('findProbableDate');
     $this->addObtainerInfo($date);
+
+    $pr_number = new ObtainerInfo('prNumber', "ObtainID");
+    $pr_number->addMethod("findTable3y1x");
+    $this->addObtainerInfo($pr_number);
   }
 }

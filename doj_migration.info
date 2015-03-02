@@ -178,3 +178,4 @@ files[] = organizations/ust_regions.inc
 files[] = organizations/enrd.inc
 files[] = organizations/ust.inc
 files[] = organizations/usao_ndal.inc
+files[] = organizations/usao_sdtx.inc

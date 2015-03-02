@@ -361,6 +361,10 @@ return array (
     array (
       'title' => 'Northern District of Alabama',
     ),
+    'usao-sdtx' =>
+    array (
+      'title' => 'Southern District of Texas',
+    ),
   ),
   'migrations' =>
   array (
@@ -1608,6 +1612,21 @@ return array (
     array (
       'group_name' => 'usao-ndal',
       'class_name' => 'UsaoNdalPressReleaseMigration',
+    ),
+    'UsaoSdtxFile' =>
+    array (
+      'group_name' => 'usao-sdtx',
+      'class_name' => 'UsaoSdtxFileMigration',
+    ),
+    'UsaoSdtxPage' =>
+    array (
+      'group_name' => 'usao-sdtx',
+      'class_name' => 'UsaoSdtxPageMigration',
+    ),
+    'UsaoSdtxPressRelease' =>
+    array (
+      'group_name' => 'usao-sdtx',
+      'class_name' => 'UsaoSdtxPressReleaseMigration',
     ),
   ),
 );

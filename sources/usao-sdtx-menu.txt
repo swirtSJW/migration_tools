@@ -1,0 +1,25 @@
+HOME{"url":"usao-sdtx"}
+ABOUT{"url":"usao-sdtx/about-us"}
+-History {"url":"usao-sdtx/history-district"}
+-Former USAs {"url":"usao-sdtx/former-leaders"}
+NEWS{"url":"usao-sdtx/press-room"}
+MEET THE U.S. ATTORNEY{"url":"usao-sdtx/kenneth-magidsonunited-states-attorney-southern-district-texas"}
+DIVISIONS{"url":"usao-sdtx/divisions"}
+-Appellate Division {"url":"usao-sdtx/appellate-division"}
+-Branch Offices {"url":"usao-sdtx/branch-divisions"}
+-Civil Division {"url":"usao-sdtx/civil-division"}
+-Criminal Division {"url":"usao-sdtx/criminal-division-michael-wrightchief"}
+PROGRAMS{"url":"usao-sdtx/programs"}
+-Community Outreach {"url":"usao-sdtx/community-outreach"}
+-Law Enforcement Coordination {"url":"usao-sdtx/law-enforcement-coordination"}
+-Victim Witness Assistance {"url":"usao-sdtx/victim-witness-program"}
+-Project Safe Childhood {"url":"usao-sdtx/project-safe-childhood"}
+-Project Safe Neighborhoods {"url":"usao-sdtx/project-safe-neighborhoods"}
+-HTRA {"url":"usao-sdtx/human-trafficking-rescue-alliance"}
+EMPLOYMENT{"url":"usao-sdtx/employment"}
+-AUSAs {"url":"usao-sdtx/assistant-us-attorney-positions"}
+-Support Staff{"url":"usao-sdtx/non-attorneysupport-positions"}
+-Law Student Interns{"url":"usao-sdtx/law-student-internship-program"}
+CONTACT US{"url":"usao-sdtx/contact-us"}
+-Report a Crime {"url":"usao-sdtx/whom-call-report-crime"}
+-Procurement {"url":"usao-sdtx/procurement-opportunities"}
