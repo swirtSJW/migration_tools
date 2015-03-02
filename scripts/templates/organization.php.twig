@@ -115,7 +115,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
 
     // Configuring Obtainers.
-    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePress");
+    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePressRelease");
     $title->addMethod('findH1Any');
     $title->addMethod('findIdContentstartDivH2Sec');
     $title->addMethod('findH2First');
@@ -136,8 +136,11 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
     $date->addMethod('findClassBottomLeftContent');
     $date->addMethod('findProbableDate');
 
+    $pr_number = new ObtainerInfo('prNumber', "{{ info.class_base_name }}ObtainPrNumber");
+
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
+    $arguments['obtainers_info'][] = $pr_number;
 
     $source_dirs = array(
   {% for item in info.press %}
@@ -189,8 +192,10 @@ class {{ info.class_base_name }}PressSourceParser extends NGPressReleaseSourcePa
  *
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
+ * @see Obtainer.api.php
  */
 class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
+
 }
 
 /**
@@ -198,8 +203,26 @@ class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
  *
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
+ * @see Obtainer.api.php
  */
-class {{ info.class_base_name }}ObtainTitlePress extends ObtainTitlePressRelease {
+class {{ info.class_base_name }}ObtainTitlePressRelease extends ObtainTitlePressRelease {
+
+}
+
+/**
+ * Obtainer for prNumber property for /{{ info.abbreviation }} press releases.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ * @see Obtainer.api.php
+ */
+class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
+  /**
+   * Finds the press release number from markup.
+   */
+  protected function findPrNumber() {
+    return '';
+  }
 }
 
 /**
@@ -207,6 +230,7 @@ class {{ info.class_base_name }}ObtainTitlePress extends ObtainTitlePressRelease
  *
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
+ * @see Obtainer.api.php
  */
 class {{ info.class_base_name }}ObtainDate extends ObtainDate {
 }

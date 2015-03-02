@@ -13,10 +13,14 @@
  */
 abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
+  /**
+   * @var string $sourceParserClass
+   *   The class name of the source parser. Used to instantiate $sourceParser.
+   */
   protected $sourceParserClass;
 
   /**
-   * @var SourceParser $source_parser
+   * @var NGSourceParser $source_parser
    *   The source parser object for a given row.
    */
   protected $sourceParser;
@@ -220,9 +224,4 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       drush_print($formatted_message, $indent);
     }
   }
-
-  /**
-   * This method is used to modify the source code before properties are set.
-   */
-  protected function prepareSource() {}
 }

@@ -58,7 +58,9 @@ abstract class NGSourceParser {
    * Get information/properties from html by running the obtainers.
    */
   protected function getProperty($property) {
-    $this->setProperty($property);
+    if (!isset($this->{$property})) {
+      $this->setProperty($property);
+    }
 
     // We can just return the property as any issue should throw an exception
     // form setProperty.
@@ -68,13 +70,8 @@ abstract class NGSourceParser {
   /**
    * Set a property.
    */
-  public function setProperty($property) {
-    // If it is set, no need to do it again.
-    if (isset($this->{$property})) {
-      return;
-    }
-
-    // Make sure our querypath object has been initialized.
+  protected function setProperty($property) {
+    // Make sure our QueryPath object has been initialized.
     $this->initQueryPath();
 
     // Obtain the property using obtainers.
@@ -84,7 +81,7 @@ abstract class NGSourceParser {
   /**
    * Use the obtainers mechanism to extract text from the html.
    */
-  public function obtainProperty($property) {
+  protected function obtainProperty($property) {
     $text = '';
 
     $obtainer_info = $this->obtainersInfo[$property];

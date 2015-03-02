@@ -73,7 +73,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
     }
 
     $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
-    $row->field_pr_number = $this->sourceParser->getID();
+    $row->field_pr_number = $this->sourceParser->getPrNumber();
     $row->body = $this->sourceParser->getBody();
   }
 }

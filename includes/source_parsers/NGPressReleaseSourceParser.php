@@ -12,15 +12,16 @@
  * @package doj_migration
  */
 
-class NGPressReleaseSourceParser extends NGNodeSourceParser {
+abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
   protected $date;
   protected $subTitle;
+  protected $prNumber;
 
   /**
    * Getter.
    */
   public function getDate() {
-    $date_string = $this->getProperty("date");
+    $date_string = $this->getProperty('date');
     $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
     if (empty($date_string)) {
@@ -44,11 +45,13 @@ class NGPressReleaseSourceParser extends NGNodeSourceParser {
   }
 
   /**
-   * Getter.
+   * Gets $this->prNumber property.
    */
-  public function getId() {
-    // @todo set default obtainer methods stack.
-    return "";
+  public function getPrNumber() {
+    $pr_number = $this->getProperty('prNumber');
+    $this->sourceParserMessage("Press Release Number: @pr_number", array('@pr_number' => $pr_number), WATCHDOG_DEBUG, 2);
+
+    return $pr_number;
   }
 
   /**
