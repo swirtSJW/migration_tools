@@ -353,6 +353,10 @@ return array (
     array (
       'title' => 'U.S. Trustee Program',
     ),
+    'usao-ndal' =>
+    array (
+      'title' => 'Northern District of Alabama',
+    ),
   ),
   'migrations' =>
   array (
@@ -1569,7 +1573,22 @@ return array (
     'UstPressRelease' =>
     array (
       'group_name' => 'ust',
-      'class_name' => 'UstPressReleaseMigration'
+      'class_name' => 'UstPressReleaseMigration',
+    ),
+    'UsaoNdalPage' =>
+    array (
+      'group_name' => 'usao-ndal',
+      'class_name' => 'UsaoNdalPageMigration',
+    ),
+    'UsaoNdalFile' =>
+    array (
+      'group_name' => 'usao-ndal',
+      'class_name' => 'UsaoNdalFileMigration',
+    ),
+    'UsaoNdalPressRelease' =>
+    array (
+      'group_name' => 'usao-ndal',
+      'class_name' => 'UsaoNdalPressReleaseMigration',
     ),
   ),
 );
