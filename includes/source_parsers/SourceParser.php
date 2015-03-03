@@ -178,9 +178,9 @@ class SourceParser {
     try {
       if (empty($title)) {
         $default_target_stack = array(
-          'findClassBreadcrumbMenuContentLast',
-          'findTitleTag',
-          'findH1First',
+          'findClassBreadcrumbMenuContentLast' => array(),
+          'findTitleTag' => array(),
+          'findH1First' => array(),
         );
         $om = $this->getObtainerMethods('title');
         $title_stack = (!empty($om)) ? $om : $default_target_stack;
@@ -223,8 +223,8 @@ class SourceParser {
   public function setBody($body = '') {
     if (empty($body)) {
       $default_target_stack = array(
-        'findTopBodyHtml',
-        'findClassContentSub',
+        'findTopBodyHtml' => array(),
+        'findClassContentSub' => array(),
       );
       $om = $this->getObtainerMethods('body');
       $body_stack = (!empty($om)) ? $om : $default_target_stack;
