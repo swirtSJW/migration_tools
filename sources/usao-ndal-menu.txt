@@ -1,0 +1,35 @@
+HOME{"url":"usao-ndal/welcome"}
+ABOUT{"url":"usao-ndal/united-states-attorney-s-office-northern-district-alabama"}
+-About the Office{"url":"usao-ndal/united-states-attorney-s-office-northern-district-alabama"}
+-About the District{"url":"usao-ndal/northern-district-alabama"}
+-The Mission{"url":"usao-ndal/our-mission"}
+-2011 Annual Report{"url":"http://www.justice.gov/usao/aln/NDAL%20Annual%20Report%202011.pdf"}
+-FAQ{"url":"usao-ndal/frequently-asked-questions"}
+-Diversity Inclusion{"url":"usao-ndal/diversity-and-inclusion"}
+-Employment{"url":"usao-ndal/employment-and-job-openings"}
+--Current Job Openings{"url":"usao-ndal/employment-and-job-openings"}
+--Hiring Policies{"url":"usao-ndal/equal-employment-and-reasonable-accommodation-policiesfor-job-applicants"}
+--Opportunities in D.C. and other USAOs{"url":"usao-ndal/employment-opportunities-0"}
+--Positions in the Office{"url":"usao-ndal/employment-opportunities"}
+--- Assistant United States Attorneys{"url":"usao-ndal/employment-opportunities"}
+--- Professional Support Staff{"url":"usao-ndal/professional-support-staff"}
+--- Students{"url":"usao-ndal/students"}
+--- Unpaid Law Clerks{"url":"usao-ndal/unpaid-law-clerk-positions"}
+-Benefits{"url":"usao-ndal/employee-benefits"}
+-Business Opportunities{"url":"usao-ndal/about"}
+-Links{"url":"usao-ndal/links"}
+NEWS{"url":"usao-ndal/news-and-press-releases-2"}
+MEET THE U.S. ATTORNEY{"url":"usao-ndal/joyce-white-vance"}
+-Meet the US Attorney{"url":"usao-ndal/joyce-white-vance"}
+-Message from the US Attorney{"url":"usao-ndal/message-united-states-attorney-reducing-recidivism-and-promoting-positive-re-entry-ex"}
+DIVISIONS{"url":"usao-ndal/civil-division"}
+-Civil Division {"url":"usao-ndal/civil-division"}
+-Criminal Division {"url":"usao-ndal/criminal-division"}
+-Admin Division {"url":"usao-ndal/administrative-division"}
+-Appellate Division {"url":"usao-ndal/appellate-and-legal-advice-division"}
+PROGRAMS{"url":"usao-ndal/law-enforcement-coordinating-committee"}
+-LECC{"url":"usao-ndal/law-enforcement-coordinating-committee"}
+-Project Safe Childhood{"url":"usao-ndal/department-justice-releases-first-national-strategy-child-exploitation-prevention-and"}
+-Victim Witness Assistance {"url":"usao-ndal/victim-witness-assistance-program"}
+-Grants{"url":"http://www.justice.gov/business"}
+CONTACT US{"url":"usao-ndal/contact-us"}
