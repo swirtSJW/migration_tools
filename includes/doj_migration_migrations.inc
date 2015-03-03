@@ -353,6 +353,10 @@ return array (
     array (
       'title' => 'U.S. Trustee Program',
     ),
+    'usao-wdtn' =>
+    array (
+      'title' => 'Western District of Tennessee',
+    ),
     'usao-ndal' =>
     array (
       'title' => 'Northern District of Alabama',
@@ -1574,6 +1578,21 @@ return array (
     array (
       'group_name' => 'ust',
       'class_name' => 'UstPressReleaseMigration',
+    ),
+    'UsaoWdtnPage' =>
+    array (
+      'group_name' => 'usao-wdtn',
+      'class_name' => 'UsaoWdtnPageMigration',
+    ),
+    'UsaoWdtnFile' =>
+    array (
+      'group_name' => 'usao-wdtn',
+      'class_name' => 'UsaoWdtnFileMigration',
+    ),
+    'UsaoWdtnPressRelease' =>
+    array (
+      'group_name' => 'usao-wdtn',
+      'class_name' => 'UsaoWdtnPressReleaseMigration',
     ),
     'UsaoNdalPage' =>
     array (
