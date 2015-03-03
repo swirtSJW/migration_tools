@@ -132,10 +132,11 @@ class DojMigrationGenerator {
     $include_filename = str_replace("-", "_", $this->orgConfig['abbreviation']);
     $info_file = "{$this->modulePath}/doj_migration.info";
     $include_filepath = "organizations/{$include_filename}.inc";
-    $text = "files[] = $include_filepath.inc\n";
+    $text = "files[] = {$include_filepath}\n";
 
     $contents = file_get_contents($info_file);
-    if (strpos($contents, $text) !== FALSE) {
+    drush_print_r($contents);
+    if (strpos($contents, $text) == FALSE) {
       file_put_contents($info_file, $text, FILE_APPEND);
       drush_print_r("$include_filepath has been added to doj_migration.info.");
     }
