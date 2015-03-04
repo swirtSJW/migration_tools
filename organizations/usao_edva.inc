@@ -29,9 +29,9 @@ class UsaoEdvaPageMigration extends JusticeHtmlToPageMigration {
     $arguments['source_parser_class'] = "DistrictsSourceParser";
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Any',
-        'findH2First',
-        'findClassBreadcrumbLast',
+        'findH1Any' => array(),
+        'findH2First' => array(),
+        'findClassBreadcrumbLast' => array(),
       ),
     );
 
@@ -119,15 +119,15 @@ class UsaoEdvaPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 2106;
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Any',
-        'findFirstPAlignCenterStrong',
-        'findH2First',
-        'findClassBreadcrumbLast',
+        'findH1Any' => array(),
+        'findFirstPAlignCenterStrong' => array(),
+        'findH2First' => array(),
+        'findClassBreadcrumbLast' => array(),
       ),
       'date' => array(
-        'findClassNewsRightLast',
-        'findClassNewsRight',
-        'findProbableDate',
+        'findClassNewsRightLast' => array(),
+        'findClassNewsRight' => array(),
+        'findProbableDate' => array(),
       ),
     );
 
