@@ -49,11 +49,11 @@ class DistrictsSourceParser extends SourceParser {
     if (empty($override)) {
       // Default stack: Use this if none was defined in migration class.
       $default_target_stack = array(
-        'findH1First',
-        'findH1Any',
-        'findClassBreadcrumbLast',
-        'findClassBreadcrumbMenuContentLast',
-        'findSubBannerAlt',
+        'findH1First' => array(),
+        'findH1Any' => array(),
+        'findClassBreadcrumbLast' => array(),
+        'findClassBreadcrumbMenuContentLast' => array(),
+        'findSubBannerAlt' => array(),
       );
       $om = $this->getObtainerMethods('title');
       $title_stack = (!empty($om)) ? $om : $default_target_stack;

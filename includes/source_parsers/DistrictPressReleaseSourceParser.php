@@ -35,7 +35,7 @@ class DistrictPressReleaseSourceParser extends PressReleaseSourceParser {
    */
   protected function setID($override = '') {
     $default_target_stack = array(
-      'findTable3y1x',
+      'findTable3y1x' => array(),
     );
 
     $om = $this->getObtainerMethods('id');
