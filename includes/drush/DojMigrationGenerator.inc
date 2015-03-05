@@ -99,7 +99,7 @@ class DojMigrationGenerator {
     );
     $this->orgConfig = $this->getConfiguration($org_config_filepath, $required);
 
-    if (!empty($this->orgConfig['pr_directory']) && empty($this->orgConfig['component_tid'])) {
+    if (!empty($this->orgConfig['pr_subdirectory']) && empty($this->orgConfig['component_tid'])) {
       throw new Exception("The component_tid property is required for press release migrations.");
     }
   }

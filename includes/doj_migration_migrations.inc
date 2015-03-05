@@ -365,6 +365,10 @@ return array (
     array (
       'title' => 'Southern District of Texas',
     ),
+    'usao-wdva' =>
+    array (
+      'title' => 'Western District of Virginia',
+    ),
   ),
   'migrations' =>
   array (
@@ -1627,6 +1631,21 @@ return array (
     array (
       'group_name' => 'usao-sdtx',
       'class_name' => 'UsaoSdtxPressReleaseMigration',
+    ),
+    'UsaoWdvaPage' =>
+    array (
+      'group_name' => 'usao-wdva',
+      'class_name' => 'UsaoWdvaPageMigration',
+    ),
+    'UsaoWdvaFile' =>
+    array (
+      'group_name' => 'usao-wdva',
+      'class_name' => 'UsaoWdvaFileMigration',
+    ),
+    'UsaoWdvaPressRelease' =>
+    array (
+      'group_name' => 'usao-wdva',
+      'class_name' => 'UsaoWdvaPressReleaseMigration',
     ),
   ),
 );
