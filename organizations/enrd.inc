@@ -53,6 +53,41 @@ class EnrdPageMigration extends NGJusticeHtmlToPageMigration {
     if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
+
+    // All content with a "all numeric" title are teasers, and can be
+    // ignored.
+    $title = trim(str_replace("-", "", $row->title));
+    if (is_numeric($title)) {
+      return FALSE;
+    }
+
+    // All content with a month as the title only have a link to a pdf.
+    // We can ignore these content. Also, there are a few other useless
+    // pieces of content that I would like to clean up.
+    $months = array("January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December",
+      "Redirect Page");
+    if (in_array($title, $months)) {
+      return FALSE;
+    }
+
+    // Content with months as titles are not the only pages with only a link
+    // so we need to check for some other pattern. All those links have
+    // text within font tags saying how big the file is (MB).
+    foreach ($this->sourceParser->queryPath->find("font[color='black']") as $font) {
+      $text = $font->text();
+      if (substr_count($text, "MB") > 0) {
+        drush_print_r("We got one!!!");
+        return FALSE;
+      }
+    }
+
+    // All content with a specific banner is from the "100th Anniversary" of
+    // ENRD, we can ignore this content.
+    $body = $row->body;
+    if (substr_count($body, "masthead_home.gif") > 0) {
+      return FALSE;
+    }
   }
 }
 
