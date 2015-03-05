@@ -53,18 +53,6 @@ return array (
     array (
       'title' => 'Executive Office for Immigration Review',
     ),
-    'usao-sdal' =>
-    array (
-      'title' => 'Southern District of Alabama',
-    ),
-    'usao-ndfl' =>
-    array (
-      'title' => 'Northern District of Florida',
-    ),
-    'usao-mdfl' =>
-    array (
-      'title' => 'Middle District of Florida',
-    ),
     'usao-sdin' =>
     array (
       'title' => 'Southern District of Indiana',
@@ -77,17 +65,9 @@ return array (
     array (
       'title' => 'District of Maryland',
     ),
-    'usao-nm' =>
-    array (
-      'title' => 'District of New Mexico',
-    ),
     'usao-ndny' =>
     array (
       'title' => 'Northern District of New York',
-    ),
-    'usao-me' =>
-    array (
-      'title' => 'District of Maine',
     ),
     'usao-sc' =>
     array (
@@ -121,10 +101,6 @@ return array (
     array (
       'title' => 'Eastern District of Washington',
     ),
-    'usao-edwi' =>
-    array (
-      'title' => 'Eastern District of Wisconsin',
-    ),
     'usao-ak' =>
     array (
       'title' => 'District of Alaska',
@@ -140,10 +116,6 @@ return array (
     'usao-mdal' =>
     array (
       'title' => 'Middle District of Alabama',
-    ),
-    'opr' =>
-    array (
-      'title' => 'Office of Professional Responsibility',
     ),
     'usao-mdga' =>
     array (
@@ -340,51 +312,6 @@ return array (
       'group_name' => 'eoir',
       'class_name' => 'EoirPressReleaseMigration',
     ),
-    'UsaoSdalFile' =>
-    array (
-      'group_name' => 'usao-sdal',
-      'class_name' => 'UsaoSdalFileMigration',
-    ),
-    'UsaoSdalPage' =>
-    array (
-      'group_name' => 'usao-sdal',
-      'class_name' => 'UsaoSdalPageMigration',
-    ),
-    'UsaoSdalPressRelease' =>
-    array (
-      'group_name' => 'usao-sdal',
-      'class_name' => 'UsaoSdalPressReleaseMigration',
-    ),
-    'UsaoNdflFile' =>
-    array (
-      'group_name' => 'usao-ndfl',
-      'class_name' => 'UsaoNdflFileMigration',
-    ),
-    'UsaoNdflPage' =>
-    array (
-      'group_name' => 'usao-ndfl',
-      'class_name' => 'UsaoNdflPageMigration',
-    ),
-    'UsaoNdflPressRelease' =>
-    array (
-      'group_name' => 'usao-ndfl',
-      'class_name' => 'UsaoNdflPressReleaseMigration',
-    ),
-    'UsaoMdflFile' =>
-    array (
-      'group_name' => 'usao-mdfl',
-      'class_name' => 'UsaoMdflFileMigration',
-    ),
-    'UsaoMdflPage' =>
-    array (
-      'group_name' => 'usao-mdfl',
-      'class_name' => 'UsaoMdflPageMigration',
-    ),
-    'UsaoMdflPressRelease' =>
-    array (
-      'group_name' => 'usao-mdfl',
-      'class_name' => 'UsaoMdflPressReleaseMigration',
-    ),
     'UsaoSdinFile' =>
     array (
       'group_name' => 'usao-sdin',
@@ -430,21 +357,6 @@ return array (
       'group_name' => 'usao-md',
       'class_name' => 'UsaoMdPressReleaseMigration',
     ),
-    'UsaoNmFile' =>
-    array (
-      'group_name' => 'usao-nm',
-      'class_name' => 'UsaoNmFileMigration',
-    ),
-    'UsaoNmPage' =>
-    array (
-      'group_name' => 'usao-nm',
-      'class_name' => 'UsaoNmPageMigration',
-    ),
-    'UsaoNmPressRelease' =>
-    array (
-      'group_name' => 'usao-nm',
-      'class_name' => 'UsaoNmPressReleaseMigration',
-    ),
     'UsaoNdnyFile' =>
     array (
       'group_name' => 'usao-ndny',
@@ -459,36 +371,6 @@ return array (
     array (
       'group_name' => 'usao-ndny',
       'class_name' => 'UsaoNdnyPressReleaseMigration',
-    ),
-    'UsaoMeFile' =>
-    array (
-      'group_name' => 'usao-me',
-      'class_name' => 'UsaoMeFileMigration',
-    ),
-    'UsaoMePage' =>
-    array (
-      'group_name' => 'usao-me',
-      'class_name' => 'UsaoMePageMigration',
-    ),
-    'UsaoMePressRelease' =>
-    array (
-      'group_name' => 'usao-me',
-      'class_name' => 'UsaoMePressReleaseMigration',
-    ),
-    'UsaoScFile' =>
-    array (
-      'group_name' => 'usao-sc',
-      'class_name' => 'UsaoScFileMigration',
-    ),
-    'UsaoScPage' =>
-    array (
-      'group_name' => 'usao-sc',
-      'class_name' => 'UsaoScPageMigration',
-    ),
-    'UsaoScPressRelease' =>
-    array (
-      'group_name' => 'usao-sc',
-      'class_name' => 'UsaoScPressReleaseMigration',
     ),
     'UsaoWdmiFile' =>
     array (
@@ -595,21 +477,6 @@ return array (
       'group_name' => 'usao-edwa',
       'class_name' => 'UsaoEdwaPressReleaseMigration',
     ),
-    'UsaoEdwiFile' =>
-    array (
-      'group_name' => 'usao-edwi',
-      'class_name' => 'UsaoEdwiFileMigration',
-    ),
-    'UsaoEdwiPage' =>
-    array (
-      'group_name' => 'usao-edwi',
-      'class_name' => 'UsaoEdwiPageMigration',
-    ),
-    'UsaoEdwiPressRelease' =>
-    array (
-      'group_name' => 'usao-edwi',
-      'class_name' => 'UsaoEdwiPressReleaseMigration',
-    ),
     'UsaoAkFile' =>
     array (
       'group_name' => 'usao-ak',
@@ -669,16 +536,6 @@ return array (
     array (
       'group_name' => 'usao-mdal',
       'class_name' => 'UsaoMdalPressReleaseMigration',
-    ),
-    'OprFile' =>
-    array (
-      'group_name' => 'opr',
-      'class_name' => 'OprFileMigration',
-    ),
-    'OprPage' =>
-    array (
-      'group_name' => 'opr',
-      'class_name' => 'OprPageMigration',
     ),
     'UsaoMdgaFile' =>
     array (
