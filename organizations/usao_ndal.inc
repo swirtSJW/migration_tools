@@ -135,11 +135,8 @@ class UsaoNdalPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findClassBottomLeftContent');
     $date->addMethod('findProbableDate');
 
-    $pr_number = new ObtainerInfo('prNumber', "UsaoNdalObtainPrNumber");
-
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
-    $arguments['obtainers_info'][] = $pr_number;
 
     $source_dirs = array(
       0 => 'usao/aln/News/November 2013',
