@@ -83,7 +83,21 @@ abstract class Obtainer {
    */
   public function obtain() {
     // Loop through the stack.
-    foreach ($this->methodStack as $current_method => $arguments) {
+    foreach ($this->methodStack as $key => $value) {
+
+      // An obtainer stack may be passed as an associate or flat array.
+      // E.g., array('method1_name' => array('arg1val', 'arg2val'),
+      // 'method2_name' => array()) or as
+      // array ('method1_name', 'method2n_name').
+      if (is_numeric($key)) {
+        $current_method = $value;
+        $arguments = array();
+      }
+      else {
+        $current_method = $key;
+        $arguments = $value;
+      }
+
       // Run the method. It is expected that the method will return a string.
       // Call $this->$current_method($arguments);
       $found_string  = call_user_func_array(array($this, $current_method), $arguments);
