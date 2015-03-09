@@ -127,14 +127,14 @@ class UsaoWdwaPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 2131;
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Second',
-        'findH1FirstCentered',
-        'findH1First',
-        'findH1Any',
+        'findH1Second' => array(),
+        'findH1FirstCentered' => array(),
+        'findH1First' => array(),
+        'findH1Any' => array(),
       ),
       'subtitle' => array(
-        'findH2FirstCentered',
-        'findH2First',
+        'findH2FirstCentered' => array(),
+        'findH2First' => array(),
       ),
     );
 
