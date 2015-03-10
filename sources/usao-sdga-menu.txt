@@ -1,0 +1,19 @@
+HOME{"url":"usao-sdga"}
+ABOUT{"url":"usao-sdga/about"}
+-Mission{"url":"usao-sdga/mission"}
+-About the District{"url":"usao-sdga/southern-district-georgia"}
+NEWS{"url":"usao-sdga/news-and-press-releases-3"}
+U.S. ATTORNEY{"url":"usao-sdga/edward-j-tarver-united-states-attorney-southern-district-georgia"}
+-Former U.S Attorney{"url":"usao-sdga/former-united-states-attorneys-southern-district-georgia"}
+DIVISIONS{"url":"usao-sdga/divisions"}
+-Criminal Division {"url":"usao-sdga/criminal"}
+-Civil Division {"url":"usao-sdga/civil"}
+-Administrative Division {"url":"usao-sdga/administration"}
+COMMUNITY{"url":"usao-sdga/community"}
+-LECC{"url":"usao-sdga/lecc"}
+-Project Safe Childhood{"url":"usao-sdga/project-safe-childhood"}
+-Project Ceasefire{"url":"usao-sdga/project-ceasfire"}
+-Weed & Seed{"url":"usao-sdga/weed-and-seed"}
+-Victim Witness Assistance {"url":"usao-sdga/victim-witness"}
+CAREERS{"url":"usao-sdga/careers"}
+CONTACT US{"url":"usao-sdga/contact-us"}

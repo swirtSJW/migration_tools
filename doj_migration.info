@@ -140,3 +140,4 @@ files[] = organizations/usao_sdtx.inc
 files[] = organizations/usao_wdva.inc
 files[] = organizations/usao_wdar.inc
 files[] = organizations/usao_ndga.inc
+files[] = organizations/usao_sdga.inc

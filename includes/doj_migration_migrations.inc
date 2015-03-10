@@ -257,6 +257,10 @@ return array (
     array (
       'title' => 'Northern District of Georgia',
     ),
+    'usao-sdga' =>
+    array (
+      'title' => 'Southern District of Georgia',
+    ),
   ),
   'migrations' =>
   array (
@@ -1094,6 +1098,21 @@ return array (
     array (
       'group_name' => 'usao-ndga',
       'class_name' => 'UsaoNdgaPressReleaseMigration',
+    ),
+    'UsaoSdgaPage' =>
+    array (
+      'group_name' => 'usao-sdga',
+      'class_name' => 'UsaoSdgaPageMigration',
+    ),
+    'UsaoSdgaFile' =>
+    array (
+      'group_name' => 'usao-sdga',
+      'class_name' => 'UsaoSdgaFileMigration',
+    ),
+    'UsaoSdgaPressRelease' =>
+    array (
+      'group_name' => 'usao-sdga',
+      'class_name' => 'UsaoSdgaPressReleaseMigration',
     ),
   ),
 );
