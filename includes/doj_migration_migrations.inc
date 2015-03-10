@@ -249,6 +249,10 @@ return array (
     array (
       'title' => 'Western District of Virginia',
     ),
+    'usao-wdar' =>
+    array (
+      'title' => 'Western District of Arkansas',
+    ),
   ),
   'migrations' =>
   array (
@@ -1056,6 +1060,21 @@ return array (
     array (
       'group_name' => 'usao-wdva',
       'class_name' => 'UsaoWdvaPressReleaseMigration',
+    ),
+    'UsaoWdarPage' =>
+    array (
+      'group_name' => 'usao-wdar',
+      'class_name' => 'UsaoWdarPageMigration',
+    ),
+    'UsaoWdarFile' =>
+    array (
+      'group_name' => 'usao-wdar',
+      'class_name' => 'UsaoWdarFileMigration',
+    ),
+    'UsaoWdarPressRelease' =>
+    array (
+      'group_name' => 'usao-wdar',
+      'class_name' => 'UsaoWdarPressReleaseMigration',
     ),
   ),
 );

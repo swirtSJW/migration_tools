@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Defines migration classes for {{ info.full_name }}.
+ * Defines migration classes for Western District of Arkansas.
  */
 
 /**
- * Migrates .html files from /{{ info.abbreviation }} to page nodes.
+ * Migrates .html files from /usao-wdar to page nodes.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  */
-class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigration {
+class UsaoWdarPageMigration extends NGJusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -20,15 +20,13 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     // Define source directories.
     $source_dirs = array(
-    {% for item in info.page %}
-      {{ item | raw }}
-    {% endfor %}
+      0 => 'usao/arw',
     );
 
-    $arguments['source_parser_class'] = "{{ info.class_base_name }}PageSourceParser";
+    $arguments['source_parser_class'] = "UsaoWdarPageSourceParser";
 
     // Configuring Obtainers.
-    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
+    $title = new ObtainerInfo('title', "UsaoWdarObtainTitlePage");
     $title->addMethod('findH1First');
     $title->addMethod('findH1Any');
     $title->addMethod('findClassBreadcrumbLast');
@@ -43,9 +41,9 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
     $this->dependencies = array('UsaoDistrict');
-    $this->description = t('Migrates pages from the {{ info.full_name }}.');
+    $this->description = t('Migrates pages from the Western District of Arkansas.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('{{ info.abbreviation }}')
+    ->defaultValue('usao-wdar')
     ->sourceMigration('UsaoDistrict');
   }
 
@@ -60,27 +58,27 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 }
 
 /**
- * Migrates files (*.pdf) from /{{ info.abbreviation }}.
+ * Migrates files (*.pdf) from /usao-wdar.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  */
-class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFileMigration {
+class UsaoWdarFileMigration extends JusticeDeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the {{ info.directory }} subdirectory.');
+    $this->description = t('Migrates non-image files from the usao/arw subdirectory.');
     $this->dependencies = array('UsaoDistrict');
 
     // Match .pdf files only.
     $source_dirs = array(
-      '{{ info.directory }}',
+      'usao/arw',
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
-    $dest_dir = 'public:///{{ info.abbreviation }}/docs';
+    $dest_dir = 'public:///usao-wdar/docs';
 
     $options = array('recurse' => TRUE);
 
@@ -95,28 +93,28 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
    * {@inheritdoc}
    */
   public function getOrganizationAbbreviation() {
-    return "{{ info.abbreviation }}";
+    return "usao-wdar";
   }
 }
 
 /**
- * Migrates press releases from /{{ info.abbreviation }}.
+ * Migrates press releases from /usao-wdar.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  */
-class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressReleaseMigration {
+class UsaoWdarPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['district'] = "{{ info.abbreviation }}";
-    $arguments['component_tid'] = {{ info.component_tid }};
-    $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
+    $arguments['district'] = "usao-wdar";
+    $arguments['component_tid'] = 1711;
+    $arguments['source_parser_class'] = "UsaoWdarPressSourceParser";
 
     // Configuring Obtainers.
-    $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePressRelease");
+    $title = new ObtainerInfo('title', "UsaoWdarObtainTitlePressRelease");
     $title->addMethod('findH1Any');
     $title->addMethod('findIdContentstartDivH2Sec');
     $title->addMethod('findH2First');
@@ -127,7 +125,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressRel
     $title->addMethod('findIdContentstartDivH2');
     $title->addMethod('findDivClassContentSubDivDivCenter');
 
-    $date = new ObtainerInfo('date', "{{ info.class_base_name }}ObtainDate");
+    $date = new ObtainerInfo('date', "UsaoWdarObtainDate");
     $date->addMethod('findTableRow1Col2');
     $date->addMethod('findTableRow1Col1');
     $date->addMethod('findTable2Row2Col2');
@@ -137,28 +135,26 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressRel
     $date->addMethod('findClassBottomLeftContent');
     $date->addMethod('findProbableDate');
 
-    $pr_number = new ObtainerInfo('prNumber', "{{ info.class_base_name }}ObtainPrNumber");
+    $pr_number = new ObtainerInfo('prNumber', "UsaoWdarObtainPrNumber");
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
 
     $source_dirs = array(
-    {% for item in info.press %}
-      {{ item | raw }}
-    {% endfor %}
+      1 => 'usao/arw/pressreleases',
     );
     parent::__construct($arguments, $source_dirs);
   }
 }
 
 /**
- * SourceParser for /{{ info.abbreviation }} pages.
+ * SourceParser for /usao-wdar pages.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  */
-class {{ info.class_base_name }}PageSourceParser  extends NGDistrictPageSourceParser {
+class UsaoWdarPageSourceParser  extends NGDistrictPageSourceParser {
   /**
    * {@inheritdoc}
    */
@@ -168,48 +164,52 @@ class {{ info.class_base_name }}PageSourceParser  extends NGDistrictPageSourcePa
 }
 
 /**
- * SourceParser for /{{ info.abbreviation }} press releases.
+ * SourceParser for /usao-wdar press releases.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  */
-class {{ info.class_base_name }}PressSourceParser extends NGDistrictPressReleaseSourceParser {
+class UsaoWdarPressSourceParser extends NGDistrictPressReleaseSourceParser {
   /**
    * {@inheritdoc}
    */
   protected function cleanHtml() {
+    // Any tables in these PRs are junk.
+    foreach ($this->queryPath->find(".contentSub table") as $table) {
+      $table->remove();
+    }
     parent::cleanHtml();
   }
 }
 
 /**
- * Obtainer for title property for /{{ info.abbreviation }} pages.
+ * Obtainer for title property for /usao-wdar pages.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  * @see Obtainer.api.php
  */
-class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
+class UsaoWdarObtainTitlePage extends ObtainTitle {
 }
 
 /**
- * Obtainer for title property for /{{ info.abbreviation }} press releases.
+ * Obtainer for title property for /usao-wdar press releases.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  * @see Obtainer.api.php
  */
-class {{ info.class_base_name }}ObtainTitlePressRelease extends ObtainTitlePressRelease {
+class UsaoWdarObtainTitlePressRelease extends ObtainTitlePressRelease {
 }
 
 /**
- * Obtainer for prNumber property for /{{ info.abbreviation }} press releases.
+ * Obtainer for prNumber property for /usao-wdar press releases.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  * @see Obtainer.api.php
  */
-class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
+class UsaoWdarObtainPrNumber extends ObtainId {
   /**
    * Finds the press release number from markup.
    */
@@ -224,11 +224,11 @@ class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
 }
 
 /**
- * Custom obtainer for date property for /{{ info.abbreviation }}.
+ * Custom obtainer for date property for /usao-wdar.
  *
  * @package doj_migration
- * @subpackage {{ info.abbreviation }}
+ * @subpackage usao-wdar
  * @see Obtainer.api.php
  */
-class {{ info.class_base_name }}ObtainDate extends ObtainDate {
+class UsaoWdarObtainDate extends ObtainDate {
 }
