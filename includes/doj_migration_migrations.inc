@@ -261,6 +261,10 @@ return array (
     array (
       'title' => 'Southern District of Georgia',
     ),
+    'usao-nh' =>
+    array (
+      'title' => 'District of New Hampshire',
+    ),
   ),
   'migrations' =>
   array (
@@ -1113,6 +1117,21 @@ return array (
     array (
       'group_name' => 'usao-sdga',
       'class_name' => 'UsaoSdgaPressReleaseMigration',
+    ),
+    'UsaoNhPage' =>
+    array (
+      'group_name' => 'usao-nh',
+      'class_name' => 'UsaoNhPageMigration',
+    ),
+    'UsaoNhFile' =>
+    array (
+      'group_name' => 'usao-nh',
+      'class_name' => 'UsaoNhFileMigration',
+    ),
+    'UsaoNhPressRelease' =>
+    array (
+      'group_name' => 'usao-nh',
+      'class_name' => 'UsaoNhPressReleaseMigration',
     ),
   ),
 );
