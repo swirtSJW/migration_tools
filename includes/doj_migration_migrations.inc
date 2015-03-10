@@ -253,6 +253,10 @@ return array (
     array (
       'title' => 'Western District of Arkansas',
     ),
+    'usao-ndga' =>
+    array (
+      'title' => 'Northern District of Georgia',
+    ),
   ),
   'migrations' =>
   array (
@@ -1075,6 +1079,21 @@ return array (
     array (
       'group_name' => 'usao-wdar',
       'class_name' => 'UsaoWdarPressReleaseMigration',
+    ),
+    'UsaoNdgaPage' =>
+    array (
+      'group_name' => 'usao-ndga',
+      'class_name' => 'UsaoNdgaPageMigration',
+    ),
+    'UsaoNdgaFile' =>
+    array (
+      'group_name' => 'usao-ndga',
+      'class_name' => 'UsaoNdgaFileMigration',
+    ),
+    'UsaoNdgaPressRelease' =>
+    array (
+      'group_name' => 'usao-ndga',
+      'class_name' => 'UsaoNdgaPressReleaseMigration',
     ),
   ),
 );
