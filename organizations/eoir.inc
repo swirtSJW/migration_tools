@@ -230,7 +230,7 @@ class EoirPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findSecondPAlignCenterStrong',
+        'findSelector' => array("p[align='center'] > strong", 2),
       ),
       'body' => array(),
       'subtitle' => array(),

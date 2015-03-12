@@ -13,74 +13,6 @@
  */
 class ObtainDate extends ObtainHtml {
 
-  /**
-   * Finder method to find the .BottomLeftContent.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findClassBottomLeftContent() {
-    $element = $this->queryPath->top('.BottomLeftContent');
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method to find the .lastupdate.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findClassLastupdate() {
-    $element = $this->queryPath->top('.lastupdate');
-    $this->setElementToRemove($element);
-    $element->text();
-
-    return $element->text();
-  }
-
-  /**
-   * Finder method to find the #contentstart > p.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findIdContentstartFirst() {
-    $element = $this->queryPath->find('#contentstart > p')->first();
-    $text = $element->text();
-    $this->setElementToRemove($element);
-
-    return $text;
-  }
-
-
-  /**
-   * Finder method to find the .newsLeft.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findClassNewsLeft() {
-    $element = $this->queryPath->top('.newsLeft');
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-  /**
-   * Finder method to find the first .newsRight.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findClassNewsRight() {
-    $element = $this->queryPath->top('.newsRight');
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
 
   /**
    * Finder method to find the first .newsRight.
@@ -95,18 +27,6 @@ class ObtainDate extends ObtainHtml {
     return $element->text();
   }
 
-  /**
-   * Finder method to find the .style2.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function findClassStyle2() {
-    $element = $this->queryPath->top('.style2')->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
 
   /**
    * Method for returning the div > p that is aligned left.
@@ -127,24 +47,6 @@ class ObtainDate extends ObtainHtml {
     return $text;
   }
 
-  /**
-   * Method for returning the p that is aligned center.
-   *
-   * @return text
-   *   The string found.
-   */
-  protected function findPAlignCenter() {
-    foreach ($this->queryPath->find("p") as $p) {
-      $align = $p->attr('align');
-      if (strcmp($align, "right") == 0) {
-        $text = $p->text();
-        $this->setElementToRemove($p);
-        break;
-      }
-    }
-
-    return $text;
-  }
 
   /**
    * Method for returning the div.contentSub > div.
@@ -383,6 +285,17 @@ class ObtainDate extends ObtainHtml {
       'updated',
       'update',
       ',',
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      // Intentional mispellings.
+      'thurday',
+      'wendsday',
+      'firday',
     );
     $text = str_ireplace($remove, '', $text);
     $remove = array(

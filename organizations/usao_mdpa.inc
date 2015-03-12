@@ -94,7 +94,7 @@ class UsaoMdpaPageMigration extends NGJusticeHtmlToPageMigration {
 
     $arguments['source_parser_class'] = "NGDistrictPageSourceParser";
     $title = new ObtainerInfo("title", 'ObtainTitle');
-    $title->addMethod('findH1Second');
+    $title->addMethod('findSelector', array("h1", 2));
     $title->addMethod('findH1Any');
     $arguments['obtainers_info'][] = $title;
 
@@ -243,21 +243,20 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
 
     $date = new ObtainerInfo('date');
     $date->addMethod("findDivPAlignLeft");
-    $date->addMethod("findClassNewsRight");
+    $date->addMethod('findSelector', array(".newsRight > p", 1));
     $date->addMethod("findDivClassContentSubDiv3");
     $date->addMethod("findProbableDate");
     $this->addObtainerInfo($date);
 
     $title = new ObtainerInfo('title');
     $title->addMethod('findH1Any');
-    $title->addMethod('findIdContentstartDivH2Sec');
-    $title->addMethod('findH2First');
-    $title->addMethod('findClassContentSubDivPCenterStrong');
-    $title->addMethod('findClassContentSubDivDivPStrong');
-    $title->addMethod('findPStrongEm');
-    $title->addMethod('findIdContentstartDivH2');
-    $title->addMethod('findDivClassContentSubDivDivCenter');
-    $title->addMethod("findFirstPAlignCenter");
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('findSelector', array("h2", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('findSelector', array("p > strong > em", 1));
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
+    $title->addMethod('findSelector', array("div > p[align='center']", 1));
     $this->addObtainerInfo($title);
   }
 }

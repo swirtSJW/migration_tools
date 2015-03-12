@@ -134,8 +134,8 @@ class UstPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstObtainTitlePage");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('findTitleTag');
-    $title->addMethod('findH1First');
+    $title->addMethod('findSelector', array("title", 1));
+    $title->addMethod('findSelector', array("h1", 1));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -313,14 +313,13 @@ class UstPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     $title = new ObtainerInfo('title', "UstObtainTitlePress");
     $title->addMethod("findPressContentTitle");
     $title->addMethod('findH1Any');
-    $title->addMethod('findIdContentstartDivH2Sec');
-    $title->addMethod('findH2First');
-    $title->addMethod('findClassContentSubDivPCenterStrong');
-    $title->addMethod('findClassContentSubDivDivPStrong');
-    $title->addMethod('findIdHeadline');
-    $title->addMethod('findPStrongEm');
-    $title->addMethod('findIdContentstartDivH2');
-    $title->addMethod('findDivClassContentSubDivDivCenter');
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('findSelector', array("h2", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('findSelector', array("#headline", 1));
+    $title->addMethod('findSelector', array("p > strong > em", 1));
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
 
     $date = new ObtainerInfo('date', "UstObtainDate");
     $date->addMethod("findPressContentDateContainer");
@@ -328,10 +327,10 @@ class UstPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     $date->addMethod('findTableRow1Col2');
     $date->addMethod('findTableRow1Col1');
     $date->addMethod('findTable2Row2Col2');
-    $date->addMethod('findPAlignCenter');
-    $date->addMethod('findIdContentstartFirst');
-    $date->addMethod('findClassNewsRight');
-    $date->addMethod('findClassBottomLeftContent');
+    $date->addMethod('findSelector', array("p[align='center']", 1));
+    $date->addMethod('findSelector', array("#contentstart > p", 1));
+    $date->addMethod('findSelector', array(".newsRight > p", 1));
+    $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
 
     $arguments['obtainers_info'][] = $title;

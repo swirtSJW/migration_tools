@@ -116,9 +116,9 @@ class UsaoWdnyPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1986;
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1First',
-        'findSubBannerAlt',
-        'findLastBreadcrumb',
+        'findSelector' => array("h1", 1),
+        'findSubBannerAlt' => array(),
+        'findLastBreadcrumb' => array(),
       ),
       'subtitle' => array(),
       'date' => array(),

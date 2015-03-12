@@ -12,7 +12,7 @@ class ObtainContentType extends Obtainer {
     $body = $this->queryPath->find('body')->first();
     $text = $body->text();
     $needle = 'IMMEDIATE RELEASE';
-    return (strpos($text, $needle) !== FALSE) ? 'press_release' : '';
+    return (stripos($text, $needle) !== FALSE) ? 'press_release' : '';
   }
 
   /**
@@ -22,7 +22,7 @@ class ObtainContentType extends Obtainer {
     $body = $this->queryPath->find('.breadcrumb')->first();
     $text = $body->text();
     $needle = 'Press Release';
-    return (strpos($text, $needle) !== FALSE) ? 'press_release' : '';
+    return (stripos($text, $needle) !== FALSE) ? 'press_release' : '';
   }
 
 }

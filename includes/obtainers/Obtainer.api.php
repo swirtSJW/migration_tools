@@ -39,6 +39,7 @@ class ObtainExample extends ObtainHtml {
    */
   protected function findExampleClass() {
     $element = $this->queryPath->find(".example");
+    $this->setElementToRemove($element);
 
     return $element->text();
   }

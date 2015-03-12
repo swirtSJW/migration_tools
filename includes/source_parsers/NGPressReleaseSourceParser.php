@@ -37,11 +37,13 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
   }
 
   /**
-   * Getter.
+   * Getter $this->subtitle property.
    */
   public function getSubTitle() {
-    // @todo set default obtainer methods stack.
-    return "";
+    $subtitle = $this->getProperty('subtitle');
+    $this->sourceParserMessage("Subtitle: @subtitle", array('@subtitle' => $subtitle), WATCHDOG_DEBUG, 2);
+
+    return $subtitle;
   }
 
   /**
@@ -98,24 +100,23 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
 
     $title = new ObtainerInfo("title", 'ObtainTitlePressRelease');
     $title->addMethod('findH1Any');
-    $title->addMethod('findIdContentstartDivH2Sec');
-    $title->addMethod('findH2First');
-    $title->addMethod('findClassContentSubDivPCenterStrong');
-    $title->addMethod('findClassContentSubDivDivPStrong');
-    $title->addMethod('findIdHeadline');
-    $title->addMethod('findPStrongEm');
-    $title->addMethod('findIdContentstartDivH2');
-    $title->addMethod('findDivClassContentSubDivDivCenter');
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('findSelector', array("h2", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('findSelector', array("#headline", 1));
+    $title->addMethod('findSelector', array("p > strong > em", 1));
+    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
     $this->addObtainerInfo($title);
 
     $date = new ObtainerInfo("date");
     $date->addMethod('findTableRow1Col2');
     $date->addMethod('findTableRow1Col1');
     $date->addMethod('findTable2Row2Col2');
-    $date->addMethod('findPAlignCenter');
-    $date->addMethod('findIdContentstartFirst');
-    $date->addMethod('findClassNewsRight');
-    $date->addMethod('findClassBottomLeftContent');
+    $date->addMethod('findSelector', array("p[align='center']", 1));
+    $date->addMethod('findSelector', array("#contentstart > p", 1));
+    $date->addMethod('findSelector', array(".newsRight > p", 1));
+    $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
     $this->addObtainerInfo($date);
 

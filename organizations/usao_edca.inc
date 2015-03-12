@@ -140,7 +140,7 @@ class UsaoEdcaPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1726;
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Second',
+        'findSelector' => array("h1", 2),
       ),
     );
 
@@ -278,12 +278,12 @@ class UsaoEdcaPressReleaseEspanolMigration extends JusticeHtmlToPressReleaseSpan
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Second',
-        'findH1First',
+        'findSelector' => array("h1", 2),
+        'findSelector' => array("h1", 1),
       ),
       'date' => array(
-        'findClassStyle2',
-        'findTable1Row2Col1',
+        'findSelector' => array('.style2', 1),
+        'findTable1Row2Col1' => array(),
       ),
     );
 

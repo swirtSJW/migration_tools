@@ -85,7 +85,6 @@ abstract class NGSourceParser {
     $text = '';
 
     $obtainer_info = $this->obtainersInfo[$property];
-
     if (!isset($obtainer_info)) {
       throw new Exception("NGSourceParser does not have obtainer info for the {$property} property");
     }
@@ -93,19 +92,25 @@ abstract class NGSourceParser {
     try {
       $class = $obtainer_info->getClass();
       $methods = $obtainer_info->getMethods();
+      if (!empty($methods)) {
+        // There are methods to run, so run them.
+        $obtainer = new $class($this->queryPath, $methods);
+        $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
 
-      $obtainer = new $class($this->queryPath, $methods);
-      $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
-
-      $text = $obtainer->obtain();
-      $length = strlen($text);
-      if ($length < 256) {
-        // It is short enough to be helpful in debug output.
-        $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+        $text = $obtainer->obtain();
+        $length = strlen($text);
+        if ($length < 256) {
+          // It is short enough to be helpful in debug output.
+          $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+        }
+        else {
+          // It's too long to be helpful in output so just show the length.
+          $this->sourceParserMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
+        }
       }
       else {
-        // It it too long to be helpful in debug output so just show the length.
-        $this->sourceParserMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
+        // There were no methods to run so message.
+        $this->sourceParserMessage("There were no methods to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
       }
 
     }
@@ -276,7 +281,10 @@ class ObtainerInfo {
    */
   public function addMethod($method_name, $arguments = array()) {
     // @todo Maybe we should validate the method names here?
-    $this->methods[$method_name] = $arguments;
+    $this->methods[] = array(
+      'method_name' => $method_name,
+      'arguments' => $arguments,
+    );
   }
 
   /**

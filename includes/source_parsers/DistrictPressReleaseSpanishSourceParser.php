@@ -18,10 +18,10 @@ class DistrictPressReleaseSpanishSourceParser extends DistrictPressReleaseSource
           'findTableRow1Col2' => array(),
           'findTableRow1Col1' => array(),
           'findTable2Row2Col2' => array(),
-          'findPAlignCenter' => array(),
-          'findIdContentstartFirst' => array(),
-          'findClassNewsRight' => array(),
-          'findClassBottomLeftContent' => array(),
+          'findSelector' => array("p[align='center']", 1),
+          'findSelector' => array('#contentstart > p', 1),
+          'findSelector' => array('.newsRight', 1),
+          'findSelector' => array('.BottomLeftContent', 1),
           'findProbableDate' => array(),
         );
       }

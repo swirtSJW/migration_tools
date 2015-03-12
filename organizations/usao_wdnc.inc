@@ -110,8 +110,8 @@ class UsaoWdncPressReleaseMigration extends DistrictPressReleaseMigration {
         'findIdContent3TableTd',
       ),
       'subtitle' => array(
-        'findSecondPAlignCenterStrong',
-        'findFirstPAlignCenterStrong',
+        'findSelector' => array("p[align='center'] > strong", 2),
+        'findSelector' => array("p[align='center']", 1),
       ),
     );
 

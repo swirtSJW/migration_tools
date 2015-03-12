@@ -50,7 +50,7 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstRegionsObtainTitlePage");
     $title->addMethod('findTitleWithPrependedRegion1');
-    $title->addMethod('findTitleTag');
+    $title->addMethod('findSelector', array("title", 1));
 
     $arguments['obtainers_info'][] = $title;
 

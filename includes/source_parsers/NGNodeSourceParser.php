@@ -73,8 +73,8 @@ class NGNodeSourceParser extends NGSourceParser {
 
     $title = new ObtainerInfo("title");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('findTitleTag');
-    $title->addMethod('findH1First');
+    $title->addMethod('findSelector', array("title", 1));
+    $title->addMethod('findSelector', array("h1", 1));
     $this->addObtainerInfo($title);
 
     $body = new ObtainerInfo("body");

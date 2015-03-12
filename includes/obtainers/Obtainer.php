@@ -18,6 +18,13 @@ abstract class Obtainer {
   private $element;
 
   /**
+   * @var currentFindMethod
+   *   The find method that is currently being run.
+   */
+  protected $currentFindMethod;
+
+
+  /**
    * @var QueryPath
    *   QueryPath object passed in at instantiation.
    */
@@ -50,13 +57,35 @@ abstract class Obtainer {
    *   The stack of methods to be run.
    */
   public function setMethodStack($method_stack) {
-    foreach ($method_stack as $method => $arguments) {
-      if (!method_exists($this, $method)) {
-        unset($method_stack[$method]);
-        $this->obtainerMessage('The target method @method does not exist and was skipped.', array('@method' => $method), WATCHDOG_DEBUG);
+    foreach ($method_stack as $key => $method) {
+      if (!method_exists($this, $method['method_name'])) {
+        unset($method_stack[$key]);
+        $this->obtainerMessage('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
       }
     }
     $this->methodStack = $method_stack;
+  }
+
+  /**
+   * Sets the $currentFindMethod property.
+   *
+   * @param string $current_find_method
+   *   The name of the current find method.
+   */
+  public function setCurrentFindMethod($current_find_method) {
+    if (!empty($current_find_method)) {
+      $this->currentFindMethod = $current_find_method;
+    }
+  }
+
+  /**
+   * Getter for $currentFindMethod.
+   *
+   * @return string
+   *   The current value of $currentFindMethod.
+   */
+  public function getCurrentFindMethod() {
+    return $this->currentFindMethod;
   }
 
   /**
@@ -83,29 +112,24 @@ abstract class Obtainer {
    */
   public function obtain() {
     // Loop through the stack.
-    foreach ($this->methodStack as $key => $value) {
-
-      // An obtainer stack may be passed as an associate or flat array.
-      // E.g., array('method1_name' => array('arg1val', 'arg2val'),
-      // 'method2_name' => array()) or as
-      // array ('method1_name', 'method2n_name').
-      if (is_numeric($key)) {
-        $current_method = $value;
-        $arguments = array();
+    foreach ($this->methodStack as $key => $method) {
+      // A method may show up as legacy flat array of method names.  If so,
+      // it will need to be restructured.
+      if (!is_array($method)) {
+        $method = array(
+            'method_name' => $method,
+            'arguments' => array(),
+          );
       }
-      else {
-        $current_method = $key;
-        $arguments = $value;
-      }
-
       // Run the method. It is expected that the method will return a string.
-      // Call $this->$current_method($arguments);
-      $found_string  = call_user_func_array(array($this, $current_method), $arguments);
+      $this->setCurrentFindMethod($method['method_name']);
+      $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
       $found_string = $this->cleanString($found_string);
 
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
         $found_string = $this->processString($found_string);
+        $current_method = $this->getCurrentFindMethod();
 
         $this->obtainerMessage('@method found a string.', array('@method' => $current_method), WATCHDOG_DEBUG);
 

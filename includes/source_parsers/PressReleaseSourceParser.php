@@ -78,14 +78,13 @@ class PressReleaseSourceParser extends SourceParser {
         if (empty($method_stack)) {
           $method_stack = array(
             'findH1Any' => array(),
-            'findIdContentstartDivH2Sec' => array(),
-            'findH2First' => array(),
-            'findClassContentSubDivPCenterStrong' => array(),
-            'findClassContentSubDivDivPStrong' => array(),
-            'findIdHeadline' => array(),
-            'findPStrongEm' => array(),
-            'findIdContentstartDivH2' => array(),
-            'findDivClassContentSubDivDivCenter' => array(),
+            'findSelector' => array("#contentstart > div > h2", 2),
+            'findSelector' => array("h2", 1),
+            'findSelector' => array(".contentSub > div > p[align='center'] > strong", 1),
+            'findSelector' => array(".contentSub > div > div > p > strong", 1),
+            'findSelector' => array("#headline", 1),
+            'findSelector' => array("p > strong > em", 1),
+            'findSelector' => array("#contentstart > div > h2", 1),
           );
         }
         $this->setObtainerMethods(array('title' => $method_stack));
@@ -114,10 +113,10 @@ class PressReleaseSourceParser extends SourceParser {
           'findTableRow1Col2' => array(),
           'findTableRow1Col1' => array(),
           'findTable2Row2Col2' => array(),
-          'findPAlignCenter' => array(),
-          'findIdContentstartFirst' => array(),
-          'findClassNewsRight' => array(),
-          'findClassBottomLeftContent' => array(),
+          'findSelector' => array("p[align='center']", 1),
+          'findSelector' => array('#contentstart > p', 1),
+          'findSelector' => array('.newsRight', 1),
+          'findSelector' => array('.BottomLeftContent', 1),
           'findProbableDate' => array(),
         );
       }

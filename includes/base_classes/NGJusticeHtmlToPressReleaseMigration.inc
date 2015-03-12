@@ -58,7 +58,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
   protected function setProperties($row) {
     $row->content_type = $this->sourceParser->getContentType();
     $row->title = $this->sourceParser->getTitle();
-
+    $row->field_pr_subtitle = $this->sourceParser->getSubTitle();
     $row->field_pr_date = $this->sourceParser->getDate();
     if (empty($row->field_pr_date)) {
       $this->migrationMessage("IGNORING: The press release date for @file_id has no date", array("@file_id" => $row->fileid), WATCHDOG_ALERT);
@@ -72,7 +72,6 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
       return FALSE;
     }
 
-    $row->field_pr_subtitle = $this->sourceParser->getSubtitle();
     $row->field_pr_number = $this->sourceParser->getPrNumber();
     $row->body = $this->sourceParser->getBody();
   }

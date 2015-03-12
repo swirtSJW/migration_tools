@@ -108,7 +108,7 @@ class UsaoEdtnPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod("findH2Third");
 
     $date = new ObtainerInfo('date');
-    $date->addMethod("findIdContentstartFirst");
+    $date->addMethod('findSelector', array("#contentstart > p", 1));
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;

@@ -49,7 +49,7 @@ class DistrictsSourceParser extends SourceParser {
     if (empty($override)) {
       // Default stack: Use this if none was defined in migration class.
       $default_target_stack = array(
-        'findH1First' => array(),
+        'findSelector' => array("h1", 1),
         'findH1Any' => array(),
         'findClassBreadcrumbLast' => array(),
         'findClassBreadcrumbMenuContentLast' => array(),

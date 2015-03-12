@@ -59,82 +59,10 @@ class ObtainTitle extends ObtainHtml {
     // Remove the anchors. Creates a slight problem in that it is removing
     // elements it may not use, but this is mitigated by the fact that we
     // do not import breadcrumbs.
-    $breadcrumb->children('a, span, font')->remove();;
+    $breadcrumb->children('a, span, font')->remove();
     $title = $breadcrumb->text();
 
     return $title;
-  }
-
-
-  /**
-   * Finder  first .contentSub > div > p[align='center'] > strong on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findClassContentSubDivPCenterStrong() {
-    $element = $this->queryPath->find(".contentSub > div > p[align='center'] > strong")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder first .contentSub > div > strong on the page.
-   *
-   * @return string
-   *   The text found.
-   */
-  protected function findClassContentSubDivDivPStrong() {
-    $element = $this->queryPath->find(".contentSub > div > div > p > strong")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Find the first element  ".MsoNormal".  RISKY.
-   * @return string
-   *   The text found.
-   */
-  protected function findClassMsoNormal() {
-    $element = $this->queryPath->find(".MsoNormal")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder  first div.contentSub > div > div[align='center'] on the page.
-   *
-   * Added for AZ
-   *
-   * @return string
-   *   The text found.
-   */
-  protected function findDivClassContentSubDivDivCenter() {
-    $element = $this->queryPath->find("div.contentSub > div > div[align='center']")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method "div > div[align='center'] > div.Part > p" first on the page.
-   *
-   * Added for AZ
-   *
-   * @return string
-   *   The text found.
-   */
-  protected function findDivDivCenterDivClassPartP() {
-    $element = $this->queryPath->find("div > div[align='center'] > div.Part > p")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
   }
 
 
@@ -144,195 +72,19 @@ class ObtainTitle extends ObtainHtml {
    *   The text found.
    */
   protected function findH1Any() {
-
     // Check all h1
     foreach ($this->queryPath->find("h1") as $key => $h1) {
       $this->setElementToRemove($h1);
       $text = $h1->text();
       $text = $this->cleanString($text);
       if ($this->validateString($text)) {
-        // @todo Add debug message.
-        // $this->setCurrentFindMethod("findAnyH1-i={$key}");
+        $this->setCurrentFindMethod("findAnyH1-i={$key}");
         // Return the original string to avoid double cleanup causing issues.
         return $text;
       }
     }
     // If it made it this far, nothing was found.
     return '';
-  }
-
-  /**
-   * Finder method to find the content of the first H1 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH1First() {
-    $element = $this->queryPath->find("h1")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-  /**
-   * Finder method to find the content of the first centered H1 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH1FirstCentered() {
-    $element = $this->queryPath->find("h1[align='center']")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method to find the content of the second H1 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH1Second() {
-    $elements = $this->queryPath->find("h1");
-    foreach ($elements as $key => $elem) {
-      if ($key == 1) {
-        $this->setElementToRemove($elem);
-
-        return $elem->text();
-      }
-    }
-  }
-
-
-  /**
-   * Finder method to find the content of the first H2 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH2First() {
-    $element = $this->queryPath->find("h2")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method to find the content of the first H2 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH2FirstCentered() {
-    $element = $this->queryPath->find("h2[align='center']")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method to find the content of the first H3 on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findH3First() {
-    $element = $this->queryPath->find("h3")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method "#contentstart > div > h2" first on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findIdContentstartDivH2() {
-    $element = $this->queryPath->find("#contentstart > div > h2")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Find the elements with #contentstart > div > h2.
-   * @return string
-   *   The text found.
-   */
-  protected function findIdContentstartDivH2Sec() {
-    $elements = $this->queryPath->find("#contentstart > div > h2");
-    foreach ($elements as $key => $h2) {
-      // Key starts at 0.
-      if ($key == 1) {
-        $text = $h2->text();
-        return $text;
-      }
-    }
-    return '';
-  }
-
-
-  /**
-   * Finder method to find the content of the first #headline on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findIdHeadline() {
-    $element = $this->queryPath->find("#headline")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Finder method to find #Layer4 and the 2nd paragraph on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findIdLayer4P2() {
-    $elems = $this->queryPath->find("#Layer4")->siblings();
-    $title = '';
-
-    $pcounter = 0;
-    // The sixth p is the title.
-    foreach ($elems as $elem) {
-      if ($elem->is("p")) {
-        $pcounter++;
-        if ($pcounter == 2) {
-          $this->setElementToRemove($elem);
-          $title = $elem->text();
-          break;
-        }
-      }
-    }
-    return $title;
-  }
-
-
-  /**
-   * Finder method to find #Layer4 and the 5th paragraph on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findIdLayer4P6() {
-    $elems = $this->queryPath->find("#Layer4")->siblings();
-    $title = '';
-
-    $pcounter = 0;
-    // The sixth p is the title.
-    foreach ($elems as $elem) {
-      if ($elem->is("p")) {
-        $pcounter++;
-        if ($pcounter == 6) {
-          $this->setElementToRemove($elem);
-          $title = $elem->text();
-          break;
-        }
-      }
-    }
-    return $title;
   }
 
 
@@ -432,89 +184,6 @@ class ObtainTitle extends ObtainHtml {
 
 
   /**
-   * Find  the content of the first  "div > p[align="center"]" on page.
-   * @return string
-   *   The text found.
-   */
-  protected function findFirstPAlignCenter() {
-    $elems = $this->queryPath->find('div > p[align="center"]');
-    foreach ($elems as $i => $elem) {
-      if ($i == 0) {
-        $this->setElementToRemove($elem);
-        return $elem->text();
-      }
-    }
-  }
-
-  /**
-   * Find  the content of the first  "p[align="center"] > strong > u" on page.
-   * @return string
-   *   The text found.
-   */
-  protected function findFirstPAlignCenterStrong() {
-    $elems = $this->queryPath->find('p[align="center"]');
-    foreach ($elems as $i => $elem) {
-      if ($i == 0) {
-        $this->setElementToRemove($elem);
-        return $elem->text();
-      }
-    }
-  }
-
-  /**
-   * Find  the content of the first  "p[align="center"] > strong > u" on page.
-   * @return string
-   *   The text found.
-   */
-  protected function findSecondPAlignCenterStrong() {
-    $elems = $this->queryPath->find('p[align="center"]');
-    foreach ($elems as $i => $elem) {
-      if ($i == 1) {
-        $this->setElementToRemove($elem);
-        return $elem->text();
-      }
-    }
-  }
-
-  /**
-   * Find  the content of the first  "p[align="center"] > strong > u" on page.
-   * @return string
-   *   The text found.
-   */
-  protected function findPAlignCenterStrongU() {
-    $element = $this->queryPath->find('p[align="center"] > strong > u')->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
-   * Find  the content of the first  "p > strong > em" on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findPStrongEm() {
-    $element = $this->queryPath->find("p > strong > em")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-  /**
-   * Find  the content of the first  "p > strong > u" on the page.
-   * @return string
-   *   The text found.
-   */
-  protected function findPStrongU() {
-    $element = $this->queryPath->find("p > strong > u")->first();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
    * Finder method to find the content sub-banner alt.
    * @return string
    *   The text found.
@@ -546,33 +215,6 @@ class ObtainTitle extends ObtainHtml {
 
 
   /**
-   * Finder method to find the content of the title.
-   * @return string
-   *   The text found.
-   */
-  protected function findTitleTag() {
-    $element = $this->queryPath->find("title");
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-  /**
-   * Get the title in the fist centered thing in a table td.
-   * @return string
-   *   The possible title.
-   */
-  protected function findFirstCenterInTableTd() {
-    $center = $this->queryPath->find("table > td center")->first();
-    $title = '';
-    if ($center) {
-      $this->setElementToRemove($center);
-      $title = $center->text();
-    }
-    return $title;
-  }
-
-  /**
    * Find first centered aligned paragraph after the first hr.
    */
   protected function findFirstCenteredAlignPAfterHr() {
@@ -584,8 +226,6 @@ class ObtainTitle extends ObtainHtml {
         || $elem->attr('style') == "text-align:center;")) {
         $this->setElementToRemove($elem);
         $text = $elem->text();
-        drush_print_r("HTML: " . $elem->html());
-        drush_print_r("TEXT: " . $text);
         return $text;
       }
     }

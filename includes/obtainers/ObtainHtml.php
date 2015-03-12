@@ -38,6 +38,35 @@ class ObtainHtml extends Obtainer {
     }
   }
 
+
+  /**
+   * Finder for nth  selector on the page.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param int $n
+   *   The depth to find.  Default: first item n=1.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findSelector($selector, $n = 1) {
+    $text = '';
+    $n = ($n > 0) ? $n - 1 : 0;
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        if ($i == $n) {
+          $this->setElementToRemove($element);
+          $text = $element->text();
+          $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
+        }
+      }
+    }
+    return $text;
+  }
+
+
   /**
    * Get td text from a table, and lines it up to be removed.
    *
@@ -105,6 +134,52 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Splits text on variations of the br tag.
+   *
+   * @param string $html
+   *   String that needs to be split.
+   *
+   * @return array
+   *   Array containing the results of splitting on br.
+   */
+  public static function splitOnBr($html) {
+
+    // Normalize variations of the br tag.
+    // @codingStandardsIgnoreStart
+    $search = array(
+      '<br>',
+      '<br />',
+      '<br/>',
+    );
+    $html = str_ireplace($search, '<br>', $html);
+    $lines = explode('<br>', $html);
+    // @codingStandardsIgnoreEnd
+
+    return $lines;
+  }
+
+
+  /**
+   * Splits text on variations of the newline character.
+   *
+   * @param string $text
+   *   String that needs to be split.
+   *
+   * @return array
+   *   Array containing the results of splitting on \n.
+   */
+  public static function splitOnNewline($text) {
+    $search = array(
+      "\r\n",
+      "\r",
+    );
+    $text = str_ireplace($search, "\n", $text);
+    $lines = explode("\n", $text);
+
+    return $lines;
+  }
+
+  /**
    * Takes a string, returns anything before a <br> tag and its many variants.
    *
    * @param string $text
@@ -117,16 +192,7 @@ class ObtainHtml extends Obtainer {
    *   The string appearing before the <br> or the full string if no <br>.
    */
   public static function trimAtBr($text = '', $position = 'before') {
-    // Replace variations of br tag.
-    // @codingStandardsIgnoreStart
-    $search = array(
-      '<br>',
-      '<br />',
-      '<br/>',
-    );
-    $text = str_ireplace($search, '<br>', $text);
-    $texts = explode('<br>', $text);
-    // @codingStandardsIgnoreEnd
+    $texts = splitOnBr($text);
 
     if ($position == 'before') {
       return $texts[0];
@@ -149,16 +215,7 @@ class ObtainHtml extends Obtainer {
    *   The string appearing before the blank <br> or the full string if no <br>.
    */
   protected function trimAtBrBlank($text, $qp_element, $max_length = 0) {
-    // Replace variations of br tag.
-    // @codingStandardsIgnoreStart
-    $search = array(
-      '<br>',
-      '<br />',
-      '<br/>',
-    );
-    $text = str_ireplace($search, '<br>', $text);
-    $texts = explode('<br>', $text);
-    // @codingStandardsIgnoreEnd
+    $texts = splitOnBr($text);
     $trimmed = '';
     $lines_used = 0;
     foreach ($texts as $line_num => $line) {

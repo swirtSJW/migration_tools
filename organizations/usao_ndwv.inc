@@ -159,15 +159,15 @@ class UsaoNdwvPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['source_parser_class'] = "NdwvPressSourceParser";
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1First',
-        'findIdLayer4P5UptoEmptyBr',
-        'findIdLayer4P5ShortEnough',
-        'findIdLayer4P5Firstline',
-        'findIdLayer4P6ShortEnough',
-        'findIdLayer4P7ShortEnough',
+        'findSelector' => array("h1", 1),
+        'findIdLayer4P5UptoEmptyBr' => array(),
+        'findIdLayer4P5ShortEnough' => array(),
+        'findIdLayer4P5Firstline' => array(),
+        'findIdLayer4P6ShortEnough' => array(),
+        'findIdLayer4P7ShortEnough' => array(),
       ),
       'body' => array(
-        'findClassContentSub',
+        'findClassContentSub' => array(),
       ),
       'subtitle' => array(),
       'date' => array(),

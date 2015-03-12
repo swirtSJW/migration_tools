@@ -98,7 +98,7 @@ class UsaoMdlaPressReleaseMigration extends DistrictPressReleaseMigration {
 
     $arguments['obtainer_methods'] = array(
       'subtitle' => array(
-        'findH2FirstCentered',
+        'findSelector' => array("h2[align='center']", 1),
       ),
     );
 

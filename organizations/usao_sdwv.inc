@@ -110,19 +110,19 @@ class UsaoSdwvPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['source_parser_class'] = "DistrictPressReleaseSourceParser";
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findClassMultiU',
-        'findClassMultiStrongU',
-        'findPAlignCenterStrongU',
-        'findH1First',
+        'findClassMultiU' => array(),
+        'findClassMultiStrongU' => array(),
+        'findSelector' => array('p[align="center"] > strong > u', 1),
+        'findSelector' => array("h1", 1),
 
       ),
       'body' => array(
-        'findClassContentSub',
+        'findClassContentSub' => array(),
       ),
       'subtitle' => array(),
       'date' => array(
-        'findPAlignCenter',
-        'findProbableDate',
+        'findSelector' => array("p[align='center']", 1),
+        'findProbableDate' => array(),
       ),
       // There are no ids.
       'id' => array(),
