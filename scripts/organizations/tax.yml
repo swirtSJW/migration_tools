@@ -1,4 +1,5 @@
 abbreviation: tax
 full_name: Tax Division
 directory: tax
-pr_subdirectory: 2012
+pr_subdirectory: componentpress
+component_tid: 646

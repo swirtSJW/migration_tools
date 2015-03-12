@@ -11,7 +11,7 @@
  * @package doj_migration
  * @subpackage tax
  */
-class TaxPageMigration extends JusticeHtmlToPageMigration {
+class TaxPageMigration extends NGJusticeHtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -22,24 +22,36 @@ class TaxPageMigration extends JusticeHtmlToPageMigration {
     $source_dirs = array(
       0 => 'tax',
       1 => 'tax/DiverseCommittee',
-      5 => 'tax/readingroom/jcmanhtm',
-      6 => 'tax/readingroom/JCM2004',
-      7 => 'tax/readingroom/settlpdf',
-      8 => 'tax/readingroom/2008ctm',
-      9 => 'tax/readingroom/jcpdf',
-      10 => 'tax/readingroom/foia',
-      11 => 'tax/readingroom/foia/criminalorders/2013',
-      12 => 'tax/readingroom/foia/criminalorders/2014',
-      13 => 'tax/readingroom/foia/foia_publications',
-      14 => 'tax/readingroom/2001ctm',
-      15 => 'tax/readingroom/settlemn_OLD_01',
-      16 => 'tax/readingroom/settlemn',
-      28 => 'tax/hr_new_employee',
+      2 => 'tax/hr_new_employee',
+      3 => 'tax/readingroom/2001ctm',
+      4 => 'tax/readingroom/2008ctm',
+      5 => 'tax/readingroom/foia',
+      6 => 'tax/readingroom/foia/criminalorders/2013',
+      7 => 'tax/readingroom/foia/criminalorders/2014',
+      8 => 'tax/readingroom/foia/criminalorders/2015',
+      9 => 'tax/readingroom/foia/foia_publications',
+      10 => 'tax/readingroom/JCM2004',
+      11 => 'tax/readingroom/jcmanhtm',
+      12 => 'tax/readingroom/jcpdf',
+      13 => 'tax/readingroom/settlemn',
+      14 => 'tax/readingroom/settlemn_OLD_01',
+      15 => 'tax/readingroom/settlpdf',
+      16 => 'tax/usaopress',
+      17 => 'tax/componentpress',
     );
 
-    $arguments['source_parser_class'] = "SourceParser";
-
     $options = array('recurse' => FALSE);
+
+    $arguments['source_parser_class'] = "TaxPageSourceParser";
+
+    // Configuring Obtainers.
+    $title = new ObtainerInfo('title', "TaxObtainTitlePage");
+    $title->addMethod('findClassBreadcrumbMenuContentLast');
+    $title->addMethod('findSelector', array('selector'=>"center > font[size='+2'] > b"));
+    $title->addMethod('findTitleTag');
+    $title->addMethod('findH1First');
+
+    $arguments['obtainers_info'][] = $title;
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -49,6 +61,16 @@ class TaxPageMigration extends JusticeHtmlToPageMigration {
     $this->addFieldMapping('og_group_ref')
     ->defaultValue('tax')
     ->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array();
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
   }
 }
 
@@ -98,39 +120,228 @@ class TaxFileMigration extends JusticeDeployableBinaryFileMigration {
  * @package doj_migration
  * @subpackage tax
  */
-class TaxPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
+class TaxPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
     $arguments['component'] = "Tax Division";
+    $arguments['source_parser_class'] = "TaxPressSourceParser";
+
+    // Configuring Obtainers.
+    $title = new ObtainerInfo('title', "TaxObtainTitlePressRelease");
+    $title->addMethod('findSelector', array('selector'=>'.title', 'n'=>1,));
+    $title->addMethod('findH1Any');
+    $title->addMethod('findSelector', array('selector'=>"p[align='center'] > strong > u"));
+    $title->addMethod('findIdContentstartDivH2Sec');
+    $title->addMethod('findH2First');
+    $title->addMethod('findClassContentSubDivPCenterStrong');
+    $title->addMethod('findClassContentSubDivDivPStrong');
+    $title->addMethod('findIdHeadline');
+    $title->addMethod('findPStrongEm');
+    $title->addMethod('findIdContentstartDivH2');
+    $title->addMethod('findDivClassContentSubDivDivCenter');
+    $title->addMethod('findPSecond');
+
+    $subtitle = new ObtainerInfo('subtitle', "TaxObtainTitlePressRelease");
+    $subtitle->addMethod('findSelector', array('selector'=>'.title'));
+    $subtitle->addMethod('findSelector', array('selector'=>"p[align='center'] > strong > em"));
+
+
+    $date = new ObtainerInfo('date', "TaxObtainDate");
+    $date->addMethod('findTableRow1Col2');
+    $date->addMethod('findTableRow1Col1');
+    $date->addMethod('findTable2Row2Col2');
+    $date->addMethod('findPAlignCenter');
+    $date->addMethod('findIdContentstartFirst');
+    $date->addMethod('findClassNewsRight');
+    $date->addMethod('findClassBottomLeftContent');
+    $date->addMethod('findProbableDate');
+    $date->addMethod('findTableRowLines');
+
+    $type = new ObtainerInfo('content_type', "ObtainContentType");
+    $type->addMethod('findPRImmediateRelease');
+
+
+    $pr_number = new ObtainerInfo('prNumber', "TaxObtainPrNumber");
+    $pr_number->addMethod('findMetaPr');
+
+    $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $subtitle;
+    $arguments['obtainers_info'][] = $date;
+    $arguments['obtainers_info'][] = $pr_number;
+    $arguments['obtainers_info'][] = $type;
+
+    $source_dirs = array(
+      1 => 'tax/2009',
+      2 => 'tax/2010',
+      3 => 'tax/2011',
+      4 => 'tax/2012',
+      5 => 'tax/2013',
+      6 => 'tax/2014',
+      7 => 'tax/2015',
+      19 => 'tax/usaopress/2009',
+      20 => 'tax/usaopress/2010',
+      21 => 'tax/usaopress/2011',
+      22 => 'tax/usaopress/2012',
+      23 => 'tax/usaopress/2013',
+      24 => 'tax/usaopress/2014',
+      25 => 'tax/usaopress/2015',
+    );
+
+    parent::__construct($arguments, $source_dirs);
 
     $this->addFieldMapping('og_group_ref')
     ->defaultValue('tax')
     ->sourceMigration('Organization');
-
-    $source_dirs = array(
-      // 2 => 'tax/2012',
-      3 => 'tax/2013',
-      4 => 'tax/2014',
-      5 => 'tax/2015',
-      // 17 => 'tax/prtax',
-      // 18 => 'tax/usaopress',
-      // 19 => 'tax/usaopress/2007',
-      // 20 => 'tax/usaopress/2006',
-      // 21 => 'tax/usaopress/2008',
-      // 22 => 'tax/usaopress/2002',
-      // 23 => 'tax/usaopress/2003',
-      // 24 => 'tax/usaopress/2012',
-      // 25 => 'tax/usaopress/2004',
-      // 26 => 'tax/usaopress/2005',
-      // 27 => 'tax/usaopress/2001',
-      // 29 => 'tax/componentpress/2009',
-      // 30 => 'tax/componentpress/2002',
-      // 31 => 'tax/componentpress',
-      // 32 => 'tax/usaopress/2009',
-    );
-    parent::__construct($arguments, $source_dirs);
   }
+}
+
+/**
+ * SourceParser for /tax pages.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ */
+class TaxPageSourceParser  extends NGNodeSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+    $selectors = array(
+      'center > form',
+      'pre > center',
+      'hr',
+      'center > a',
+    );
+  }
+}
+
+/**
+ * SourceParser for /tax press releases.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ */
+class TaxPressSourceParser extends NGPressReleaseSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+    $selectors = array(
+      'table',
+    );
+    // Remove these selectors.
+   // HtmlCleanUp::removeElements($this->queryPath, $selectors);
+    $this->queryPath->find('table')->first()->remove();
+    //Press release numbers are often unwrapped text, so search for the string.
+    if (!empty($this->prNumber)) {
+      $element = HtmlCleanUp::matchText($this->queryPath, 'p', $this->prNumber);
+      $element->remove();
+    }
+  }
+}
+
+/**
+ * Obtainer for title property for /tax pages.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ * @see Obtainer.api.php
+ */
+class TaxObtainTitlePage extends ObtainTitle {
+  /**
+   * Finder  first center font size2+ b on the page.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findCenterB() {
+    $element = $this->queryPath->find("center > font[size='+2'] > b")->first();
+    $this->setElementToRemove($element);
+
+    return $element->text();
+  }
+}
+
+/**
+ * Obtainer for title property for /tax press releases.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ * @see Obtainer.api.php
+ */
+class TaxObtainTitlePressRelease extends ObtainTitlePressRelease {
+  /**
+   * Finder method to find the content of the second p on the page.
+   * @return string
+   *   The text found.
+   */
+  protected function findPSecond() {
+    $elements = $this->queryPath->find("p");
+    foreach ($elements as $key => $elem) {
+      if ($key == 1) {
+        $this->setElementToRemove($elem);
+
+        return $elem->text();
+      }
+    }
+  }
+}
+
+/**
+ * Obtainer for prNumber property for /tax press releases.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ * @see Obtainer.api.php
+ */
+class TaxObtainPrNumber extends ObtainId {
+  /**
+   * Finds the press release number from markup.
+   */
+  protected function findPrNumber() {
+    $text =  '';
+    // $element = $this->queryPath->find('p')->last();
+    // $this->setElementToRemove($element);
+    // $text = $element->text();
+
+    return $text;
+  }
+
+  protected function findMetaPr() {
+    $element = $this->queryPath->find('meta[name="rnumber"]');
+    $this->setElementToRemove($element);
+    $text = $element->attr("content");
+
+    return $text;
+  }
+}
+
+/**
+ * Custom obtainer for date property for /tax.
+ *
+ * @package doj_migration
+ * @subpackage tax
+ * @see Obtainer.api.php
+ */
+class TaxObtainDate extends ObtainDate {
+  protected function findTableRowLines() {
+    $element = $this->queryPath->find("td[align='left'] > b")->first();
+    $lines = SELF::splitOnNewline($element->text());
+    foreach($lines as $line) {
+      $line = $this->cleanString($line);
+      $valid = $this->validateString($line);
+      if ($valid) {
+            $this->setElementToRemove($element);
+            return $line;
+      }
+    }
+
+    return '';
+  }
+
 }
