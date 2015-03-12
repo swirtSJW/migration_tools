@@ -41,7 +41,6 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
    */
   public function getSubTitle() {
     $subtitle = $this->getProperty('subtitle');
-    $this->sourceParserMessage("Subtitle: @subtitle", array('@subtitle' => $subtitle), WATCHDOG_DEBUG, 2);
 
     return $subtitle;
   }
@@ -51,7 +50,6 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
    */
   public function getPrNumber() {
     $pr_number = $this->getProperty('prNumber');
-    $this->sourceParserMessage("Press Release Number: @pr_number", array('@pr_number' => $pr_number), WATCHDOG_DEBUG, 2);
 
     return $pr_number;
   }

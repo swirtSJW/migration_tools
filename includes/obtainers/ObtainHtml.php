@@ -66,6 +66,33 @@ class ObtainHtml extends Obtainer {
     return $text;
   }
 
+  /**
+   * Finder for nth  xpath on the page.
+   *
+   * @param string $xpath
+   *   The selector to find.
+   * @param int $n
+   *   The depth to find.  Default: first item n=1.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findXpath($xpath, $n = 1) {
+    $text = '';
+    $n = ($n > 0) ? $n - 1 : 0;
+    if (!empty($xpath)) {
+      $elements = $this->queryPath->xpath($xpath);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        if ($i == $n) {
+          $this->setElementToRemove($element);
+          $text = $element->text();
+          $this->setCurrentFindMethod("findXpath($xpath, " . ++$n . ')');
+        }
+      }
+    }
+    return $text;
+  }
+
 
   /**
    * Get td text from a table, and lines it up to be removed.

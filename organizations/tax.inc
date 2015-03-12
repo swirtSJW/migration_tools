@@ -233,7 +233,9 @@ class TaxPressSourceParser extends NGPressReleaseSourceParser {
     // Press release numbers are often unwrapped text, so search for the string.
     if (!empty($this->prNumber)) {
       $element = HtmlCleanUp::matchText($this->queryPath, 'p', $this->prNumber);
-      $element->remove();
+      if (is_object($element)) {
+        $element->remove();
+      }
     }
   }
 }
