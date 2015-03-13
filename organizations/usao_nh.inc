@@ -139,6 +139,7 @@ class UsaoNhPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findSelector', array(".newsRight > p", 1));
     $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
+    $date->addMethod('findSelector', array(".newsRight", 1));
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoNhObtainPrNumber");
 

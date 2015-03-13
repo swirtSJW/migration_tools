@@ -107,6 +107,11 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
     $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
     $this->addObtainerInfo($title);
 
+    $subtitle = new ObtainerInfo('subtitle', "ObtainSubTitle");
+    // Intentionally has no methods defined so it will not run unless a
+    // migration specifies methods.
+    $this->addObtainerInfo($subtitle);
+
     $date = new ObtainerInfo("date");
     $date->addMethod('findTableRow1Col2');
     $date->addMethod('findTableRow1Col1');
