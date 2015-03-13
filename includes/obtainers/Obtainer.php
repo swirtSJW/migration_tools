@@ -58,6 +58,17 @@ abstract class Obtainer {
    */
   public function setMethodStack($method_stack) {
     foreach ($method_stack as $key => $method) {
+      // For legacy support of old format method array.
+      if (!is_numeric($key)) {
+        // The $key is actually the methodname and the $method is the arguments.
+        $method = array(
+          'method_name' => $key,
+          'arguments' => $method,
+        );
+        $method_stack[] = $method;
+        unset($method_stack[$key]);
+      }
+
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
         $this->obtainerMessage('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
@@ -113,14 +124,6 @@ abstract class Obtainer {
   public function obtain() {
     // Loop through the stack.
     foreach ($this->methodStack as $key => $method) {
-      // A method may show up as legacy flat array of method names.  If so,
-      // it will need to be restructured.
-      if (!is_array($method)) {
-        $method = array(
-            'method_name' => $method,
-            'arguments' => array(),
-          );
-      }
       // Run the method. It is expected that the method will return a string.
       $this->setCurrentFindMethod($method['method_name']);
       $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
