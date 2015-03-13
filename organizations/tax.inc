@@ -327,7 +327,7 @@ class TaxObtainDate extends ObtainDate {
    */
   protected function findTableRowLines() {
     $element = $this->queryPath->find("td[align='left'] > b")->first();
-    $lines = SELF::splitOnNewline($element->text());
+    $lines = ObtainHtml::splitOnNewline($element->text());
     foreach ($lines as $line) {
       $line = $this->cleanString($line);
       $valid = $this->validateString($line);
