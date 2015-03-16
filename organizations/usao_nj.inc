@@ -119,6 +119,7 @@ class UsaoNjPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1956;
 
     $source_dirs = array(
+      5 => 'usao/nj/Press/files/pdffiles/2015',
       6 => 'usao/nj/Press/files/pdffiles/2014',
       7 => 'usao/nj/Press/files/pdffiles/2013',
     );
