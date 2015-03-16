@@ -60,6 +60,7 @@ class ObtainHtml extends Obtainer {
           $this->setElementToRemove($element);
           $text = $element->text();
           $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
+          break;
         }
       }
     }
@@ -87,6 +88,7 @@ class ObtainHtml extends Obtainer {
           $this->setElementToRemove($element);
           $text = $element->text();
           $this->setCurrentFindMethod("findXpath($xpath, " . ++$n . ')');
+          break;
         }
       }
     }
