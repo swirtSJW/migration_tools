@@ -102,3 +102,35 @@ function doj_migration_skip_file($file_id, $files_to_skip) {
   // This page should not be skipped.
   return FALSE;
 }
+
+/**
+ * Checks to see if a date comes after a cutoff.
+ *
+ * @param string $date
+ *   A date to evaluate as can be used by strtotime().
+ * @param string $date_cutoff
+ *   A date representing the low cut-off.
+ * @param bool $default
+ *   What should be returned if the date is invalid or unavailable.
+ *
+ * @return bool
+ *   TRUE if the $date > $date_cutoff, or uncheckable.
+ *   FALSE if $date < $date_cutoff
+ */
+function doj_migration_date_after($date, $date_cutoff, $default = TRUE) {
+  $date_cutoff = strtotime($date_cutoff);
+  $date = strtotime($date);
+  if (($date !== FALSE) && ($date_cutoff !== FALSE)) {
+    // Both the $date and $date_cutoff are valid.
+    if ($date > $date_cutoff) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  // If the comparison is invalid or fails, call it TRUE.
+  // Risky but safer than throwing away a file just because it has a bad date.
+  return $default;
+
+}

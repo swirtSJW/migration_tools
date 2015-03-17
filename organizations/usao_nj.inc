@@ -119,10 +119,38 @@ class UsaoNjPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1956;
 
     $source_dirs = array(
-      5 => 'usao/nj/Press/files/pdffiles/2015',
-      6 => 'usao/nj/Press/files/pdffiles/2014',
-      7 => 'usao/nj/Press/files/pdffiles/2013',
+      5 => 'usao/nj/Press/files',
+      6 => 'usao/nj/Press',
     );
-    parent::__construct($arguments, $source_dirs);
+    $options = array('recurse' => FALSE);
+    parent::__construct($arguments, $source_dirs, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array(
+      'usao/nj/Press/news2006.html',
+      'usao/nj/Press/news2007.html',
+      'usao/nj/Press/news2008.html',
+      'usao/nj/Press/news2009.html',
+      'usao/nj/Press/news2010.html',
+      'usao/nj/Press/news2011.html',
+      'usao/nj/Press/news2012.html',
+      'usao/nj/Press/news2013.html',
+      'usao/nj/Press/news2014.html',
+    );
+
+    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->legacy_path, $skip_these)) {
+      return FALSE;
+    }
+
+    // Check the year to reject any prior to 2013
+    if (!doj_migration_date_after($row->field_pr_date, '12/31/2012')) {
+      $message = t('- @fileid  -> Skipped: Too old.', array('@fileid' => $row->fileid));
+      watchdog('doj_migration', $message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+      return FALSE;
+    }
   }
 }
