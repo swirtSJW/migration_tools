@@ -68,6 +68,14 @@ abstract class Obtainer {
         $method_stack[] = $method;
         unset($method_stack[$key]);
       }
+      elseif (!is_array($method)) {
+        // The method is the method_name (really old version).
+        $method = array(
+          'method_name' => $method,
+          'arguments' => array(),
+        );
+        $method_stack[$key] = $method;
+      }
 
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
