@@ -13,7 +13,9 @@
 function get_badly_encoded_files($dir) {
   $bad_files = array();
   $files = scandir($dir);
+  $i = 0;
   foreach ($files as $file) {
+    $i++;
     $full_file = "{$dir}/{$file}";
     if (is_dir($full_file) && ($file != "." && $file != "..")) {
       $bad_files = array_merge($bad_files, get_badly_encoded_files($full_file));
@@ -29,6 +31,7 @@ function get_badly_encoded_files($dir) {
       }
     }
   }
+  print_r("Scanned $i files.\n");
   return $bad_files;
 }
 

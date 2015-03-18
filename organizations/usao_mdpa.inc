@@ -174,6 +174,7 @@ class UsaoMdpaPressReleaseMigration extends NGDistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-mdpa";
     $arguments['component_tid'] = 2031;
+    $arguments['source_parser_class'] = "MdpaPressSourceParser";
 
     $source_dirs = array(
       35 => 'usao/pam/news/2013',
@@ -244,6 +245,7 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
     $date = new ObtainerInfo('date');
     $date->addMethod("findDivPAlignLeft");
     $date->addMethod('findSelector', array(".newsRight > p", 1));
+    $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod("findDivClassContentSubDiv3");
     $date->addMethod("findProbableDate");
     $this->addObtainerInfo($date);
