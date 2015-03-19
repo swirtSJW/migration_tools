@@ -144,6 +144,8 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public function postImport($report_rows = array()) {
     parent::postImport();
 
+    // @todo Move this to NGJusticeHtmlToNodeMigration after
+    // JusticeHtmlToNodeMigration is completely deprecated.
     if (is_subclass_of($this, 'JusticeHtmlToNodeMigration') || (is_subclass_of($this, 'NGJusticeHtmlToNodeMigration'))) {
       $this->printNodeMigrationReport($report_rows);
     }

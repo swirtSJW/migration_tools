@@ -91,7 +91,9 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    parent::prepareRow($row);
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
 
     // Sets $row->legacy_path and $row->url_path.
     if (empty($row->legacy_path) || empty($row->url_path)) {
