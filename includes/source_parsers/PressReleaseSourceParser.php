@@ -76,15 +76,26 @@ class PressReleaseSourceParser extends SourceParser {
       if (empty($title)) {
         $method_stack = $this->getObtainerMethods('title');
         if (empty($method_stack)) {
-          $method_stack = array(
-            'findH1Any' => array(),
-            'findSelector' => array("#contentstart > div > h2", 2),
-            'findSelector' => array("h2", 1),
-            'findSelector' => array(".contentSub > div > p[align='center'] > strong", 1),
-            'findSelector' => array(".contentSub > div > div > p > strong", 1),
-            'findSelector' => array("#headline", 1),
-            'findSelector' => array("p > strong > em", 1),
-            'findSelector' => array("#contentstart > div > h2", 1),
+          $method_stack = array();
+          $method_stack[] = array('findH1Any');
+          $method_stack[] = array(
+            'findSelector',
+            array("#contentstart > div > h2", 2),
+          );
+          $method_stack[] = array('findSelector', array("h2", 1));
+          $method_stack[] = array(
+            'findSelector',
+            array(".contentSub > div > p[align='center'] > strong", 1),
+          );
+          $method_stack[] = array(
+            'findSelector',
+            array(".contentSub > div > div > p > strong", 1),
+          );
+          $method_stack[] = array('findSelector', array("#headline", 1));
+          $method_stack[] = array('findSelector', array("p > strong > em", 1));
+          $method_stack[] = array(
+            'findSelector',
+            array("#contentstart > div > h2", 1),
           );
         }
         $this->setObtainerMethods(array('title' => $method_stack));
@@ -109,16 +120,15 @@ class PressReleaseSourceParser extends SourceParser {
       $method_stack = $this->getObtainerMethods('date');
       if (empty($method_stack)) {
         // Set obtainer date stack to use if one has not been set by arguments.
-        $method_stack = array(
-          'findTableRow1Col2' => array(),
-          'findTableRow1Col1' => array(),
-          'findTable2Row2Col2' => array(),
-          'findSelector' => array("p[align='center']", 1),
-          'findSelector' => array('#contentstart > p', 1),
-          'findSelector' => array('.newsRight', 1),
-          'findSelector' => array('.BottomLeftContent', 1),
-          'findProbableDate' => array(),
-        );
+        $method_stack = array();
+        $method_stack[] = array('findTableRow1Col2');
+        $method_stack[] = array('findTableRow1Col1');
+        $method_stack[] = array('findTable2Row2Col2');
+        $method_stack[] = array('findSelector', array("p[align='center']", 1));
+        $method_stack[] = array('findSelector', array('#contentstart > p', 1));
+        $method_stack[] = array('findSelector', array('.newsRight', 1));
+        $method_stack[] = array('findSelector', array('.BottomLeftContent', 1));
+        $method_stack[] = array('findProbableDate');
       }
       $this->setObtainerMethods(array('date' => $method_stack));
     }

@@ -413,10 +413,33 @@ class SourceParser {
    */
   protected function setObtainerMethods(array $obtainer_methods) {
     $args = $this->getArguments();
-    // Loop through new array of obtainer methods.
+    // Loop through array of obtainer methods.
     foreach ($obtainer_methods as $obtainer_methods_key => $stack) {
+      // For compatibility with new format obtainer requires.
+      $clean_stack = array();
+      // Loop through the finder methods to reformat the stack.
+      foreach ($stack as $key => $method) {
+        if (is_numeric($key)) {
+          // Make the structure what the obtainer requires.
+          if (is_array($method)) {
+            $new_method = array(
+              'method_name' => (!empty($method[0])) ? $method[0] : 'MISSING',
+              'arguments' => ((!empty($method[1])) && (is_array($method[1]))) ? $method[1] : array() ,
+            );
+          }
+          else {
+            // Is likely in flat string format.
+            $new_method = array(
+              'method_name' => $method,
+              'arguments' => array() ,
+            );
+          }
+          $clean_stack[] = $new_method;
+        }
+
+      }
       // Put the new into the original.
-      $args['obtainer_methods'][$obtainer_methods_key] = $stack;
+      $args['obtainer_methods'][$obtainer_methods_key] = $clean_stack;
     }
     // Put the newly formed args back.
     $this->mergeArguments($args);
@@ -477,7 +500,6 @@ class SourceParser {
       if (empty($method_stack)) {
         $method_stack = $this->getObtainerMethods($obtainer_methods_key);
       }
-
       $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $obtainer_methods_key, '@obtainer_class' => $obtainer_class));
       $text = $this->obtain($obtainer_class, $this->queryPath, $method_stack);
     }
