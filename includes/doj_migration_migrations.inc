@@ -265,6 +265,10 @@ return array (
     array (
       'title' => 'District of New Hampshire',
     ),
+    'usao-pr' =>
+    array (
+      'title' => 'District of Puerto Rico',
+    ),
   ),
   'migrations' =>
   array (
@@ -1132,6 +1136,21 @@ return array (
     array (
       'group_name' => 'usao-nh',
       'class_name' => 'UsaoNhPressReleaseMigration',
+    ),
+    'UsaoPrPage' =>
+    array (
+      'group_name' => 'usao-pr',
+      'class_name' => 'UsaoPrPageMigration',
+    ),
+    'UsaoPrFile' =>
+    array (
+      'group_name' => 'usao-pr',
+      'class_name' => 'UsaoPrFileMigration',
+    ),
+    'UsaoPrPressRelease' =>
+    array (
+      'group_name' => 'usao-pr',
+      'class_name' => 'UsaoPrPressReleaseMigration',
     ),
   ),
 );
