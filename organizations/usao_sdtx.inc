@@ -153,6 +153,7 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
       50 => 'usao/txs/1News/Releases/2015 March',
       51 => 'usao/txs/1News/Releases/2015 April',
       52 => 'usao/txs/1News/Releases/2015 May',
+      53 => 'usao/txs/1News/Releases/2015 June',
       20 => 'usao/txs/1News/Releases/2015 February',
       21 => 'usao/txs/1News/Releases/2014 August',
       22 => 'usao/txs/1News/Releases/2013 May',
