@@ -6,6 +6,94 @@
  */
 
 /**
+ * Class UstRegionMigration.
+ *
+ * @package doj_migration
+ * @subpackage ust
+ */
+class UstRegionMigration extends JusticeCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    ini_set('auto_detect_line_endings', TRUE);
+
+    $source_file = __DIR__ . '/../sources/ust-regions.csv';
+    parent::__construct($arguments, $source_file);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates UST Regions into organizations.');
+
+    // Create a map object for tracking the relationships between source rows.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'abbreviation' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Title',
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+    $this->destination = new MigrateDestinationNode('organization');
+
+    $this->addFieldMapping('title', 'title');
+    $this->addFieldMapping('field_org_abbreviation', 'abbreviation');
+    $this->addFieldMapping('migrate_redirects', 'legacy_path');
+    $this->addFieldMapping('og_group_ref')->defaultValue('ust-regions')->sourceMigration('Organization');
+
+    $this->addFieldMapping('pathauto')->defaultValue(FALSE);
+    $this->addFieldMapping('path', 'path');
+
+    // Map fields where source field name is same as destination field name.
+    $this->addSimpleMappings(array(
+      'uid',
+      'status',
+    ));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
+    // Note: Remember to subtract 1 from column number.
+    $columns[0] = array('title', 'Title');
+    $columns[1] = array('abbreviation', 'Abbreviation');
+
+    return $columns;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
+    return array(
+      'title' => 'The title',
+      'abbreviation' => 'The organization abbreviation',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $abbr = $row->abbreviation;
+    $row->path = $abbr;
+
+    // Drop ust-regions- from the abbreviation.
+    $redirect_abbreviation = str_replace("ust-regions-", "", $abbr);
+    drush_print_r($redirect_abbreviation);
+    $row->legacy_path = "ust/{$redirect_abbreviation}/index.html";
+
+    // Set to admin for now.
+    $row->uid = 1;
+    $row->status = 1;
+  }
+}
+
+/**
  * Migrates .html files from /ust-regions to page nodes.
  *
  * @package doj_migration

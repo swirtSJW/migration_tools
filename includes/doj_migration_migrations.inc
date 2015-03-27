@@ -992,6 +992,11 @@ return array (
       'group_name' => 'atr',
       'class_name' => 'AtrPressReleaseMigration',
     ),
+    'UstRegion' =>
+    array (
+      'group_name' => 'ust-regions',
+      'class_name' => 'UstRegionMigration',
+    ),
     'UstRegionsPage' =>
     array (
       'group_name' => 'ust-regions',
