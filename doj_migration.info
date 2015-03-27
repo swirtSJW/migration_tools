@@ -143,3 +143,4 @@ files[] = organizations/usao_ndga.inc
 files[] = organizations/usao_sdga.inc
 files[] = organizations/usao_nh.inc
 files[] = organizations/usao_pr.inc
+files[] = organizations/usao_ndin.inc
