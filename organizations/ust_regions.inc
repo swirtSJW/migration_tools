@@ -84,7 +84,6 @@ class UstRegionMigration extends JusticeCsvMigration {
 
     // Drop ust-regions- from the abbreviation.
     $redirect_abbreviation = str_replace("ust-regions-", "", $abbr);
-    drush_print_r($redirect_abbreviation);
     $row->legacy_path = "ust/{$redirect_abbreviation}/index.html";
 
     // Set to admin for now.
@@ -145,11 +144,9 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, NULL, $options);
-    $this->dependencies = array('Organization');
+    $this->dependencies = array('UstRegion');
     $this->description = t('Migrates pages from the U.S. Trustee Program Regions and Offices.');
-    $this->addFieldMapping('og_group_ref')
-    ->defaultValue('ust-regions')
-    ->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref', 'og_group_ref')->sourceMigration('UstRegion');
   }
 
   /**
@@ -159,6 +156,14 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
     $skip_these = array();
     if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
+    }
+
+    if (preg_match('/ust\/(r[0-9]+)\/.*/', $row->legacy_path, $matches)) {
+      $row->og_group_ref = 'ust-regions-' . $matches[1];
+    }
+    else {
+      // NID for ust-regions on prod.
+      $row->og_group_ref = 302776;
     }
   }
 }
