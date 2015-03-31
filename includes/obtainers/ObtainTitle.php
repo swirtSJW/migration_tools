@@ -87,6 +87,26 @@ class ObtainTitle extends ObtainHtml {
     return '';
   }
 
+  /**
+   * Finder method to Loop through all h1 first H1 to evaluate gets it.
+   * @return string
+   *   The text found.
+   */
+  protected function findBUAny() {
+    foreach ($this->queryPath->find("b > u") as $key => $h1) {
+      $this->setElementToRemove($h1);
+      $text = $h1->text();
+      $text = $this->cleanString($text);
+      if ($this->validateString($text)) {
+        $this->setCurrentFindMethod("findAnyBU-i={$key}");
+        // Return the original string to avoid double cleanup causing issues.
+        return $text;
+      }
+    }
+    // If it made it this far, nothing was found.
+    return '';
+  }
+
 
   /**
    * Finder method to find #Layer4 and the 5th paragraph on the page first line.

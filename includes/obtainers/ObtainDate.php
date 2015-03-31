@@ -246,6 +246,36 @@ class ObtainDate extends ObtainHtml {
     return "";
   }
 
+  /**
+   * Finder method to Loop through all h1 first H1 to evaluate gets it.
+   * @return string
+   *   The text found.
+   */
+  protected function findPRDateAny() {
+    foreach ($this->queryPath->find("span[style='font-size:12.0pt']") as $key => $h1) {
+      $this->setElementToRemove($h1);
+      $text = $h1->text();
+      $text = $this->cleanString($text);
+      if ($this->validateString($text)) {
+        $this->setCurrentFindMethod("findPRDate-i={$key}");
+        // Return the original string to avoid double cleanup causing issues.
+        return $text;
+      }
+    }
+    foreach ($this->queryPath->find('span[style="font-size:12.0pt"]') as $key => $h1) {
+      $this->setElementToRemove($h1);
+      $text = $h1->text();
+      $text = $this->cleanString($text);
+      if ($this->validateString($text)) {
+        $this->setCurrentFindMethod("findPRDate-i={$key}");
+        // Return the original string to avoid double cleanup causing issues.
+        return $text;
+      }
+    }
+    // If it made it this far, nothing was found.
+    return '';
+  }
+
   // ***************** Helpers ***********************************************.
 
   /**
@@ -258,6 +288,7 @@ class ObtainDate extends ObtainHtml {
    *   The cleaned text.
    */
   public static function cleanString($text) {
+
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $text = doj_migration_html_entity_decode_numeric($text);
@@ -279,6 +310,7 @@ class ObtainDate extends ObtainHtml {
       'IMMEDIATE',
       'RELEASE',
       'NEWS RELEASE SUMMARY –',
+      'CONTACT:',
       'news',
       'press',
       'release',
@@ -302,6 +334,15 @@ class ObtainDate extends ObtainHtml {
       '.',
     );
     $text = str_ireplace($remove, ' ', $text);
+
+    $years = array('2010','2011','2012','2013','2014','2015');
+    foreach ($years as $year) {
+      $pos = strpos($text, $year);
+      if ($pos !== 'FALSE') {
+        $text = substr($text, 0, ($pos + 4));
+        break;
+      }
+    }
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);
@@ -327,7 +368,7 @@ class ObtainDate extends ObtainHtml {
       case is_object($string):
       case is_array($string);
         // If we can't form a date out of it, it must not be a date.
-      case !strtotime($string);
+      case ($bstr == 0);
         return FALSE;
 
       default:

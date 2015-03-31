@@ -269,6 +269,10 @@ return array (
     array (
       'title' => 'District of Puerto Rico',
     ),
+    'usao-ndin' =>
+    array (
+      'title' => 'Northern District of Indiana',
+    ),
   ),
   'migrations' =>
   array (
@@ -1156,6 +1160,21 @@ return array (
     array (
       'group_name' => 'usao-pr',
       'class_name' => 'UsaoPrPressReleaseMigration',
+    ),
+    'UsaoNdinPage' =>
+    array (
+      'group_name' => 'usao-ndin',
+      'class_name' => 'UsaoNdinPageMigration',
+    ),
+    'UsaoNdinFile' =>
+    array (
+      'group_name' => 'usao-ndin',
+      'class_name' => 'UsaoNdinFileMigration',
+    ),
+    'UsaoNdinPressRelease' =>
+    array (
+      'group_name' => 'usao-ndin',
+      'class_name' => 'UsaoNdinPressReleaseMigration',
     ),
   ),
 );
