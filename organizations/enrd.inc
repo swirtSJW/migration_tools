@@ -197,6 +197,7 @@ class EnrdPageSourceParser  extends NGNodeSourceParser {
     parent::cleanHtml();
     $this->queryPath->find("font[color='#999999']")->remove();
     $this->queryPath->find(".headline")->remove();
+    $this->queryPath->find(".right-column")->remove();
 
     // Remove the first 2 uls they are menus.
     $uls = $this->queryPath->find("ul");
