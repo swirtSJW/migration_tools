@@ -334,7 +334,7 @@ function doj_migration_legacy_to_uri($legacy_uri) {
       }
     }
   }
-  watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
+  watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
   return "";
 }
 

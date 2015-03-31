@@ -64,6 +64,7 @@ function doj_migration_drush_command() {
       'menu-location-uri' => "If the menu is in www.justice.gov/oarm/division/index.html then this option should be set to 'oarm/division/index.html'. If no option is given the default will be www.justice.gov/<organization>",
       'local-base-uri' => "When pages are migrated into drupal they will usually be at <organization>/page-title-alias, if for some reason, <organization> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
       'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
+      'engine' => "Optional. Sets the engine used for generation. Defaults to district.",
     ),
   );
 
@@ -368,6 +369,12 @@ function drush_doj_migration_doj_generate_menu($organization) {
   $css_selector = drush_get_option('css-selector');
   $local_base_uri = drush_get_option('local-base-uri');
   $menu_location_uri = drush_get_option('menu-location-uri');
+  $engine_option = drush_get_option('engine', 'district');
+
+  $engines = array(
+    'district' => 'MenuGeneratorEngineDistrict',
+    'ust' => 'MenuGeneratorEngineUst',
+  );
 
   $parameters = new MenuGenerationParameters($organization);
 
@@ -379,7 +386,8 @@ function drush_doj_migration_doj_generate_menu($organization) {
     $parameters->setUriMenuLocation($menu_location_uri);
   }
 
-  $engine = new MenuGeneratorEngineDistrict($parameters);
+  $engine_class = $engines[$engine_option];
+  $engine = new $engine_class($parameters);
 
   if ($css_selector) {
     $engine->setInitialCssSelector($css_selector);

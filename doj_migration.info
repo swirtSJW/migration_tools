@@ -13,8 +13,12 @@ dependencies[] = pathauto
 ; Miscellaneous
 files[] = includes/HtmlCleanUp.php
 files[] = includes/StringCleanUp.php
-files[] = includes/MenuGenerator.php
 files[] = includes/LegacyUrlWithAnchorFixer.php
+
+; Menu Generators
+files[] = includes/menu_generators/MenuGenerator.php
+files[] = includes/menu_generators/MenuGeneratorEngineDistrict.inc
+files[] = includes/menu_generators/MenuGeneratorEngineUst.inc
 
 ; Migrations
 files[] = includes/base_classes/DistrictPressReleaseMigration.inc
