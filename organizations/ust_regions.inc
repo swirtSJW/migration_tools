@@ -162,8 +162,8 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
       $row->og_group_ref = 'ust-regions-' . $matches[1];
     }
     else {
-      // NID for ust-regions on prod.
-      $row->og_group_ref = 302776;
+      $this->migrationMessage('Error, the pattern "ust/r[0-9]+/*" was not found in the legacy URL.');
+      return FALSE;
     }
   }
 }
