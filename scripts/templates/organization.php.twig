@@ -59,7 +59,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 }
 
 /**
- * Migrates files (*.pdf) from /{{ info.abbreviation }}.
+ * Migrates binary files from /{{ info.abbreviation }}.
  *
  * @package doj_migration
  * @subpackage {{ info.abbreviation }}
@@ -97,6 +97,33 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
     return "{{ info.abbreviation }}";
   }
 }
+
+/**
+ * SourceParser for /{{ info.abbreviation }} pages.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ */
+class {{ info.class_base_name }}PageSourceParser  extends NGNodeSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+}
+
+/**
+ * Obtainer for title property for /{{ info.abbreviation }} pages.
+ *
+ * @package doj_migration
+ * @subpackage {{ info.abbreviation }}
+ * @see Obtainer.api.php
+ */
+class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
+
+}
+
 
 {% if info.press is defined %}
 /**
@@ -149,22 +176,6 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
     ->sourceMigration('Organization');
   }
 }
-{% endif %}
-
-/**
- * SourceParser for /{{ info.abbreviation }} pages.
- *
- * @package doj_migration
- * @subpackage {{ info.abbreviation }}
- */
-class {{ info.class_base_name }}PageSourceParser  extends NGNodeSourceParser {
-  /**
-   * {@inheritdoc}
-   */
-  protected function cleanHtml() {
-    parent::cleanHtml();
-  }
-}
 
 /**
  * SourceParser for /{{ info.abbreviation }} press releases.
@@ -179,17 +190,6 @@ class {{ info.class_base_name }}PressSourceParser extends NGPressReleaseSourcePa
   protected function cleanHtml() {
     parent::cleanHtml();
   }
-}
-
-/**
- * Obtainer for title property for /{{ info.abbreviation }} pages.
- *
- * @package doj_migration
- * @subpackage {{ info.abbreviation }}
- * @see Obtainer.api.php
- */
-class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
-
 }
 
 /**
@@ -233,3 +233,4 @@ class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
  */
 class {{ info.class_base_name }}ObtainDate extends ObtainDate {
 }
+{% endif %}

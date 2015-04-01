@@ -116,22 +116,6 @@ class CriminalCeosPageSourceParser  extends NGNodeSourceParser {
 }
 
 /**
- * SourceParser for /criminal-ceos press releases.
- *
- * @package doj_migration
- * @subpackage criminal-ceos
- */
-class CriminalCeosPressSourceParser extends NGPressReleaseSourceParser {
-  /**
-   * {@inheritdoc}
-   */
-  protected function cleanHtml() {
-    parent::cleanHtml();
-  }
-}
-
-
-/**
  * Obtainer for title property for /criminal-ceos pages.
  *
  * @package doj_migration
@@ -180,46 +164,4 @@ class CriminalCeosObtainTitlePage extends ObtainTitle {
 
     return $text;
   }
-}
-
-/**
- * Obtainer for title property for /criminal-ceos press releases.
- *
- * @package doj_migration
- * @subpackage criminal-ceos
- * @see Obtainer.api.php
- */
-class CriminalCeosObtainTitlePressRelease extends ObtainTitlePressRelease {
-
-}
-
-/**
- * Obtainer for prNumber property for /criminal-ceos press releases.
- *
- * @package doj_migration
- * @subpackage criminal-ceos
- * @see Obtainer.api.php
- */
-class CriminalCeosObtainPrNumber extends ObtainId {
-  /**
-   * Finds the press release number from markup.
-   */
-  protected function findPrNumber() {
-    $text = '';
-    // $element = $this->queryPath->find('p')->last();
-    // $this->setElementToRemove($element);
-    // $text = $element->text();
-
-    return $text;
-  }
-}
-
-/**
- * Custom obtainer for date property for /criminal-ceos.
- *
- * @package doj_migration
- * @subpackage criminal-ceos
- * @see Obtainer.api.php
- */
-class CriminalCeosObtainDate extends ObtainDate {
 }
