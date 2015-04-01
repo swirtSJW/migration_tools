@@ -277,6 +277,10 @@ return array (
     array (
       'title' => 'Child Exploitation and Obscenity Section',
     ),
+    'criminal-icitap' =>
+    array (
+      'title' => 'International Criminal Investigative Training Assistance Program',
+    ),
   ),
   'migrations' =>
   array (
@@ -1189,6 +1193,16 @@ return array (
     array (
       'group_name' => 'criminal-ceos',
       'class_name' => 'CriminalCeosFileMigration',
+    ),
+    'CriminalIcitapPage' =>
+    array (
+      'group_name' => 'criminal-icitap',
+      'class_name' => 'CriminalIcitapPageMigration',
+    ),
+    'CriminalIcitapFile' =>
+    array (
+      'group_name' => 'criminal-icitap',
+      'class_name' => 'CriminalIcitapFileMigration',
     ),
   ),
 );
