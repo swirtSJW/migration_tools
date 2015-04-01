@@ -77,6 +77,7 @@ class StringCleanUp {
       'ú' => '&uacute;', '&#xfa;' => '&uacute;', 'Ú' => '&Uacute;', '&#xda;' => '&Uacute;',
       'ü' => '&uuml;', '&#xfc;' => '&uuml;', 'Ü' => '&Uuml;', '&#xdc;' => '&Uuml;',
       'ñ' => '&ntilde;', '&#xf1;' => '&ntilde;',  'Ñ' => '&Ntilde;', '&#xd1;' => '&Ntilde;', '&#xF1;' => '&ntilde;',
+      '\BB' => '&raquo;', '\A0' => '&nbsp;', '\92' => "'",
     );
 
     return $convert_table;
@@ -277,7 +278,7 @@ class StringCleanUp {
    */
   public static function fixWindowSpecificChars($string) {
     // Unicode hex codes for chars only supported in windows.
-    $incorrect = array(91, 92, 93, 94, 96, 97);
+    $incorrect = array(91, 92, 93, 94, 96, 97, 'A0', 'BB');
 
     // Bad chars reference: http://www.w3schools.com/charsets/ref_html_ansi.asp
     // Good chars reference: http://www.utexas.edu/learn/html/spchar.html
@@ -288,6 +289,8 @@ class StringCleanUp {
       148 => 8221,
       150 => 8211,
       151 => 8212,
+      160 => 160,
+      187 => 187,
     );
 
     // Create unicode chars to match.

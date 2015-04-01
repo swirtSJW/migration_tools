@@ -134,6 +134,9 @@ abstract class NGSourceParser {
     }
 
     $type_detect = array(
+      'JIS',
+      'EUC-JP',
+      'sjis-win',
       'UTF-8',
       'ASCII',
       'ISO-8859-1',

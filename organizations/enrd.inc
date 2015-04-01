@@ -185,7 +185,6 @@ class EnrdPageSourceParser  extends NGNodeSourceParser {
     $title = str_replace("USDOJ: Environment And Natural Resources Division 100th Anniversary :", "", $title);
     $title = str_replace("USDOJ: Environment And Natural Resources Division :", "", $title);
     $title = str_replace("USDOJ:", "", $title);
-    $title = str_replace("A A ", "", $title);
     $this->sourceParserMessage('title cleaned --> @text', array('@text' => $title), WATCHDOG_DEBUG, 2);
     return $title;
   }
