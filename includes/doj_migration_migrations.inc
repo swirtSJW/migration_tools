@@ -281,6 +281,10 @@ return array (
     array (
       'title' => 'International Criminal Investigative Training Assistance Program',
     ),
+    'criminal-hrsp' =>
+    array (
+      'title' => 'Human Rights and Special Prosecutions Section',
+    ),
   ),
   'migrations' =>
   array (
@@ -1203,6 +1207,16 @@ return array (
     array (
       'group_name' => 'criminal-icitap',
       'class_name' => 'CriminalIcitapFileMigration',
+    ),
+    'CriminalHrspPage' =>
+    array (
+      'group_name' => 'criminal-hrsp',
+      'class_name' => 'CriminalHrspPageMigration',
+    ),
+    'CriminalHrspFile' =>
+    array (
+      'group_name' => 'criminal-hrsp',
+      'class_name' => 'CriminalHrspFileMigration',
     ),
   ),
 );

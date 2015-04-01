@@ -150,3 +150,4 @@ files[] = organizations/usao_pr.inc
 files[] = organizations/usao_ndin.inc
 files[] = organizations/criminal_ceos.inc
 files[] = organizations/criminal_icitap.inc
+files[] = organizations/criminal_hrsp.inc
