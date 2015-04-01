@@ -135,7 +135,6 @@ class DojMigrationGenerator {
     $text = "files[] = {$include_filepath}\n";
 
     $contents = file_get_contents($info_file);
-    drush_print_r($contents);
     if (strpos($contents, $text) == FALSE) {
       file_put_contents($info_file, $text, FILE_APPEND);
       drush_print_r("$include_filepath has been added to doj_migration.info.");
@@ -228,6 +227,7 @@ class DojMigrationGenerator {
     if (!empty($this->orgConfig['pr_subdirectory'])) {
 
       // Generate an array of all subdirectories containing HTML.
+      // @todo Replace usage of shell_exec() with direct calls to php function.
       if ($this->orgConfig['drush_alias']) {
         $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']}");
       }
@@ -240,10 +240,8 @@ class DojMigrationGenerator {
       foreach ($data as $line) {
         // Ignore array things.
         if (substr_count($line, "(") == 0 && substr_count($line, ")") == 0 && !empty($line)) {
-          if (substr_count($line, "{$this->orgConfig['pr_subdirectory']}/") > 0) {
-            if (substr_count($line, "2013") > 0 || substr_count($line, "2014") || substr_count($line, "2015")) {
-              $directories['press'][] = trim($line);
-            }
+          if (substr_count($line, "{$this->orgConfig['pr_subdirectory']}") > 0) {
+            $directories['press'][] = trim($line);
           }
           else {
             $directories['page'][] = trim($line);
