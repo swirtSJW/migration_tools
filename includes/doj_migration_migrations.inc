@@ -273,6 +273,10 @@ return array (
     array (
       'title' => 'Northern District of Indiana',
     ),
+    'criminal-ceos' =>
+    array (
+      'title' => 'Child Exploitation and Obscenity Section',
+    ),
   ),
   'migrations' =>
   array (
@@ -1175,6 +1179,16 @@ return array (
     array (
       'group_name' => 'usao-ndin',
       'class_name' => 'UsaoNdinPressReleaseMigration',
+    ),
+    'CriminalCeosPage' =>
+    array (
+      'group_name' => 'criminal-ceos',
+      'class_name' => 'CriminalCeosPageMigration',
+    ),
+    'CriminalCeosFile' =>
+    array (
+      'group_name' => 'criminal-ceos',
+      'class_name' => 'CriminalCeosFileMigration',
     ),
   ),
 );
