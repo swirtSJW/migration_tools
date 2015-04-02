@@ -22,6 +22,9 @@ class StringCleanUp {
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
     $type_detect = array(
+      'JIS',
+      'EUC-JP',
+      'sjis-win',
       'UTF-8',
       'ASCII',
       'ISO-8859-1',
@@ -278,7 +281,7 @@ class StringCleanUp {
    */
   public static function fixWindowSpecificChars($string) {
     // Unicode hex codes for chars only supported in windows.
-    $incorrect = array(91, 92, 93, 94, 96, 97, 'A0', 'BB');
+    $incorrect = array(91, 92, 93, 94, 96, 97, 'A0', 'BB', 'D8');
 
     // Bad chars reference: http://www.w3schools.com/charsets/ref_html_ansi.asp
     // Good chars reference: http://www.utexas.edu/learn/html/spchar.html
@@ -291,6 +294,7 @@ class StringCleanUp {
       151 => 8212,
       160 => 160,
       187 => 187,
+      216 => 216,
     );
 
     // Create unicode chars to match.
