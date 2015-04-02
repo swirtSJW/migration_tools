@@ -140,9 +140,8 @@ abstract class Obtainer {
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
         $found_string = $this->processString($found_string);
-        $current_method = $this->getCurrentFindMethod();
 
-        $this->obtainerMessage('@method found a string.', array('@method' => $current_method), WATCHDOG_DEBUG);
+        $this->obtainerMessage('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -198,7 +197,7 @@ abstract class Obtainer {
       // List any cases below that would cause it to fail validation.
       case empty($string):
       case is_object($string):
-      case is_array($string);
+      case is_array($string):
         return FALSE;
 
       default:

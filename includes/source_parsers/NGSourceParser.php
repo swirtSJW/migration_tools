@@ -99,7 +99,11 @@ abstract class NGSourceParser {
 
         $text = $obtainer->obtain();
         $length = strlen($text);
-        if ($length < 256) {
+        if (!$length) {
+          // It's too long to be helpful in output so just show the length.
+          $this->sourceParserMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
+        }
+        elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
           $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
         }

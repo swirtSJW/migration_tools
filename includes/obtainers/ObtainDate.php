@@ -338,7 +338,7 @@ class ObtainDate extends ObtainHtml {
     $years = array('2010','2011','2012','2013','2014','2015');
     foreach ($years as $year) {
       $pos = strpos($text, $year);
-      if ($pos !== 'FALSE') {
+      if ($pos !== FALSE) {
         $text = substr($text, 0, ($pos + 4));
         break;
       }
@@ -366,9 +366,8 @@ class ObtainDate extends ObtainHtml {
       // List any cases below that would cause it to fail validation.
       case empty($string):
       case is_object($string):
-      case is_array($string);
-        // If we can't form a date out of it, it must not be a date.
-      case ($bstr == 0);
+      case is_array($string):
+      case !strtotime($string):
         return FALSE;
 
       default:

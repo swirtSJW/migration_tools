@@ -41,7 +41,7 @@ class UstRegionMigration extends JusticeCsvMigration {
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('field_org_abbreviation', 'abbreviation');
     $this->addFieldMapping('migrate_redirects', 'legacy_path');
-    $this->addFieldMapping('og_group_ref')->defaultValue('ust-regions')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('ust')->sourceMigration('Organization');
 
     $this->addFieldMapping('pathauto')->defaultValue(FALSE);
     $this->addFieldMapping('path', 'path');
@@ -250,7 +250,6 @@ class UstRegionsPageSourceParser  extends NGNodeSourceParser {
     parent::cleanHtml();
   }
 }
-
 
 /**
  * Obtainer for title property for /ust-regions pages.
