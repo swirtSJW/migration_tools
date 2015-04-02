@@ -188,6 +188,32 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     return FALSE;
   }
 
+
+  /**
+   * Check the file to see if it is the desired type. Msg watchdog if it is not.
+   *
+   * @param string $desired_type
+   *   The content type machine name that should be kept / not skipped.
+   * @param object $row
+   *   The content type machine name that was obtained in the source file.
+   *
+   * @return bool
+   *   TRUE - the file is the desired type or can't be evaluated.
+   *   FALSE - if is definitely not that type.
+   */
+  public static function isType($desired_type, $row) {
+    // In order to have $row->content_type populated, add a find method(s) to
+    // ObtainContentType.php or an extension of it and add it to the find stack.
+    if (property_exists($row, 'content_type') && ($row->content_type != $desired_type)) {
+      // This page does not match to $target_type.
+      $message = "- Is type '@content_type_obtained' NOT '@desired_type' --> Probably skipped.";
+      watchdog('doj_migration', $message, array('@desired_type' => $desired_type, '@content_type_obtained' => $row->content_type), WATCHDOG_WARNING);
+
+      return FALSE;
+    }
+    return TRUE;
+  }
+
   /**
    * Logs a system message.
    *

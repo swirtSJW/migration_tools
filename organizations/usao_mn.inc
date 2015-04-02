@@ -41,7 +41,16 @@ class UsaoMnPageMigration extends NGJusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    if ((parent::prepareRow($row) === FALSE) || ($row->content_type == "press_release")) {
+    $skip_these = array(
+      '/usao/mn/downloads/untitled.html',
+      '/usao/mn/images/untitled.html',
+      '/usao/mn/photo_test.html',
+      '/usao/mn/photo_test_2.html',
+      '/usao/mn/index.html',
+
+    );
+
+    if ((parent::prepareRow($row) === FALSE) || doj_migration_skip_file($row->fileid, $skip_these) || (!Self::isType('', $row))) {
       return FALSE;
     }
   }

@@ -93,7 +93,7 @@ function doj_migration_module_implements_alter(&$implementations, $hook) {
 function doj_migration_skip_file($file_id, $files_to_skip) {
   if (in_array($file_id, $files_to_skip)) {
     // This page should be skipped.
-    $message = t('- @fileid  -> Skipped: intentionally.', array('@fileid' => $file_id));
+    $message = '- @fileid  -> Skipped: intentionally.';
     watchdog('doj_migration', $message, array('@fileid' => $file_id), WATCHDOG_WARNING);
 
     return TRUE;
@@ -102,6 +102,7 @@ function doj_migration_skip_file($file_id, $files_to_skip) {
   // This page should not be skipped.
   return FALSE;
 }
+
 
 /**
  * Checks to see if a date comes after a cutoff.
