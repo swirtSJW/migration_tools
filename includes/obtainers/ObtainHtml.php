@@ -29,12 +29,13 @@ class ObtainHtml extends Obtainer {
    */
   protected function findTableContents($table_num, $row, $col) {
     $tables = $this->queryPath->find("table");
-    foreach ($tables as $key => $table) {
-      if ($key == $table_num) {
+    $current_table = 1;
+    foreach ($tables as $table) {
+      if ($current_table == $table_num) {
         $text = $this->getFromTable($table, $row, $col);
-
         return $text;
       }
+      $current_table++;
     }
   }
 

@@ -136,9 +136,9 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $subtitle->addMethod("findCenteredParagraphStrong");
 
     $date = new ObtainerInfo('date', "UsaoSdtxObtainDate");
-    $date->addMethod('findTableRow1Col2');
-    $date->addMethod('findTableRow1Col1');
-    $date->addMethod('findTable2Row2Col2');
+    $date->addMethod('findTableContents', array(1, 1, 1));
+    $date->addMethod('findTableContents', array(1, 1, 2));
+    $date->addMethod('findTableContents', array(2, 2, 2));
     $date->addMethod('findSelector', array("p[align='center']", 1));
     $date->addMethod('findSelector', array("#contentstart > p", 1));
     $date->addMethod('findSelector', array(".newsRight > p", 1));
@@ -217,6 +217,9 @@ class UsaoSdtxPressSourceParser extends NGDistrictPressReleaseSourceParser {
    * {@inheritdoc}
    */
   protected function cleanHtml() {
+    // Get the date before HTML is cleaned, as it will be removed.
+    $date = $this->getDate();
+
     foreach ($this->queryPath->find("table") as $table) {
       $text = $table->text();
       if (substr_count($text, "Print")) {
@@ -243,9 +246,6 @@ class UsaoSdtxPressSourceParser extends NGDistrictPressReleaseSourceParser {
     $body_text = $this->queryPath->find("body")->text();
     $body_text = preg_replace('/\s+/', '', $body_text);
     if (strlen($body_text) < 300) {
-      // drush_print_r("ID: " . $this->fileId);
-      // drush_print_r("Empty Body: " . $body_text);
-      // drush_print_r("Length:" . strlen($body_text));
       return "";
     }
 
@@ -272,4 +272,5 @@ class UsaoSdtxObtainSubtitlePress extends UsaoSdtxObtainTitlePress {
 }
 
 class UsaoSdtxObtainDate extends ObtainDate {
+
 }
