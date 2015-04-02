@@ -43,6 +43,7 @@ class EnrdPageMigration extends NGJusticeHtmlToPageMigration {
     $this->addFieldMapping('og_group_ref')
     ->defaultValue('enrd')
     ->sourceMigration('Organization');
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
 
   /**
