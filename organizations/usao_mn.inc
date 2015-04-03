@@ -21,11 +21,12 @@ class UsaoMnPageMigration extends NGJusticeHtmlToPageMigration {
     // Define source directories.
     $source_dirs = array(
       0 => 'usao/mn',
+      1 => 'usao/mn/econ/',
     );
 
     $arguments['source_parser_class'] = "MnPageSourceParser";
 
-    $options = array('recurse' => TRUE);
+    $options = array('recurse' => FALSE);
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -128,22 +129,37 @@ class UsaoMnPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     $source_dirs = array(
       0 => 'usao/mn',
+      1 => 'usao/mn/econ/',
     );
-    parent::__construct($arguments, $source_dirs);
+    $options = array('recurse' => FALSE);
+    parent::__construct($arguments, $source_dirs, $options);
   }
 
   /**
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    return FALSE;
+    $skip_these = array(
+      '/usao/mn/downloads/untitled.html',
+      '/usao/mn/images/untitled.html',
+      '/usao/mn/photo_test.html',
+      '/usao/mn/photo_test_2.html',
+      '/usao/mn/index.html',
+      '/usao/mn/news_2011.html',
+    );
 
-    /*if (parent::prepareRow($row) === FALSE) {
-    return FALSE;
+    if ((parent::prepareRow($row) === FALSE)
+        || doj_migration_skip_file($row->fileid, $skip_these)
+        || (!Self::isType('press_release', $row))
+        ) {
+
+      return FALSE;
     }
-    if ($row->content_type != "press_release") {
-    return FALSE;
-    }*/
+
+    if (!doj_migration_date_after($row->field_pr_date, '12/31/2012', FALSE)) {
+      $message = '@fileid ------> Dated prior to 2013. Skipped: intentionally.';
+      $this->migrationMessage($message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+    }
   }
 
   /**

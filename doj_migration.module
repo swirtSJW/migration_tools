@@ -110,7 +110,7 @@ function doj_migration_skip_file($file_id, $files_to_skip) {
  * @param string $date
  *   A date to evaluate as can be used by strtotime().
  * @param string $date_cutoff
- *   A date representing the low cut-off.
+ *   A date representing the low cut-off mm/dd/yyyy.
  * @param bool $default
  *   What should be returned if the date is invalid or unavailable.
  *
