@@ -246,36 +246,6 @@ class ObtainDate extends ObtainHtml {
     return "";
   }
 
-  /**
-   * Finder method to Loop through all h1 first H1 to evaluate gets it.
-   * @return string
-   *   The text found.
-   */
-  protected function findPRDateAny() {
-    foreach ($this->queryPath->find("span[style='font-size:12.0pt']") as $key => $h1) {
-      $this->setElementToRemove($h1);
-      $text = $h1->text();
-      $text = $this->cleanString($text);
-      if ($this->validateString($text)) {
-        $this->setCurrentFindMethod("findPRDate-i={$key}");
-        // Return the original string to avoid double cleanup causing issues.
-        return $text;
-      }
-    }
-    foreach ($this->queryPath->find('span[style="font-size:12.0pt"]') as $key => $h1) {
-      $this->setElementToRemove($h1);
-      $text = $h1->text();
-      $text = $this->cleanString($text);
-      if ($this->validateString($text)) {
-        $this->setCurrentFindMethod("findPRDate-i={$key}");
-        // Return the original string to avoid double cleanup causing issues.
-        return $text;
-      }
-    }
-    // If it made it this far, nothing was found.
-    return '';
-  }
-
   // ***************** Helpers ***********************************************.
 
   /**
@@ -311,6 +281,7 @@ class ObtainDate extends ObtainHtml {
       'RELEASE',
       'NEWS RELEASE SUMMARY –',
       'CONTACT:',
+      'Press Release',
       'news',
       'press',
       'release',
@@ -351,6 +322,82 @@ class ObtainDate extends ObtainHtml {
   }
 
   /**
+   * Returns array of month names.
+   *
+   * @return array
+   *   One entry for each month name.
+   */
+  public static function returnMonthNames() {
+    return array(
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    );
+  }
+
+  /**
+   * Evaluates $string for presence of more than 1 element from month array.
+   *
+   * @param string $string
+   *   The string to validate.
+   *
+   * @return bool
+   *   TRUE if more than one Month found in string.  FALSE if not.
+   */
+  public static function searchStringDoubleMonth($string) {
+    $months = self::returnMonthNames();
+    $count = 0;
+    $bmultiple = FALSE;
+    foreach ($months as $month) {
+      $lower_month = strtolower($month);
+      $lower_string = strtolower($string);
+      if (strstr($lower_string, $lower_month)) {
+        $count++;
+        if ($count > 1) {
+          $bmultiple = TRUE;
+          break;
+        }
+      }
+    }
+    return $bmultiple;
+  }
+
+  /**
+   * Searches for a date range overlapping months, returns single date.
+   * 
+   * Looks specifically for month names as defined in self::returnMonthNames().
+   * In the case of multiple months found in $string, returns the latter date.
+   * Example: "March 28 - April 4", returns April 4.
+   *
+   * @param string $string
+   *   The string to clean.
+   *
+   * @return string
+   *   Return string includes only 1 month.
+   */
+  public static function removeMultipleMonthRange($string) {
+    $bmultiple = self::searchStringDoubleMonth($string);
+    if ($bmultiple === TRUE) {
+      $explode = explode('-', $string);
+      if (!empty($explode[1])) {
+        $latter_date = $explode[1];
+        return $latter_date;
+      }
+    }
+
+    return $string;
+  }
+
+  /**
    * Evaluates $possibleText and if it checks out, returns TRUE.
    *
    * @param string $string
@@ -367,6 +414,7 @@ class ObtainDate extends ObtainHtml {
       case empty($string):
       case is_object($string):
       case is_array($string):
+        // If we can't form a date out of it, it must not be a date.
       case !strtotime($string):
         return FALSE;
 

@@ -129,8 +129,7 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoNdinObtainTitlePressRelease");
-    $title->addMethod('findH1Any');
-    $title->addMethod('findBUAny');
+    $title->addMethod('findAnyValidSelector', array("h1"));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array('h2', 1));
     $title->addMethod('findSelector', array('h2', 2));
@@ -139,24 +138,83 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findSelector', array('p.MsoNormal > b > u > span[style="font-size:12.0pt;mso-ansi-language:EN-CA"]', 1));
     $title->addMethod('findSelector', array('p.MsoNormal > b > u > span[style="font-size:12.0pt;mso-ansi-language:EN-CA"]', 2));
     $title->addMethod('findSelector', array('p.MsoNormal > b > u > span[style="font-size:12.0pt;mso-ansi-language:EN-CA"]', 3));
+    $title->addMethod('findSelector', array("p.MsoNormal > b > u > span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 3));
+    $title->addMethod('findSelector', array("span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 1));
+    $title->addMethod('findSelector', array("span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 3));
+    $title->addMethod('findXpath', array("/html/body/div/p[13]/b[1]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[9]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[10]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[11]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[12]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[13]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[15]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[16]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[11]/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div[2]/p[3]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div[1]/p[23]/b/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[8]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[9]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[10]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[11]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[12]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[13]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/b[1]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[15]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[15]/b[1]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[16]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[17]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[18]/b/u/span", 1));
     $title->addMethod('findSelector', array('p.s4', 1));
     $title->addMethod('findSelector', array("#headline", 1));
 
     $date = new ObtainerInfo('date', "UsaoNdinObtainDate");
     $date->addMethod('findSelector', array(".newsRight", 1));
-    $date->addMethod('findSelector', array('p[align="center"] > strong'), 2);
-
-    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]'), 1);
-    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]'), 3);
-    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]'), 4);
-    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]'), 5);
-    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']"), 1);
-    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']"), 3);
-    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']"), 4);
-    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']"), 5);
-
-    $date->addMethod('findPRDateAny');
+    $date->addMethod('findSelector', array('p[align="center"] > strong', 1));
+    $date->addMethod('findSelector', array('p[align="center"] > strong', 2));
+    $date->addMethod('findSelector', array('p[align="center"] > strong', 3));
+    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]', 1));
+    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]', 3));
+    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]', 4));
+    $date->addMethod('findSelector', array('p.MsoNormal > span[style="font-size:12.0pt"]', 5));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 6));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 7));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 8));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 4));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 5));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 6));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 7));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 8));
+    $date->addMethod('findSelector', array("p.MsoNormal > span[style='font-size:12.0pt']", 9));
+    $date->addMethod('findSelector', array('span[style="font-size:12.0pt;mso-fareast-font-family:Calibri;mso-bidi-font-family:\"Times New Roman\""]', 4));
+    $date->addMethod('findSelector', array('span[style="font-size:12.0pt;mso-fareast-font-family:Calibri;mso-bidi-font-family:\"Times New Roman\""]', 5));
+    $date->addMethod('findSelector', array('span[style="font-size:12.0pt;mso-fareast-font-family:Calibri;mso-bidi-font-family:\"Times New Roman\""]', 9));
+    $date->addMethod('findSelector', array("span[style='font-size:12.0pt;font-family:\"Times New Roman\",\"serif\";mso-fareast-font-family:\"Times New Roman\"']", 4));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 3));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 5));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 6));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 7));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 8));
+    $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 9));
+    $date->addMethod('findSelector', array("span[style='font-size:12.0pt;font-family:\"Times New Roman\",\"serif\"']", 9));
+    $date->addMethod('findSelector', array('em', 3));
+    $date->addMethod('findAnyValidSelector', array("em"));
+    $date->addMethod('findAnyValidSelector', array("span[style='font-size:12.0pt']"));
+    $date->addMethod('findAnyValidSelector', array('span[style="font-size:12.0pt"]'));
     $date->addMethod('findProbableDate');
+    $date->addMethod('findXpath', array("/html/body/div/p[4]/span[1]", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[1]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[2]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[3]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[4]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[5]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[6]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[7]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[8]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[9]/span", 1));
+    $date->addMethod('findXpath', array("/html/body/div/p[10]/span", 1));
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoNdinObtainPrNumber");
 
@@ -245,6 +303,21 @@ class UsaoNdinObtainTitlePage extends ObtainTitle {
  * @see Obtainer.api.php
  */
 class UsaoNdinObtainTitlePressRelease extends ObtainTitlePressRelease {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      'Cell: (219) 314-9993',
+      'Cell:',
+      '314-9993',
+      '(219)',
+    );
+    $text = str_ireplace($remove, '', $text);
+
+    return $text;
+  }
 }
 
 /**
@@ -280,20 +353,42 @@ class UsaoNdinObtainDate extends ObtainDate {
    * {@inheritdoc}
    */
   public static function cleanString($text) {
-    $text = parent::cleanString($text);
-    $text = preg_replace('/-[1-9][0-9]|-[1-9]/', '', $text);
-    $remove = array(
-      'Mary Hatton',
-    );
-    $text = str_ireplace($remove, ' ', $text);
-
-    $years = array('2012','2013','2014');
+    $years = array('2010','2011','2012','2013','2014','2015');
     foreach ($years as $year) {
       $pos = strpos($text, $year);
-      if (!empty($pos)) {
-        $text = substr($text, 0, ($pos + 4));
+      if ($pos !== FALSE) {
+        $text = parent::removeMultipleMonthRange($text);
+        break;
       }
     }
+    $text = parent::cleanString($text);
+    $text = preg_replace('/(\d+)-/', '', $text);
+    $text = preg_replace('/(\d+) -/', '', $text);
+
+    $remove = array(
+      'Mary Hatton',
+      'Mary L  Hatton',
+      'DESK: (219)',
+      '937-5603',
+      '<a name="2"></a>',
+      '<a name="3"></a>',
+      '<a name="4"></a>',
+      '<a name="5"></a>',
+      '<a name=2></a>',
+      '<a name=3></a>',
+      '<a name=4></a>',
+      '<a name=5></a>',
+      'MONDAY',
+      'TUESDAY',
+      'WEDNESDAY',
+      'THURSDAY',
+      'FRIDAY',
+      'SATURDAY',
+      'SUNDAY',
+      '(202) 514-2007',
+      'Press Release',
+    );
+    $text = str_ireplace($remove, '', $text);
 
     return $text;
   }
