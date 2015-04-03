@@ -516,9 +516,10 @@ class AtrGalleryMigration extends JusticeHtmlToGalleryMigration {
     );
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findTitleTag',
+        'findSelector' => array('title'),
       ),
     );
+
     parent::__construct($arguments, $source_dirs, $options);
 
     $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
