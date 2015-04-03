@@ -182,7 +182,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      watchdog('doj_migration', $message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING);
+      $this->migrationMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
       return TRUE;
     }
     return FALSE;
@@ -224,6 +224,9 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print($formatted_message, $indent);
+      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      }
     }
   }
 }

@@ -61,7 +61,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
     $row->field_pr_subtitle = $this->sourceParser->getSubTitle();
     $row->field_pr_date = $this->sourceParser->getDate();
     if (empty($row->field_pr_date)) {
-      $this->migrationMessage("IGNORING: The press release date for @file_id has no date", array("@file_id" => $row->fileid), WATCHDOG_ALERT);
+      $this->migrationMessage("IGNORING: The press release @file_id has no date", array("@file_id" => $row->fileid), WATCHDOG_ERROR);
     }
 
     // Validate that the date is not in the future.

@@ -251,6 +251,9 @@ abstract class Obtainer {
     if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print("$type: $formatted_message", 2);
+      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      }
     }
   }
 }
