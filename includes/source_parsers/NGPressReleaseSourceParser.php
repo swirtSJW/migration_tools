@@ -29,10 +29,12 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
     }
     else {
       $date = date('n/d/Y', strtotime($date_string));
+      if (!empty($date)) {
+        // Output success to show progress to aid debugging.
+        $this->sourceParserMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+      }
     }
 
-    // Output to show progress to aid debugging.
-    $this->sourceParserMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
     return $date;
   }
 

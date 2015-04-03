@@ -149,3 +149,21 @@ engine is currently hardcoded to use the district menu generation class.
 A possible improvement to the code would be to allow classes to be switched 
 with an option, but for now, simply changing the class there for the 
 MenuGeneratorEngineDefault class will work for organization menus.
+
+
+### Debugging and Iterations
+There are two settings through drupal variables that can aid in building and
+debugging a migration.  The default for each is FALSE but can be overidden in
+your settings.local.php
+
+variable: doj_migration_drush_debug
+  Enables output to be seen in the terminal on a file by file basis to see
+  what elements are being found by the obtainers and migrated. Default is FALSE.
+  Enable debug output: drush vset doj_migration_drush_debug TRUE
+
+doj_migration_drush_stop_on_error
+  When doj_migration_drush_debug is TRUE and a warning is thrown by the
+  messsaging system that is of the level WATCHDOG_ERROR, WATCHDOG_CRITICAL,
+  WATCHDOG_ALERT, WATCHDOG_EMERGENCY.
+  Default is FALSE.
+  Enable stop on error: drush vset doj_migration_drush_stop_on_error TRUE
