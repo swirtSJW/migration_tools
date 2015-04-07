@@ -220,14 +220,14 @@ class MenuGeneratorEngineDefault {
     // @todo This is cheating, this will work with districts, but not
     // generally.
     $base = $this->parameters->getJusticeUrl();
+    $local_base_uri = $this->parameters->getUriLocalBase();
 
-    if ($local_base_uri = $this->parameters->getUriLocalBase()) {
+    if ($local_base_uri && empty($this->parameters->getUriMenuLocation())) {
       $subpath = str_replace($base, '', $local_base_uri);
     }
     else {
       $subpath = str_replace($base, '', $this->parameters->getUriMenuLocation());
     }
-
     module_load_include('inc', 'doj_migration', 'includes/doj_migration');
     $legacy_uri = doj_migration_relative_to_absolute_url($uri, $base, $subpath);
 
