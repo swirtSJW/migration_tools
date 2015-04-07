@@ -69,6 +69,37 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Finder method to crawl source for $selector string.
+   *
+   * This is a broad search and should only be used as a last resort.
+   * 
+   * @param string $selector
+   *   The selector to find.
+   * @param string $limit
+   *   The depth level limit for the search.
+   * 
+   * @return string
+   *   contents of found element.
+   */
+  protected function findAnyValidSelector($selector, $limit = NULL) {
+    foreach ($this->queryPath->find($selector) as $key => $em) {
+      if (($limit !== NULL) && ($key == $limit)) {
+        break;
+      }
+      $this->setElementToRemove($em);
+      $text = $em->text();
+      $text = $this->cleanString($text);
+      if ($this->validateString($text)) {
+        $this->setCurrentFindMethod("findAnyElement-i={$key}");
+        // Return the original string to avoid double cleanup causing issues.
+        return $text;
+      }
+    }
+    // If it made it this far, nothing was found.
+    return '';
+  }
+
+  /**
    * Finder for nth  xpath on the page.
    *
    * @param string $xpath
