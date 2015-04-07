@@ -138,9 +138,6 @@ abstract class NGSourceParser {
     }
 
     $type_detect = array(
-      'JIS',
-      'EUC-JP',
-      'sjis-win',
       'UTF-8',
       'ASCII',
       'ISO-8859-1',
@@ -162,6 +159,11 @@ abstract class NGSourceParser {
       'Windows-1254',
     );
     $convert_from = mb_detect_encoding($this->html, $type_detect);
+    if ($convert_from != 'UTF-8') {
+      // This was not UTF-8 so report the anomaly.
+      $message = "Converted from: @convert_from";
+      $this->sourceParserMessage($message, array('@convert_from' => $convert_from), WATCHDOG_INFO, 1);
+    }
 
     $qp_options = array(
       'convert_to_encoding' => 'UTF-8',

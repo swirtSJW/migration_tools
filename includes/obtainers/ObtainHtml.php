@@ -72,12 +72,12 @@ class ObtainHtml extends Obtainer {
    * Finder method to crawl source for $selector string.
    *
    * This is a broad search and should only be used as a last resort.
-   * 
+   *
    * @param string $selector
    *   The selector to find.
    * @param string $limit
    *   The depth level limit for the search.
-   * 
+   *
    * @return string
    *   contents of found element.
    */

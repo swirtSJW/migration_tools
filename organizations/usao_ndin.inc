@@ -215,6 +215,7 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findXpath', array("/html/body/div/p[8]/span", 1));
     $date->addMethod('findXpath', array("/html/body/div/p[9]/span", 1));
     $date->addMethod('findXpath', array("/html/body/div/p[10]/span", 1));
+    $date->addMethod('findTableContents', array(5, 2, 1));
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoNdinObtainPrNumber");
 

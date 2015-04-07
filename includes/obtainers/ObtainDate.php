@@ -300,12 +300,17 @@ class ObtainDate extends ObtainHtml {
       'wendsday',
       'firday',
     );
+    // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
     $remove = array(
       '.',
+      "\n",
     );
+    // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
-
+    // Remove multiple spaces.
+    $text = preg_replace('/\s{2,}/u', ' ', $text);
+    // Remove any text following the 4 digit year.
     $years = array('2010','2011','2012','2013','2014','2015');
     foreach ($years as $year) {
       $pos = strpos($text, $year);
@@ -373,7 +378,7 @@ class ObtainDate extends ObtainHtml {
 
   /**
    * Searches for a date range overlapping months, returns single date.
-   * 
+   *
    * Looks specifically for month names as defined in self::returnMonthNames().
    * In the case of multiple months found in $string, returns the latter date.
    * Example: "March 28 - April 4", returns April 4.
