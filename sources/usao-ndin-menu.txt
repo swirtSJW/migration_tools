@@ -1,0 +1,18 @@
+HOME{"url":"usao-ndin/welcome"}
+ABOUT{"url":"usao-ndin/about"}
+NEWS{"url":"http://justice.gov/usao/inn/news.html"}
+MEET THE U.S. ATTORNEY{"url":"usao-ndin/david-capp"}
+DIVISIONS{"url":"usao-ndin/divisions"}
+-Administrative Division {"url":"usao-ndin/administrative-division"}
+-Appellate Division {"url":"usao-ndin/appellate-division"}
+-Civil Division {"url":"usao-ndin/civil-division"}
+-Criminal Division {"url":"usao-ndin/criminal-division"}
+PROGRAMS{"url":"usao-ndin/programs"}
+-Community Outreach{"url":"usao-ndin/community-outreach"}
+-Anti-Terrorism Advisory Council{"url":"usao-ndin/anti-terrorism-advisory-council"}
+-LECC{"url":"usao-ndin/law-enforcement-coordinating-committee-lecc"}
+-Project Safe Childhood{"url":"usao-ndin/project-safe-childhood"}
+-Project Safe Neighborhoods{"url":"usao-ndin/project-safe-neighborhoods"}
+-Victim Witness Assistance {"url":"usao-ndin/victim-witness"}
+CAREERS{"url":"usao-ndin/careers"}
+CONTACT US{"url":"usao-ndin/contact-information"}
