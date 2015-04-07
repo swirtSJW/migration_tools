@@ -37,9 +37,10 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     $arguments['obtainers_info'][] = $title;
 
+    $extension_regex = {{ info.file_extensions }};
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, NULL, $options);
+    parent::__construct($arguments, $source_dirs, $extension_regex, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates pages from the {{ info.full_name }}.');
     $this->addFieldMapping('og_group_ref')
@@ -169,7 +170,9 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
   {% endfor %}
   );
 
-    parent::__construct($arguments, $source_dirs);
+    $options = array('recurse' => TRUE);
+    $extension_regex = '{{ info.file_extensions }}';
+    parent::__construct($arguments, $source_dirs, $options, $extension_regex);
 
     $this->addFieldMapping('og_group_ref')
     ->defaultValue('{{ info.abbreviation }}')
