@@ -1,0 +1,6 @@
+abbreviation: usao-sdny
+full_name: Southern District of New York
+directory: usao/nys
+file_extensions: [htm, html, php]
+pr_subdirectory: pressreleases
+component_tid: 1981
