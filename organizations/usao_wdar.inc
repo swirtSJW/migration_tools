@@ -130,7 +130,7 @@ class UsaoWdarPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findTable2Row2Col2');
     $date->addMethod('findSelector', array("p[align='center']", 1));
     $date->addMethod('findSelector', array("#contentstart > p", 1));
-    $date->addMethod('findSelector', array(".newsRight > p", 1));
+    $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
 

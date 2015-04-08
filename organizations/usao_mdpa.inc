@@ -244,7 +244,6 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
 
     $date = new ObtainerInfo('date');
     $date->addMethod("findDivPAlignLeft");
-    $date->addMethod('findSelector', array(".newsRight > p", 1));
     $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod("findDivClassContentSubDiv3");
     $date->addMethod("findProbableDate");

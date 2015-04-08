@@ -132,7 +132,6 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findSelector', array("p > strong > em", 1));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
     $title->addMethod("findCenteredParagraphStrong");
-    
 
     $subtitle = new ObtainerInfo('subtitle', "UsaoSdtxObtainSubtitlePress");
     $subtitle->addMethod("findCenteredParagraphStrong");
@@ -143,7 +142,7 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findTableContents', array(2, 2, 2));
     $date->addMethod('findSelector', array("p[align='center']", 1));
     $date->addMethod('findSelector', array("#contentstart > p", 1));
-    $date->addMethod('findSelector', array(".newsRight > p", 1));
+    $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
 
