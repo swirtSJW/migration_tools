@@ -16,7 +16,7 @@ class NGDistrictPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigrati
   /**
    * {@inheritdoc}
    */
-  public function __construct($arguments, $source_dirs, $options = array()) {
+  public function __construct($arguments, $source_dirs, $options = array(), $regex = NULL) {
     if (array_key_exists('district', $arguments)) {
       $district = $arguments['district'];
     }
@@ -38,7 +38,7 @@ class NGDistrictPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigrati
     }
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
-    parent::__construct($arguments, $source_dirs, $options);
+    parent::__construct($arguments, $source_dirs, $options, $regex);
 
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates Press Releases from Districts.');

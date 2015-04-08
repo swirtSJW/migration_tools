@@ -203,6 +203,12 @@ class DojMigrationGenerator {
       $info['recurse'] = FALSE;
     }
 
+    // Build regex based on $extensions.
+    $extensions = $this->getFileExtensions();
+    $extensions = implode('|', $extensions);
+    $regex = "/.*\.(" . $extensions . ")$/i";
+    $info['file_extensions'] = $regex;
+
     if (!empty($this->orgConfig['component_tid'])) {
       $info['component_tid'] = $this->orgConfig['component_tid'];
     }
@@ -223,16 +229,18 @@ class DojMigrationGenerator {
    */
   protected function getSourceDirectories() {
     $directories = array('page' => array());
+    $extentions = $this->getFileExtensions();
+    $extentions = implode(',', $extentions);
 
     if (!empty($this->orgConfig['pr_subdirectory'])) {
 
       // Generate an array of all subdirectories containing HTML.
       // @todo Replace usage of shell_exec() with direct calls to php function.
       if ($this->orgConfig['drush_alias']) {
-        $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']}");
+        $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
       }
       else {
-        $html_array_data = shell_exec("drush doj-migrate-html-folders {$this->orgConfig['directory']}");
+        $html_array_data = shell_exec("drush doj-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
       }
       $data = explode("\n", $html_array_data);
 
@@ -254,6 +262,32 @@ class DojMigrationGenerator {
     }
 
     return $directories;
+  }
+
+
+  /**
+   * Gets an array of file extensions (filetypes) to be processed.
+   *
+   * @return array
+   *   An array of file extensions.
+   */
+  protected function getFileExtensions() {
+
+    if (!empty($this->orgConfig['file_extensions'])) {
+      // file_extensions is overridden.
+      $file_extensions = $this->orgConfig['file_extensions'];
+
+    }
+    else {
+      // No overides so use these defaults.
+      $file_extensions = array(
+        'html',
+        'htm',
+      );
+
+    }
+
+    return $file_extensions;
   }
 
   /**

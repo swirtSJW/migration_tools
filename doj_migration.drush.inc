@@ -40,6 +40,12 @@ function doj_migration_drush_command() {
     ),
     'options' => array(
       'ignore' => 'Comma delimited list of strings in folder to ignore',
+      'extensions' => 'Comma delimited list of file extentions to find. (default: htm, html)',
+    ),
+    'examples' => array(
+      'drush dmhf usao-sdal' => 'Finds all directories in the source documents that contain .htm or .html files.',
+      'drush dmhf usao-sdal --extensions="htm,php"' => 'Finds all directories in the source documents that contain .htm or .php files.',
+      'drush dmhf usao-sdal --ignore="templates,archive"' => 'Finds all directories in the source documents that contain .htm or .html files except for the directories containing the word "templates" or "archive".',
     ),
   );
 
@@ -218,7 +224,16 @@ function drush_doj_migration_doj_generate_migrate_commands($groups) {
 function drush_doj_migration_doj_migrate_html_folders($organization) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
-  drush_print_r(doj_migrate_find_folders_with_files($organization, array("htm", "html"), $ignore));
+
+  $extensions = drush_get_option('extensions');
+  if (empty($extensions)) {
+    $extensions = array("htm", "html");
+  }
+  else {
+    $extensions = explode(",", $extensions);
+  }
+
+  drush_print_r(doj_migrate_find_folders_with_files($organization, $extensions, $ignore));
 }
 
 /**
@@ -288,9 +303,9 @@ function doj_migrate_find_folders_with_files($organization, $exts, $ignore = arr
  * Ignore this folder, or not.
  *
  * @param string $folder
- *   a strin representing a folder.
+ *   a string representing a folder.
  * @param array $ignore
- *   A list of string to fine in folders to ignore.
+ *   A list of string to find in folders to ignore.
  *
  * @return bool
  *   Should this folder be ignored.

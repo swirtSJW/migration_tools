@@ -1,3 +1,4 @@
 twig: district.php.twig
 twig_specific_keys: [pr_subdirectory]
 drush_local_alias: doj.local
+file_extensions: [htm, html]
