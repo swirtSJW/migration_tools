@@ -277,14 +277,25 @@ class UsaoEdcaPressReleaseEspanolMigration extends JusticeHtmlToPressReleaseSpan
     $arguments['component_tid'] = 4081;
 
     $arguments['obtainer_methods'] = array(
-      'title' => array(
-        'findSelector' => array("h1", 2),
-        'findSelector' => array("h1", 1),
-      ),
-      'date' => array(
-        'findSelector' => array('.style2', 1),
-        'findTable1Row2Col1' => array(),
-      ),
+      'title' => array(),
+      'date' => array(),
+    );
+    $arguments['obtainer_methods']['title'][] = array(
+      'findSelector',
+      array("h1", 2),
+    );
+    $arguments['obtainer_methods']['title'][] = array(
+      'findSelector',
+      array("h1", 1),
+    );
+
+    $arguments['obtainer_methods']['date'][] = array(
+      'findSelector',
+      array('.style2', 1),
+    );
+    $arguments['obtainer_methods']['date'][] = array(
+      'findTable1Row2Col1',
+      array(),
     );
 
     $source_dirs = array(
