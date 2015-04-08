@@ -126,11 +126,13 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));
     $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('findSelector', array(".contentSub > div > div > p", 1));
     $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
     $title->addMethod('findSelector', array("#headline", 1));
     $title->addMethod('findSelector', array("p > strong > em", 1));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
     $title->addMethod("findCenteredParagraphStrong");
+    
 
     $subtitle = new ObtainerInfo('subtitle', "UsaoSdtxObtainSubtitlePress");
     $subtitle->addMethod("findCenteredParagraphStrong");
@@ -264,6 +266,21 @@ class UsaoSdtxObtainTitlePress extends ObtainTitlePressRelease {
     $subtitle = $this->queryPath->find("p[align='center']>strong")->first();
     $this->setElementToRemove($subtitle);
     return $subtitle->text();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    // Remove strong tags before parent cleanString method runs.
+    $remove = array(
+      '<strong>',
+      '</strong>',
+    );
+    $text = str_ireplace($remove, '', $text);
+    $text = parent::cleanString($text);
+
+    return $text;
   }
 }
 
