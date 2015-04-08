@@ -434,9 +434,16 @@ class SourceParser {
               'arguments' => array() ,
             );
           }
-          $clean_stack[] = $new_method;
+        }
+        elseif (is_string($key)) {
+          // Is a formatted old style where the $key is the method name,
+          $new_method = array(
+            'method_name' => $key,
+            'arguments' => (is_array($method)) ? $method : array(),
+          );
         }
 
+        $clean_stack[] = $new_method;
       }
       // Put the new into the original.
       $args['obtainer_methods'][$obtainer_methods_key] = $clean_stack;
