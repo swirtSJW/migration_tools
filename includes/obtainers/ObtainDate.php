@@ -403,13 +403,13 @@ class ObtainDate extends ObtainHtml {
   }
 
   /**
-   * Evaluates $possibleText and if it checks out, returns TRUE.
+   * Evaluates $string and if it checks out, returns TRUE.
    *
    * @param string $string
    *   The string to validate.
    *
    * @return bool
-   *   TRUE if possibleText can be used as a title.  FALSE if it cant.
+   *   TRUE if possibleText can be used as a date.  FALSE if it cant.
    */
   protected function validateString($string) {
     // Run through any evaluations.  If it makes it to the end, it is good.

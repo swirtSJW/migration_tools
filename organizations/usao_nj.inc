@@ -33,9 +33,9 @@ class UsaoNjPageMigration extends JusticeHtmlToPageMigration {
     $arguments['obtainer_methods'] = array(
       'title' => array(
         'findSelector' => array("h1", 1),
-        'findH1Any' => array(),
+        'findAnySelectorUntilValid' => array('h1'),
         'findFirstContentSubImageAlt' => array(),
-        'findClassBreadcrumbLast' => array(),
+        'findBreadcrumbLastAnchor' => array('.breadcrumb'),
         'findClassBreadcrumbMenuContentLast' => array(),
         'findSubBannerAlt' => array(),
       ),

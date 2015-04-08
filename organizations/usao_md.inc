@@ -111,7 +111,7 @@ class UsaoMdPressReleaseMigration extends DistrictPressReleaseMigration {
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findH1Any' => array(),
+        'findAnySelectorUntilValid' => array('h1'),
         'findSelector' => array("#contentstart > div > h2", 2),
         'findSelector' => array("h1", 2),
         'findFirstCenteredAlignPAfterHr' => array(),

@@ -40,6 +40,8 @@ class HtmlCleanUp {
       'div.leftcolmenu',
       // Remove all back to top links.
       'a[href="#top"]',
+      'style',
+      'script',
     ));
 
     // Remove external icon images.

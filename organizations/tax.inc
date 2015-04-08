@@ -132,7 +132,7 @@ class TaxPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "TaxObtainTitlePressRelease");
     $title->addMethod('findSelector', array('.title', 1));
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $title->addMethod('findSelector', array("p[align='center'] > strong > u"));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));

@@ -28,8 +28,8 @@ class UsaoPrPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoPrObtainTitlePage");
     $title->addMethod('findSelector', array('selector' => 'h1', 1));
-    $title->addMethod('findH1Any');
-    $title->addMethod('findClassBreadcrumbLast');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');
 
@@ -125,7 +125,7 @@ class UsaoPrPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod("findProbableDate");
     $title = new ObtainerInfo('title');
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $subtitle = new ObtainerInfo('subtitle');
     $subtitle->addMethod('findSelector', array("h2", 1));
 

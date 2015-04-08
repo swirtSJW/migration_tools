@@ -130,7 +130,7 @@ class UsaoWdwaPressReleaseMigration extends DistrictPressReleaseMigration {
         'findSelector' => array("h1", 2),
         'findSelector' => array("h1[align='center']", 1),
         'findSelector' => array("h1", 1),
-        'findH1Any' => array(),
+        'findAnySelectorUntilValid' => array('h1'),
       ),
       'subtitle' => array(
         'findSelector' => array("h2[align='center']", 1),

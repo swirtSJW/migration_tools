@@ -119,8 +119,8 @@ class UsaoWdlaPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['obtainer_methods'] = array(
       'title' => array(
         'findSelector' => array("h1", 1),
-        'findH1Any' => array(),
-        'findClassBreadcrumbLast' => array(),
+        'findAnySelectorUntilValid' => array('h1'),
+        'findBreadcrumbLastAnchor' => array('.breadcrumb'),
         'findClassBreadcrumbMenuContentLast' => array(),
         'findSubBannerAlt' => array(),
         'findSelector' => array('table > td center', 1),

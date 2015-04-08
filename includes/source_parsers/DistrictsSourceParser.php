@@ -50,8 +50,8 @@ class DistrictsSourceParser extends SourceParser {
       // Default stack: Use this if none was defined in migration class.
       $default_target_stack = array(
         'findSelector' => array("h1", 1),
-        'findH1Any' => array(),
-        'findClassBreadcrumbLast' => array(),
+        'findAnySelectorUntilValid' => array('h1'),
+        'findBreadcrumbLastAnchor' => array('.breadcrumb'),
         'findClassBreadcrumbMenuContentLast' => array(),
         'findSubBannerAlt' => array(),
       );

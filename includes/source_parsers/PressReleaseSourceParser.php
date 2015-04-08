@@ -77,7 +77,7 @@ class PressReleaseSourceParser extends SourceParser {
         $method_stack = $this->getObtainerMethods('title');
         if (empty($method_stack)) {
           $method_stack = array();
-          $method_stack[] = array('findH1Any');
+          $method_stack[] = array('findAnySelectorUntilValid', array('h1'));
           $method_stack[] = array(
             'findSelector',
             array("#contentstart > div > h2", 2),

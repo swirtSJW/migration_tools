@@ -34,8 +34,8 @@ class UsaoWdtnPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoWdtnObtainTitlePage");
     $title->addMethod('findSelector', array("h1", 1));
-    $title->addMethod('findH1Any');
-    $title->addMethod('findClassBreadcrumbLast');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');
 
@@ -121,7 +121,7 @@ class UsaoWdtnPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoWdtnObtainTitlePressRelease");
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));
     $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));

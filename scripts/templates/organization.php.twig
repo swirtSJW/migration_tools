@@ -31,7 +31,8 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
-    $title->addMethod('findClassBreadcrumbMenuContentLast');
+    $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'))
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'))
     $title->addMethod('findSelector', array("title", 1));
     $title->addMethod('findSelector', array("h1", 1));
 
@@ -53,7 +54,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
    */
   public function prepareRow($row) {
     $skip_these = array();
-    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
+    if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
   }
@@ -144,7 +145,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePressRelease");
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));
     $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
