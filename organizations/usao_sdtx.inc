@@ -273,8 +273,10 @@ class UsaoSdtxObtainTitlePress extends ObtainTitlePressRelease {
   public static function cleanString($text) {
     // Remove strong tags before parent cleanString method runs.
     $remove = array(
-      '<strong>',
-      '</strong>',
+      'A criminal complaint is a formal accusation of  criminal conduct, not evidence. ',
+      'A  complaint or indictment is a formal accusation of criminal conduct, not  evidence.',
+      'A defendant is presumed innocent unless convicted through due process of law.',
+      'An indictment  is a formal accusation of criminal conduct, not evidence.',
     );
     $text = str_ireplace($remove, '', $text);
     $text = parent::cleanString($text);
