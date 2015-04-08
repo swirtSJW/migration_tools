@@ -890,12 +890,12 @@ return array (
     ),
     'UsaoEdcaPageEspanol' =>
     array (
-      'group_name' => 'usao-edca',
+      'group_name' => 'usao-edca-espanol',
       'class_name' => 'UsaoEdcaPageEspanolMigration',
     ),
     'UsaoEdcaPressReleaseEspanol' =>
     array (
-      'group_name' => 'usao-edca',
+      'group_name' => 'usao-edca-espanol',
       'class_name' => 'UsaoEdcaPressReleaseEspanolMigration',
     ),
     'UsaoEdmoFile' =>

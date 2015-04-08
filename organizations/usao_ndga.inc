@@ -150,11 +150,12 @@ class UsaoNdgaPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
 
     $date = new ObtainerInfo('date', "UsaoNdgaObtainDate");
-    $date->addMethod('findTableRow1Col2');
-    $date->addMethod('findTableRow1Col1');
-    $date->addMethod('findTable2Row2Col2');
+    $date->addMethod('findTableContents', array(1, 1, 2));
+    $date->addMethod('findTableContents', array(1, 1, 1));
+    $date->addMethod('findTableContents', array(2, 2, 2));
     $date->addMethod('findSelector', array("p[align='center']", 1));
     $date->addMethod('findSelector', array("#contentstart > p", 1));
+    $date->addMethod('findSelector', array(".newsRight", 1));
     $date->addMethod('findSelector', array(".newsRight > p", 1));
     $date->addMethod('findSelector', array(".BottomLeftContent", 1));
     $date->addMethod('findProbableDate');
