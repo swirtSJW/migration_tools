@@ -266,7 +266,7 @@ class UstRegionsObtainTitlePage extends ObtainTitle {
    *   The text found.
    */
   protected function findTitleWithPrependedRegion1() {
-    $region = $this->findH1Any();
+    $region = $this->findAnySelectorUntilValid('h1');
     $element = $this->queryPath->find("h4")->first();
     $this->setElementToRemove($element);
     if (!empty($region)) {

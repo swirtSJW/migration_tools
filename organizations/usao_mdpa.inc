@@ -95,7 +95,7 @@ class UsaoMdpaPageMigration extends NGJusticeHtmlToPageMigration {
     $arguments['source_parser_class'] = "NGDistrictPageSourceParser";
     $title = new ObtainerInfo("title", 'ObtainTitle');
     $title->addMethod('findSelector', array("h1", 2));
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $arguments['obtainers_info'][] = $title;
 
     $options = array('recurse' => FALSE);
@@ -250,7 +250,7 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
     $this->addObtainerInfo($date);
 
     $title = new ObtainerInfo('title');
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));
     $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));

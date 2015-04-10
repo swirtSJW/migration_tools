@@ -27,8 +27,8 @@ class UsaoNdinPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoNdinObtainTitlePage");
-    $title->addMethod('findH1Any');
-    $title->addMethod('findClassBreadcrumbLast');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');
 
@@ -129,7 +129,7 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoNdinObtainTitlePressRelease");
-    $title->addMethod('findAnyValidSelector', array("h1"));
+    $title->addMethod('findAnySelectorUntilValid', array("h1"));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array('h2', 1));
     $title->addMethod('findSelector', array('h2', 2));
@@ -200,9 +200,9 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findSelector', array("span[style='mso-fareast-font-family:\"Times New Roman\"']", 9));
     $date->addMethod('findSelector', array("span[style='font-size:12.0pt;font-family:\"Times New Roman\",\"serif\"']", 9));
     $date->addMethod('findSelector', array('em', 3));
-    $date->addMethod('findAnyValidSelector', array("em"));
-    $date->addMethod('findAnyValidSelector', array("span[style='font-size:12.0pt']"));
-    $date->addMethod('findAnyValidSelector', array('span[style="font-size:12.0pt"]'));
+    $date->addMethod('findAnySelectorUntilValid', array("em"));
+    $date->addMethod('findAnySelectorUntilValid', array("span[style='font-size:12.0pt']"));
+    $date->addMethod('findAnySelectorUntilValid', array('span[style="font-size:12.0pt"]'));
     $date->addMethod('findProbableDate');
     $date->addMethod('findXpath', array("/html/body/div/p[4]/span[1]", 1));
     $date->addMethod('findXpath', array("/html/body/div/p[1]/span", 1));

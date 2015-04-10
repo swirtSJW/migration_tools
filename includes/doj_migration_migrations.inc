@@ -285,6 +285,10 @@ return array (
     array (
       'title' => 'Human Rights and Special Prosecutions Section',
     ),
+    'usao-sdny' =>
+    array (
+      'title' => 'Southern District of New York',
+    ),
   ),
   'migrations' =>
   array (
@@ -1217,6 +1221,21 @@ return array (
     array (
       'group_name' => 'criminal-hrsp',
       'class_name' => 'CriminalHrspFileMigration',
+    ),
+    'UsaoSdnyPage' =>
+    array (
+      'group_name' => 'usao-sdny',
+      'class_name' => 'UsaoSdnyPageMigration',
+    ),
+    'UsaoSdnyFile' =>
+    array (
+      'group_name' => 'usao-sdny',
+      'class_name' => 'UsaoSdnyFileMigration',
+    ),
+    'UsaoSdnyPressRelease' =>
+    array (
+      'group_name' => 'usao-sdny',
+      'class_name' => 'UsaoSdnyPressReleaseMigration',
     ),
   ),
 );

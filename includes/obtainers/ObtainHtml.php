@@ -46,7 +46,7 @@ class ObtainHtml extends Obtainer {
    * @param string $selector
    *   The selector to find.
    * @param int $n
-   *   The depth to find.  Default: first item n=1.
+   *   (optional) The depth to find.  Default: first item n=1.
    *
    * @return string
    *   The text found.
@@ -69,19 +69,39 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
-   * Finder method to crawl source for $selector string.
+   * Finder for the last occurence of the selector.
+   *
+   * @param string $selector
+   *   The selector to find.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findSelectorLast($selector) {
+    $text = '';
+    if (!empty($selector)) {
+      $element = $this->queryPath->find($selector)->last();
+      $this->setElementToRemove($element);
+      $text = $element->text();
+      $this->setCurrentFindMethod("findSelectorLast($selector)");
+    }
+    return $text;
+  }
+
+  /**
+   * Finder crawls $selector elements until one validates.
    *
    * This is a broad search and should only be used as a last resort.
    *
    * @param string $selector
    *   The selector to find.
    * @param string $limit
-   *   The depth level limit for the search.
+   *   (optional) The depth level limit for the search.  Defaults to NULL.
    *
    * @return string
-   *   contents of found element.
+   *   Text contents of the first element to validate.
    */
-  protected function findAnyValidSelector($selector, $limit = NULL) {
+  protected function findAnySelectorUntilValid($selector, $limit = NULL) {
     foreach ($this->queryPath->find($selector) as $key => $em) {
       if (($limit !== NULL) && ($key == $limit)) {
         break;
@@ -99,13 +119,59 @@ class ObtainHtml extends Obtainer {
     return '';
   }
 
+
+  /**
+   * Finder crawls $selector elements until valid starting at bottom going up.
+   *
+   * This is a broad search and  is only as strong as the validation.  It should
+   * only be used as a last resort (far down the finder stack).  It will start
+   * with the last element found and work backwards until it finds a valid one.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param string $limit
+   *   (optional) The depth level limit for the search. Defaults to NULL.
+   *
+   * @return string
+   *   Text contents of the first element to validate.
+   */
+  protected function findAnySelectorUntilValidDrillUp($selector, $limit = NULL) {
+    $elements = $this->queryPath->find($selector);
+    $element_count = $elements->count();
+    $limit = ($limit === NULL) ? $element_count : $limit;
+    $limit = ($element_count > $limit) ? $limit : $element_count;
+
+    $i = 1;
+    while ($i <= $limit) {
+      $index = $element_count - $i;
+      // The get method returns a dom Element which is not the same as a qp
+      // and is disconnected from the qp object.
+      $dom_element = $elements->get($index, TRUE);
+      $text_original = (!empty($dom_element->textContent)) ? $dom_element->textContent : '';
+      $text = $this->cleanString($text_original);
+
+      if ($this->validateString($text)) {
+        $this->setCurrentFindMethod("findAnySelectorUntilValidDrillUp-i={$i}");
+        // Get the same element as a queryPath object so it can be removed.
+        // Removal is arranged by findSelector().
+        $element_text = $this->findSelector($selector, $index + 1);
+        // Return the original string to avoid double cleanup causing issues.
+        return $element_text;
+      }
+      $i++;
+    }
+
+    // If it made it this far, nothing was found.
+    return '';
+  }
+
   /**
    * Finder for nth  xpath on the page.
    *
    * @param string $xpath
    *   The selector to find.
    * @param int $n
-   *   The depth to find.  Default: first item n=1.
+   *   (optional) The depth to find.  Default: first item n=1.
    *
    * @return string
    *   The text found.
@@ -270,7 +336,7 @@ class ObtainHtml extends Obtainer {
    * @param object $qp_element
    *   The query path object that may need things removed from.
    * @param int $max_length
-   *   The maximum length of the text to be considered valid.
+   *   (optional)The maximum length of the text to considered valid. Default 0.
    *
    * @return string
    *   The string appearing before the blank <br> or the full string if no <br>.
@@ -313,9 +379,9 @@ class ObtainHtml extends Obtainer {
    * @param string $text
    *   Html or plain text to be truncated.
    * @param int $length
-   *   The number of characters to truncate to.
+   *   (optional) The number of characters to truncate to. Defaults to 255.
    * @param int $min_word_length
-   *   Minimum number of characters to consider something as a word.
+   *   (optional) Minimum number of characters to consider a word. Default = 2.
    *
    * @return array
    *   - truncated: Plain text that has been truncated.

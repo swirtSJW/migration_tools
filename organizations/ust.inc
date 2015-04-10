@@ -312,7 +312,7 @@ class UstPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstObtainTitlePress");
     $title->addMethod("findPressContentTitle");
-    $title->addMethod('findH1Any');
+    $title->addMethod('findAnySelectorUntilValid', array('h1'));
     $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('findSelector', array("h2", 1));
     $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));

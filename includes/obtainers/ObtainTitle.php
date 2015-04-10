@@ -33,18 +33,45 @@ class ObtainTitle extends ObtainHtml {
   }
 
   /**
-   * Finder method to find the content from the last item in the breadcrumb.
+   * Find the content from the last anchor in the breadcrumb chain.
+   *
+   * @param string $selector
+   *   Selector of the breadcrumb container.
+   *
    * @return string
    *   The text found.
    */
-  protected function findClassBreadcrumbLast() {
-    $breadcrumb = $this->queryPath->find(".breadcrumb");
-    // Remove the anchors. Creates a slight problem in that it is removing
-    // elements it may not use, but this is mitigated by the fact that we
-    // do not import breadcrumbs.
-    $breadcrumb->find(a)->remove();
-    $title = $breadcrumb->first()->text();
+  protected function findBreadcrumbLastAnchor($selector) {
+    $title = '';
+    if (!empty($selector)) {
+      $breadcrumb = $this->queryPath->find($selector);
+      $title = $breadcrumb->find(a)->last()->text();
+      // This element makes up a bigger whole, so it is not set to be removed.
+      $this->setCurrentFindMethod("findBreadcrumbLastAnchor($selector)");
+    }
+    return $title;
+  }
 
+  /**
+   * Find the content from the last non-anchor in the breadcrumb chain.
+   *
+   * @param string $selector
+   *   Selector of the breadcrumb container.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findBreadcrumbLastNonAnchor($selector) {
+    $title = '';
+    if (!empty($selector)) {
+      $breadcrumb = $this->queryPath->find($selector);
+      // Clone the breadcrumb so the next operations are non-destructive.
+      $clone = clone $breadcrumb;
+      $clone->find(a)->remove();
+      $title = $clone->first()->text();
+      // This element makes up a bigger whole, so it is not set to be removed.
+      $this->setCurrentFindMethod("findBreadcrumbLastNonAnchor($selector)");
+    }
     return $title;
   }
 
@@ -56,36 +83,15 @@ class ObtainTitle extends ObtainHtml {
    */
   protected function findClassBreadcrumbMenuContentLast() {
     $breadcrumb = $this->queryPath->find(".breadcrumbmenucontent")->first();
-    // Remove the anchors. Creates a slight problem in that it is removing
-    // elements it may not use, but this is mitigated by the fact that we
-    // do not import breadcrumbs.
-    $breadcrumb->children('a, span, font')->remove();
-    $title = $breadcrumb->text();
+    // Clone the breadcrumb so the next operations are non-destructive.
+    $clone = clone $breadcrumb;
+    $clone->children('a, span, font')->remove();
+    $title = $clone->text();
+    // This element makes up a bigger whole, so it is not set to be removed.
 
     return $title;
   }
 
-
-  /**
-   * Finder method to Loop through all h1 first H1 to evaluate gets it.
-   * @return string
-   *   The text found.
-   */
-  protected function findH1Any() {
-    // Check all h1
-    foreach ($this->queryPath->find("h1") as $key => $h1) {
-      $this->setElementToRemove($h1);
-      $text = $h1->text();
-      $text = $this->cleanString($text);
-      if ($this->validateString($text)) {
-        $this->setCurrentFindMethod("findAnyH1-i={$key}");
-        // Return the original string to avoid double cleanup causing issues.
-        return $text;
-      }
-    }
-    // If it made it this far, nothing was found.
-    return '';
-  }
 
   /**
    * Finder method to find #Layer4 and the 5th paragraph on the page first line.
