@@ -51,7 +51,7 @@ class UsaoMnPageMigration extends NGJusticeHtmlToPageMigration {
 
     );
 
-    if ((parent::prepareRow($row) === FALSE) || doj_migration_skip_file($row->fileid, $skip_these) || (!Self::isType('', $row))) {
+    if ((parent::prepareRow($row) === FALSE) || doj_migration_skip_file($row->fileid, $skip_these) || (!self::isType('', $row))) {
       return FALSE;
     }
   }
