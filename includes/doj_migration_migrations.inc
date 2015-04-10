@@ -285,6 +285,10 @@ return array (
     array (
       'title' => 'Human Rights and Special Prosecutions Section',
     ),
+    'criminal-ccips' =>
+    array (
+      'title' => 'Computer Crime & Intellectual Property Section',
+    ),
     'usao-sdny' =>
     array (
       'title' => 'Southern District of New York',
@@ -1221,6 +1225,16 @@ return array (
     array (
       'group_name' => 'criminal-hrsp',
       'class_name' => 'CriminalHrspFileMigration',
+    ),
+    'CriminalCcipsPage' =>
+      array (
+        'group_name' => 'criminal-ccips',
+        'class_name' => 'CriminalCcipsPageMigration',
+    ),
+    'CriminalCcipsFile' =>
+      array (
+        'group_name' => 'criminal-ccips',
+        'class_name' => 'CriminalCcipsFileMigration',
     ),
     'UsaoSdnyPage' =>
     array (

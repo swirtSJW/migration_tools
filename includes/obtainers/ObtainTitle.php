@@ -237,6 +237,31 @@ class ObtainTitle extends ObtainHtml {
     return "";
   }
 
+  /**
+   * Find any attribute of any selector.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param string $attribute
+   *   The attribute to find on the selector. Example: alt, title, etc.
+   * @param string $depth
+   *   (optional) The depth to find.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findSelectorAttribute($selector, $attribute, $depth = 1) {
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        $i++;
+        if ($i == $depth) {
+          $this->setCurrentFindMethod("findSelectorAttribute($selector, $attribute, " . $i . ')');
+          return $element->attr("{$attribute}");
+        }
+      }
+    }
+  }
 
   // ***************** Helpers ***********************************************.
 

@@ -151,4 +151,5 @@ files[] = organizations/usao_ndin.inc
 files[] = organizations/criminal_ceos.inc
 files[] = organizations/criminal_icitap.inc
 files[] = organizations/criminal_hrsp.inc
+files[] = organizations/criminal_ccips.inc
 files[] = organizations/usao_sdny.inc
