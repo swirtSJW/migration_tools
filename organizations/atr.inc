@@ -509,7 +509,10 @@ class AtrGalleryMigration extends JusticeHtmlToGalleryMigration {
   public function __construct($arguments) {
     // Define source directories.
     $source_dirs = array(
-      'atr/public',
+      'atr/public/division-update/2011/gallery',
+      'atr/public/division-update/2012/gallery',
+      'atr/public/update/2010/gallery',
+      'atr/public/international/gallery',
     );
     $options = array(
       'recurse' => TRUE,
@@ -551,7 +554,10 @@ class AtrGalleryImagesMigration extends JusticeHtmlToGalleryImagesMigration {
   public function __construct($arguments) {
     // Define source directories.
     $source_dirs = array(
-      'atr/public',
+      'atr/public/division-update/2011/gallery',
+      'atr/public/division-update/2012/gallery',
+      'atr/public/update/2010/gallery',
+      'atr/public/international/gallery',
     );
     $options = array(
       'recurse' => TRUE,
