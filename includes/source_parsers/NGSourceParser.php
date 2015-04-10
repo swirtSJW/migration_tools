@@ -119,7 +119,8 @@ abstract class NGSourceParser {
 
     }
     catch (Exception $e) {
-      $this->sourceParserMessage("Failed to set @key, Exception: @error_message", array(
+      $this->sourceParserMessage("@file_id Failed to set @key, Exception: @error_message", array(
+        '@file_id' => $this->fileId,
         '@key' => $property,
         '@error_message' => $e->getMessage(),
       ), WATCHDOG_ERROR);
@@ -171,7 +172,12 @@ abstract class NGSourceParser {
     );
 
     // Create query path object.
-    $this->queryPath = htmlqp($this->html, NULL, $qp_options);
+    try {
+      $this->queryPath = htmlqp($this->html, NULL, $qp_options);
+    }
+    catch (Exception $e) {
+      $this->sourceParserMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+    }
 
     if (!is_object($this->queryPath)) {
       throw new Exception("{$this->fileId} failed to initialize QueryPath");
