@@ -91,7 +91,12 @@ class SourceParser {
     }
 
     // Create query path object.
-    $this->queryPath = htmlqp($html, NULL, $qp_options);
+    try {
+      $this->queryPath = htmlqp($html, NULL, $qp_options);
+    }
+    catch (Exception $e) {
+      $this->sourceParserMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+    }
   }
 
   /**
