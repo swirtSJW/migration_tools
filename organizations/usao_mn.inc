@@ -51,7 +51,7 @@ class UsaoMnPageMigration extends NGJusticeHtmlToPageMigration {
 
     );
 
-    if ((parent::prepareRow($row) === FALSE) || doj_migration_skip_file($row->fileid, $skip_these) || (!self::isType('', $row))) {
+    if ((doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) || (!self::isType('', $row))) {
       return FALSE;
     }
   }
@@ -148,9 +148,9 @@ class UsaoMnPressReleaseMigration extends NGDistrictPressReleaseMigration {
       '/usao/mn/news_2011.html',
     );
 
-    if ((parent::prepareRow($row) === FALSE)
-        || doj_migration_skip_file($row->fileid, $skip_these)
-        || (!Self::isType('press_release', $row))
+    if ((doj_migration_skip_file($row->fileid, $skip_these)
+        || parent::prepareRow($row) === FALSE)
+        || (!self::isType('press_release', $row))
         ) {
 
       return FALSE;
