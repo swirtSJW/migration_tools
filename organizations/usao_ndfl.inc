@@ -71,7 +71,7 @@ class UsaoNdflFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/fln',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-ndfl/docs';
 
     $options = array('recurse' => TRUE);

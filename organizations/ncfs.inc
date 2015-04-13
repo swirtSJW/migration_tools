@@ -55,7 +55,7 @@ class NcfsFileMigration extends JusticeDeployableBinaryFileMigration {
     $source_dirs = array(
       'ncfs/docs',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///ncfs/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.

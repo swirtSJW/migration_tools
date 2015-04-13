@@ -74,7 +74,7 @@ class UsaoEdkyFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/kye',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-edky/docs';
 
     $options = array('recurse' => TRUE);

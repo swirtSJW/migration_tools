@@ -68,7 +68,7 @@ class UsaoSdinFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/ins',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-sdin/docs';
 
     $options = array('recurse' => FALSE);

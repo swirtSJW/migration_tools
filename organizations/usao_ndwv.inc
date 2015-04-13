@@ -113,7 +113,7 @@ class UsaoNdwvFileMigration extends JusticeDeployableBinaryFileMigration {
       38 => 'usao/wvn/includes',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-az/docs';
 
     $options = array('recurse' => FALSE);

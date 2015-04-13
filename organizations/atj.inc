@@ -54,7 +54,7 @@ class AtjFileMigration extends JusticeDeployableBinaryFileMigration {
     $source_dirs = array(
       'atj',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/i';
     $dest_dir = 'public:///atj/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.

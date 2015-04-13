@@ -77,7 +77,7 @@ class UsaoEspanolFileMigration extends JusticeDeployableBinaryFileMigration {
       0 => 'usao/espanol',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao/espanol';
 
     $options = array('recurse' => TRUE);

@@ -274,7 +274,7 @@ class UstFileMigration extends JusticeDeployableBinaryFileMigration {
       417 => 'ust/eo/public_affairs/statistics/docs/state/filings',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///ust/docs';
 
     $options = array('recurse' => TRUE);

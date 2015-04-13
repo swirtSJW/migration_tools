@@ -708,7 +708,7 @@ class OlaFileMigration extends JusticeDeployableBinaryFileMigration {
     // Match .pdf files only.
     $source_dirs = drupal_json_decode($dir_json);
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///ola/docs';
 
     $options = array('recurse' => FALSE);

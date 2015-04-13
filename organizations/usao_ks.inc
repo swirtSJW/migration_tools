@@ -70,7 +70,7 @@ class UsaoKsFileMigration extends JusticeDeployableBinaryFileMigration {
       0 => 'usao/ks',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-ks/docs';
 
     $options = array('recurse' => TRUE);

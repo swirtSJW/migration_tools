@@ -150,7 +150,7 @@ class EspanolFileMigration extends JusticeDeployableBinaryFileMigration {
       'spanish/pr/2012/December',
       'spanish/pr/2014',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     // Sending them to spanish, the old location, instead of espanol so
     // redirects have a better chance of working.
     $dest_dir = 'public:///espanol/docs';

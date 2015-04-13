@@ -208,7 +208,7 @@ class UstRegionsFileMigration extends JusticeDeployableBinaryFileMigration {
       21 => 'ust/r21',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///ust-regions/docs';
 
     $options = array('recurse' => TRUE);

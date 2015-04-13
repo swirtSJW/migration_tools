@@ -70,7 +70,7 @@ class UsaoWdncFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/ncw',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-wdnc/docs';
 
     $options = array('recurse' => TRUE);

@@ -126,7 +126,7 @@ class NsdOvtFileMigration extends JusticeDeployableBinaryFileMigration {
     $source_dirs = array(
       "nsd/ovt",
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///nsd/ovt/docs';
 
     $options = array('recurse' => TRUE);
@@ -200,7 +200,7 @@ class NsdFileMigration extends JusticeDeployableBinaryFileMigration {
       "nsd/ovtalgeria/scripts/foresee",
       "nsd/ovtalgeria/styles",
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///oarm/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.

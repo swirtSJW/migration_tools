@@ -67,7 +67,7 @@ class DefendingChildhoodFileMigration extends JusticeDeployableBinaryFileMigrati
       'defendingchildhood',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|eps)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|eps)/i';
     $dest_dir = 'public:///defendingchildhood/docs';
 
     $options = array('recurse' => TRUE);

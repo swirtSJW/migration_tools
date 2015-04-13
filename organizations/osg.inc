@@ -56,7 +56,7 @@ class OsgFileMigration extends JusticeDeployableBinaryFileMigration {
     $source_dirs = array(
       'osg',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///osg/docs';
 
     $options = array('recurse' => FALSE);

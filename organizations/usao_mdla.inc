@@ -67,7 +67,7 @@ class UsaoMdlaFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/lam',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-mdla/docs';
 
     $options = array('recurse' => TRUE);

@@ -77,7 +77,7 @@ class CriminalHrspFileMigration extends JusticeDeployableBinaryFileMigration {
       'criminal/hrsp',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///criminal-hrsp/docs';
 
     $options = array('recurse' => TRUE);

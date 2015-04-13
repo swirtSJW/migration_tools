@@ -30,14 +30,14 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
      // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
     $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'))
-    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'))
+    $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findSubBannerAlt');
 
     $arguments['obtainers_info'][] = $title;
 
     $options = array('recurse' => FALSE);
-    $extension_regex = '{{ info.file_extensions }}';
+    $extension_regex = '{{ info.file_extensions | raw}}';
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -80,7 +80,6 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
       '{{ info.directory }}',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///{{ info.abbreviation }}/docs';
 
     $options = array('recurse' => TRUE);
@@ -140,7 +139,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressRel
     {% endfor %}
     );
     $options = array('recurse' => FALSE);
-    $extension_regex = '{{ info.file_extensions }}';
+    $extension_regex = '{{ info.file_extensions | raw}}';
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
   }
 
