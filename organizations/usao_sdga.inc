@@ -78,7 +78,7 @@ class UsaoSdgaFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/gas',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-sdga/docs';
 
     $options = array('recurse' => TRUE);

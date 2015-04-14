@@ -31,14 +31,14 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
-    $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'))
-    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'))
+    $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
+    $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findSelector', array("title", 1));
     $title->addMethod('findSelector', array("h1", 1));
 
     $arguments['obtainers_info'][] = $title;
 
-    $extension_regex = {{ info.file_extensions }};
+    $extension_regex = {{ info.file_extensions | raw}};
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, $extension_regex, $options);
@@ -80,8 +80,8 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
       '{{ info.directory }}',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
     $dest_dir = 'public:///{{ info.abbreviation }}/docs';
+    $regex = NULL;
 
     $options = array('recurse' => TRUE);
 
@@ -172,7 +172,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
   );
 
     $options = array('recurse' => TRUE);
-    $extension_regex = '{{ info.file_extensions }}';
+    $extension_regex = '{{ info.file_extensions | raw }}';
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
 
     $this->addFieldMapping('og_group_ref')

@@ -91,7 +91,7 @@ class UsaoMnFileMigration extends JusticeDeployableBinaryFileMigration {
       7 => 'usao/mn/petters/mp3s',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-mn/docs';
 
     $options = array('recurse' => FALSE);

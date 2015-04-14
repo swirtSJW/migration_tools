@@ -77,7 +77,7 @@ class UsaoAzFileMigration extends JusticeDeployableBinaryFileMigration {
       6 => 'usao/az/reports/Newsletter',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-az/docs';
 
     $options = array('recurse' => FALSE);

@@ -95,7 +95,7 @@ class JmdFileMigration extends JusticeDeployableBinaryFileMigration {
 
     // Match .pdf files only.
     $source_dirs = drupal_json_decode($json_dirs);
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///jmd/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.

@@ -128,7 +128,7 @@ class DojFileMigration extends JusticeDeployableBinaryFileMigration {
       'publications',
       'publications/waco',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|swf|flv)/i';
     $dest_dir = 'public:///doj/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.

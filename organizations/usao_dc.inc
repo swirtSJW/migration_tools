@@ -80,7 +80,7 @@ class UsaoDcFileMigration extends JusticeDeployableBinaryFileMigration {
       'usao/dc',
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///usao-dc/docs';
 
     $options = array('recurse' => TRUE);

@@ -47,7 +47,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    */
   public function __construct($arguments, $source_fields, $source_dirs, $regex = NULL, $options = array(), MigrateContentParser $parser = NULL) {
     if ($regex === NULL) {
-      $regex = '/.*\.htm(l)?$/';
+      $regex = '/.*\.htm(l)?$/i';
     }
 
     // Calling parent constructor will set $this->source and $this->map.

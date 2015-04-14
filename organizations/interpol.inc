@@ -127,7 +127,7 @@ class InterpolFileMigration extends JusticeDeployableBinaryFileMigration {
       'interpol-washington',
       'interpol-washington/foia',
     );
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
     $dest_dir = 'public:///interpol-washington/docs';
 
     // This will setup $this->map, $this->destination, and $this->source.
