@@ -131,7 +131,6 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
     );
 
     $options = array('recurse' => TRUE);
-
     $arguments['source_parser_class'] = "UstRegionsPageSourceParser";
 
     // Configuring Obtainers.
@@ -147,6 +146,8 @@ class UstRegionsPageMigration extends NGJusticeHtmlToPageMigration {
     $this->dependencies = array('UstRegion');
     $this->description = t('Migrates pages from the U.S. Trustee Program Regions and Offices.');
     $this->addFieldMapping('og_group_ref', 'og_group_ref')->sourceMigration('UstRegion');
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
+
   }
 
   /**
