@@ -297,6 +297,10 @@ return array (
     array (
       'title' => 'Asset Forfeiture and Money Laundering Section Home',
     ),
+    'criminal-opdat' =>
+    array (
+      'title' => 'Office of Overseas Prosecutorial Development Assistance and Training',
+    ),
   ),
   'migrations' =>
   array (
@@ -1264,6 +1268,16 @@ return array (
     array (
       'group_name' => 'criminal-afmls',
       'class_name' => 'CriminalAfmlsFileMigration',
+    ),
+    'CriminalOpdatPage' =>
+    array (
+      'group_name' => 'criminal-opdat',
+      'class_name' => 'CriminalOpdatPageMigration',
+    ),
+    'CriminalOpdatFile' =>
+    array (
+      'group_name' => 'criminal-opdat',
+      'class_name' => 'CriminalOpdatFileMigration',
     ),
   ),
 );
