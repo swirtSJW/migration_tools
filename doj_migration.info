@@ -153,3 +153,4 @@ files[] = organizations/criminal_icitap.inc
 files[] = organizations/criminal_hrsp.inc
 files[] = organizations/criminal_ccips.inc
 files[] = organizations/usao_sdny.inc
+files[] = organizations/criminal_afmls.inc

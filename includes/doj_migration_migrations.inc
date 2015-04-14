@@ -293,6 +293,10 @@ return array (
     array (
       'title' => 'Southern District of New York',
     ),
+    'criminal-afmls' =>
+    array (
+      'title' => 'Asset Forfeiture and Money Laundering Section Home',
+    ),
   ),
   'migrations' =>
   array (
@@ -1227,14 +1231,14 @@ return array (
       'class_name' => 'CriminalHrspFileMigration',
     ),
     'CriminalCcipsPage' =>
-      array (
-        'group_name' => 'criminal-ccips',
-        'class_name' => 'CriminalCcipsPageMigration',
+    array (
+      'group_name' => 'criminal-ccips',
+      'class_name' => 'CriminalCcipsPageMigration',
     ),
     'CriminalCcipsFile' =>
-      array (
-        'group_name' => 'criminal-ccips',
-        'class_name' => 'CriminalCcipsFileMigration',
+    array (
+      'group_name' => 'criminal-ccips',
+      'class_name' => 'CriminalCcipsFileMigration',
     ),
     'UsaoSdnyPage' =>
     array (
@@ -1250,6 +1254,16 @@ return array (
     array (
       'group_name' => 'usao-sdny',
       'class_name' => 'UsaoSdnyPressReleaseMigration',
+    ),
+    'CriminalAfmlsPage' =>
+    array (
+      'group_name' => 'criminal-afmls',
+      'class_name' => 'CriminalAfmlsPageMigration',
+    ),
+    'CriminalAfmlsFile' =>
+    array (
+      'group_name' => 'criminal-afmls',
+      'class_name' => 'CriminalAfmlsFileMigration',
     ),
   ),
 );
