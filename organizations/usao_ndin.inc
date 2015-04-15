@@ -141,18 +141,7 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findSelector', array("p.MsoNormal > b > u > span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 3));
     $title->addMethod('findSelector', array("span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 1));
     $title->addMethod('findSelector', array("span[style='font-size:12.0pt;mso-ansi-language:EN-CA']", 3));
-    $title->addMethod('findXpath', array("/html/body/div/p[13]/b[1]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[9]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[10]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[11]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[12]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[13]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[14]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[15]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[16]/u/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[11]/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div/p[14]/span", 1));
-    $title->addMethod('findXpath', array("/html/body/div[2]/p[3]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[13]/b[1]/u/span", 1));$title->addMethod('findXpath', array("/html/body/div[2]/p[3]/b/u/span", 1));
     $title->addMethod('findXpath', array("/html/body/div[1]/p[23]/b/span", 1));
     $title->addMethod('findXpath', array("/html/body/div/p[8]/b/u/span", 1));
     $title->addMethod('findXpath', array("/html/body/div/p[9]/b/u/span", 1));
@@ -167,6 +156,16 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('findXpath', array("/html/body/div/p[16]/b/u/span", 1));
     $title->addMethod('findXpath', array("/html/body/div/p[17]/b/u/span", 1));
     $title->addMethod('findXpath', array("/html/body/div/p[18]/b/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[9]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[10]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[11]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[12]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[13]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[15]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[16]/u/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[11]/span", 1));
+    $title->addMethod('findXpath', array("/html/body/div/p[14]/span", 1));
     $title->addMethod('findSelector', array('p.s4', 1));
     $title->addMethod('findSelector', array("#headline", 1));
 
@@ -215,12 +214,18 @@ class UsaoNdinPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('findXpath', array("/html/body/div/p[8]/span", 1));
     $date->addMethod('findXpath', array("/html/body/div/p[9]/span", 1));
     $date->addMethod('findXpath', array("/html/body/div/p[10]/span", 1));
+    $date->addMethod('findSelector', array('p', 6));
     $date->addMethod('findTableContents', array(5, 2, 1));
+
+    $body = new ObtainerInfo('body', 'UsaoNdinObtainBody');
+    $body->addMethod('findTopBodyHtml');
+    $body->addMethod('findClassContentSub');
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoNdinObtainPrNumber");
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
+    $arguments['obtainers_info'][] = $body;
     $arguments['obtainers_info'][] = $pr_number;
 
     $source_dirs = array(
@@ -283,6 +288,17 @@ class UsaoNdinPressSourceParser extends NGDistrictPressReleaseSourceParser {
    */
   protected function cleanHtml() {
     parent::cleanHtml();
+    $this->queryPath->find('p[align="right"]')->remove();
+    $this->queryPath->find('p[align="center"]')->remove();
+    $this->queryPath->find('div[class="shape"]')->remove();
+    $this->queryPath->find('p[class="s1"]')->remove();
+    $this->queryPath->find('table')->remove();
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'h1', 'United States  Attorney David Capp', 'text');
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'h1', 'United States Attorney David Capp', 'text');
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'b > span', 'United States  Attorney David Capp', 'text');
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'b > span', 'United States Attorney David Capp', 'text');
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'strong', 'United States  Attorney David Capp', 'text');
+    HtmlCleanUp::matchRemoveAll($this->queryPath, 'strong', 'United States Attorney David Capp', 'text');
   }
 }
 
@@ -314,6 +330,9 @@ class UsaoNdinObtainTitlePressRelease extends ObtainTitlePressRelease {
       'Cell:',
       '314-9993',
       '(219)',
+      'United States Attorney David Capp',
+      'Northern District Of Indiana',
+      'Hammond, Indiana - The United States Attorney’s Office announced the following activity in Federal Court:',
     );
     $text = str_ireplace($remove, '', $text);
 
@@ -368,8 +387,18 @@ class UsaoNdinObtainDate extends ObtainDate {
 
     $remove = array(
       'Mary Hatton',
+      'CONTACT:',
       'Mary L  Hatton',
+      'Mary L Hatton',
+      'Mary L. Hatton',
+      'PHONE:',
       'DESK: (219)',
+      'DESK:',
+      '(219)',
+      'FOR IMMEDIATE RELEASE',
+      'www.usdoj.gov/usao/inn/',
+      'Fax:',
+      '852-2770',
       '937-5603',
       '<a name="2"></a>',
       '<a name="3"></a>',
@@ -390,6 +419,31 @@ class UsaoNdinObtainDate extends ObtainDate {
       'Press Release',
     );
     $text = str_ireplace($remove, '', $text);
+
+    return $text;
+  }
+}
+
+/**
+ * Obtainer for body property for /usao-ndin press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-ndin
+ * @see Obtainer.api.php
+ */
+class UsaoNdinObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $remove = array(
+      'Return to News',
+      '<hr></hr>',
+      '<hr>',
+      '<hr />',
+    );
+    $text = str_ireplace($remove, '', $text);
+    $text = parent::cleanString($text);
 
     return $text;
   }
