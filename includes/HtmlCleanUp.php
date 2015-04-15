@@ -385,34 +385,36 @@ class HtmlCleanUp {
 
     // A list of attributes to convert, keyed by HTML tag (NOT selector).
     $attributes = array(
-      'img' => 'src',
-      'a' => 'href',
+      'img' => array('src', 'longdesc'),
+      'a' => array('href'),
     );
 
     $elements = $query_path->find(implode(', ', array_keys($attributes)));
     foreach ($elements as $element) {
-      $attribute = $attributes[$element->tag()];
+      $tag_attributes = $attributes[$element->tag()];
+      foreach ($tag_attributes as $attribute) {
 
-      $url = parse_url($element->attr($attribute));
+        $url = parse_url($element->attr($attribute));
 
-      if ($url) {
-        $is_relative = empty($url['scheme']) && !empty($url['path']) && substr($url['path'], 0, 1) !== '/';
+        if ($url) {
+          $is_relative = empty($url['scheme']) && !empty($url['path']) && substr($url['path'], 0, 1) !== '/';
 
-        if ($is_relative) {
-          $dir_path = dirname($file_id);
+          if ($is_relative) {
+            $dir_path = dirname($file_id);
 
-          $new_url = $dir_path . '/' . $url['path'];
-          if (!empty($url['query'])) {
-            $new_url .= '?' . $url['query'];
+            $new_url = '/' . $dir_path . '/' . $url['path'];
+            if (!empty($url['query'])) {
+              $new_url .= '?' . $url['query'];
+            }
+            if (!empty($url['fragment'])) {
+              $new_url .= '#' . $url['fragment'];
+            }
+
+            // We might get some double '//', let's clean them.
+            $new_url = str_replace("//", "/", $new_url);
+
+            $element->attr($attribute, $new_url);
           }
-          if (!empty($url['fragment'])) {
-            $new_url .= '#' . $url['fragment'];
-          }
-
-          // We might get some double '//', let's clean them.
-          $new_url = str_replace("//", "/", $new_url);
-
-          $element->attr($attribute, $new_url);
         }
       }
     }
@@ -462,6 +464,23 @@ class HtmlCleanUp {
   }
 
   /**
+   * Examines an uri and evaluates if it is an image.
+   *
+   * @param string $uri
+   *   A uri.
+   *
+   * @return bool
+   *   TRUE if this is an image uri, FALSE if it is not.
+   */
+  public static function isImageUri($uri) {
+    if (preg_match('/.*\.(jpg|gif|png|jpeg)$/i', $uri) !== 0) {
+      // Is an image uri.
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
    * General matching function.
    *
    * @param QueryPath $qp
@@ -472,7 +491,7 @@ class HtmlCleanUp {
    *   The text string for which to search.
    * @param string $function
    *   The function used to get the haystack. E.g., 'attr' if searching for
-   *   a specific attribute value.
+   *   a specific attribute value, 'html', 'txt'.
    * @param string $parameter
    *   A parameter to be passed into the defined $function.
    *
@@ -571,6 +590,23 @@ class HtmlCleanUp {
    */
   public static function matchHtml($qp, $selector, $needle) {
     return HtmlCleanUp::match($qp, $selector, $needle, "html");
+  }
+
+  /**
+   * Examine all img longdesc attr in qp and remove any that point to images.
+   *
+   * @param object $query_path
+   *   A QueryPath object.
+   */
+  public static function removeFaultyImgLongdesc($query_path) {
+    $imgs = $query_path->find('img[longdesc]');
+    foreach ($imgs as $img) {
+      $longdesc_uri = $img->attr('longdesc');
+      // Longdesc can not be a uri to an image file.  Should be to txt or html.
+      if (HtmlCleanup::isImageUri($longdesc_uri)) {
+        $img->removeAttr('longdesc');
+      }
+    }
   }
 
   /**

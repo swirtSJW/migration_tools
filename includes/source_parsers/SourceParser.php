@@ -105,6 +105,7 @@ class SourceParser {
   protected function cleanHtml() {
     try {
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
+      HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
 
       // Clean up specific to the Justice site.
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath, $this->arguments);
