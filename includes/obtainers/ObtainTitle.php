@@ -118,7 +118,7 @@ class ObtainTitle extends ObtainHtml {
    * @return string
    *   The text found.
    */
-  protected function findIdLayer4P5ShortEnough() {
+  protected function pluckIdLayer4P5ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(5)');
     $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
@@ -153,7 +153,7 @@ class ObtainTitle extends ObtainHtml {
    * @return string
    *   The text found.
    */
-  protected function findIdLayer4P6ShortEnough() {
+  protected function pluckIdLayer4P6ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(6)');
     $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
@@ -173,7 +173,7 @@ class ObtainTitle extends ObtainHtml {
    * @return string
    *   The text found.
    */
-  protected function findIdLayer4P7ShortEnough() {
+  protected function pluckIdLayer4P7ShortEnough() {
     $elem = $this->queryPath->find("#Layer4")->siblings('p:nth-of-type(7)');
     $this->setElementToRemove($elem);
     $title = $elem->innerHTML();
@@ -212,7 +212,6 @@ class ObtainTitle extends ObtainHtml {
   protected function findFirstContentSubImageAlt() {
     $elem = $this->queryPath->find('.contentSub > div > img')->first();
     if ($elem) {
-      $this->setElementToRemove($elem);
       return $elem->attr('alt');
     }
     return "";
@@ -222,7 +221,7 @@ class ObtainTitle extends ObtainHtml {
   /**
    * Find first centered aligned paragraph after the first hr.
    */
-  protected function findFirstCenteredAlignPAfterHr() {
+  protected function pluckFirstCenteredAlignPAfterHr() {
     $hr = $this->queryPath->find("hr")->first();
 
     if (!empty($hr)) {

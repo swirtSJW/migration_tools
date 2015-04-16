@@ -105,10 +105,10 @@ class UsaoEdtnPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $arguments['component_tid'] = 2061;
 
     $title = new ObtainerInfo('title', "ObtainTitlePressRelease");
-    $title->addMethod("findH2Third");
+    $title->addMethod("pluckH2Third");
 
     $date = new ObtainerInfo('date');
-    $date->addMethod('findSelector', array("#contentstart > p", 1));
+    $date->addMethod('pluckSelector', array("#contentstart > p", 1));
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;

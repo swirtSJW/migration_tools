@@ -15,14 +15,14 @@ class DistrictPressReleaseSpanishSourceParser extends DistrictPressReleaseSource
       if (empty($method_stack)) {
         // Set obtainer date stack to use if one has not been set by arguments.
         $method_stack = array(
-          'findTableRow1Col2' => array(),
-          'findTableRow1Col1' => array(),
-          'findTable2Row2Col2' => array(),
-          'findSelector' => array("p[align='center']", 1),
-          'findSelector' => array('#contentstart > p', 1),
-          'findSelector' => array('.newsRight', 1),
-          'findSelector' => array('.BottomLeftContent', 1),
-          'findProbableDate' => array(),
+          'pluckTableRow1Col2' => array(),
+          'pluckTableRow1Col1' => array(),
+          'pluckTable2Row2Col2' => array(),
+          'pluckSelector' => array("p[align='center']", 1),
+          'pluckSelector' => array('#contentstart > p', 1),
+          'pluckSelector' => array('.newsRight', 1),
+          'pluckSelector' => array('.BottomLeftContent', 1),
+          'pluckProbableDate' => array(),
         );
       }
       $this->setObtainerMethods(array('date' => $method_stack));

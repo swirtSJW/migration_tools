@@ -27,12 +27,12 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The found text.
    */
-  protected function findTableContents($table_num, $row, $col) {
+  protected function pluckTableContents($table_num, $row, $col) {
     $tables = $this->queryPath->find("table");
     $current_table = 1;
     foreach ($tables as $table) {
       if ($current_table == $table_num) {
-        $text = $this->getFromTable($table, $row, $col);
+        $text = $this->pluckFromTable($table, $row, $col);
         return $text;
       }
       $current_table++;
@@ -51,7 +51,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The text found.
    */
-  protected function findSelector($selector, $n = 1) {
+  protected function pluckSelector($selector, $n = 1) {
     $text = '';
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
@@ -60,7 +60,7 @@ class ObtainHtml extends Obtainer {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->text();
-          $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
+          $this->setCurrentFindMethod("pluckSelector($selector, " . ++$n . ')');
           break;
         }
       }
@@ -77,13 +77,13 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The text found.
    */
-  protected function findSelectorLast($selector) {
+  protected function pluckSelectorLast($selector) {
     $text = '';
     if (!empty($selector)) {
       $element = $this->queryPath->find($selector)->last();
       $this->setElementToRemove($element);
       $text = $element->text();
-      $this->setCurrentFindMethod("findSelectorLast($selector)");
+      $this->setCurrentFindMethod("pluckSelectorLast($selector)");
     }
     return $text;
   }
@@ -101,7 +101,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   Text contents of the first element to validate.
    */
-  protected function findAnySelectorUntilValid($selector, $limit = NULL) {
+  protected function pluckAnySelectorUntilValid($selector, $limit = NULL) {
     foreach ($this->queryPath->find($selector) as $key => $em) {
       if (($limit !== NULL) && ($key == $limit)) {
         break;
@@ -135,7 +135,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   Text contents of the first element to validate.
    */
-  protected function findAnySelectorUntilValidDrillUp($selector, $limit = NULL) {
+  protected function pluckAnySelectorUntilValidDrillUp($selector, $limit = NULL) {
     $elements = $this->queryPath->find($selector);
     $element_count = $elements->count();
     $limit = ($limit === NULL) ? $element_count : $limit;
@@ -151,10 +151,10 @@ class ObtainHtml extends Obtainer {
       $text = $this->cleanString($text_original);
 
       if ($this->validateString($text)) {
-        $this->setCurrentFindMethod("findAnySelectorUntilValidDrillUp-i={$i}");
+        $this->setCurrentFindMethod("pluckAnySelectorUntilValidDrillUp-i={$i}");
         // Get the same element as a queryPath object so it can be removed.
-        // Removal is arranged by findSelector().
-        $element_text = $this->findSelector($selector, $index + 1);
+        // Removal is arranged by pluckSelector().
+        $element_text = $this->pluckSelector($selector, $index + 1);
         // Return the original string to avoid double cleanup causing issues.
         return $element_text;
       }
@@ -176,7 +176,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The text found.
    */
-  protected function findXpath($xpath, $n = 1) {
+  protected function pluckXpath($xpath, $n = 1) {
     $text = '';
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($xpath)) {
@@ -185,7 +185,7 @@ class ObtainHtml extends Obtainer {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->text();
-          $this->setCurrentFindMethod("findXpath($xpath, " . ++$n . ')');
+          $this->setCurrentFindMethod("pluckXpath($xpath, " . ++$n . ')');
           break;
         }
       }
@@ -207,7 +207,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The text inside of the wanted tr and td.
    */
-  protected function getFromTable($table, $tr_target, $td_target) {
+  protected function pluckFromTable($table, $tr_target, $td_target) {
     $trcount = 1;
     $tdcount = 1;
 
@@ -240,7 +240,7 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The text inside of the wanted tr and td.
    */
-  protected function getTableCell($table, $tr_target, $td_target) {
+  protected function pluckTableCell($table, $tr_target, $td_target) {
     $trcount = 1;
     $tdcount = 1;
 

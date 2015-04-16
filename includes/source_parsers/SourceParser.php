@@ -184,8 +184,8 @@ class SourceParser {
       if (empty($title)) {
         $default_target_stack = array(
           'findClassBreadcrumbMenuContentLast' => array(),
-          'findSelector' => array('title', 1),
-          'findSelector' => array("h1", 1),
+          'pluckSelector' => array('title', 1),
+          'pluckSelector' => array("h1", 1),
         );
         $om = $this->getObtainerMethods('title');
         $title_stack = (!empty($om)) ? $om : $default_target_stack;
@@ -255,7 +255,7 @@ class SourceParser {
    */
   public function extractUpdatedDate() {
     $method_stack = array(
-      'findSelector' => array('.lastupdate', 1),
+      'pluckSelector' => array('.lastupdate', 1),
     );
     $date = $this->runObtainer('ObtainDate', 'date_updated', $method_stack);
 

@@ -94,8 +94,8 @@ class UsaoMdpaPageMigration extends NGJusticeHtmlToPageMigration {
 
     $arguments['source_parser_class'] = "NGDistrictPageSourceParser";
     $title = new ObtainerInfo("title", 'ObtainTitle');
-    $title->addMethod('findSelector', array("h1", 2));
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("h1", 2));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $arguments['obtainers_info'][] = $title;
 
     $options = array('recurse' => FALSE);
@@ -243,21 +243,21 @@ class MdpaPressSourceParser extends NGDistrictPressReleaseSourceParser {
     $this->addObtainerInfo($ct);
 
     $date = new ObtainerInfo('date');
-    $date->addMethod("findDivPAlignLeft");
-    $date->addMethod('findSelector', array(".newsRight", 1));
+    $date->addMethod("pluckDivPAlignLeft");
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod("findDivClassContentSubDiv3");
-    $date->addMethod("findProbableDate");
+    $date->addMethod("pluckProbableDate");
     $this->addObtainerInfo($date);
 
     $title = new ObtainerInfo('title');
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('findSelector', array("h2", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
-    $title->addMethod('findSelector', array("p > strong > em", 1));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
-    $title->addMethod('findSelector', array("div > p[align='center']", 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('pluckSelector', array("h2", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('pluckSelector', array("p > strong > em", 1));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
+    $title->addMethod('pluckSelector', array("div > p[align='center']", 1));
     $this->addObtainerInfo($title);
   }
 }

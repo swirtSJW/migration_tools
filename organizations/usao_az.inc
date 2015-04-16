@@ -122,7 +122,7 @@ class UsaoAzPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1716;
     $arguments['obtainer_methods'] = array(
       'date' => array(
-        'findSpanFontSize8',
+        'pluckSpanFontSize8',
       ),
     );
 

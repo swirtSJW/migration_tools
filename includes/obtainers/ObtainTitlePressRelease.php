@@ -36,7 +36,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
    * @return string
    *   The text found.
    */
-  protected function findClassMultiU() {
+  protected function pluckClassMultiU() {
     $classes = array(
       '.style27',
       '.style17',
@@ -72,7 +72,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
       $text = $this->cleanString($element->text());
       if ($this->validateString($text)) {
         // Add debug message.
-        // $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+        // $this->setCurrentFindMethod("pluckClassMultiU-class={$class}");
 
         // Return the original string to avoid double cleanup causing issues.
         return $text;
@@ -90,7 +90,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
    * @return string
    *   The text found.
    */
-  protected function findClassMultiStrongU() {
+  protected function pluckClassMultiStrongU() {
     $classes = array(
       '.style28',
       '.style12',
@@ -104,7 +104,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
       $text = $this->cleanString($element->text());
       if ($this->validateString($text)) {
         // @todo Add debug message.
-        // $this->setCurrentFindMethod("findClassMultiU-class={$class}");
+        // $this->setCurrentFindMethod("pluckClassMultiU-class={$class}");
 
         // Return the original string to avoid double cleanup causing issues.
         return $text;
@@ -119,7 +119,7 @@ class ObtainTitlePressRelease extends ObtainTitle {
    * @return string
    *   The text found.
    */
-  protected function findH2Third() {
+  protected function pluckH2Third() {
     $counter = 0;
     $elem = NULL;
     foreach ($this->queryPath->find("h2") as $element) {

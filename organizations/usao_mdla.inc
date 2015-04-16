@@ -98,7 +98,7 @@ class UsaoMdlaPressReleaseMigration extends DistrictPressReleaseMigration {
 
     $arguments['obtainer_methods'] = array(
       'subtitle' => array(
-        'findSelector' => array("h2[align='center']", 1),
+        'pluckSelector' => array("h2[align='center']", 1),
       ),
     );
 

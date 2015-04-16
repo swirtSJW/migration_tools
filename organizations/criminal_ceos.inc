@@ -33,8 +33,8 @@ class CriminalCeosPageMigration extends NGJusticeHtmlToPageMigration {
     $title->addMethod('findDivCenterStrong');
     $title->addMethod('findPStrong');
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('findSelector', array("title", 1));
-    $title->addMethod('findSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
+    $title->addMethod('pluckSelector', array("h1", 1));
 
     $arguments['obtainers_info'][] = $title;
 

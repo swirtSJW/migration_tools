@@ -230,12 +230,12 @@ class EoirPressReleaseMigration extends JusticeHtmlToPressReleaseMigration {
 
     $arguments['obtainer_methods'] = array(
       'title' => array(
-        'findSelector' => array("p[align='center'] > strong", 2),
+        'pluckSelector' => array("p[align='center'] > strong", 2),
       ),
       'body' => array(),
       'subtitle' => array(),
       'date' => array(
-        'findTable3Row3Col2',
+        'pluckTable3Row3Col2',
       ),
     );
 
