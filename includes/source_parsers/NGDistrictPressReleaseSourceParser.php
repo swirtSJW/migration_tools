@@ -28,7 +28,7 @@ class NGDistrictPressReleaseSourceParser extends NGPressReleaseSourceParser {
     parent::setDefaultObtainersInfo();
 
     $id = new ObtainerInfo("id");
-    $id->addMethod('findTable3y1x');
+    $id->addMethod('pluckTable3y1x');
     $this->addObtainerInfo($id);
   }
 }

@@ -91,8 +91,8 @@ class NGDistrictPageSourceParser extends NGNodeSourceParser {
     parent::setDefaultObtainersInfo();
 
     $title = new ObtainerInfo("title");
-    $title->addMethod('findSelector', array("h1", 1));
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');

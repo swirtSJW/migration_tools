@@ -31,11 +31,11 @@ class CriminalAfmlsPageMigration extends NGJusticeHtmlToPageMigration {
     $title = new ObtainerInfo('title', "CriminalAfmlsObtainTitlePage");
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
-    $title->addMethod('findSelector', array('div.headline', 1));
-    $title->addMethod('findSelector', array('div.headline', 2));
+    $title->addMethod('pluckSelector', array('div.headline', 1));
+    $title->addMethod('pluckSelector', array('div.headline', 2));
     $title->addMethod('findSelectorAttribute', array("div.headline > img", "alt"));
-    $title->addMethod('findSelector', array("title", 1));
-    $title->addMethod('findSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
+    $title->addMethod('pluckSelector', array("h1", 1));
 
     $arguments['obtainers_info'][] = $title;
 

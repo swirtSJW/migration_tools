@@ -30,12 +30,12 @@ class CriminalCcipsPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "CriminalCcipsObtainTitlePage");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('findSelector', array('div.headline', 1));
-    $title->addMethod('findSelector', array('div.headline', 2));
+    $title->addMethod('pluckSelector', array('div.headline', 1));
+    $title->addMethod('pluckSelector', array('div.headline', 2));
     $title->addMethod('findSelectorAttribute', array("div.headline > img", "alt"));
-    $title->addMethod('findSelector', array("title", 1));
-    $title->addMethod('findSelector', array("h1", 1));
-    $title->addMethod('findSelector', array("h3", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
+    $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("h3", 1));
 
     $arguments['obtainers_info'][] = $title;
 

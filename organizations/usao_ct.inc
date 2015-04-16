@@ -106,7 +106,7 @@ class UsaoCtPressReleaseMigration extends DistrictPressReleaseMigration {
     $arguments['component_tid'] = 1746;
     $arguments['obtainer_methods'] = array(
       'date' => array(
-        'findSelector' => array('.newsLeft', 1),
+        'pluckSelector' => array('.newsLeft', 1),
       ),
     );
 

@@ -47,15 +47,15 @@ class UsaoSdnyPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoSdnyObtainTitlePage");
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findSelector', array('h2'));
-    $title->addMethod('findSelector', array('h3 > strong'));
-    $title->addMethod('findSelector', array('h3'));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array('h2'));
+    $title->addMethod('pluckSelector', array('h3 > strong'));
+    $title->addMethod('pluckSelector', array('h3'));
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findSubBannerAlt');
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     // This one is risky because it will almost always find a title.
-    $title->addMethod('findSelector', array('title'));
+    $title->addMethod('pluckSelector', array('title'));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -149,21 +149,21 @@ class UsaoSdnyPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoSdnyObtainTitlePressRelease");
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('findSelector', array('h2', 1));
-    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('findSelector', array("#headline", 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('pluckSelector', array('h2', 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array("#headline", 1));
 
     $subtitle = new ObtainerInfo('subtitle');
-    $subtitle->addMethod('findSelector', array("h3[align='center'] > em", 1));
+    $subtitle->addMethod('pluckSelector', array("h3[align='center'] > em", 1));
 
     $date = new ObtainerInfo('date', "UsaoSdnyObtainDate");
-    $date->addMethod('findSelector', array(".newsRight", 1));
-    $date->addMethod('findProbableDate');
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
+    $date->addMethod('pluckProbableDate');
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoSdnyObtainPrNumber");
-    $pr_number->addMethod('findAnySelectorUntilValidDrillUp', array('p', 20));
+    $pr_number->addMethod('pluckAnySelectorUntilValidDrillUp', array('p', 20));
 
     $body = new ObtainerInfo('body', 'UsaoSdnyObtainBody');
     $body->addMethod('findTopBodyHtml');

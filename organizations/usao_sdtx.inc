@@ -34,8 +34,8 @@ class UsaoSdtxPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoSdtxObtainTitlePage");
-    $title->addMethod('findSelector', array("h1", 1));
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');
@@ -122,29 +122,29 @@ class UsaoSdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoSdtxObtainTitlePress");
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('findSelector', array("h2", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > div > p", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
-    $title->addMethod('findSelector', array("#headline", 1));
-    $title->addMethod('findSelector', array("p > strong > em", 1));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('pluckSelector', array("h2", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > div > p", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('pluckSelector', array("#headline", 1));
+    $title->addMethod('pluckSelector', array("p > strong > em", 1));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
     $title->addMethod("findCenteredParagraphStrong");
 
     $subtitle = new ObtainerInfo('subtitle', "UsaoSdtxObtainSubtitlePress");
     $subtitle->addMethod("findCenteredParagraphStrong");
 
     $date = new ObtainerInfo('date', "UsaoSdtxObtainDate");
-    $date->addMethod('findTableContents', array(1, 1, 1));
-    $date->addMethod('findTableContents', array(1, 1, 2));
-    $date->addMethod('findTableContents', array(2, 2, 2));
-    $date->addMethod('findSelector', array("p[align='center']", 1));
-    $date->addMethod('findSelector', array("#contentstart > p", 1));
-    $date->addMethod('findSelector', array(".newsRight", 1));
-    $date->addMethod('findSelector', array(".BottomLeftContent", 1));
-    $date->addMethod('findProbableDate');
+    $date->addMethod('pluckTableContents', array(1, 1, 1));
+    $date->addMethod('pluckTableContents', array(1, 1, 2));
+    $date->addMethod('pluckTableContents', array(2, 2, 2));
+    $date->addMethod('pluckSelector', array("p[align='center']", 1));
+    $date->addMethod('pluckSelector', array("#contentstart > p", 1));
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
+    $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
+    $date->addMethod('pluckProbableDate');
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $subtitle;

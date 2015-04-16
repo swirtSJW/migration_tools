@@ -47,9 +47,9 @@ class TaxPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "TaxObtainTitlePage");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('findSelector', array("center > font[size='+2'] > b"));
-    $title->addMethod('findSelector', array("title", 1));
-    $title->addMethod('findSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("center > font[size='+2'] > b"));
+    $title->addMethod('pluckSelector', array("title", 1));
+    $title->addMethod('pluckSelector', array("h1", 1));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -131,31 +131,31 @@ class TaxPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "TaxObtainTitlePressRelease");
-    $title->addMethod('findSelector', array('.title', 1));
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
-    $title->addMethod('findSelector', array("p[align='center'] > strong > u"));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('findSelector', array("h2", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('findSelector', array(".contentSub > div > div > p > strong", 1));
-    $title->addMethod('findSelector', array("#headline", 1));
-    $title->addMethod('findSelector', array("p > strong > em", 1));
-    $title->addMethod('findSelector', array("#contentstart > div > h2", 1));
+    $title->addMethod('pluckSelector', array('.title', 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("p[align='center'] > strong > u"));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('pluckSelector', array("h2", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
+    $title->addMethod('pluckSelector', array("#headline", 1));
+    $title->addMethod('pluckSelector', array("p > strong > em", 1));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
     $title->addMethod('findPSecond');
 
     $subtitle = new ObtainerInfo('subtitle', "TaxObtainTitlePressRelease");
-    $subtitle->addMethod('findSelector', array('.title'));
-    $subtitle->addMethod('findSelector', array("p[align='center'] > strong > em"));
+    $subtitle->addMethod('pluckSelector', array('.title'));
+    $subtitle->addMethod('pluckSelector', array("p[align='center'] > strong > em"));
 
     $date = new ObtainerInfo('date', "TaxObtainDate");
-    $date->addMethod('findTableRow1Col2');
-    $date->addMethod('findTableRow1Col1');
-    $date->addMethod('findTable2Row2Col2');
-    $date->addMethod('findSelector', array("p[align='center']", 1));
-    $date->addMethod('findSelector', array("#contentstart > p", 1));
-    $date->addMethod('findSelector', array(".newsRight", 1));
-    $date->addMethod('findSelector', array(".BottomLeftContent", 1));
-    $date->addMethod('findProbableDate');
+    $date->addMethod('pluckTableRow1Col2');
+    $date->addMethod('pluckTableRow1Col1');
+    $date->addMethod('pluckTable2Row2Col2');
+    $date->addMethod('pluckSelector', array("p[align='center']", 1));
+    $date->addMethod('pluckSelector', array("#contentstart > p", 1));
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
+    $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
+    $date->addMethod('pluckProbableDate');
     $date->addMethod('findTableRowLines');
 
     $type = new ObtainerInfo('content_type', "ObtainContentType");

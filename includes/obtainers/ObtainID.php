@@ -16,9 +16,9 @@ class ObtainID extends ObtainHtml {
    * @return text
    *   The string found.
    */
-  protected function findTable3y1x() {
+  protected function pluckTable3y1x() {
     $table = $this->queryPath->find("table");
-    $text = $this->getFromTable($table, 3, 1);
+    $text = $this->pluckFromTable($table, 3, 1);
 
     return $text;
   }

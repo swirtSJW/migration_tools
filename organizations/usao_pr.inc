@@ -27,8 +27,8 @@ class UsaoPrPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoPrObtainTitlePage");
-    $title->addMethod('findSelector', array('selector' => 'h1', 1));
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array('selector' => 'h1', 1));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('findSubBannerAlt');
@@ -122,12 +122,12 @@ class UsaoPrPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $arguments['source_parser_class'] = "UsaoPrPressSourceParser";
 
     $date = new ObtainerInfo('date');
-    $date->addMethod('findSelector', array(".newsRight", 1));
-    $date->addMethod("findProbableDate");
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
+    $date->addMethod("pluckProbableDate");
     $title = new ObtainerInfo('title');
-    $title->addMethod('findAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $subtitle = new ObtainerInfo('subtitle');
-    $subtitle->addMethod('findSelector', array("h2", 1));
+    $subtitle->addMethod('pluckSelector', array("h2", 1));
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoPrObtainPrNumber");
 

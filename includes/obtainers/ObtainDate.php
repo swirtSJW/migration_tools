@@ -20,7 +20,7 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string that was found
    */
-  protected function findClassNewsRightLast() {
+  protected function pluckClassNewsRightLast() {
     $element = $this->queryPath->top('.newsRight')->last();
     $this->setElementToRemove($element);
 
@@ -34,7 +34,7 @@ class ObtainDate extends ObtainHtml {
    * @return text
    *   The string found.
    */
-  protected function findDivPAlignLeft() {
+  protected function pluckDivPAlignLeft() {
     foreach ($this->queryPath->find("div > p") as $p) {
       $align = $p->attr('align');
       if (strcmp($align, "left") == 0) {
@@ -70,7 +70,7 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string that was found
    */
-  protected function findProbableDate() {
+  protected function pluckProbableDate() {
     // Selectors to run through.
     $selectors = array(
       '.BottomLeftContent',
@@ -103,7 +103,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            $this->obtainerMessage("findProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
+            $this->obtainerMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }
@@ -120,9 +120,9 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string found.
    */
-  protected function findTableRow1Col1() {
+  protected function pluckTableRow1Col1() {
     $table = $this->queryPath->find("table");
-    $text = $this->getFromTable($table, 1, 1);
+    $text = $this->pluckFromTable($table, 1, 1);
 
     return $text;
   }
@@ -133,9 +133,9 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string found.
    */
-  protected function findTableRow1Col2() {
+  protected function pluckTableRow1Col2() {
     $table = $this->queryPath->find("table");
-    $text = $this->getFromTable($table, 1, 2);
+    $text = $this->pluckFromTable($table, 1, 2);
 
     return $text;
   }
@@ -146,11 +146,11 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string found.
    */
-  protected function findTable1Row2Col1() {
+  protected function pluckTable1Row2Col1() {
     $table = $this->queryPath->find("table");
     foreach ($table as $key => $t) {
       if ($key == 0) {
-        $text = $this->getFromTable($t, 2, 1);
+        $text = $this->pluckFromTable($t, 2, 1);
         break;
       }
     }
@@ -164,12 +164,12 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   The string found.
    */
-  protected function findTable2Row2Col2() {
+  protected function pluckTable2Row2Col2() {
     $table = $this->queryPath->find("table");
     $counter = 1;
     foreach ($table as $t) {
       if ($counter == 2) {
-        $text = $this->getFromTable($t, 2, 2);
+        $text = $this->pluckFromTable($t, 2, 2);
         break;
       }
       $counter++;
@@ -183,9 +183,9 @@ class ObtainDate extends ObtainHtml {
    * @return text
    *   The string found.
    */
-  protected function findTableRow3Col1() {
+  protected function pluckTableRow3Col1() {
     $table = $this->queryPath->find("table");
-    $text = $this->getFromTable($table, 3, 1);
+    $text = $this->pluckFromTable($table, 3, 1);
     return $text;
   }
 
@@ -194,13 +194,13 @@ class ObtainDate extends ObtainHtml {
    * @return text
    *   The string found.
    */
-  protected function findTable3Row3Col2() {
+  protected function pluckTable3Row3Col2() {
 
     $table = $this->queryPath->find("table");
     $counter = 1;
     foreach ($table as $t) {
       if ($counter == 3) {
-        $text = $this->getFromTable($t, 3, 2);
+        $text = $this->pluckFromTable($t, 3, 2);
         break;
       }
       $counter++;
@@ -217,7 +217,7 @@ class ObtainDate extends ObtainHtml {
    * @return string
    *   Possible date.
    */
-  protected function findSpanFontSize8() {
+  protected function pluckSpanFontSize8() {
     foreach ($this->queryPath->find("span[style = 'font-size:8.0pt']") as $elem) {
       $text = $elem->text();
       // Validate string.
@@ -232,7 +232,7 @@ class ObtainDate extends ObtainHtml {
   /**
    * A paragraph with the style1 class and a br in the inner html.
    */
-  protected function findStyle1PwithBr() {
+  protected function pluckStyle1PwithBr() {
     $elems = $this->queryPath->find("p.style1");
     foreach ($elems as $p) {
       $html = $p->html();
