@@ -12,3 +12,23 @@ function doj_migration_update_7000(&$sandbox) {
   // We are finished migrating from wordpress.
   module_disable(array('wordpress_migrate'));
 }
+
+/**
+ * Reset incorrectly entered group abbreviation.
+ */
+function doj_migration_update_7001() {
+  $update = db_update('migrate_map_organization')
+    ->fields(array('sourceid1' => 'criminal-disasters'))
+    ->condition('sourceid1', 'criminal-disaster')
+    ->execute();
+
+  $update = db_update('field_data_field_org_abbreviation')
+    ->fields(array('field_org_abbreviation_value' => 'criminal-disasters'))
+    ->condition('field_org_abbreviation_value', 'criminal-disaster')
+    ->execute();
+
+  $update = db_update('url_alias')
+    ->fields(array('alias' => 'criminal-disasters'))
+    ->condition('alias', 'criminal-disaster')
+    ->execute();
+}
