@@ -165,7 +165,7 @@ class UsaoSdnyPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $pr_number = new ObtainerInfo('prNumber', "UsaoSdnyObtainPrNumber");
     $pr_number->addMethod('pluckAnySelectorUntilValidDrillUp', array('p', 20));
 
-    $body = new ObtainerInfo('body', 'UsaoSdnyObtainBody');
+    $body = new ObtainerInfo('body', 'UsaoSdnyPressreleaseObtainBody');
     $body->addMethod('findTopBodyHtml');
     $body->addMethod('findClassContentSub');
 
@@ -293,17 +293,7 @@ class UsaoSdnyObtainTitlePressRelease extends ObtainTitlePressRelease {
  * @see Obtainer.api.php
  */
 class UsaoSdnyObtainPrNumber extends ObtainId {
-  /**
-   * Finds the press release number from markup.
-   */
-  protected function findPrNumber() {
-    $text = '';
-    // $element = $this->queryPath->find('p')->last();
-    // $this->setElementToRemove($element);
-    // $text = $element->text();
 
-    return $text;
-  }
 }
 
 /**
@@ -324,7 +314,7 @@ class UsaoSdnyObtainDate extends ObtainDate {
  * @subpackage usao-sdny
  * @see Obtainer.api.php
  */
-class UsaoSdnyObtainBody extends ObtainBody {
+class UsaoSdnyPressreleaseObtainBody extends ObtainBody {
   /**
    * {@inheritdoc}
    */
@@ -349,6 +339,131 @@ class UsaoSdnyObtainBody extends ObtainBody {
       'include("../../includes/usao-footer.ssi");',
       'include("../../includes/usao-rightCol.ssi");',
       '<a class="twitter-follow-button" data-show-count="false" href="https://twitter.com/SDNYNews">Follow @SDNYNews</a>',
+      '<?php',
+      '<br/>"; ?>',
+      '"; ?>',
+      '?>',
+      "else\n",
+      'class="printer"',
+      ' ? ',
+    );
+
+    $text = str_ireplace($remove, '', $text);
+    // Fix the tweet link that gets mangled by the sourceparser as it goes from
+    // php to html.
+    $text = str_ireplace("'Tweet<br />", "'>Tweet</a><br/>", $text);
+    return $text;
+  }
+}
+
+/**
+ * Migrates speeeches from /usao-sdny.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdny
+ */
+class UsaoSdnySpeechMigration extends NGDistrictSpeechMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-sdny";
+    $arguments['component_tid'] = 1981;
+    $arguments['source_parser_class'] = "UsaoSdnySpeechSourceParser";
+
+    // Define source directories.
+    $source_dirs = array(
+      // 1 => 'usao/nys/pressspeeches/old',
+      2 => 'usao/nys/pressspeeches/2013',
+      3 => 'usao/nys/pressspeeches/2011',
+      4 => 'usao/nys/pressspeeches/2012',
+      5 => 'usao/nys/pressspeeches/2010',
+      6 => 'usao/nys/pressspeeches/2014',
+      7 => 'usao/nys/pressspeeches/2015',
+    );
+
+    $regex = '/.*\.(htm|html|php)$/i';
+    $options = array('recurse' => FALSE);
+
+    // Configuring Obtainers.
+    $body = new ObtainerInfo('body', 'UsaoSdnySpeechObtainBody');
+    $body->addMethod('findTopBodyHtml');
+    $body->addMethod('findClassContentSub');
+
+    $arguments['obtainers_info'][] = $body;
+
+    // Parent constructor will set $this->source, $this->destination, and
+    // $this->map.
+    parent::__construct($arguments, $source_dirs, $options, $regex);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array(
+      '/usao/nys/pressspeeches/old/index.php',
+      '/usao/nys/pressspeeches/old/index_old.html',
+      '/usao/nys/pressspeeches/old/sentencingguidelines.html',
+
+    );
+
+    if (doj_migration_skip_file($row->fileid, $skip_these) || (parent::prepareRow($row) === FALSE)) {
+      return FALSE;
+    }
+  }
+}
+
+class UsaoSdnySpeechSourceParser extends NGSpeechSourceParser {
+  /**
+   * Clean the html right before pulling the body.
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+
+    // Selectors to remove.
+    $selectors = array(
+      '.twitter-follow-button',
+      '.printer',
+      '#headSearch',
+    );
+    HtmlCleanUp::removeElements($this->queryPath, $selectors);
+  }
+
+}
+
+/**
+ * Obtainer for body property for /usao-sdny speech.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdny
+ * @see Obtainer.api.php
+ */
+class UsaoSdnySpeechObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      '<?php if(!$print) echo "',
+      '<?php include("../attachments.php"); ?>',
+      '$print = $_GET["print"];',
+      'if(!$print)',
+      'echo "<link rel=\'stylesheet\' href=\'../../includes/usao-style.css\' type=\'text/css\' media=\'all\' />";',
+      'include("../../includes/usao-header.ssi")',
+      '<a href="https://twitter.com/SDNYNews" class="twitter-follow-button" data-show-count="false">Follow @SDNYNews</a>',
+      '<a class="twitter-follow-button" data-show-count="false" href="https://twitter.com/SDNYNews">Follow @SDNYNews</a>',
+      'include("../attachments.php"); ?',
+      'style="float: left;"',
+      'echo "<link rel=\'stylesheet\' href=\'../../css/usao_print.css\' type=\'text/css\' media=\'all\' />";',
+      '<link rel="stylesheet" href="../../css/usao_print.css" type="text/css" media="all" />',
+      '<p>"; else echo "</p>',
+      '"; else     echo "',
+      '<p>"; ?&gt;</p>',
+      'include("../../includes/usao-footer.ssi");',
+      'include("../../includes/usao-rightCol.ssi");',
       '<?php',
       '<br/>"; ?>',
       '"; ?>',

@@ -80,7 +80,7 @@ class StringCleanUp {
       'ú' => '&uacute;', '&#xfa;' => '&uacute;', 'Ú' => '&Uacute;', '&#xda;' => '&Uacute;',
       'ü' => '&uuml;', '&#xfc;' => '&uuml;', 'Ü' => '&Uuml;', '&#xdc;' => '&Uuml;',
       'ñ' => '&ntilde;', '&#xf1;' => '&ntilde;',  'Ñ' => '&Ntilde;', '&#xd1;' => '&Ntilde;', '&#xF1;' => '&ntilde;',
-      '\BB' => '&raquo;', '\A0' => '&nbsp;', '\92' => "'",
+      '\BB' => '&raquo;', '\A0' => '&nbsp;', '\92' => "'", '</br>' => '<br/>',
     );
 
     return $convert_table;

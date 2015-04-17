@@ -47,11 +47,13 @@ class ObtainHtml extends Obtainer {
    *   The selector to find.
    * @param int $n
    *   (optional) The depth to find.  Default: first item n=1.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
    *
    * @return string
    *   The text found.
    */
-  protected function pluckSelector($selector, $n = 1) {
+  protected function pluckSelector($selector, $n = 1, $method = 'text') {
     $text = '';
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
@@ -59,7 +61,7 @@ class ObtainHtml extends Obtainer {
       foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
         if ($i == $n) {
           $this->setElementToRemove($element);
-          $text = $element->text();
+          $text = $element->$method();
           $this->setCurrentFindMethod("pluckSelector($selector, " . ++$n . ')');
           break;
         }
@@ -97,22 +99,24 @@ class ObtainHtml extends Obtainer {
    *   The selector to find.
    * @param string $limit
    *   (optional) The depth level limit for the search.  Defaults to NULL.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
    *
    * @return string
    *   Text contents of the first element to validate.
    */
-  protected function pluckAnySelectorUntilValid($selector, $limit = NULL) {
+  protected function pluckAnySelectorUntilValid($selector, $limit = NULL, $method = 'text') {
     foreach ($this->queryPath->find($selector) as $key => $em) {
       if (($limit !== NULL) && ($key == $limit)) {
         break;
       }
       $this->setElementToRemove($em);
-      $text = $em->text();
+      $text = $em->$method();
       $text = $this->cleanString($text);
       if ($this->validateString($text)) {
         $this->setCurrentFindMethod("findAnyElement-i={$key}");
         // Return the original string to avoid double cleanup causing issues.
-        return $text;
+        return $em->$method();
       }
     }
     // If it made it this far, nothing was found.

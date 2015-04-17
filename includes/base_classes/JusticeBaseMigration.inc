@@ -196,49 +196,6 @@ abstract class JusticeBaseMigration extends Migration {
 
 
   /**
-   * Geocode a string.
-   *
-   * @param string $string
-   *   A location string.
-   *
-   * @return array
-   *   An array with location information extracted from the string.
-   */
-  public function geoCodeString($string) {
-
-    // Geocode the location and parse into structured data for migration.
-    // Geocoder module is not an explicit dependency because most migrations
-    // do not rely on it. It should be disabled after use.
-    if (!empty($string)) {
-      if ($string == 'Washington, D.C.') {
-        // The most common entry, so skip geocoding.
-        $address['locality'] = 'Washington';
-        $address['administrative_area_level_1'] = 'DC';
-        $address['country'] = "US";
-      }
-      elseif (module_exists('geocoder')) {
-        // Note that calling this too many times (as in very large migrations)
-        // may exceed the API request limit for geocoder's source data.
-        $point = geocoder('google', $string);
-        module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-        $address = doj_migrate_convert_geocoded_point_to_address($point);
-
-        if (!$address) {
-          $address['locality'] = '';
-          $address['administrative_area_level_1'] = '';
-          $address['country'] = '';
-          $this->queueMessage(t('Could not look up speech location because geocoder returned nothing The API request limit may have been exceeded.'));
-        }
-      }
-      else {
-        $this->queueMessage(t('Could not look up speech location because geocoder is not installed.'));
-      }
-
-      return $address;
-    }
-  }
-
-  /**
    * Extracts metadata from pdf file.
    *
    * @param string $pdf_file_path

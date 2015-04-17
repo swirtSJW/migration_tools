@@ -41,9 +41,11 @@ files[] = includes/base_classes/JusticeCsvMigration.inc
 files[] = includes/base_classes/JusticeUserMigration.inc
 
 files[] = includes/base_classes/NGDistrictPressReleaseMigration.inc
+files[] = includes/base_classes/NGDistrictSpeechMigration.inc
 files[] = includes/base_classes/NGJusticeHtmlToNodeMigration.inc
 files[] = includes/base_classes/NGJusticeHtmlToPageMigration.inc
 files[] = includes/base_classes/NGJusticeHtmlToPressReleaseMigration.inc
+files[] = includes/base_classes/NGJusticeHtmlToSpeechMigration.inc
 
 ; Chunk Parsers
 files[] = includes/base_classes/JusticeChunkParser.inc
@@ -62,6 +64,7 @@ files[] = includes/source_parsers/NGDistrictPageSourceParser.php
 files[] = includes/source_parsers/NGSourceParser.php
 files[] = includes/source_parsers/NGNodeSourceParser.php
 files[] = includes/source_parsers/NGPressReleaseSourceParser.php
+files[] = includes/source_parsers/NGSpeechSourceParser.php
 
 files[] = includes/source_parsers/specific/EdcaDistrictPressReleaseSpanishSourceParser.php
 files[] = includes/source_parsers/specific/ScSourceParser.php
@@ -80,9 +83,13 @@ files[] = includes/obtainers/Obtainer.php
 files[] = includes/obtainers/ObtainBody.php
 files[] = includes/obtainers/ObtainContentType.php
 files[] = includes/obtainers/ObtainHtml.php
+files[] = includes/obtainers/ObtainCity.php
+files[] = includes/obtainers/ObtainCountry.php
 files[] = includes/obtainers/ObtainDate.php
 files[] = includes/obtainers/ObtainDateSpanish.php
 files[] = includes/obtainers/ObtainID.php
+files[] = includes/obtainers/ObtainLocation.php
+files[] = includes/obtainers/ObtainState.php
 files[] = includes/obtainers/ObtainTitle.php
 files[] = includes/obtainers/ObtainSubTitle.php
 files[] = includes/obtainers/ObtainTitlePressRelease.php

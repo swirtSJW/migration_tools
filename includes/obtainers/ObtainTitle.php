@@ -268,6 +268,11 @@ class ObtainTitle extends ObtainHtml {
    * {@inheritdoc}
    */
   public static function cleanString($text) {
+    // Breaks need to be converted to spaces to avoid lines running together.
+    // @codingStandardsIgnoreStart
+    $break_tags = array('<br>', '<br/>', '<br />', '</br>');
+    // @codingStandardsIgnoreEnd
+    $text = str_ireplace($break_tags, ' ', $text);
     $text = strip_tags($text);
     // Titles can not have html entities.
     $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');

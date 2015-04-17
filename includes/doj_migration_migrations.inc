@@ -1273,6 +1273,11 @@ return array (
       'group_name' => 'usao-sdny',
       'class_name' => 'UsaoSdnyPressReleaseMigration',
     ),
+    'UsaoSdnySpeech' =>
+    array (
+      'group_name' => 'usao-sdny',
+      'class_name' => 'UsaoSdnySpeechMigration',
+    ),
     'CriminalAfmlsPage' =>
     array (
       'group_name' => 'criminal-afmls',
