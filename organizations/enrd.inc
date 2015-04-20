@@ -273,7 +273,7 @@ class EnrdEventMigration extends XMLMigration {
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
-    $this->dependencies(array('EnrdTimeline'));
+    $this->setHardDependencies(array('EnrdTimeline'));
 
     // Expected files:
     // timeline_EO.xml
