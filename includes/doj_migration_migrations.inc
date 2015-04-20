@@ -305,6 +305,10 @@ return array (
     array (
       'title' => 'Disaster Fraud Task Force',
     ),
+    'criminal-oilspill' =>
+    array (
+      'title' => 'Deepwater Horizon (BP) Oil-Spill Fraud',
+    ),
   ),
   'migrations' =>
   array (
@@ -1302,6 +1306,16 @@ return array (
     array (
       'group_name' => 'criminal-disasters',
       'class_name' => 'CriminalDisastersFileMigration',
+    ),
+    'CriminalOilspillPage' =>
+    array (
+      'group_name' => 'criminal-oilspill',
+      'class_name' => 'CriminalOilspillPageMigration',
+    ),
+    'CriminalOilspillFile' =>
+    array (
+      'group_name' => 'criminal-oilspill',
+      'class_name' => 'CriminalOilspillFileMigration',
     ),
   ),
 );
