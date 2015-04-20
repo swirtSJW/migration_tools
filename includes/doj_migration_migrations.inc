@@ -301,6 +301,10 @@ return array (
     array (
       'title' => 'Office of Overseas Prosecutorial Development Assistance and Training',
     ),
+    'criminal-disasters' =>
+    array (
+      'title' => 'Disaster Fraud Task Force',
+    ),
   ),
   'migrations' =>
   array (
@@ -1288,6 +1292,16 @@ return array (
     array (
       'group_name' => 'criminal-opdat',
       'class_name' => 'CriminalOpdatFileMigration',
+    ),
+    'CriminalDisastersPage' =>
+    array (
+      'group_name' => 'criminal-disasters',
+      'class_name' => 'CriminalDisastersPageMigration',
+    ),
+    'CriminalDisastersFile' =>
+    array (
+      'group_name' => 'criminal-disasters',
+      'class_name' => 'CriminalDisastersFileMigration',
     ),
   ),
 );

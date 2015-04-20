@@ -155,3 +155,4 @@ files[] = organizations/criminal_ccips.inc
 files[] = organizations/usao_sdny.inc
 files[] = organizations/criminal_afmls.inc
 files[] = organizations/criminal_opdat.inc
+files[] = organizations/criminal_disasters.inc
