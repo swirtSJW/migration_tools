@@ -230,3 +230,200 @@ class EnrdObtainTitlePress extends ObtainTitlePressRelease {
 
 class EnrdObtainDate extends ObtainDate {
 }
+
+class EnrdTimelineMigration extends NGJusticeHtmlToNodeMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+
+    // Define source directories.
+    $source_dirs = array(
+      'enrd',
+    );
+
+    $options = array('recurse' => TRUE);
+
+    // Expected timeline nodes:
+    // http://www.justice.gov/enrd/timeline_eo.html
+    // http://www.justice.gov/enrd/timeline_IR.html
+    // http://www.justice.gov/enrd/timeline_LP.html
+    $regex = '/timeline_.+\.htm(l)?/';
+
+    // Define the fields that will be derived from the static files.
+    $source_fields = array(
+      'title' => t('Title'),
+    );
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
+
+    // The destination is the page content type.
+    $this->destination = new MigrateDestinationNode('timeline');
+
+    $this->addFieldMapping('og_group_ref')->defaultValue('enrd')->sourceMigration('Organization');
+  }
+}
+
+class EnrdEventMigration extends XMLMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+    $this->dependencies(array('EnrdTimeline'));
+
+    // Expected files:
+    // timeline_EO.xml
+    // timeline_IR_events.xml
+    // timeline_LP_LPevents.xml
+    // timeline_LP_Worldevents.xml
+
+    $this->timelineMap = array(
+      '/enrd/timeline_EO.xml' => '/enrd/timeline_eo.html',
+      '/enrd/timeline_IR_events.xml' => '/enrd/timeline_IR.html',
+      '/enrd/timeline_LP_LPevents.xml' => '/enrd/timeline_LP.html',
+      '/enrd/timeline_LP_Worldevents.xml' => '/enrd/timeline_LP.html',
+    );
+
+    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+
+    $xml_folder = $this->baseDir . '/enrd';
+    $mask = '/timeline_.+\.xml/i';
+    $options['recurse'] = TRUE;
+    $files = file_scan_directory($xml_folder, $mask, $options);
+    $items_url = array_keys($files);
+
+    // Relative to document.
+    $item_xpath = '/data/event';
+    // Relative to item_xpath.
+    $item_id_xpath = '@title';
+
+    $this->source = new MigrateSourceXML($items_url, $item_xpath, $item_id_xpath);
+
+    // Define the fields that will be derived from the static files.
+    $source_fields = array(
+      'title' => t('Title'),
+      'field_timeline_event_body' => t('Body'),
+      'field_timeline_event_date' => t('Date'),
+    );
+
+    // The source ID here is the one retrieved from each data item in the XML
+    // file, and used to identify specific items.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'title' => array(
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+    $this->destination = new MigrateDestinationNode('timeline_event');
+
+    $this->addFieldMapping('title', 'title');
+    $this->addFieldMapping('field_timeline_event_body', 'body');
+    $this->addFieldMapping('field_timeline_event_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_timeline_event_date', 'datetime');
+
+    $this->addFieldMapping('field_timeline_event_image:file_class')->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_timeline_event_image', 'image_filename');
+    $this->addFieldMapping('field_timeline_event_image:source_dir', 'image_dir');
+    $this->addFieldMapping('field_timeline_event_image:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+    // $this->addFieldMapping('field_timeline_event_image:alt', 'alt');
+    // $this->addFieldMapping('field_timeline_event_image:title', 'title');
+
+    $this->addFieldMapping('og_group_ref')->defaultValue('enrd')->sourceMigration('Organization');
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+    $this->addFieldMapping('uid')->defaultValue(1);
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    $base_path = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+    $row->file_path = str_replace($base_path, '', $this->source->getReader()->url);
+
+    $row->title = (string) $row->xml['title'];
+    $row->datetime = strtotime((string) ($row->xml['start']));
+    if (empty($row->datetime)) {
+      throw Exception('Date of "@date" is invalid for for @title in @file_path', array(
+        '@title' => $row->title,
+        '@file_id' => $row->file_path,
+        '@date' => $row->datetime,
+      ));
+    }
+
+    $image_relative_path = (string) $row->xml['image'];
+    if ($image_relative_path) {
+      $image_path = $this->baseDir . '/enrd/' . $image_relative_path;
+      $row->image_filename = basename($image_path);
+      $row->image_dir = dirname($image_path);
+    }
+
+    // We need to run the string through a SourceParser to that it gets
+    // the benefit of encoding and cleanHtml() methods.
+    $body = '<html><body>' . (string) $row->xml[0] . '</body></html>';
+    $source_parser = new SourceParser($row->file_path, $body);
+    $row->body = $source_parser->getBody();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare($entity, $row) {
+    doj_migration_prepare_workbench_settings($entity, $row);
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * The primary responsibility of this method is to associate the incoming
+   * event with its parent timeline node.
+   */
+  public function complete($entity, stdClass $row) {
+    if (isset($entity->nid) && $entity->nid) {
+      doj_migration_complete_workbench_settings($entity, $row);
+    }
+
+    $source_id = $this->timelineMap[$row->file_path];
+    $timeline_nid = $this->handleSourceMigration('EnrdTimeline', $source_id);
+    if (empty($timeline_nid)) {
+      throw Exception('Parent timeline not found for @title in @file_path', array('@title' => $row->title, '@file_id' => $row->file_path));
+    }
+    $timeline_node = node_load($timeline_nid);
+    $wrapper = entity_metadata_wrapper('node', $timeline_node);
+    $wrapper->field_timeline_events[] = $entity->nid;
+    $wrapper->save();
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * The primary responsibility of this method is to remove the association
+   * between the current event and the parent timeline node.
+   */
+  public function completeRollback($entity_ids) {
+    // Remove reference to entity on parent timeline node.
+    foreach ($this->timelineMap as $source_id) {
+      $timeline_nid = $this->handleSourceMigration('EnrdTimeline', $source_id);
+      $timeline_node = node_load($timeline_nid);
+      $wrapper = entity_metadata_wrapper('node', $timeline_node);
+      $events = $wrapper->field_timeline_events->raw();
+      foreach ($events as $delta => $event_nid) {
+        if (in_array($event_nid, $entity_ids)) {
+          $wrapper->field_timeline_events[$delta]->set(NULL);
+        }
+      }
+      $wrapper->save();
+    }
+  }
+}

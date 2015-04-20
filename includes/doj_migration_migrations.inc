@@ -1009,6 +1009,16 @@ return array (
       'group_name' => 'enrd',
       'class_name' => 'EnrdPressReleaseMigration',
     ),
+    'EnrdTimeline' =>
+    array (
+      'group_name' => 'enrd',
+      'class_name' => 'EnrdTimelineMigration',
+    ),
+    'EnrdEvent' =>
+    array (
+      'group_name' => 'enrd',
+      'class_name' => 'EnrdEventMigration',
+    ),
     'AtrPage' =>
     array (
       'group_name' => 'atr',
