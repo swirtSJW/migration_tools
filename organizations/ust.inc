@@ -130,6 +130,7 @@ class UstPageMigration extends NGJusticeHtmlToPageMigration {
     $options = array('recurse' => FALSE);
 
     $arguments['source_parser_class'] = "UstPageSourceParser";
+    $arguments['component_tid'] = 666;
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstObtainTitlePage");
@@ -341,7 +342,7 @@ class UstPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
     );
     parent::__construct($arguments, $source_dirs);
     $this->addFieldMapping('og_group_ref')->defaultValue('ust')->sourceMigration('Organization');
-
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
     $this->addFieldMapping('field_pr_attachment', 'attachment_filename');
     $this->addFieldMapping('field_pr_attachment:file_class')
       ->defaultValue('MigrateFileUri');
