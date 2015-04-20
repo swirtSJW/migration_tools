@@ -50,7 +50,11 @@ class EnrdPageMigration extends NGJusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $skip_these = array();
+    $skip_these = array(
+      '/enrd/timeline_eo.html',
+      '/enrd/timeline_IR.html',
+      '/enrd/timeline_LP.html',
+    );
     if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
