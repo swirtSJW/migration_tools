@@ -32,3 +32,10 @@ function doj_migration_update_7001() {
     ->condition('alias', 'criminal-disaster')
     ->execute();
 }
+
+/**
+ * Remove EDCA Spanish organization node.
+ */
+function doj_migration_update_7002() {
+  node_delete(310976);
+}
