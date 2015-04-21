@@ -335,7 +335,9 @@ function doj_migration_legacy_to_uri($legacy_uri) {
     }
   }
   watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
-  return "";
+  // Without legacy path yet migrated in, leave the link to source content
+  // so that the redirects can handle it when that content is migrate/created.
+  return "http://www.justice.gov/{$legacy_uri}";
 }
 
 /**
