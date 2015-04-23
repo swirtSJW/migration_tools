@@ -1,0 +1,8 @@
+Criminal Division Home{"url":"criminal"}
+About the Division{"url":"criminal/about-criminal-division"}
+Meet the AAG {"url":"criminal/about-aag"}
+Press Room{"url":"http://www.justice.gov/criminal/pr/index.html"}
+Employment{"url":"criminal/employment"}
+Criminal Division FOIA{"url":"http://www.justice.gov/criminal/foia/index.html"}
+Contact the Division {"url":"criminal/contact-criminal-division"}
+DOJ Diversity Statement{"url":"http://www.justice.gov/criminal/careers/diversity-policy.html"}

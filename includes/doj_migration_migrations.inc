@@ -329,6 +329,10 @@ return array (
     array (
       'title' => 'Fraud Section',
     ),
+    'criminal' =>
+    array (
+      'title' => 'Criminal Division',
+    ),
   ),
   'migrations' =>
   array (
@@ -1406,6 +1410,16 @@ return array (
     array (
       'group_name' => 'criminal-fraud',
       'class_name' => 'CriminalFraudCaseMigration',
+    ),
+    'CriminalPage' =>
+    array (
+      'group_name' => 'criminal',
+      'class_name' => 'CriminalPageMigration',
+    ),
+    'CriminalFile' =>
+    array (
+      'group_name' => 'criminal',
+      'class_name' => 'CriminalFileMigration',
     ),
   ),
 );
