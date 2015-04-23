@@ -7,9 +7,3 @@ Phoenix, AZ Office{"url":"ust-regions-r14/region-14-district-arizona"}
 -Chapter 12{"url":"ust-regions-r14/region-14-chapter-12"}
 -Chapter 13{"url":"ust-regions-r14/region-14-chapter-13"}
 -§ 341 Meeting Locations{"url":"ust-regions-r14/region-14-section-341-meetings"}
-Staff Directory{"url":"ust-regions-r14/region-14-staff-directory"}
-Chapter 7{"url":"ust-regions-r14/region-14-chapter-7"}
-Chapter 11{"url":"ust-regions-r14/region-14-chapter-11"}
-Chapter 12{"url":"ust-regions-r14/region-14-chapter-12"}
-Chapter 13{"url":"ust-regions-r14/region-14-chapter-13"}
-§ 341 Meeting Locations{"url":"ust-regions-r14/region-14-section-341-meetings"}

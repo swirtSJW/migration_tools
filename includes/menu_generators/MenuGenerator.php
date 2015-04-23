@@ -222,7 +222,8 @@ class MenuGeneratorEngineDefault {
     $base = $this->parameters->getJusticeUrl();
     $local_base_uri = $this->parameters->getUriLocalBase();
 
-    if ($local_base_uri && empty($this->parameters->getUriMenuLocation())) {
+    $uri_menu_location = $this->parameters->getUriMenuLocation();
+    if ($local_base_uri && empty($uri_menu_location)) {
       $subpath = str_replace($base, '', $local_base_uri);
     }
     else {

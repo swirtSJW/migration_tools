@@ -8,12 +8,6 @@ Cleveland, OH Office{"url":"ust-regions-r09/region-9-northern-district-ohio"}
 -Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-2"}
 -Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-2"}
 -§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-2"}
-Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-2"}
-Chapter 7{"url":"ust-regions-r09/region-9-chapter-7-2"}
-Chapter 11{"url":"ust-regions-r09/region-9-general-information-2"}
-Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-2"}
-Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-2"}
-§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-2"}
 Cincinnati, OH Office{"url":"ust-regions-r09/region-9-southern-district-ohio-southern-division"}
 -Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-3"}
 -General Information{"url":"ust-regions-r09/region-9-general-information-1"}
@@ -22,13 +16,6 @@ Cincinnati, OH Office{"url":"ust-regions-r09/region-9-southern-district-ohio-sou
 -Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-3"}
 -Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-3"}
 -§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-3"}
-Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-3"}
-General Information{"url":"ust-regions-r09/region-9-general-information-1"}
-Chapter 7{"url":"ust-regions-r09/region-9-chapter-7-3"}
-Chapter 11{"url":"ust-regions-r09/region-9-general-information-2"}
-Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-3"}
-Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-3"}
-§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-3"}
 Columbus, OH Office{"url":"ust-regions-r09/region-9-southern-district-ohio-eastern-and-western-divisions"}
 -Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-1"}
 -General Information{"url":"ust-regions-r09/region-9-general-information-0"}
@@ -37,13 +24,6 @@ Columbus, OH Office{"url":"ust-regions-r09/region-9-southern-district-ohio-easte
 -Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-1"}
 -Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-1"}
 -§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-1"}
-Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-1"}
-General Information{"url":"ust-regions-r09/region-9-general-information-0"}
-Chapter 7{"url":"ust-regions-r09/region-9-chapter-7-1"}
-Chapter 11{"url":"ust-regions-r09/region-9-general-information-2"}
-Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-1"}
-Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-1"}
-§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-1"}
 Detroit, MI Office{"url":"ust-regions-r09/region-9-eastern-district-michigan"}
 -Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-0"}
 -General Information{"url":"ust-regions-r09/region-9-general-information"}
@@ -52,13 +32,6 @@ Detroit, MI Office{"url":"ust-regions-r09/region-9-eastern-district-michigan"}
 -Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-0"}
 -Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-0"}
 -§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-0"}
-Staff Directory{"url":"ust-regions-r09/region-9-staff-directory-0"}
-General Information{"url":"ust-regions-r09/region-9-general-information"}
-Chapter 7{"url":"ust-regions-r09/region-9-chapter-7-0"}
-Chapter 11{"url":"ust-regions-r09/region-9-general-information-2"}
-Chapter 12{"url":"ust-regions-r09/region-9-chapter-12-0"}
-Chapter 13{"url":"ust-regions-r09/region-9-chapter-13-0"}
-§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings-0"}
 Grand Rapids, MI Office{"url":"ust-regions-r09/region-9-western-district-michigan"}
 -Staff Directory{"url":"ust-regions-r09/region-9-staff-directory"}
 -Chapter 7{"url":"ust-regions-r09/region-9-chapter-7"}
@@ -66,9 +39,3 @@ Grand Rapids, MI Office{"url":"ust-regions-r09/region-9-western-district-michiga
 -Chapter 12{"url":"ust-regions-r09/region-9-chapter-12"}
 -Chapter 13{"url":"ust-regions-r09/region-9-chapter-13"}
 -§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings"}
-Staff Directory{"url":"ust-regions-r09/region-9-staff-directory"}
-Chapter 7{"url":"ust-regions-r09/region-9-chapter-7"}
-Chapter 11{"url":"ust-regions-r09/region-9-general-information-2"}
-Chapter 12{"url":"ust-regions-r09/region-9-chapter-12"}
-Chapter 13{"url":"ust-regions-r09/region-9-chapter-13"}
-§ 341 Meeting Locations{"url":"ust-regions-r09/region-9-section-341-meetings"}

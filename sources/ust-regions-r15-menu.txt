@@ -9,13 +9,6 @@ San Diego, CA Office{"url":"ust-regions-r15/region-15-southern-district-californ
 -Chapter 12{"url":"ust-regions-r15/region-15-chapter-12"}
 -Chapter 13{"url":"ust-regions-r15/region-15-chapter-13"}
 -§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings"}
-Staff Directory{"url":"ust-regions-r15/region-15-staff-directory"}
-General Information{"url":"ust-regions-r15/region-15-general-information"}
-Chapter 7{"url":"ust-regions-r15/region-15-chapter-7"}
-Chapter 11{"url":"ust-regions-r15/region-15-chapter-11"}
-Chapter 12{"url":"ust-regions-r15/region-15-chapter-12"}
-Chapter 13{"url":"ust-regions-r15/region-15-chapter-13"}
-§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings"}
 Honolulu, HI Office{"url":"ust-regions-r15/region-15-district-hawaii"}
 -Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-0"}
 -Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-0"}
@@ -23,12 +16,6 @@ Honolulu, HI Office{"url":"ust-regions-r15/region-15-district-hawaii"}
 -Chapter 12{"url":"ust-regions-r15/region-15-chapter-12-0"}
 -Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-0"}
 -§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-0"}
-Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-0"}
-Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-0"}
-Chapter 11{"url":"ust-regions-r15/region-15-chapter-11-0"}
-Chapter 12{"url":"ust-regions-r15/region-15-chapter-12-0"}
-Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-0"}
-§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-0"}
 Guam Office{"url":"ust-regions-r15/region-15-district-guam-bankruptcy-division"}
 -Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-1"}
 -Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-1"}
@@ -37,13 +24,6 @@ Guam Office{"url":"ust-regions-r15/region-15-district-guam-bankruptcy-division"}
 -Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-1"}
 -§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-1"}
 -Frequently Asked Questions{"url":"ust-regions-r15/region-15-frequently-asked-questions-0"}
-Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-1"}
-Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-1"}
-Chapter 11{"url":"ust-regions-r15/region-15-chapter-11-1"}
-Chapter 12{"url":"ust-regions-r15/region-15-chapter-12-1"}
-Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-1"}
-§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-1"}
-Frequently Asked Questions{"url":"ust-regions-r15/region-15-frequently-asked-questions-0"}
 CNMI Office{"url":"ust-regions-r15/region-15-district-commonwealth-northern-mariana-islands-bankruptcy-division"}
 -Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-2"}
 -Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-2"}
@@ -52,10 +32,3 @@ CNMI Office{"url":"ust-regions-r15/region-15-district-commonwealth-northern-mari
 -Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-2"}
 -§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-2"}
 -Frequently Asked Questions{"url":"ust-regions-r15/region-15-frequently-asked-questions-1"}
-Staff Directory{"url":"ust-regions-r15/region-15-staff-directory-2"}
-Chapter 7{"url":"ust-regions-r15/region-15-chapter-7-2"}
-Chapter 11{"url":"ust-regions-r15/region-15-chapter-11-2"}
-Chapter 12{"url":"ust-regions-r15/region-15-chapter-12-2"}
-Chapter 13{"url":"ust-regions-r15/region-15-chapter-13-2"}
-§ 341 Meeting Locations{"url":"ust-regions-r15/region-15-section-341-meetings-2"}
-Frequently Asked Questions{"url":"ust-regions-r15/region-15-frequently-asked-questions-1"}
