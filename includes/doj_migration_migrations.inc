@@ -309,6 +309,10 @@ return array (
     array (
       'title' => 'Deepwater Horizon (BP) Oil-Spill Fraud',
     ),
+    'criminal-ocgs' =>
+    array (
+      'title' => 'Organized Crime and Gang Section',
+    ),
   ),
   'migrations' =>
   array (
@@ -1321,6 +1325,16 @@ return array (
     array (
       'group_name' => 'criminal-oilspill',
       'class_name' => 'CriminalOilspillFileMigration',
+    ),
+    'CriminalOcgsPage' =>
+    array (
+      'group_name' => 'criminal-ocgs',
+      'class_name' => 'CriminalOcgsPageMigration',
+    ),
+    'CriminalOcgsFile' =>
+    array (
+      'group_name' => 'criminal-ocgs',
+      'class_name' => 'CriminalOcgsFileMigration',
     ),
   ),
 );
