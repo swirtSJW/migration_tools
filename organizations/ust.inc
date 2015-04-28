@@ -130,7 +130,7 @@ class UstPageMigration extends NGJusticeHtmlToPageMigration {
     $options = array('recurse' => FALSE);
 
     $arguments['source_parser_class'] = "UstPageSourceParser";
-    $arguments['component_tid'] = 666;
+    $arguments['component_tid'] = 1690;
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstObtainTitlePage");
