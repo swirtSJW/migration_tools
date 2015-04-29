@@ -150,6 +150,7 @@ class EnrdPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['component'] = "Environment and Natural Resources Division";
     $arguments['source_parser_class'] = "EnrdPressSourceParser";
+    $arguments['component_tid'] = 471;
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "EnrdObtainTitlePress");

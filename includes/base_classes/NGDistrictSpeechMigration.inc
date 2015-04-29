@@ -33,14 +33,14 @@ abstract class NGDistrictSpeechMigration extends NGJusticeHtmlToSpeechMigration 
       $district = $arguments['district'];
     }
     else {
-      throw new Exception("NGDistrictSpeechMigration requires the district argument.");
+      throw new Exception(sprintf("%s: NGDistrictSpeechMigration requires the district argument.", $arguments['machine_name']));
     }
 
     if (array_key_exists('component_tid', $arguments)) {
       $component_tid = $arguments['component_tid'];
     }
     else {
-      throw new Exception("NGDistrictSpeechMigration requires the component_tid argument.");
+      throw new Exception(sprintf("%s: NGDistrictSpeechMigration requires the component_tid argument.", $arguments['machine_name']));
     }
 
     if (empty($arguments['source_parser_class'])) {

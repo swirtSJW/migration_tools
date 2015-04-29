@@ -128,6 +128,7 @@ class TaxPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['component'] = "Tax Division";
     $arguments['source_parser_class'] = "TaxPressSourceParser";
+    $arguments['component_tid'] = 646;
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "TaxObtainTitlePressRelease");

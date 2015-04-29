@@ -142,6 +142,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
   public function __construct($arguments) {
     $arguments['component'] = "{{ info.full_name }}";
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
+    $arguments['component_tid'] = {{ info.component_tid }};
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePressRelease");

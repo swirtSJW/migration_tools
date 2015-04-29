@@ -42,7 +42,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
       $component_tid = $arguments['component_tid'];
     }
     else {
-      throw new Exception("NGJusticeHtmlToPressReleaseMigration requires the component_tid argument.");
+      throw new Exception(sprintf("%s: NGJusticeHtmlToPressReleaseMigration requires the component_tid argument.", $arguments['machine_name']));
     }
 
     // Calling parent constructor will set $this->source and $this->map.

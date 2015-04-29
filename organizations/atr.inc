@@ -228,7 +228,7 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['component'] = "Antitrust Division";
     $arguments['source_parser_class'] = "AtrPressSourceParser";
-
+    $arguments['component_tid'] = 376;
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "AtrObtainTitlePress");
     $title->addMethod('pluckAnySelectorUntilValid', array('h1'));

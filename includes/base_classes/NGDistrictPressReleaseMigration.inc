@@ -28,7 +28,7 @@ class NGDistrictPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigrati
       $component_tid = $arguments['component_tid'];
     }
     else {
-      throw new Exception("NGDistrictPressReleaseMigration requires the component_tid argument.");
+      throw new Exception(sprintf("%s: NGDistrictPressReleaseMigration requires the component_tid argument.", $arguments['machine_name']));
     }
 
     $options['recurse'] = (isset($options['recurse'])) ? $options['recurse'] : TRUE;
