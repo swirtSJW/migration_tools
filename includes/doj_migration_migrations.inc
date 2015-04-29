@@ -313,6 +313,10 @@ return array (
     array (
       'title' => 'Organized Crime and Gang Section',
     ),
+    'criminal-oeo' =>
+    array (
+      'title' => 'Office of Enforcement Operations',
+    ),
   ),
   'migrations' =>
   array (
@@ -1335,6 +1339,16 @@ return array (
     array (
       'group_name' => 'criminal-ocgs',
       'class_name' => 'CriminalOcgsFileMigration',
+    ),
+    'CriminalOeoPage' =>
+    array (
+      'group_name' => 'criminal-oeo',
+      'class_name' => 'CriminalOeoPageMigration',
+    ),
+    'CriminalOeoFile' =>
+    array (
+      'group_name' => 'criminal-oeo',
+      'class_name' => 'CriminalOeoFileMigration',
     ),
   ),
 );
