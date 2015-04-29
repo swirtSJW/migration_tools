@@ -130,7 +130,6 @@ class UstPageMigration extends NGJusticeHtmlToPageMigration {
     $options = array('recurse' => FALSE);
 
     $arguments['source_parser_class'] = "UstPageSourceParser";
-    $arguments['component_tid'] = 1690;
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UstObtainTitlePage");
@@ -336,6 +335,7 @@ class UstPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 
     $arguments['obtainers_info'][] = $title;
     $arguments['obtainers_info'][] = $date;
+    $arguments['component_tid'] = 666;
 
     $source_dirs = array(
       41 => 'ust/eo/public_affairs/press/docs',
