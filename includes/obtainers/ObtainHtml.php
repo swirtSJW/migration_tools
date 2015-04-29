@@ -14,7 +14,7 @@
 class ObtainHtml extends Obtainer {
 
   /**
-   * Find the text in a specific row and column in a specific table.
+   * Pluck the text in a specific row and column in a specific table.
    *
    * @param int $table_num
    *   The value of n where the table is the nth table on the page. E.g., 2 for
@@ -33,6 +33,7 @@ class ObtainHtml extends Obtainer {
     foreach ($tables as $table) {
       if ($current_table == $table_num) {
         $text = $this->pluckFromTable($table, $row, $col);
+        $this->setCurrentFindMethod("pluckTableContents($table_num, $row, $col)");
         return $text;
       }
       $current_table++;
@@ -41,7 +42,7 @@ class ObtainHtml extends Obtainer {
 
 
   /**
-   * Finder for nth  selector on the page.
+   * Plucker for nth  selector on the page.
    *
    * @param string $selector
    *   The selector to find.
@@ -71,7 +72,7 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
-   * Finder for the last occurence of the selector.
+   * Plucker for the last occurence of the selector.
    *
    * @param string $selector
    *   The selector to find.
@@ -91,7 +92,7 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
-   * Finder crawls $selector elements until one validates.
+   * Plucker crawls $selector elements until one validates.
    *
    * This is a broad search and should only be used as a last resort.
    *
@@ -114,7 +115,7 @@ class ObtainHtml extends Obtainer {
       $text = $em->$method();
       $text = $this->cleanString($text);
       if ($this->validateString($text)) {
-        $this->setCurrentFindMethod("findAnyElement-i={$key}");
+        $this->setCurrentFindMethod("pluckAnySelectorUntilValid($selector)-i={$key}");
         // Return the original string to avoid double cleanup causing issues.
         return $em->$method();
       }
@@ -125,7 +126,7 @@ class ObtainHtml extends Obtainer {
 
 
   /**
-   * Finder crawls $selector elements until valid starting at bottom going up.
+   * Plucker crawls $selector elements until valid starting at bottom going up.
    *
    * This is a broad search and  is only as strong as the validation.  It should
    * only be used as a last resort (far down the finder stack).  It will start
@@ -170,7 +171,28 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
-   * Finder for nth  xpath on the page.
+   * Plucker crawls $selector elements and concats them as it goes.
+   *
+   * @param string $selector
+   *   The selector to find.
+   *
+   * @return string
+   *   Concatination of all selector elements' text.
+   */
+  protected function pluckAndConcatAnySelector($selector) {
+    $elements = $this->queryPath->find($selector);
+    $this->setElementToRemove($elements);
+    $this->setCurrentFindMethod("pluckAndConcatAnySelector($selector)");
+    $to_concat = array();
+    foreach ($elements as $key => $em) {
+      $to_concat[] = $em->text();
+    }
+
+    return implode(' ', $to_concat);
+  }
+
+  /**
+   * Plucker for nth xpath on the page.
    *
    * @param string $xpath
    *   The selector to find.
@@ -199,7 +221,7 @@ class ObtainHtml extends Obtainer {
 
 
   /**
-   * Get td text from a table, and lines it up to be removed.
+   * Pluck td text from a table, and lines it up to be removed.
    *
    * @param object $table
    *   A query path object with a table as the root.
@@ -232,7 +254,7 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
-   * Get td from a table.
+   * Pluck td from a table.
    *
    * @param object $table
    *   A query path object with a table as the root.

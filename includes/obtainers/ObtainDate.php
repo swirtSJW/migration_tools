@@ -287,7 +287,6 @@ class ObtainDate extends ObtainHtml {
       'release',
       'updated',
       'update',
-      ',',
       'sunday',
       'monday',
       'tuesday',
@@ -302,12 +301,21 @@ class ObtainDate extends ObtainHtml {
     );
     // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
+
     $remove = array(
       '.',
+      ',',
       "\n",
     );
     // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
+
+    // Fix mispellings and abbreviations.
+    $replace = array(
+      'septmber' => 'september',
+    );
+    $text = str_ireplace(array_keys($replace), array_values($replace), $text);
+
     // Remove multiple spaces.
     $text = preg_replace('/\s{2,}/u', ' ', $text);
     // Remove any text following the 4 digit year.

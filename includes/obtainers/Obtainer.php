@@ -136,10 +136,13 @@ abstract class Obtainer {
       $this->setCurrentFindMethod($method['method_name']);
       $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
       $found_string = $this->cleanString($found_string);
-
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
         $found_string = $this->processString($found_string);
+        // @TODO This is needed to give necessary updated info on what finder
+        // configuration actually worked so the developer can tune the methods
+        // stack efficiently. Replace this with an iterator when it is ready.
+        $method['method_name'] = $this->getCurrentFindMethod();
 
         $this->obtainerMessage('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
 

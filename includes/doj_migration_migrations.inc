@@ -317,6 +317,10 @@ return array (
     array (
       'title' => 'Office of Enforcement Operations',
     ),
+    'usao-ri' =>
+    array (
+      'title' => 'District of Rhode Island',
+    ),
   ),
   'migrations' =>
   array (
@@ -1349,6 +1353,21 @@ return array (
     array (
       'group_name' => 'criminal-oeo',
       'class_name' => 'CriminalOeoFileMigration',
+    ),
+    'UsaoRiPage' =>
+    array (
+      'group_name' => 'usao-ri',
+      'class_name' => 'UsaoRiPageMigration',
+    ),
+    'UsaoRiFile' =>
+    array (
+      'group_name' => 'usao-ri',
+      'class_name' => 'UsaoRiFileMigration',
+    ),
+    'UsaoRiPressRelease' =>
+    array (
+      'group_name' => 'usao-ri',
+      'class_name' => 'UsaoRiPressReleaseMigration',
     ),
   ),
 );

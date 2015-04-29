@@ -80,6 +80,7 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
       '{{ info.directory }}',
     );
 
+    $regex = NULL;
     $dest_dir = 'public:///{{ info.abbreviation }}/docs';
 
     $options = array('recurse' => TRUE);
