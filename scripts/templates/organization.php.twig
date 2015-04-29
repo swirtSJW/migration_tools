@@ -33,8 +33,8 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePage");
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
-    $title->addMethod('pluckSelector', array("title", 1));
     $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
 
     $arguments['obtainers_info'][] = $title;
 
