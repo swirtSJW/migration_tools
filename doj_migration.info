@@ -165,3 +165,4 @@ files[] = organizations/criminal_opdat.inc
 files[] = organizations/criminal_disasters.inc
 files[] = organizations/criminal_oilspill.inc
 files[] = organizations/criminal_ocgs.inc
+files[] = organizations/criminal_oeo.inc
