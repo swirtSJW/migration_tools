@@ -245,6 +245,9 @@ class UstRegionsPageSourceParser  extends NGNodeSourceParser {
     $selectors = array(
       '.maintitle-header',
       '.tnytxt',
+      '#ustbannerphoto',
+      'div.ag-bottom-right',
+      'div.headline',
     );
     HtmlCleanUp::removeElements($this->queryPath, $selectors);
 
