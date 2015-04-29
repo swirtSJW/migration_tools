@@ -38,6 +38,13 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
       $arguments['source_parser_class'] = "NGPressReleaseSourceParser";
     }
 
+    if (array_key_exists('component_tid', $arguments)) {
+      $component_tid = $arguments['component_tid'];
+    }
+    else {
+      throw new Exception("NGJusticeHtmlToPressReleaseMigration requires the component_tid argument.");
+    }
+
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
 
@@ -48,7 +55,7 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
     $this->addFieldMapping('field_pr_body', 'body');
     $this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_pr_number', 'field_pr_number');
-    $this->addFieldMapping('field_pr_component', 'field_pr_component');
+    $this->addFieldMapping("field_pr_component")->defaultValue(array($component_tid));
     $this->addFieldMapping('field_pr_component:source_type')->defaultValue("tid");
     $this->addFieldMapping('field_pr_subtitle', 'field_pr_subtitle');
     $this->addFieldMapping('field_pr_date', 'field_pr_date');
