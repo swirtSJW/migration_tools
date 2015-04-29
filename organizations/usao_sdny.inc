@@ -49,10 +49,10 @@ class UsaoSdnyPageMigration extends NGJusticeHtmlToPageMigration {
     $title = new ObtainerInfo('title', "UsaoSdnyObtainTitlePage");
     $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('pluckSelector', array('h2'));
-    $title->addMethod('pluckSelector', array('h3 > strong'));
-    $title->addMethod('pluckSelector', array('h3'));
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findSubBannerAlt');
+    $title->addMethod('pluckSelector', array('h3 > strong'));
+    $title->addMethod('pluckSelector', array('h3'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     // This one is risky because it will almost always find a title.
     $title->addMethod('pluckSelector', array('title'));
@@ -78,11 +78,13 @@ class UsaoSdnyPageMigration extends NGJusticeHtmlToPageMigration {
   public function prepareRow($row) {
     $skip_these = array(
       '/usao/nys/test2.php',
+      '/usao/nys/test.php',
       '/usao/nys/emailform.php',
       '/usao/nys/ausasubmit2.php',
       '/usao/nys/images/old/skiing.html',
       '/usao/nys/internemail.php',
       '/usao/nys/test.html',
+      '/usao/nys/internsubmit.php',
     );
 
     if (doj_migration_skip_file($row->fileid, $skip_these) || (parent::prepareRow($row) === FALSE)) {
@@ -273,6 +275,18 @@ class UsaoSdnyPressSourceParser extends NGDistrictPressReleaseSourceParser {
  * @see Obtainer.api.php
  */
 class UsaoSdnyObtainTitlePage extends ObtainTitle {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      'SDNY',
+    );
+    $text = str_replace($remove, '', $text);
+
+    return $text;
+  }
 }
 
 /**

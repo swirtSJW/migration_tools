@@ -284,6 +284,12 @@ class ObtainTitle extends ObtainHtml {
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
     $text = StringCleanUp::convertNonASCIItoASCII($text);
+    // Remove undesirable chars and strings.
+    $remove = array(
+      '&raquo;',
+      '»',
+    );
+    $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);
@@ -299,9 +305,6 @@ class ObtainTitle extends ObtainHtml {
       $text = strtolower($text);
     }
     $text = StringCleanUp::makeWordsFirstCapital($text);
-
-    // Remove undesirable chars.
-    $text = str_replace('»', '', $text);
 
     return $text;
   }
