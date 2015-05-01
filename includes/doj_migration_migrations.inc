@@ -325,6 +325,10 @@ return array (
     array (
       'title' => 'District of South Dakota',
     ),
+    'criminal-fraud' =>
+    array (
+      'title' => 'Fraud Section',
+    ),
   ),
   'migrations' =>
   array (
@@ -1387,6 +1391,21 @@ return array (
     array (
       'group_name' => 'usao-sd',
       'class_name' => 'UsaoSdPressReleaseMigration',
+    ),
+    'CriminalFraudPage' =>
+    array (
+      'group_name' => 'criminal-fraud',
+      'class_name' => 'CriminalFraudPageMigration',
+    ),
+    'CriminalFraudFile' =>
+    array (
+      'group_name' => 'criminal-fraud',
+      'class_name' => 'CriminalFraudFileMigration',
+    ),
+    'CriminalFraudCase' =>
+    array (
+      'group_name' => 'criminal-fraud',
+      'class_name' => 'CriminalFraudCaseMigration',
     ),
   ),
 );

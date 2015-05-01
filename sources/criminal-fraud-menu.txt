@@ -1,0 +1,11 @@
+Fraud Section Home{"url":"http://www.justice.gov/criminal/fraud/index.html"}
+Foreign Corrupt Practices Act (FCPA)  {"url":"criminal-fraud/foreign-corrupt-practices-act"}
+Health Care Fraud{"url":"criminal-fraud/health-care-fraud-unit"}
+Documents and Reports{"url":"criminal-fraud/documents-and-reports"}
+Identity Theft{"url":"criminal-fraud/identity-theft-0"}
+Mass-Marketing Fraud{"url":"criminal-fraud/mass-marketing-fraud"}
+Career Opportunities {"url":"criminal-fraud/career-opportunities"}
+Interagency Working Groups{"url":"criminal-fraud/interagency-working-groups"}
+Report Fraud{"url":"criminal-fraud/report-fraud"}
+Contact the Fraud Section{"url":"criminal-fraud/contact-fraud-section"}
+Criminal Division Home{"url":"http://www.justice.gov/criminal/index.html"}
