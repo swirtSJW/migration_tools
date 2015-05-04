@@ -366,6 +366,11 @@ class UsaoSdnyPressreleaseObtainBody extends ObtainBody {
     // Fix the tweet link that gets mangled by the sourceparser as it goes from
     // php to html.
     $text = str_ireplace("'Tweet<br />", "'>Tweet</a><br/>", $text);
+
+    // Now that it is fixed, remove the twitter link.
+    $regex = "/<a\shref=\'https:\/\/twitter\.com([^\"]*)\'>([^\"]*)<\/a>/i";
+    $text = preg_replace($regex, '', $text);
+
     return $text;
   }
 }
