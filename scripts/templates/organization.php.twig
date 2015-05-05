@@ -141,8 +141,15 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
    */
   public function __construct($arguments) {
     $arguments['component'] = "{{ info.full_name }}";
-    $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
     $arguments['component_tid'] = {{ info.component_tid }};
+    $source_dirs = array(
+  {% for item in info.press %}
+    {{ item | raw }}
+  {% endfor %}
+    );
+    $options = array('recurse' => TRUE);
+    $extension_regex = '{{ info.file_extensions | raw }}';
+    $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "{{ info.class_base_name }}ObtainTitlePressRelease");
@@ -166,14 +173,6 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
 
-    $source_dirs = array(
-  {% for item in info.press %}
-    {{ item | raw }}
-  {% endfor %}
-  );
-
-    $options = array('recurse' => TRUE);
-    $extension_regex = '{{ info.file_extensions | raw }}';
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
 
     $this->addFieldMapping('og_group_ref')
