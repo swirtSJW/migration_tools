@@ -360,7 +360,7 @@ class EnrdEventMigration extends XMLMigration {
     $row->title = (string) $row->xml['title'];
     $row->datetime = strtotime((string) ($row->xml['start']));
     if (empty($row->datetime)) {
-      throw Exception('Date of "@date" is invalid for for @title in @file_path', array(
+      throw new Exception('Date of "@date" is invalid for for @title in @file_path', array(
         '@title' => $row->title,
         '@file_id' => $row->file_path,
         '@date' => $row->datetime,
@@ -402,7 +402,7 @@ class EnrdEventMigration extends XMLMigration {
     $source_id = $this->timelineMap[$row->file_path];
     $timeline_nid = $this->handleSourceMigration('EnrdTimeline', $source_id);
     if (empty($timeline_nid)) {
-      throw Exception('Parent timeline not found for @title in @file_path', array('@title' => $row->title, '@file_id' => $row->file_path));
+      throw new Exception('Parent timeline not found for @title in @file_path', array('@title' => $row->title, '@file_id' => $row->file_path));
     }
     $timeline_node = node_load($timeline_nid);
     $wrapper = entity_metadata_wrapper('node', $timeline_node);
