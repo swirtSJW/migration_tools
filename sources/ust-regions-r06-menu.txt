@@ -1,16 +1,9 @@
+U.S. Trustee Program{"url":"ust"}
+Region 6{"url":"ust-regions-r06"}
 General Information{"url":"ust-regions-r06/region-6-general-information-1"}
-What’s New{"url":"ust-regions-r06/region-6-what-s-new"}
+What’s New{"url":"ust-regions-r06/region-6-what-s-new-1"}
 Regional Office{"url":"ust-regions-r06/region-6-regional-office"}
 Dallas, TX  Office{"url":"ust-regions-r06/region-6-northern-district-texas"}
--Staff Directory{"url":"ust-regions-r06/region-6-staff-directory-0"}
--General Information{"url":"ust-regions-r06/region-6-general-information-0"}
--Chapter 7{"url":"ust-regions-r06/region-6-chapter-7-0"}
--Chapter 12{"url":"ust-regions-r06/region-6-chapter-12-0"}
--Chapter 13{"url":"ust-regions-r06/region-6-chapter-13-0"}
--§ 341 Meeting Locations{"url":"ust-regions-r06/region-6-section-341-meetings-0"}
--Court & Informational Links{"url":"ust-regions-r06/region-6-court-informational-links-0"}
--Organizational Meetings{"url":"ust-regions-r06/region-6-organizational-meetings"}
-Tyler, TX  Office{"url":"ust-regions-r06/region-6-eastern-district-texas"}
 -Staff Directory{"url":"ust-regions-r06/region-6-staff-directory"}
 -General Information{"url":"ust-regions-r06/region-6-general-information"}
 -Chapter 7{"url":"ust-regions-r06/region-6-chapter-7"}
@@ -18,3 +11,12 @@ Tyler, TX  Office{"url":"ust-regions-r06/region-6-eastern-district-texas"}
 -Chapter 13{"url":"ust-regions-r06/region-6-chapter-13"}
 -§ 341 Meeting Locations{"url":"ust-regions-r06/region-6-section-341-meetings"}
 -Court & Informational Links{"url":"ust-regions-r06/region-6-court-informational-links"}
+-Organizational Meetings{"url":"ust-regions-r06/region-6-organizational-meetings"}
+Tyler, TX  Office{"url":"ust-regions-r06/region-6-eastern-district-texas"}
+-Staff Directory{"url":"ust-regions-r06/region-6-staff-directory-0"}
+-General Information{"url":"ust-regions-r06/region-6-general-information-0"}
+-Chapter 7{"url":"ust-regions-r06/region-6-chapter-7-0"}
+-Chapter 12{"url":"ust-regions-r06/region-6-chapter-12-0"}
+-Chapter 13{"url":"ust-regions-r06/region-6-chapter-13-0"}
+-§ 341 Meeting Locations{"url":"ust-regions-r06/region-6-section-341-meetings-0"}
+-Court & Informational Links{"url":"ust-regions-r06/region-6-court-informational-links-0"}
