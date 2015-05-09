@@ -71,6 +71,7 @@ function doj_migration_drush_command() {
       'local-base-uri' => "When pages are migrated into drupal they will usually be at <organization>/page-title-alias, if for some reason, <organization> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
       'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
       'engine' => "Optional. Sets the engine used for generation. Defaults to district.",
+      'recurse' => "Optional. Enables recursion for loading the pages in the initial menu, to look for more links. Defaults to FALSE.",
     ),
   );
 
@@ -385,6 +386,7 @@ function drush_doj_migration_doj_generate_menu($organization) {
   $local_base_uri = drush_get_option('local-base-uri');
   $menu_location_uri = drush_get_option('menu-location-uri');
   $engine_option = drush_get_option('engine', 'district');
+  $recurse = drush_get_option('recurse', FALSE);
 
   $engines = array(
     'district' => 'MenuGeneratorEngineDistrict',
@@ -396,6 +398,7 @@ function drush_doj_migration_doj_generate_menu($organization) {
   if ($local_base_uri) {
     $parameters->setUriLocalBase($local_base_uri);
   }
+  $parameters->setRecurse($recurse);
 
   if ($menu_location_uri) {
     $parameters->setUriMenuLocation($menu_location_uri);
@@ -410,7 +413,6 @@ function drush_doj_migration_doj_generate_menu($organization) {
 
   $generator = new MenuGenerator($parameters, $engine);
   $file_name = $generator->generate();
-  drush_print_r("File {$file_name} was generated.");
 }
 
 /**
