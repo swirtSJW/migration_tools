@@ -321,6 +321,10 @@ return array (
     array (
       'title' => 'District of Rhode Island',
     ),
+    'usao-sd' =>
+    array (
+      'title' => 'District of South Dakota',
+    ),
   ),
   'migrations' =>
   array (
@@ -1368,6 +1372,21 @@ return array (
     array (
       'group_name' => 'usao-ri',
       'class_name' => 'UsaoRiPressReleaseMigration',
+    ),
+    'UsaoSdPage' =>
+    array (
+      'group_name' => 'usao-sd',
+      'class_name' => 'UsaoSdPageMigration',
+    ),
+    'UsaoSdFile' =>
+    array (
+      'group_name' => 'usao-sd',
+      'class_name' => 'UsaoSdFileMigration',
+    ),
+    'UsaoSdPressRelease' =>
+    array (
+      'group_name' => 'usao-sd',
+      'class_name' => 'UsaoSdPressReleaseMigration',
     ),
   ),
 );

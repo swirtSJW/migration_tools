@@ -24,6 +24,8 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
       {{ item | raw }}
     {% endfor %}
     );
+    $options = array('recurse' => FALSE);
+    $extension_regex = '{{ info.file_extensions | raw}}';
 
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PageSourceParser";
 
@@ -35,9 +37,6 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
     $title->addMethod('findSubBannerAlt');
 
     $arguments['obtainers_info'][] = $title;
-
-    $options = array('recurse' => FALSE);
-    $extension_regex = '{{ info.file_extensions | raw}}';
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -79,11 +78,9 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
     $source_dirs = array(
       '{{ info.directory }}',
     );
-
+    $options = array('recurse' => TRUE);
     $regex = NULL;
     $dest_dir = 'public:///{{ info.abbreviation }}/docs';
-
-    $options = array('recurse' => TRUE);
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
@@ -114,6 +111,14 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressRel
   public function __construct($arguments) {
     $arguments['district'] = "{{ info.abbreviation }}";
     $arguments['component_tid'] = {{ info.component_tid }};
+    $source_dirs = array(
+    {% for item in info.press %}
+      {{ item | raw }}
+    {% endfor %}
+    );
+    $options = array('recurse' => FALSE);
+    $extension_regex = '{{ info.file_extensions | raw}}';
+
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PressSourceParser";
 
     // Configuring Obtainers.
@@ -134,13 +139,6 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGDistrictPressRel
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
 
-    $source_dirs = array(
-    {% for item in info.press %}
-      {{ item | raw }}
-    {% endfor %}
-    );
-    $options = array('recurse' => FALSE);
-    $extension_regex = '{{ info.file_extensions | raw}}';
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
   }
 

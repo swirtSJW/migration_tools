@@ -336,6 +336,7 @@ class StringCleanUp {
           'u.s.' => 'U.S.',
           'U.s.a.' => 'U.S.A.',
           'Usa' => 'USA',
+          'Lecc' => 'LECC',
         );
         foreach ($normalize as $bad => $good) {
           // Replace it with the good version if it is bad.
