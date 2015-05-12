@@ -333,6 +333,10 @@ return array (
     array (
       'title' => 'Criminal Division',
     ),
+    'criminal-vns' =>
+    array (
+      'title' => 'Victim Notification Program',
+    ),
   ),
   'migrations' =>
   array (
@@ -1420,6 +1424,21 @@ return array (
     array (
       'group_name' => 'criminal',
       'class_name' => 'CriminalFileMigration',
+    ),
+    'CriminalVnsPage' =>
+    array (
+      'group_name' => 'criminal-vns',
+      'class_name' => 'CriminalVnsPageMigration',
+    ),
+    'CriminalVnsFile' =>
+    array (
+      'group_name' => 'criminal-vns',
+      'class_name' => 'CriminalVnsFileMigration',
+    ),
+    'CriminalVnsCase' =>
+    array (
+      'group_name' => 'criminal-vns',
+      'class_name' => 'CriminalVnsCaseMigration',
     ),
   ),
 );
