@@ -27,7 +27,7 @@ return array (
     ),
     'atr-espanol' =>
     array (
-      'title' => 'División Antimonopolios en español',
+      'title' => 'División Antimonopolios en Español',
     ),
     'eousa' =>
     array (
@@ -1439,6 +1439,16 @@ return array (
     array (
       'group_name' => 'criminal-vns',
       'class_name' => 'CriminalVnsCaseMigration',
+    ),
+    'AtrEspanolPage' =>
+    array (
+      'group_name' => 'atr-espanol',
+      'class_name' => 'AtrEspanolPageMigration',
+    ),
+    'AtrEspanolFile' =>
+    array (
+      'group_name' => 'atr-espanol',
+      'class_name' => 'AtrEspanolFileMigration',
     ),
   ),
 );
