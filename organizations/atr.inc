@@ -192,9 +192,10 @@ class AtrFileMigration extends JusticeDeployableBinaryFileMigration {
     // Match .pdf files only.
     $source_dirs = array(
       'atr',
+
     );
 
-    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
+    $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|db|rdf|swf|tex|vcf|wav|wps|xht|xml|zip)/i';
     $dest_dir = 'public:///atr/docs';
 
     $options = array('recurse' => TRUE);
