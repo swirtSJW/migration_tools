@@ -195,7 +195,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * @param string $desired_type
    *   The content type machine name that should be kept / not skipped.
    * @param object $row
-   *   The content type machine name that was obtained in the source file.
+   *   A row object as delivered by migrate.
    *
    * @return bool
    *   TRUE - the file is the desired type or can't be evaluated.
@@ -206,8 +206,13 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     // ObtainContentType.php or an extension of it and add it to the find stack.
     if (property_exists($row, 'content_type') && ($row->content_type != $desired_type)) {
       // This page does not match to $target_type.
-      $message = "- Is type '@content_type_obtained' NOT '@desired_type' --> Probably skipped.";
-      watchdog('doj_migration', $message, array('@desired_type' => $desired_type, '@content_type_obtained' => $row->content_type), WATCHDOG_WARNING);
+      $message = "- @fileid -- Is type '@content_type_obtained' NOT '@desired_type'";
+      $vars = array(
+        '@desired_type' => $desired_type,
+        '@content_type_obtained' => $row->content_type,
+        '@fileid' => $row->fileid,
+      );
+      $this->migrationMessage($message, $vars, WATCHDOG_WARNING, 1);
 
       return FALSE;
     }

@@ -246,4 +246,29 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     drush_print(t('Duplicate title report:'));
     drush_print_table($duplicate_titles, TRUE);
   }
+
+
+  /**
+   * Determine if a given file is within any of an array of paths.
+   *
+   * @param array $paths
+   *   Array of paths to check.
+   * @param object $row
+   *   A row object as delivered by migrate.
+   *
+   * @return bool
+   *   -TRUE if the file is one of the paths.
+   *   -FALSE if the file is not within one of the paths.
+   */
+  public static function isInPath(array $paths, $row) {
+    foreach ($paths as $path) {
+      // Is the file in one of the paths?
+      if (stripos($row->fileid, $path) !== FALSE) {
+        // The file is in the path.
+        return TRUE;
+      }
+    }
+    // This file is not in any of the paths.
+    return FALSE;
+  }
 }
