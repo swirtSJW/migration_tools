@@ -1,11 +1,42 @@
-Fraud Section Home{"url":"http://www.justice.gov/criminal/fraud/index.html"}
-Foreign Corrupt Practices Act (FCPA)  {"url":"criminal-fraud/foreign-corrupt-practices-act"}
-Health Care Fraud{"url":"criminal-fraud/health-care-fraud-unit"}
-Documents and Reports{"url":"criminal-fraud/documents-and-reports"}
-Identity Theft{"url":"criminal-fraud/identity-theft-0"}
-Mass-Marketing Fraud{"url":"criminal-fraud/mass-marketing-fraud"}
-Career Opportunities {"url":"criminal-fraud/career-opportunities"}
-Interagency Working Groups{"url":"criminal-fraud/interagency-working-groups"}
-Report Fraud{"url":"criminal-fraud/report-fraud"}
-Contact the Fraud Section{"url":"criminal-fraud/contact-fraud-section"}
-Criminal Division Home{"url":"http://www.justice.gov/criminal/index.html"}
+Fraud Section Home{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/index.html"}
+Foreign Corrupt Practices Act (FCPA)  {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/index.html"}
+-Statute{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/statutes/regulations.html"}
+-Legislative History {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/history/index.html"}
+-Guidance{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/guidance/index.html"}
+-Related Enforcement Actions {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/cases/a.html"}
+-Opinion Procedure Regulations (PDF){"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/docs/frgncrpt.pdf"}
+--Index{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/index/index.html"}
+--Summaries{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/summaries/index.html"}
+---Opinion Procedure Releases{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/opinion/index.html"}
+---Review Procedure Releases {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/review/index.html"}
+-International Agreements  {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/intlagree/index.html"}
+-Anti-Corruption Sites {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/fcpa/othersites/index.html"}
+Health Care Fraud{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/index.html"}
+-Statutes{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/statutes/index.html"}
+-Strike Force Operations{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/index.html"}
+-Miami Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-miami.html"}
+-Los Angeles Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-los-angeles.html"}
+-Detroit Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-detroit.html"}
+-Houston Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-houston.html"}
+-Brooklyn Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-brooklyn.html"}
+-Tampa Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-tampa.html"}
+-Chicago Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-chicago.html"}
+-Dallas Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-dallas.html"}
+-Southern Louisiana Strike Force{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/strike-force-operations/sf-south-louisiana.html"}
+-Facts & Statistics{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/facts/index.html"}
+-HCFAC Reports{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/hcfac/index.html"}
+-Index{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/index/index.html"}
+-News and Noteworthy{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/hcf/news.html"}
+Documents and Reports{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/documents/index.html"}
+Identity Theft{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/websites/idtheft.html"}
+-Identity Theft and Identity Fraud{"url":"http://www.justice.gov/criminal/fraud/contact/idtheft.html"}
+-Identity Theft Quiz{"url":"http://www.justice.gov/criminal/fraud/contact/idquiz.html"}
+Mass-Marketing Fraud{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/internet/index.html"}
+Career Opportunities {"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/career/attorneys.html"}
+-Attorney Positions{"url":"http://www.justice.gov/criminal/fraud/contact/attorneys.html"}
+-Legal Intern Positions{"url":"http://www.justice.gov/criminal/fraud/contact/interns.html"}
+Interagency Working Groups{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/working-grps/index.html"}
+Report Fraud{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/contact/report-fraud.html"}
+Contact the Fraud Section{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/contact/index.html"}
+Criminal Division Home{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/index.html"}
+Report a FCPA Violation{"url":"http://www.justice.gov/criminal/fraud/contact/criminal/fraud/contact/report-fcpa-violation.php"}
