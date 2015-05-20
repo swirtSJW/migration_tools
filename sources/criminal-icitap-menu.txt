@@ -1,8 +1,25 @@
 ICITAP Home{"url":"criminal-icitap/international-criminal-investigative-training-assistance-program-0"}
 About ICITAP{"url":"criminal-icitap/about-icitap-0"}
+-Organization & Operations {"url":"criminal-icitap/africa-and-middle-east"}
+-Strategic Plan {"url":"criminal-icitap/strategic-plan"}
+-FAQs {"url":"criminal-icitap/icitap-frequently-asked-questions-faqs"}
+-Jobs {"url":"criminal-icitap/icitap-current-vacancies"}
+-Site Map {"url":"criminal-icitap/icitap-site-map"}
 Our Expertise{"url":"criminal-icitap/our-expertise"}
+-Subject Matter Expertise{"url":"criminal-icitap/subject-matter-expertise"}
+-Personnel Experience{"url":"criminal-icitap/federal-employees"}
+-Historical Milestones{"url":"criminal-icitap/icitap-historical-milestones"}
+-Development Models{"url":"criminal-icitap/emerging-democracy-and-developing-country"}
 Our Programs{"url":"criminal-icitap/our-programs"}
+-ICITAP World Map (PDF){"url":"http://www.justice.gov/criminal/icitap/programs/ICITAP-world-map-09-30-14.pdf"}
+-Africa and Middle East{"url":"http://www.justice.gov/criminal/icitap/programs/africa-mideast.html"}
+-Asia and Pacific {"url":"http://www.justice.gov/criminal/icitap/programs/asia-pacific.html"}
+-Europe and Eurasia {"url":"http://www.justice.gov/criminal/icitap/programs/eurasia.html"}
+-Latin America and Caribbean{"url":"http://www.justice.gov/criminal/icitap/programs/latin-caribbean.html"}
+-Forensic Services{"url":"http://www.justice.gov/criminal/icitap/programs/forensics.html"}
 Press Room{"url":"criminal-icitap/icitap-official-press-releases-speeches-and-testimony"}
 Fact Sheets and Resources{"url":"criminal-icitap/about-icitap"}
+-Special Expertise{"url":"criminal-icitap/icitapc-anticorruption-expertise"}
+-Other Resources{"url":"criminal-icitap/other-resources"}
 Contact ICITAP {"url":"criminal-icitap/international-criminal-investigative-training-assistance-program"}
-Criminal Division Home{"url":""}
+Criminal Division Home{"url":"criminal"}

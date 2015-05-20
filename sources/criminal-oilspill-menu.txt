@@ -1,7 +1,7 @@
-Deepwater Horizon (BP) Oil-Spill Fraud Home{"url":"criminal-oilspill/deepwater-horizon-bp-oil-spill-fraud"}
+Deepwater Horizon (BP) Oil-Spill Fraud Home{"url":"criminal-oilspill"}
 How to Report Fraud{"url":"criminal-oilspill/how-report-fraud"}
-Press Room{"url":"criminal-oilspill/oil-spill-fraud-news"}
+Press Room{"url":"criminal-disasters/more-news-7"}
 Related Fraud Links{"url":"criminal-oilspill/related-fraud-links"}
 How to Submit Oil Spill Claims{"url":"criminal-oilspill/how-submit-oil-spill-claims"}
 National Center for Disaster Fraud{"url":"criminal-oilspill/national-center-disaster-fraud-ncdf"}
-Criminal Division Home{"url":"http://justice.gov/criminal/"}
+Criminal Division Home{"url":"criminal"}

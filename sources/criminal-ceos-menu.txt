@@ -1,11 +1,19 @@
 CEOS Home{"url":"criminal-ceos/view-project-safe-childhood-website-click-here"}
 CEOS Mission{"url":"criminal-ceos/usdoj-crm-child-exploitation-and-obscenity-section"}
 Subject Areas{"url":"criminal-ceos/view-project-safe-childhood-web-site-click-here"}
-Press Releases{"url":"criminal-ceos/pr-12"}
+-Child Pornography{"url":"criminal-ceos/child-pornography"}
+-Child Sexual Abuse{"url":"criminal-ceos/child-sexual-abuse"}
+-Child Support Enforcement{"url":"criminal-ceos/child-support-enforcement"}
+-Extraterritorial Sexual Exploitation of Children{"url":"criminal-ceos/extraterritorial-sexual-exploitation-children"}
+-International Parental Kidnapping{"url":"criminal-ceos/international-parental-kidnapping"}
+-Obscenity and 18 U.S.C. 2257, 2257A Certifications{"url":"criminal-ceos/obscenity"}
+-Prostitution of Children{"url":"criminal-ceos/prostitution-children"}
+-Sex Offender Registration{"url":"criminal-ceos/sex-offender-registration-and-notification-act-sorna"}
+Press Releases{"url":"criminal-ceos/press-releases-2015"}
 Congressional Testimony{"url":"criminal-ceos/congressional-testimony"}
 Citizen's Guide to U.S. Federal Child Exploitation Laws{"url":"criminal-ceos/citizens-guide-us-federal-child-exploitation-and-obscenity-laws"}
 Additional Resources{"url":"criminal-ceos/additional-resources"}
 Employment and Internship Opportunities{"url":"criminal-ceos/employment-and-internship-opportunities"}
 FAQs{"url":"criminal-ceos/frequently-asked-questions-faqs"}
 Report Violations{"url":"criminal-ceos/how-report-violations"}
-Criminal Division Home{"url":""}
+Criminal Division Home{"url":"criminal"}
