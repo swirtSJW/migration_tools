@@ -13,6 +13,7 @@ class MenuGenerationParameters {
   private $justiceUrl = "http://www.justice.gov";
   public $recurse;
   public $menuCounter;
+  public $initialMenuLocation;
 
   /**
    * Constructor.
@@ -23,6 +24,7 @@ class MenuGenerationParameters {
     // Defaults.
     $this->uriMenuLocation = $this->justiceUrl . "/" . $this->organization;
     $this->setUriMenuLocationBasePath();
+
     $this->uriLocalBase = $this->organization;
   }
 
@@ -51,6 +53,7 @@ class MenuGenerationParameters {
    * Setter.
    */
   public function setUriMenuLocation($uri_menu_location) {
+    // If it is not an absolute path, make it one.
     if (stripos($uri_menu_location, '://') === FALSE) {
       $this->uriMenuLocation = $this->justiceUrl . "/" . $uri_menu_location;
     }
@@ -308,7 +311,6 @@ class MenuGeneratorEngineDefault {
    * Moves any child elements into the children array of the parent.
    */
   protected function collapseMenu() {
-    $this->standardizeUrls();
     $prefix_level = $this->getPrefixMax();
     // Must process the deepest children first.
     while ($prefix_level >= 0) {
@@ -347,26 +349,6 @@ class MenuGeneratorEngineDefault {
     else {
       drush_doj_migration_debug_output('Menu collapsed without orphans.');
     }
-  }
-
-
-  /**
-   * Converts the URIs in the menu element to URLS.
-   */
-  private function standardizeUrls() {
-    $temp_menu = array();
-    foreach ($this->menu as $uri => $item) {
-      $url = $this->normalizeUri($uri);
-      $item['url'] = $url;
-      // Check this is not a duplicate that has already been copied.
-      if (empty($temp_menu[$url])) {
-        if (!empty($item['parent_uri'])) {
-          $item['parent_uri'] = $this->normalizeUri($item['parent_uri']);
-        }
-        $temp_menu[$url] = $item;
-      }
-    }
-    $this->menu = $temp_menu;
   }
 
   /**
@@ -451,7 +433,7 @@ class MenuGeneratorEngineDefault {
    *   The local uri to which the legacy uri is being redirected or full url.
    */
   public function normalizeUri($uri) {
-    $uri = trim($uri);
+    $uri = $this->cleanPath($uri);
 
     $schema_and_domain = $this->parameters->getJusticeUrl();
     $local_base_path = $this->parameters->getUriLocalBase();
@@ -493,12 +475,12 @@ class MenuGeneratorEngineDefault {
       case 'relative':
         // Make it root relative by prepending the base path of the source.
         $subpath = trim($parsed_url_source['path'], '/');
-        $move_ups = substr_count($subpath, '../');
+        $move_ups = substr_count($parsed_url['path'], '../');
         if ($move_ups) {
           $path_array = explode('/', $subpath);
           $items = count($path_array);
           // Remove one path element for each '../' present.
-          for ($i = 1; $i > $move_ups; $i++) {
+          for ($i = 1; $i <= $move_ups; $i++) {
             $index = $items - $i;
             unset($path_array[$index]);
           }
@@ -510,7 +492,7 @@ class MenuGeneratorEngineDefault {
           }
           $parsed_url['path'] = str_replace('../', '', $parsed_url['path']);
         }
-        $parsed_url['path'] = $subpath . $parsed_url['path'];
+        $parsed_url['path'] = rtrim($subpath, '/') . '/' . ltrim($parsed_url['path'], '/');
 
       case 'root relative':
       case 'absolute':
@@ -527,15 +509,16 @@ class MenuGeneratorEngineDefault {
       // whichever one exists, but slower, so not used for now.
     }
 
-    if (strcmp($parsed_url['path'], "/{$this->parameters->getOrganization()}/index.html") == 0 ||
-      strcmp($parsed_url['path'], "/{$this->parameters->getOrganization()}/index.htm") == 0) {
-      // The index.(html|htm) pages are aliased to the org name, so clean them.
-      $uri = $this->parameters->getOrganization();
-    }
-    elseif (!empty($parsed_url['fragment'])) {
+    $group_path = rtrim($this->parameters->initialMenuLocation, '/');
+    if (!empty($parsed_url['fragment'])) {
       // The uri contains a # which is not supported by the menu import, so
       // return a full path to ensure no drupal processing.
       $uri = $this->reassembleURL($parsed_url, TRUE);
+    }
+    elseif (stripos($parsed_url['path'], "{$group_path}/index.html") !== FALSE ||
+      stripos($parsed_url['path'], "{$group_path}/index.htm") !== FALSE) {
+      // The index.(html|htm) pages are aliased to the group page, so adjust.
+      $uri = $this->parameters->getOrganization();
     }
     else {
       // This is an internal uri so see what it redirects to.
@@ -596,6 +579,8 @@ class MenuGeneratorEngineDefault {
    *   The cleaned uri.
    */
   public function cleanPath($uri) {
+    $uri = trim($uri);
+    // If the uri is a path, not ending in a file, make sure it ends in a '/'.
     if (!empty($uri) && !pathinfo($uri, PATHINFO_EXTENSION)) {
       $uri = rtrim($uri, '/');
       $uri .= '/';
@@ -618,14 +603,15 @@ class MenuGeneratorEngineDefault {
    *   The numerical index of the item relative to its parent (optional).
    */
   public function addMenuElement($link_path, $link_title, $prefix = '', $parent_uri = '', $index = NULL) {
-    $link_path = $this->cleanPath($link_path);
-    $parent_uri = $this->cleanPath($parent_uri);
+    $link_path = $this->normalizeUri($link_path);
 
     if (empty($this->menu[$link_path])) {
       // This menu item does not exist yet so add it.
+      $parent_uri = (empty($parent_uri)) ? '' : $this->normalizeUri($parent_uri);
       $this->menu[$link_path] = array(
         'index' => $index,
         'prefix' => $prefix,
+        'url' => $link_path,
         'parent_uri' => $parent_uri,
         'title' => $link_title,
         'children' => array(),

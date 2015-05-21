@@ -402,6 +402,13 @@ function drush_doj_migration_doj_generate_menu($organization) {
 
   if ($menu_location_uri) {
     $parameters->setUriMenuLocation($menu_location_uri);
+    $parameters->initialMenuLocation = $menu_location_uri;
+  }
+  elseif ($local_base_uri) {
+    $parameters->initialMenuLocation = $local_base_uri;
+  }
+  else {
+    $parameters->initialMenuLocation = $organization;
   }
 
   $engine_class = $engines[$engine_option];
