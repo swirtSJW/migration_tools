@@ -1,8 +1,16 @@
 Criminal Division Home{"url":"criminal"}
 About the Division{"url":"criminal/about-criminal-division"}
+-Organizations{"url":"http://www.justice.gov/criminal/about/orgchart.html"}
+-Public Services{"url":"criminal/public-services-0"}
+-Task Forces{"url":"criminal/task-forces-0"}
 Meet the AAG {"url":"criminal/about-aag"}
 Press Room{"url":"http://www.justice.gov/criminal/pr/index.html"}
+-Speeches{"url":"http://www.justice.gov/criminal/pr/speechestatement.php"}
+-Articles{"url":"http://www.justice.gov/criminal/pr/prstatement.php"}
 Employment{"url":"criminal/employment"}
+-Vacancies{"url":"criminal/vacancies"}
+-Volunteer Internships{"url":"criminal/volunteer-legal-internships-0"}
+-Pathways Program{"url":"criminal/pathway-program"}
 Criminal Division FOIA{"url":"http://www.justice.gov/criminal/foia/index.html"}
 Contact the Division {"url":"criminal/contact-criminal-division"}
-DOJ Diversity Statement{"url":"http://www.justice.gov/criminal/careers/diversity-policy.html"}
+DOJ Diversity Statement{"url":"careers/diversity-policy"}

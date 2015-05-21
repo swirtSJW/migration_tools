@@ -1,5 +1,16 @@
-Office of Enforcement Operations Home{"url":"http://www.justice.gov/criminal/oeo/index.html"}
+Office of Enforcement Operations Home{"url":"criminal-oeo"}
 International Prisoner Transfer Program{"url":"criminal-oeo/international-prisoner-transfer-program"}
-Gambling Device Registration {"url":"criminal-oeo/gambling-device-registration"}
+-How the Program Works{"url":"criminal-oeo/how-program-works"}
+-Guidelines for Evaluating Transfer Applications{"url":"criminal-oeo/guidelines-evaluating-transfer-applications"}
+-Participating Countries{"url":"criminal-oeo/list-participating-countries"}
+-Post-Approval Procedures{"url":"criminal-oeo/post-approval-procedures"}
+-Transfer of State Prisoners{"url":"criminal-oeo/transfer-state-prisoners"}
+-State Prisoner Contacts and Statutes{"url":"criminal-oeo/state-prisoner-contacts-and-statutes"}
+-Americans (PDF) Incarcerated Abroad{"url":"http://www.justice.gov/criminal/oeo/docs/americans-arrested.pdf"}
+-What Prisoners and Families Can Do{"url":"criminal-oeo/what-prisoners-and-families-can-do"}
+-Statistics{"url":"http://www.justice.gov/criminal/oeo/docs/Statistics.pdf"}
+Gambling Device Registration {"url":"criminal-oeo/gambling-device-registration-0"}
 Contact the Office {"url":"criminal-oeo/contact-international-prisoner-transfer-program-0"}
-Criminal Division Home{"url":"http://www.justice.gov/criminal/criminal/index.html"}
+-International Prisoner Transfer Program {"url":"criminal-oeo/contact-international-prisoner-transfer-program"}
+-Gambling Device Registration {"url":"criminal-oeo/contact-gambling-device-registration"}
+Criminal Division Home{"url":"criminal"}
