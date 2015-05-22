@@ -29,13 +29,15 @@ class CriminalIcitapPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "CriminalIcitapObtainTitlePage");
+    $title->addMethod('pluckSelector', array(".headline", 1));
+    $title->addMethod('findSelectorAttribute', array("div.headline > img", "alt"));
     $title->addMethod('pluckSelector', array('p[style="margin-bottom:-15px;"]', 1));
     $title->addMethod('pluckSelector', array('p[style="margin-bottom:-10px;"]', 1));
-    $title->addMethod('pluckSelector', array(".subHeader", 1));
-    $title->addMethod('pluckSelector', array(".headline", 1));
+    $title->addMethod('pluckXpath', array("/id('print_content')/div/div[1]", 1));
     $title->addMethod('findClassBreadcrumbMenuContentLast');
     $title->addMethod('pluckSelector', array("title", 1));
     $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array(".subHeader", 1));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -53,7 +55,12 @@ class CriminalIcitapPageMigration extends NGJusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $skip_these = array();
+    $skip_these = array(
+      '/criminal/icitap/index.html',
+      '/criminal/icitap/pr/newstatement.html',
+      '/criminal/icitap/pr/newstatement2.html',
+      '/criminal/icitap/pr/newstatement3.html',
+    );
     if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
       return FALSE;
     }
