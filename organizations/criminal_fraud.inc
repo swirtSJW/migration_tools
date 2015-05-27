@@ -27,6 +27,17 @@ class CriminalFraudPageMigration extends NGJusticeHtmlToPageMigration {
       4 => 'criminal/fraud/hcf',
       5 => 'criminal/fraud/internet',
       6 => 'criminal/fraud/sff',
+      61 => 'criminal/fraud/sff/cases-accounting',
+      62 => 'criminal/fraud/sff/cases-commodities-fraud',
+      63 => 'criminal/fraud/sff/cases-insider-trading',
+      64 => 'criminal/fraud/sff/cases-investment-fraud',
+      65 => 'migration-source/criminal/fraud/sff/cases-libor-fx',
+      66 => 'migration-source/criminal/fraud/sff/cases-market-manipulation',
+      67 => 'criminal/fraud/sff/cases-mortgage-fraud',
+      68 => 'criminal/fraud/sff/cases-procurement',
+      69 => 'criminal/fraud/sff/cases-telemarketing-fraud',
+      70 => 'criminal/fraud/sff/recent-substantial-sentences',
+      71 => 'criminal/fraud/sff/working-groups',
       7 => 'criminal/fraud/websites',
       8 => 'criminal/fraud/working-grps',
       9 => 'criminal/fraud/fcpa/docs',
@@ -76,7 +87,25 @@ class CriminalFraudPageMigration extends NGJusticeHtmlToPageMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    $skip_these = array();
+    $skip_these = array(
+      '/criminal/fraud/sff/cases-accounting/arthrocare.html',
+      '/criminal/fraud/sff/cases-accounting/christian-milton.html',
+      '/criminal/fraud/sff/cases-accounting/christopher-p-garand.html',
+      '/criminal/fraud/sff/cases-accounting/david-applegate.html',
+      '/criminal/fraud/sff/cases-accounting/don-a-langford.html',
+      '/criminal/fraud/sff/cases-accounting/elizabeth-monrad.html',
+      '/criminal/fraud/sff/cases-accounting/gilbert-lundstrom.html',
+      '/criminal/fraud/sff/cases-accounting/james-laphen.html',
+      '/criminal/fraud/sff/cases-accounting/john-houldsworth.html',
+      '/criminal/fraud/sff/cases-accounting/john-raffle.html',
+      '/criminal/fraud/sff/cases-accounting/michael-baker.html',
+      '/criminal/fraud/sff/cases-accounting/michael-gluk.html',
+      '/criminal/fraud/sff/cases-accounting/richard-napier.html',
+      '/criminal/fraud/sff/cases-accounting/robert-graham.html',
+      '/criminal/fraud/sff/cases-accounting/ronald-e-ferguson.html',
+      '/criminal/fraud/sff/cases-telemarketing-fraud/ian-thomas-mcculloch.html',
+      '/criminal/fraud/sff/cases-telemarketing-fraud/osman-ban.html',
+    );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
@@ -101,9 +130,19 @@ class CriminalFraudCaseMigration extends NGJusticeHtmlToCaseMigration {
     // Define source directories.
     $source_dirs = array(
       'criminal/fraud/fcpa/cases',
+      'criminal/fraud/sff',
+      'criminal/fraud/sff/cases-accounting',
+      'criminal/fraud/sff/cases-commodities-fraud',
+      'criminal/fraud/sff/cases-insider-trading',
+      'criminal/fraud/sff/cases-investment-fraud',
+      'migration-source/criminal/fraud/sff/cases-libor-fx',
+      'migration-source/criminal/fraud/sff/cases-market-manipulation',
+      'criminal/fraud/sff/cases-mortgage-fraud',
+      'criminal/fraud/sff/cases-procurement',
+      'criminal/fraud/sff/cases-telemarketing-fraud',
     );
 
-    $options = array('recurse' => FALSE);
+    $options = array('recurse' => TRUE);
 
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "CriminalFraudObtainTitleCase");
@@ -130,6 +169,15 @@ class CriminalFraudCaseMigration extends NGJusticeHtmlToCaseMigration {
     $skip_these = array(
       '/criminal/fraud/fcpa/cases/york-int-corp.html',
       '/criminal/fraud/fcpa/cases/novon.html',
+      '/criminal/fraud/sff/cases-accounting/index.html',
+      '/criminal/fraud/sff/cases-commodities-fraud/index.html',
+      '/criminal/fraud/sff/cases-insider-trading/index.html',
+      '/criminal/fraud/sff/cases-investment-fraud/index.html',
+      '/criminal/fraud/sff/cases-libor-fx/index.html',
+      '/criminal/fraud/sff/cases-market-manipulation/index.html',
+      '/criminal/fraud/sff/cases-mortgage-fraud/index.html',
+      '/criminal/fraud/sff/cases-procurement/index.html',
+      '/criminal/fraud/sff/cases-telemarketing-fraud/index.html',
     );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
