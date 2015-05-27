@@ -133,7 +133,7 @@ class CriminalVnsCaseMigration extends NGJusticeHtmlToCaseMigration {
     parent::__construct($arguments, $source_dirs, $options);
     $this->dependencies = array('Organization');
     $this->description = t('Migrates cases from the Fraud Section.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('criminal-fraud')->sourceMigration('Organization');
+    $this->addFieldMapping('og_group_ref')->defaultValue('criminal-vns')->sourceMigration('Organization');
   }
 
   /**
