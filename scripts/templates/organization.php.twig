@@ -26,6 +26,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
   );
 
     $options = array('recurse' => {{ info.recurse ? 'TRUE' : 'FALSE' }});
+    $extension_regex = '{{ info.file_extensions | raw}}';
 
     $arguments['source_parser_class'] = "{{ info.class_base_name }}PageSourceParser";
 
@@ -38,7 +39,6 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 
     $arguments['obtainers_info'][] = $title;
 
-    $extension_regex = {{ info.file_extensions | raw}};
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
     parent::__construct($arguments, $source_dirs, $extension_regex, $options);

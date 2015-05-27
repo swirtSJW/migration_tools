@@ -337,6 +337,10 @@ return array (
     array (
       'title' => 'Victim Notification Program',
     ),
+    'criminal-oia' =>
+    array (
+      'title' => 'Office of International Affairs',
+    ),
   ),
   'migrations' =>
   array (
@@ -1449,6 +1453,16 @@ return array (
     array (
       'group_name' => 'atr-espanol',
       'class_name' => 'AtrEspanolFileMigration',
+    ),
+    'CriminalOiaPage' =>
+    array (
+      'group_name' => 'criminal-oia',
+      'class_name' => 'CriminalOiaPageMigration',
+    ),
+    'CriminalOiaFile' =>
+    array (
+      'group_name' => 'criminal-oia',
+      'class_name' => 'CriminalOiaFileMigration',
     ),
   ),
 );
