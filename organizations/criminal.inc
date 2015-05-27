@@ -36,8 +36,9 @@ class CriminalPageMigration extends NGJusticeHtmlToPageMigration {
     $title = new ObtainerInfo('title', "CriminalObtainTitlePage");
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
-    $title->addMethod('pluckSelector', array('div.headline', 1));
+    $title->addMethod('findSelectorAttribute', array('div[style="margin-bottom:20px;"] > img', "alt"));
     $title->addMethod('findSelectorAttribute', array("div.headline > img", "alt"));
+    $title->addMethod('pluckSelector', array('div.headline', 1));
     $title->addMethod('pluckSelector', array('div.headline', 2));
     $title->addMethod('pluckSelector', array("title", 1));
     $title->addMethod('pluckSelector', array("h1", 1));
