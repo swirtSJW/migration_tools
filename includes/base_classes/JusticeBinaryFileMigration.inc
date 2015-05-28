@@ -29,7 +29,7 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
 
     // Set default regex for file mask.
     if (!$regex) {
-      $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx)/i';
+      $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|xht)/i';
     }
 
     // Define the fields that will be derived from the static files.
