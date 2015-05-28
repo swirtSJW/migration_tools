@@ -148,8 +148,8 @@ class AtrPageMigration extends NGJusticeHtmlToPageMigration {
     // Configuring Obtainers.
     $title = new ObtainerInfo('title', "AtrObtainTitlePage");
     $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('pluckSelector', array("title", 1));
     $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -168,7 +168,7 @@ class AtrPageMigration extends NGJusticeHtmlToPageMigration {
    */
   public function prepareRow($row) {
     $skip_these = array();
-    if (parent::prepareRow($row) === FALSE || doj_migration_skip_file($row->fileid, $skip_these)) {
+    if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
   }
