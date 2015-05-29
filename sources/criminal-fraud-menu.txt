@@ -30,23 +30,22 @@ Health Care Fraud{"url":"criminal-fraud/health-care-fraud-unit"}
 Securities and Financial Fraud{"url":"criminal-fraud/securities-and-financial-fraud-unit"}
 -Accounting Fraud{"url":"criminal-fraud/accounting-fraud"}
 -Procurement Fraud{"url":"criminal-fraud/procurement-fraud"}
--LIBOR and FX{"url":"http://www.justice.gov/criminal/fraud/sff/cases-libor-fx/index.html"}
+-LIBOR and FX{"url":"criminal-fraud/fx"}
 -Commodities Fraud{"url":"criminal-fraud/commodities-fraud"}
--Market Manipulation{"url":"http://www.justice.gov/criminal/fraud/sff/cases-market-manipulation/index.html"}
+-Market Manipulation{"url":"criminal-fraud/market-manipulation"}
 -Investment Fraud{"url":"criminal-fraud/investment-fraud"}
 -Telemarketing Fraud{"url":"criminal-fraud/telemarketing-fraud"}
 -Insider Trading{"url":"criminal-fraud/insider-trading"}
 -Mortgage Fraud{"url":"criminal-fraud/mortgage-fraud"}
 Documents and Reports{"url":"criminal-fraud/documents-and-reports"}
 Identity Theft{"url":"criminal-fraud/identity-theft"}
--Identity Theft and Identity Fraud{"url":"http://www.justice.gov/criminal/fraud/contactidtheft.html"}
--Identity Theft Quiz{"url":"http://www.justice.gov/criminal/fraud/contactidquiz.html"}
+-Identity Theft and Identity Fraud{"url":"criminal-fraud/identity-theft"}
+-Identity Theft Quiz{"url":"http://www.justice.gov/criminal/fraud/websites/idquiz.html"}
 Mass-Marketing Fraud{"url":"criminal-fraud/mass-marketing-fraud"}
 Career Opportunities {"url":"criminal-fraud/career-opportunities-0"}
--Attorney Positions{"url":"http://www.justice.gov/criminal/fraud/contactattorneys.html"}
--Legal Intern Positions{"url":"http://www.justice.gov/criminal/fraud/contactinterns.html"}
+-Attorney Positions{"url":"http://www.justice.gov/criminal/fraud/career/attorneys.html"}
+-Legal Intern Positions{"url":"http://www.justice.gov/criminal/fraud/career/interns.html"}
 Interagency Working Groups{"url":"criminal-fraud/interagency-working-groups"}
-Report a FCPA Violation{"url":"http://www.justice.gov/criminal/fraud/contact/report-fcpa-violation.php"}
 Report Fraud{"url":"criminal-fraud/report-fraud"}
 Contact the Fraud Section{"url":"criminal-fraud/contact-fraud-section"}
 Criminal Division Home{"url":"criminal"}
