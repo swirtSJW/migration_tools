@@ -27,6 +27,16 @@ Health Care Fraud{"url":"criminal-fraud/health-care-fraud-unit"}
 -HCFAC Reports{"url":"criminal-fraud/health-care-fraud-and-abuse-control-program-annual-reports"}
 -Index{"url":"criminal-fraud/index"}
 -News and Noteworthy{"url":"criminal-fraud/news-and-noteworthy"}
+Securities and Financial Fraud{"url":"criminal-fraud/securities-and-financial-fraud-unit"}
+-Accounting Fraud{"url":"criminal-fraud/accounting-fraud"}
+-Procurement Fraud{"url":"criminal-fraud/procurement-fraud"}
+-LIBOR and FX{"url":"http://www.justice.gov/criminal/fraud/sff/cases-libor-fx/index.html"}
+-Commodities Fraud{"url":"criminal-fraud/commodities-fraud"}
+-Market Manipulation{"url":"http://www.justice.gov/criminal/fraud/sff/cases-market-manipulation/index.html"}
+-Investment Fraud{"url":"criminal-fraud/investment-fraud"}
+-Telemarketing Fraud{"url":"criminal-fraud/telemarketing-fraud"}
+-Insider Trading{"url":"criminal-fraud/insider-trading"}
+-Mortgage Fraud{"url":"criminal-fraud/mortgage-fraud"}
 Documents and Reports{"url":"criminal-fraud/documents-and-reports"}
 Identity Theft{"url":"criminal-fraud/identity-theft"}
 -Identity Theft and Identity Fraud{"url":"http://www.justice.gov/criminal/fraud/contactidtheft.html"}
