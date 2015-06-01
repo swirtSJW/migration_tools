@@ -267,7 +267,7 @@ return array (
     ),
     'usao-pr' =>
     array (
-      'title' => 'District of Puerto Rico',
+      'title' => 'District of Vermont',
     ),
     'usao-ndin' =>
     array (
@@ -340,6 +340,10 @@ return array (
     'criminal-oia' =>
     array (
       'title' => 'Office of International Affairs',
+    ),
+    'usao-vt' =>
+    array (
+      'title' => 'District of Vermont',
     ),
   ),
   'migrations' =>
@@ -1463,6 +1467,16 @@ return array (
     array (
       'group_name' => 'criminal-oia',
       'class_name' => 'CriminalOiaFileMigration',
+    ),
+    'UsaoVtPage' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtPageMigration',
+    ),
+    'UsaoVtFile' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtFileMigration',
     ),
   ),
 );
