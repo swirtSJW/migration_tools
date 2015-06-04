@@ -1478,6 +1478,11 @@ return array (
       'group_name' => 'usao-vt',
       'class_name' => 'UsaoVtFileMigration',
     ),
+    'UsaoVtPressRelease' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtPressReleaseMigration',
+    ),
   ),
 );
 // @codingStandardsIgnoreEnd

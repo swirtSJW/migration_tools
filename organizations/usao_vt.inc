@@ -99,12 +99,81 @@ class UsaoVtFileMigration extends JusticeDeployableBinaryFileMigration {
 }
 
 /**
+ * Migrates press releases from /usao-vt.
+ *
+ * @package doj_migration
+ * @subpackage usao-vt
+ */
+class UsaoVtPressReleaseMigration extends NGDistrictPressReleaseMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['district'] = "usao-vt";
+    $arguments['component_tid'] = 2121;
+    $source_dirs = array(
+      0 => 'usao/vt/news',
+    );
+    $options = array('recurse' => TRUE);
+    $extension_regex = '/.*\.(html|htm)$/i';
+
+    $arguments['source_parser_class'] = "UsaoVtPressSourceParser";
+
+    // Configuring Obtainers.
+    $title = new ObtainerInfo('title', "UsaoVtObtainTitlePressRelease");
+    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
+    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addMethod('pluckSelector', array('h2', 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array("#headline", 1));
+
+    $date = new ObtainerInfo('date', "UsaoVtObtainDate");
+    $date->addMethod('pluckSelector', array(".newsRight", 1));
+    $date->addMethod('pluckProbableDate');
+
+    $pr_number = new ObtainerInfo('prNumber', "UsaoVtObtainPrNumber");
+
+    $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $date;
+    $arguments['obtainers_info'][] = $pr_number;
+
+    parent::__construct($arguments, $source_dirs, $options, $extension_regex);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $skip_these = array();
+    if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+  }
+}
+
+/**
  * SourceParser for /usao-vt pages.
  *
  * @package doj_migration
  * @subpackage usao-vt
  */
 class UsaoVtPageSourceParser  extends NGDistrictPageSourceParser {
+  /**
+   * {@inheritdoc}
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+}
+
+/**
+ * SourceParser for /usao-vt press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-vt
+ */
+class UsaoVtPressSourceParser extends NGDistrictPressReleaseSourceParser {
   /**
    * {@inheritdoc}
    */
@@ -121,4 +190,53 @@ class UsaoVtPageSourceParser  extends NGDistrictPageSourceParser {
  * @see Obtainer.api.php
  */
 class UsaoVtObtainTitlePage extends ObtainTitle {
+}
+
+/**
+ * Obtainer for title property for /usao-vt press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-vt
+ * @see Obtainer.api.php
+ */
+class UsaoVtObtainTitlePressRelease extends ObtainTitlePressRelease {
+}
+
+/**
+ * Obtainer for prNumber property for /usao-vt press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-vt
+ * @see Obtainer.api.php
+ */
+class UsaoVtObtainPrNumber extends ObtainId {
+  /**
+   * Finds the press release number from markup.
+   */
+  protected function findPrNumber() {
+    $text = '';
+    // $element = $this->queryPath->find('p')->last();
+    // $this->setElementToRemove($element);
+    // $text = $element->text();
+
+    return $text;
+  }
+}
+
+/**
+ * Custom obtainer for date property for /usao-vt.
+ *
+ * @package doj_migration
+ * @subpackage usao-vt
+ * @see Obtainer.api.php
+ */
+class UsaoVtObtainDate extends ObtainDate {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $text = str_replace("Feburary", "February", $text);
+    return $text;
+  }
 }
