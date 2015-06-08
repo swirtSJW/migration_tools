@@ -345,6 +345,10 @@ return array (
     array (
       'title' => 'District of Vermont',
     ),
+    'usao-ndtx' =>
+    array (
+      'title' => 'District of Northern Texas',
+    ),
   ),
   'migrations' =>
   array (
@@ -1482,6 +1486,21 @@ return array (
     array (
       'group_name' => 'usao-vt',
       'class_name' => 'UsaoVtPressReleaseMigration',
+    ),
+    'UsaoNdtxPage' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxPageMigration',
+    ),
+    'UsaoNdtxFile' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxFileMigration',
+    ),
+    'UsaoNdtxPressRelease' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxPressReleaseMigration',
     ),
   ),
 );

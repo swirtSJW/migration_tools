@@ -176,3 +176,4 @@ files[] = organizations/criminal_vns.inc
 files[] = organizations/atr_espanol.inc
 files[] = organizations/criminal_oia.inc
 files[] = organizations/usao_vt.inc
+files[] = organizations/usao_ndtx.inc
