@@ -144,19 +144,12 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    */
   public function prepare($entity, $row) {
     doj_migration_prepare_workbench_settings($entity, $row);
-
-    // Sidestep language to get redirects and aliases working for all users.
-    parent::languageSideStep($entity);
   }
 
   /**
    * {@inheritdoc}
    */
   public function complete($entity, $row) {
-    // Change the language back if it was sidestepped in prepare().
-    // Must come before workbench settings or revision ends up unpublished.
-    parent::languageReturnStep($entity);
-
     if (isset($entity->nid) && $entity->nid) {
       doj_migration_complete_workbench_settings($entity, $row);
     }

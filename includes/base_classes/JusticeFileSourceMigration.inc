@@ -134,6 +134,53 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     }
   }
 
+  /**
+   * Searches for files of the same name and any type .
+   *
+   * A search for 'xyz.htm' or just 'xyz' will return xyz.htm, xyz.pdf,
+   * xyz.html, xyz.doc... if they exist in the directory.
+   *
+   * @param string $file_name
+   *   A filename with or without the extension.
+   * @param string $directory
+   *   The directory path relative to the migration source. (/criminal/fraud)
+   * @param bool $recurse
+   *   Declaring whether to scan recursively into the directory (default: FALSE)
+   *   Setting this to TRUE creates the possibility of a race condition if the
+   *   a file with the same name and extension is in multiple locations. The
+   *   last one scanned wins.
+   *
+   * @return array
+   *   An array keyed by file extension containing name, filename and uri.
+   */
+  public function getAllSimilarlyNamedFiles($file_name, $directory, $recurse = FALSE) {
+    $processed_files = array();
+    if (!empty ($file_name)) {
+      $file_name = pathinfo($file_name, PATHINFO_FILENAME);
+      $regex = '/^' . $file_name . '\..{3,4}$/i';
+      $dir = $this->baseDir . $directory;
+      $options = array(
+        'key' => 'filename',
+        'recurse' => $recurse,
+      );
+      $files = file_scan_directory($dir, $regex, $options);
+      foreach ($files as $file => $fileinfo) {
+        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $legacy_path = strstr($fileinfo->uri, $directory);
+        $legacy_path = 'http://www.justice.gov' . $legacy_path;
+        $legacy_path = url($legacy_path, array('absolute' => TRUE, 'external' => TRUE));
+        $processed_files[$extension] = array(
+          'name' => $fileinfo->name,
+          'filename' => $fileinfo->filename,
+          'uri' => $fileinfo->uri,
+          'legacy_uri' => $legacy_path,
+          'extension' => $extension,
+        );
+      }
+    }
+    return $processed_files;
+  }
+
 
   /**
    * {@inheritdoc}
