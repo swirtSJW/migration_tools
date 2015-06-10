@@ -6,6 +6,11 @@
  */
 
 /**
+ * Node ID of ATR organization.
+ */
+define('ATR_NID', 1630);
+
+/**
  * Migrates .html files from /atr to page nodes.
  *
  * @package doj_migration
@@ -574,5 +579,340 @@ class AtrGalleryImagesMigration extends JusticeHtmlToGalleryImagesMigration {
     $pieces = explode("index.html", $row_id);
     $source = $this->baseDir . $pieces[0] . "images";
     return $source;
+  }
+}
+
+/**
+ * Migrates speeeches from /atr.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdny
+ */
+class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['component_tid'] = 376;
+    $arguments['source_parser_class'] = "AtrSpeechListSourceParser";
+
+    // Define source directories.
+    $source_dirs = array(
+      'atr/public/speeches',
+    );
+
+    $regex = '/^speech-\d{4}\.html/i';
+    $options = array('recurse' => FALSE);
+    $parser = new AtrSpeechChunkParser();
+
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_dirs, $options, $regex, $parser);
+    $this->dependencies = array('Organization');
+    $this->description = t('Migrates speeches from the Antitrust Division.');
+    $this->addFieldMapping('og_group_ref')
+      ->defaultValue('atr')
+      ->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    $row->chunk = $row->filedata;
+
+    // Parse the filename to extract tags and year data.
+    // $row->fileid will look something like:
+    // Filename-?MIGRATECHUNK?-Chunk-ID
+    $fileid_parts = explode('-?MIGRATECHUNK?-', $row->fileid);
+    $row->parent_file_path = $fileid_parts[0];
+    $row->chunk_id = $fileid_parts[1];
+
+    if (empty($row->chunk_id)) {
+      return FALSE;
+    }
+
+    $row->title = ObtainTitle::cleanString($row->chunk->text());
+    $row->speaker_name = $row->chunk->parent()->prev('h3')->text();
+    $row->speaker_role = $row->chunk->parent()->prev('p > em')->text();
+    $row->date = $row->chunk->parent()->prev('.news-date')->text();
+
+    // Generate file destination path.
+    $row->destination_dir = "public:///atr/speeches";
+    $row->speaker = $this->createStaffProfile($row->speaker_name, $row->speaker_role, ATR_NID);
+
+    // Process attached files.
+    $similar_files = $this->getAllSimilarlyNamedFiles($row->fileid, '/atr/public/speeches');
+
+    // Attach non-html files.
+    foreach ($similar_files as $extension => $file) {
+      if (!in_array($extension, array('html', 'htm'))) {
+        $row->attachment_filename[] = $file['filename'];
+        $row->source_dir[] = dirname($file['uri']);
+      }
+    }
+
+    // The attachmentRedirect map property is an array of legacy URLs for every
+    // file that is added as an attachment to this row. This property will
+    // later be used in complete() to create redirects to the new file
+    // locations.
+    $row->attachmentRedirects = $this->getAttachedFileLegacyUrls($similar_files);
+
+    // Identify which file should be used as canonical for this node.
+    // Order of preference is htm, html, pdf.
+    $canonical_source_type = (!empty($similar_files['htm'])) ? 'htm' : NULL;
+    $canonical_source_type = (empty($canonical_source_type) && !empty($similar_files['html'])) ? 'html' : $canonical_source_type;
+    $canonical_source_type = (empty($canonical_source_type) && !empty($similar_files['pdf'])) ? 'pdf' : $canonical_source_type;
+    $row->legacy_path = $similar_files[$canonical_source_type]['legacy_uri'];
+
+    // Process the body.
+    switch ($canonical_source_type) {
+      case 'htm':
+      case 'html':
+        $system_file_path = $similar_files[$canonical_source_type]['uri'];
+        $html = file_get_contents($system_file_path);
+        $page = new AtrSimpleSpeechSourceParser($system_file_path, $html);
+        $row->body = $page->getBody();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Builds an array of legacy urls for any attached files.
+   *
+   * @param array $files
+   *   A file type keyed array of files containing a 'legacy_uri' element.
+   *
+   * @return array
+   *   A flat array of legacy URIs.
+   */
+  public function getAttachedFileLegacyUrls($files) {
+    $attach = array();
+    if (!empty($files) && is_array($files)) {
+      foreach ($files as $type => $file) {
+        if (($type !== 'htm') && ($type !== 'html')) {
+          // This file should be attached.
+          $attach[] = $file['legacy_uri'];
+        }
+      }
+    }
+    return $attach;
+  }
+
+
+  /**
+   * Builds a staff_profile node if it does not already exist.
+   *
+   * @param string $speaker
+   *   The string used as the speaker's name.
+   * @param string $speaker_role
+   *   The speaker's job title.
+   * @param int $og_id
+   *   (optional). The organic group id for the speaker. Defaults to NULL.
+   *
+   * @return int
+   *   The nid of the staff_profile node if created or pre-existing.
+   */
+  public function createStaffProfile($speaker, $speaker_role, $og_id = NULL) {
+    // See if the profile already exists.
+    $nid = $this->lookupMostRecentNodeByFieldValue('staff_profile', 'field_staff_name', $speaker);
+    if (empty($nid)) {
+      // Build the staff_profile.
+      $node = new StdClass();
+      $node->type = 'staff_profile';
+      $node->language = LANGUAGE_NONE;
+      node_object_prepare($node);
+      $node->uid = 1;
+      $node->title = $speaker;
+      $node->field_staff_position[$node->language][0]['value'] = $speaker_role;
+      $node->field_staff_name[$node->language][0]['value'] = $speaker;
+      if (!empty($og_id)) {
+        $node->og_group_ref[$node->language][0]['target_id'] = $og_id;
+      }
+
+      $node->status = 1;
+      $node->workbench_moderation_state_current = 'published';
+      $node->workbench_moderation_state_new = 'published';
+      $node = node_submit($node);
+      node_save($node);
+      doj_migration_complete_workbench_settings($node, NULL);
+      $nid = $node->nid;
+      $this->migrationMessage("Staff Profile Node: @nid for '@speaker' was created.", array('@nid' => $nid, '@speaker' => $speaker), WATCHDOG_NOTICE, 1);
+    }
+
+    return $nid;
+  }
+
+  /**
+   * Looks up the most recent published unarchived node by name by field value.
+   *
+   * @param string $node_type
+   *   The node bundle to look within.
+   * @param string $field_name
+   *   The machine name of the field whose value being searched for.
+   * @param string $lookup_value
+   *   The value that is being searched for.
+   *
+   * @return int
+   *   The nid of the most recent node if found, NULL if none was found.
+   */
+  public function lookupMostRecentNodeByFieldValue($node_type, $field_name, $lookup_value) {
+    $nid = NULL;
+    if (!empty($node_type) && !empty($field_name) && !empty($lookup_value)) {
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', $node_type)
+        ->fieldCondition($field_name, 'value', $lookup_value, '=')
+        ->fieldCondition("field_archived", "value", 0, '=')
+        ->propertyCondition('status', 1)
+        ->propertyOrderBy('created', 'DESC');
+      $results = $query->execute();
+      if (!empty($results['node'])) {
+        $nids = array_keys($results['node']);
+        if (!empty($nids)) {
+          // At least one staff_profile exists, so set the most recent one.
+          $nid = $nids[0];
+        }
+      }
+
+    }
+    else {
+      throw new MigrateException("lookupMostRecentNodeByFieldValue('$node_type', '$field_name', '$lookup_value') can not be executed with empty params.");
+    }
+    return $nid;
+  }
+}
+
+/**
+ * This sourceparser is used parse the pages containing the list of speeches.
+ */
+class AtrSpeechListSourceParser extends NGSpeechSourceParser {
+  /**
+   * Clean the html right before pulling the body.
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+
+
+}
+
+/**
+ * This sourceparser is used parse the actual speech.
+ */
+class AtrSimpleSpeechSourceParser extends  SourceParser {
+  /**
+   * Clean the html right before pulling the body.
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+    HtmlCleanUp::matchTextRemoveElement($this->queryPath, 'table', 'This document is available in');
+    HtmlCleanUp::matchTextRemoveElement($this->queryPath, 'b', 'DEPARTMENT OF JUSTICE');
+    $this->queryPath->find('font')->removeAttr('size')->removeAttr('face');
+    $this->queryPath->find('table table')->first()->remove();
+
+    // Selectors to remove.
+    $selectors = array(
+      'img[alt="U.S. Department of Justice Seal"]',
+    );
+    HtmlCleanUp::removeElements($this->queryPath, $selectors);
+    HtmlCleanUp::removeTableBackgrounds($this->queryPath);
+  }
+
+  /**
+   * Required by abstract.  Empty as no Obtainers are needed.
+   */
+  public function setDefaultObtainersInfo() {
+
+  }
+
+}
+
+/**
+ * Obtainer for body property for /usao-sdny speech.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdny
+ * @see Obtainer.api.php
+ */
+class AtrSpeechObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+
+    return $text;
+  }
+}
+
+/**
+ * Parses a single case year page into multiple cases.
+ *
+ * @package doj_migration
+ * @subpackage core
+ */
+class AtrSpeechChunkParser extends JusticeChunkParser {
+
+  /**
+   * Sets $this->chunks.
+   */
+  public function setChunks() {
+    // The pattern is well established on ATR Yearly speech pages .
+    // @see http://www.justice.gov/atr/public/speeches/speech-2008.html
+    $this->chunks = $this->sourceParser->queryPath->find('.atr-bottom-left p a');
+    if (!$this->chunks || !$this->chunks->text()) {
+      $this->chunks = array();
+      $this->chunkparserMessage('Could not find chunks for JusticeChunkParser child class @class_name.', array('@class_name' => get_class()), WATCHDOG_ERROR);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunkIDs() {
+    $chunks = $this->getChunks();
+    $ids = array();
+    $this->chunkparserMessage("Processing @chunkcount chunks.", array('@chunkcount' => $chunks->count()), FALSE);
+
+    foreach ($chunks as $chunk) {
+      // The ID of each speech will be the uri of the link to a speech file.
+      $id = trim($chunk->attr('href'));
+
+      // Ignore any '/press_releases/' paths.
+      // Only add complete ids.
+      if (!empty($id) && stripos($id, '/press_releases/') === FALSE) {
+        $ids[] = $id;
+      }
+    }
+    $this->chunkparserMessage("Created @idcount chunk IDs.", array('@idcount' => count($ids)), FALSE, 2);
+
+    return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getChunk($chunk_id) {
+    $error_data = 'Data could not be migrated';
+    $chunks = $this->getChunks();
+    $this->chunkparserMessage("Getting chunk @chunkid .", array('@chunkid' => $chunk_id), FALSE);
+
+    if (!$chunks) {
+      watchdog('doj_migration', 'No data chunks were found. Cannot search for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
+      return $error_data;
+    }
+    $chunk = $chunks->find("a[href='$chunk_id']");
+
+    if (!$chunk->innerHtml()) {
+      watchdog('doj_migration', 'Data could not be migrated for chunk "@chunk_id"', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
+      return $error_data;
+    }
+    else {
+      return $chunk;
+    }
   }
 }

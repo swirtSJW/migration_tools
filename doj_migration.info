@@ -59,6 +59,7 @@ files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/PressReleaseSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
+files[] = includes/source_parsers/SimpleSourceParser.php
 
 files[] = includes/source_parsers/NGDistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/NGDistrictPageSourceParser.php

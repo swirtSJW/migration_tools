@@ -131,7 +131,7 @@ abstract class NGSourceParser {
   /**
    * Create the queryPath object.
    */
-  private function initQueryPath() {
+  protected function initQueryPath() {
     // If query path is already initialized, get out.
     if (isset($this->queryPath)) {
       return;

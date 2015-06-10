@@ -530,7 +530,7 @@ class HtmlCleanUp {
   }
 
   /**
-   * Like match, but returns all matching elements.
+   * Like match, but removes all matching elements.
    */
   public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $matches = HtmlCleanUp::matchAll($qp, $selector, $needle, $function, $parameter);
@@ -573,6 +573,23 @@ class HtmlCleanUp {
    */
   public static function matchText($qp, $selector, $needle) {
     return HtmlCleanUp::match($qp, $selector, $needle, "text");
+  }
+
+  /**
+   * Remove an element if the text that it contains matches a search needle.
+   *
+   * @param QueryPath $qp
+   *   A QueryPath object.
+   * @param string $selector
+   *   The selector to look into.
+   * @param string $needle
+   *   The text string for which to search.
+   */
+  public static function matchTextRemoveElement($qp, $selector, $needle) {
+    $element = HtmlCleanUp::match($qp, $selector, $needle, "text");
+    if ($element) {
+      $element->remove();
+    }
   }
 
   /**

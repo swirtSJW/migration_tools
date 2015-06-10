@@ -319,9 +319,9 @@ class ObtainDate extends ObtainHtml {
     // Remove multiple spaces.
     $text = preg_replace('/\s{2,}/u', ' ', $text);
     // Remove any text following the 4 digit year.
-    $years = array('2010','2011','2012','2013','2014','2015');
+    $years = range(1995, 2015);
     foreach ($years as $year) {
-      $pos = strpos($text, $year);
+      $pos = strpos($text, (string) $year);
       if ($pos !== FALSE) {
         $text = substr($text, 0, ($pos + 4));
         break;
@@ -427,6 +427,7 @@ class ObtainDate extends ObtainHtml {
       case empty($string):
       case is_object($string):
       case is_array($string):
+      case (strlen($string) < 7):
         // If we can't form a date out of it, it must not be a date.
       case !strtotime($string):
         return FALSE;
