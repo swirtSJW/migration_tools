@@ -349,6 +349,10 @@ return array (
     array (
       'title' => 'District of Northern Texas',
     ),
+    'usao-cdil' =>
+    array (
+      'title' => 'Central District of Illinois',
+    ),
   ),
   'migrations' =>
   array (
@@ -1501,6 +1505,21 @@ return array (
     array (
       'group_name' => 'usao-ndtx',
       'class_name' => 'UsaoNdtxPressReleaseMigration',
+    ),
+    'UsaoCdilPage' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilPageMigration',
+    ),
+    'UsaoCdilFile' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilFileMigration',
+    ),
+    'UsaoCdilPressRelease' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilPressReleaseMigration',
     ),
   ),
 );
