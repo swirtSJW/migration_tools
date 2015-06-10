@@ -353,6 +353,10 @@ return array (
     array (
       'title' => 'Central District of Illinois',
     ),
+    'usao-cdca' =>
+    array (
+      'title' => 'Central District of California',
+    ),
   ),
   'migrations' =>
   array (
@@ -1525,6 +1529,21 @@ return array (
     array (
       'group_name' => 'usao-cdil',
       'class_name' => 'UsaoCdilPressReleaseMigration',
+    ),
+    'UsaoCdcaPage' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaPageMigration',
+    ),
+    'UsaoCdcaFile' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaFileMigration',
+    ),
+    'UsaoCdcaPressRelease' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaPressReleaseMigration',
     ),
   ),
 );
