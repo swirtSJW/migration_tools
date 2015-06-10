@@ -54,6 +54,7 @@ class NGNodeSourceParser extends NGSourceParser {
    */
   protected function cleanHtml() {
     try {
+      $this->initQueryPath();
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
       HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
 

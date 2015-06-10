@@ -933,6 +933,11 @@ return array (
       'group_name' => 'atr',
       'class_name' => 'AtrGalleryImagesMigration',
     ),
+    'AtrSpeech' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrSpeechMigration',
+    ),
     'UsaoCtFile' =>
     array (
       'group_name' => 'usao-ct',
