@@ -282,7 +282,9 @@ abstract class JusticeBaseMigration extends Migration {
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
         $file = file_load($item['fid']);
-        $destination = file_create_url($file->uri);
+        $url = file_create_url($file->uri);
+        $parsed_url = parse_url($url);
+        $destination = ltrim($parsed_url['path'], '/');
         $source = $source_urls[$delta];
 
         // Create redirect.
@@ -315,7 +317,9 @@ abstract class JusticeBaseMigration extends Migration {
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
         $file = file_load($item['fid']);
-        $destination = file_create_url($file->uri);
+        $url = file_create_url($file->uri);
+        $parsed_url = parse_url($url);
+        $destination = ltrim($parsed_url['path'], '/');
         redirect_delete_by_path($destination);
       }
     }

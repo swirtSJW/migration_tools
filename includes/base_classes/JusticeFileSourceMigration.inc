@@ -166,18 +166,16 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
       $files = file_scan_directory($dir, $regex, $options);
       foreach ($files as $file => $fileinfo) {
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        $legacy_path = strstr($fileinfo->uri, $directory);
-        $legacy_path = 'http://www.justice.gov' . $legacy_path;
-        $legacy_path = url($legacy_path, array('absolute' => TRUE, 'external' => TRUE));
         $processed_files[$extension] = array(
           'name' => $fileinfo->name,
           'filename' => $fileinfo->filename,
           'uri' => $fileinfo->uri,
-          'legacy_uri' => $legacy_path,
+          'legacy_uri' => str_replace($this->baseDir . '/', '', $fileinfo->uri),
           'extension' => $extension,
         );
       }
     }
+
     return $processed_files;
   }
 
