@@ -629,6 +629,7 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     $row->chunk_id = $fileid_parts[1];
 
     if (empty($row->chunk_id)) {
+      $this->migrationMessage('No chunk id was present for chunk from file "@file"', array('@file' => $row->fileid), WATCHDOG_ERROR);
       return FALSE;
     }
 
@@ -671,12 +672,26 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
       case 'html':
         $system_file_path = $similar_files[$canonical_source_type]['uri'];
         $html = file_get_contents($system_file_path);
-        $page = new AtrSimpleSpeechSourceParser($system_file_path, $html);
+        $page = new AtrSimpleSpeechSourceParser(str_replace($this->baseDir, '', $system_file_path), $html);
         $row->body = $page->getBody();
         break;
 
       default:
         break;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    parent::complete($entity, $row);
+
+    // Set the organization field for each attached file.
+    foreach ($entity->field_speech_attachment[LANGUAGE_NONE] as $delta => $file) {
+      $file = file_load($file['fid']);
+      $file->og_group_ref[LANGUAGE_NONE][0]['target_id'] = ATR_NID;
+      file_save($file);
     }
   }
 
@@ -701,7 +716,6 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     }
     return $attach;
   }
-
 
   /**
    * Builds a staff_profile node if it does not already exist.
@@ -796,14 +810,12 @@ class AtrSpeechListSourceParser extends NGSpeechSourceParser {
   protected function cleanHtml() {
     parent::cleanHtml();
   }
-
-
 }
 
 /**
  * This sourceparser is used parse the actual speech.
  */
-class AtrSimpleSpeechSourceParser extends  SourceParser {
+class AtrSimpleSpeechSourceParser extends SourceParser {
   /**
    * Clean the html right before pulling the body.
    */
