@@ -672,7 +672,7 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
       case 'html':
         $system_file_path = $similar_files[$canonical_source_type]['uri'];
         $html = file_get_contents($system_file_path);
-        $page = new AtrSimpleSpeechSourceParser($system_file_path, $html);
+        $page = new AtrSimpleSpeechSourceParser(str_replace($this->baseDir, '', $system_file_path), $html);
         $row->body = $page->getBody();
         break;
 
