@@ -1545,6 +1545,21 @@ return array (
       'group_name' => 'usao-cdca',
       'class_name' => 'UsaoCdcaPressReleaseMigration',
     ),
+    'UsaoCoPage' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoPageMigration',
+    ),
+    'UsaoCoFile' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoFileMigration',
+    ),
+    'UsaoCoPressRelease' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoPressReleaseMigration',
+    ),
   ),
 );
 // @codingStandardsIgnoreEnd
