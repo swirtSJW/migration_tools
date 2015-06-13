@@ -1,0 +1,30 @@
+HOME{"url":"usao-co"}
+ABOUT{"url":"http://www.justice.gov/usao/co/about.html"}
+Careers{"url":"http://www.justice.gov/usao/co/careers.html"}
+NEWS{"url":"http://www.justice.gov/usao/co/news.html"}
+Photo Album{"url":"http://www.justice.gov/usao/co/photos.html"}
+Social Media Postings{"url":"http://www.justice.gov/usao/co/socialmediapostings.html"}
+MEET THE U.S. ATTORNEY{"url":"http://www.justice.gov/usao/co/meetattorney.html"}
+En Espanol{"url":"http://www.justice.gov/usao/co/meetattorneyspanish.html"}
+DIVISIONS{"url":"http://www.justice.gov/usao/co/divisions.html"}
+Administrative Division{"url":"http://www.justice.gov/usao/co/divisions_administrative.html"}
+Appellate Division{"url":"http://www.justice.gov/usao/co/divisions_appellate.html"}
+Asset Recovery Division {"url":"http://www.justice.gov/usao/co/divisions_assetrecovery.html"}
+Civil Division {"url":"http://www.justice.gov/usao/co/divisions_civil.html"}
+Criminal Division {"url":"http://www.justice.gov/usao/co/divisions_criminal.html"}
+Executive Division {"url":"http://www.justice.gov/usao/co/divisions_executive.html"}
+PROGRAMS{"url":"http://www.justice.gov/usao/co/programs.html"}
+Anti-Terrorism Advisory Council{"url":"http://www.justice.gov/usao/co/programs_antiterrorism.html"}
+Four Corners Indian Country Initiative{"url":"http://www.justice.gov/usao/co/programs_fourcorners.html"}
+Law Enforcement Coordinating Committee{"url":"http://www.justice.gov/usao/co/programs_lecoordinating.html"}
+Project Safe Childhood{"url":"http://www.justice.gov/usao/co/programs_safechildhood.html"}
+Project Safe Neighborhoods{"url":"http://www.justice.gov/usao/co/programs_safeneighborhoods.html"}
+VICTIM WITNESS{"url":"http://www.justice.gov/usao/co/victimwitness.html"}
+Case Updates{"url":"http://www.justice.gov/usao/co/caseupdates.html"}
+Crime Victim's Rights{"url":"http://www.justice.gov/usao/co/vw_crimevictimsrights.html"}
+Office of the Victim Rights Ombudsman{"url":"http://www.justice.gov/usao/co/vw_ombudsman.html"}
+Victim Compensation{"url":"http://www.justice.gov/usao/co/vw_victimcompensation.html"}
+Victim Resources{"url":"http://www.justice.gov/usao/co/vw_victimresources.html"}
+Witness Information{"url":"http://www.justice.gov/usao/co/vw_witnessinformation.html"}
+CONTACT US{"url":"http://www.justice.gov/usao/co/contact.html"}
+All Locations{"url":"http://www.justice.gov/usao/co/locations.html"}
