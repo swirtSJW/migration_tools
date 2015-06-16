@@ -13,11 +13,12 @@
  * each file contains content for more than one destination.
  *
  * @package doj_migration
+ * @see AtrSpeechChunkParser for example extension
  */
 abstract class JusticeChunkParser extends MigrateContentParser {
   /**
-   * $this->setContent() will be called by the migrate module. Other methods
-   * can rely on this being set.
+   * $this->setContent() will be called by the migrate module once per file.
+   * Other methods can rely on this being set.
    */
   protected $content;
   protected $sourceParser;
@@ -26,13 +27,14 @@ abstract class JusticeChunkParser extends MigrateContentParser {
   /**
    * {@inheritdoc}
    */
-  public function setContent($content) {
-    parent::setContent($content);
+  public function setContent($content, $item_id) {
+    parent::setContent($content, $item_id);
 
     // Create a new SourceParser to handle HTML content.
+    $this->sourceParser = new SimpleSourceParser('placeholder', $content);
+
     // We don't need the full ID now. Migrate will generate it and make it
     // available in prepareRow().
-    $this->sourceParser = new SimpleSourceParser('placeholder', $this->content);
     $this->setChunks();
   }
 
