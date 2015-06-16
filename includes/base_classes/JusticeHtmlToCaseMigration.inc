@@ -12,7 +12,7 @@
  *
  * @package doj_migration
  */
-abstract class JusticeHtmlToCaseMigration extends JusticeHtmlToNodeMigration {
+abstract class JusticeHtmlToCaseMigration extends NGJusticeHtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
@@ -29,7 +29,7 @@ abstract class JusticeHtmlToCaseMigration extends JusticeHtmlToNodeMigration {
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    */
-  public function __construct($arguments, $source_dirs, $regex = NULL, $options = array()) {
+  public function __construct($arguments, $source_dirs, $regex = NULL, $options = array(), MigrateContentParser $parser = NULL) {
 
     // Define the fields that will be derived from the static files.
     $source_fields = array(
@@ -38,12 +38,13 @@ abstract class JusticeHtmlToCaseMigration extends JusticeHtmlToNodeMigration {
     );
 
     // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options);
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
 
     // The destination is the page content type.
     $this->destination = new MigrateDestinationNode('case');
 
     // Define non-simple field mappings.
+    $this->addFieldMapping('field_case_body', 'body');
     $this->addFieldMapping('field_case_body', 'body');
     $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
   }

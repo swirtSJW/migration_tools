@@ -31,6 +31,7 @@ class SimpleSourceParser extends NGSourceParser {
       $this->initQueryPath();
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
       HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
+      HtmlCleanUp::removeTableBackgrounds($this->queryPath);
 
       // Clean up specific to the Justice site.
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);

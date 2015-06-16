@@ -935,6 +935,21 @@ return array (
       'group_name' => 'usao-edva',
       'class_name' => 'UsaoEdvaPressReleaseMigration',
     ),
+    'AtrCase' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrCaseMigration',
+    ),
+    'AtrCaseDocument' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrCaseDocumentMigration',
+    ),
+    'AtrIndustry' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrIndustryMigration',
+    ),
     'AtrGallery' =>
     array (
       'group_name' => 'atr',
