@@ -110,10 +110,12 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     $row->uid = 1;
 
     // Get the source parser ready.
-    $this->initializeSourceParser($row);
+    if (!empty($row->filedata)) {
+      $this->initializeSourceParser($row);
 
-    // Get the properties from the source parser.
-    $this->setProperties($row);
+      // Get the properties from the source parser.
+      $this->setProperties($row);
+    }
   }
 
   /**
