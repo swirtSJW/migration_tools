@@ -366,12 +366,12 @@ class AtrIndustryMigration extends JusticeCsvMigration {
 }
 
 /**
- * Class AtrCaseCsvMigration.
+ * Class AtrCaseMigration.
  *
- * This is the parent class for both AtrCaseMigration and
- * AtrCaseDocumentMigration.
+ * @package doj_migration
+ * @subpackage atr
  */
-class AtrCaseCsvMigration extends JusticeCsvMigration {
+class AtrCaseMigration extends JusticeCsvToNodeMigration {
 
   /**
    * {@inheritdoc}
@@ -379,13 +379,79 @@ class AtrCaseCsvMigration extends JusticeCsvMigration {
   public function __construct($arguments) {
     $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
     $source_file = __DIR__ . '/../sources/atr-cases.csv';
-    parent::__construct($arguments, $source_file);
+    $options = array('header_rows' => TRUE);
+    parent::__construct($arguments, $source_file, $options);
 
     $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
+
+    $this->dependencies = array(
+      'Organization',
+      'AtrIndustry',
+      'AtrCaseDocument',
+    );
+    $this->description = t('Migrates ATR Cases.');
+
+    // Create a map object for tracking the relationships between source rows.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'url' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Title',
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+    $this->destination = new MigrateDestinationNode('case');
+
+    $this->addSimpleMappings(array('title', 'uid'));
+
+    // Define non-simple field mappings.
+    $this->addFieldMapping('field_case_body', 'body');
+    $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_case_date', 'date_opened');
+    $this->addFieldMapping('field_case_date:to', 'date_closed');
+    $this->addFieldMapping('field_case_type', 'matter_type');
+    $this->addFieldMapping('field_brief_federal_court', 'court')->callbacks(array($this, 'translateCourtValues'));
+    $this->addFieldMapping('field_brief_court_level')->defaultValue('district_court');
+    $this->addFieldMapping('field_case_market', 'market');
+
+    $this->addFieldMapping('field_case_documents', 'case_document_ids')->sourceMigration('AtrCaseDocument');
+
+    $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
+    $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(TRUE);
+
+    $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
+    $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
+
+    $this->addFieldMapping('field_case_tags', 'keywords');
+    $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(TRUE);
+
+    $this->addPathDnmMapping(array(
+      'field_case_topic',
+      'field_case_component',
+      'field_case_overview',
+      'field_case_link',
+      'field_case_attachments',
+      'field_case_images',
+      'field_case_teaser',
+    ));
+
+    // Configuring Obtainers.
+    /*
+    $title = new ObtainerInfo('title', "ObtainTitle");
+    $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
+
+    $arguments['obtainers_info'][] = $title;
+    */
   }
 
   /**
@@ -417,108 +483,37 @@ class AtrCaseCsvMigration extends JusticeCsvMigration {
     return array();
   }
 
-}
-
-/**
- * Class AtrCaseMigration.
- *
- * @package doj_migration
- * @subpackage atr
- */
-class AtrCaseMigration extends AtrCaseCsvMigration {
-
   /**
-   * {@inheritdoc}
-   */
-  public function __construct($arguments) {
-    parent::__construct($arguments);
-
-    $this->dependencies = array(
-      'Organization',
-      'AtrIndustry',
-      'AtrCaseDocument',
-    );
-    $this->description = t('Migrates ATR Cases.');
-
-    // Create a map object for tracking the relationships between source rows.
-    $this->map = new MigrateSQLMap($this->machineName,
-      array(
-        'url' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => TRUE,
-          'description' => 'Title',
-        ),
-      ),
-      MigrateDestinationNode::getKeySchema()
-    );
-    $this->destination = new MigrateDestinationNode('case');
-
-    // Define non-simple field mappings.
-    $this->addFieldMapping('title', 'title');
-    $this->addFieldMapping('field_case_body', 'body');
-    $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
-    $this->addFieldMapping('field_case_date', 'date_opened');
-    $this->addFieldMapping('field_case_date:to', 'date_closed');
-    $this->addFieldMapping('field_case_type', 'matter_type');
-    $this->addFieldMapping('field_brief_federal_court', 'court')->callbacks(array($this, 'translateCourtValues'));
-    $this->addFieldMapping('field_brief_court_level')->defaultValue('district_court');
-    $this->addFieldMapping('field_case_market', 'market');
-
-    // Node that AtrCaseDocument implements createStub().
-    // @see https://www.drupal.org/node/1013506
-    $this->addFieldMapping('field_case_documents', 'case_document_ids')->sourceMigration('AtrCaseDocument');
-
-    $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
-    $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
-    $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(TRUE);
-
-    $this->addFieldMapping('field_case_industry', 'industry')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
-    $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
-
-    $this->addFieldMapping('field_case_tags', 'keywords');
-    $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
-    $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(TRUE);
-
-    $this->addPathDnmMapping(array(
-      'field_case_topic',
-      'field_case_component',
-      'field_case_overview',
-      'field_case_link',
-      'field_case_attachments',
-      'field_case_images',
-      'field_case_teaser',
-    ));
-  }
-
-  /**
-   * Returns the tid of an industry term, given an industry code.
+   * Returns the tids of industry terms, given an industry codes.
    *
-   * @param string $code
-   *   The industry code.
+   * @param array $code
+   *   An array of industry codes.
    *
-   * @return string
-   *   The taxonomy term id.
+   * @return array
+   *   An array of taxonomy term ids.
    */
-  protected function getIndustryTermByCode($code) {
+  protected function getIndustryTermByCode($codes) {
+    $tids = array();
+    foreach ($codes as $code) {
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'taxonomy_term')
+        ->entityCondition('bundle', 'industry')
+        ->fieldCondition('field_industry_code', 'value', $code, '=')
+        ->addMetaData('account', user_load(1));
+      $result = $query->execute();
 
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', 'taxonomy_term')
-      ->entityCondition('bundle', 'industry')
-      ->fieldCondition('field_industry_code', 'value', $code, '=')
-      ->addMetaData('account', user_load(1));
-    $result = $query->execute();
+      if (isset($result['taxonomy_term'])) {
+        $tids = array_keys($result['taxonomy_term']);
+        $tid = reset($tids);
 
-    if (isset($result['taxonomy_term'])) {
-      $tids = array_keys($result['taxonomy_term']);
-      $tid = reset($tids);
-
-      return $tid;
+        $tids[] = $tid;
+      }
+      else {
+        $this->migrationMessage('Could not find corresponding industry term for code "@code"', array('@code' => $code), WATCHDOG_ERROR);
+      }
     }
 
-    $this->migrationMessage('Could not find corresponding industry term for code "@code"', array('@code' => $code), WATCHDOG_ERROR);
-
-    return NULL;
+    return $tids;
   }
 
   /**
@@ -641,9 +636,10 @@ class AtrCaseMigration extends AtrCaseCsvMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    $content = file_get_contents($row->url);
+    $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->url);
+    $content = file_get_contents($system_file_path);
     $parsed_url = parse_url($row->url);
-    $row->legacy_path = $parsed_url['path'];
+    $row->url_path = $parsed_url['path'];
 
     // Check whether a redirect to this page already exists, if so, do not
     // migrate the "duplicate" content.
@@ -651,19 +647,25 @@ class AtrCaseMigration extends AtrCaseCsvMigration {
       return FALSE;
     }
 
-    $source_parser = new AtrCaseSourceParser($row->legacy_path, $row->filedata);
+    $source_parser = new AtrCaseSourceParser($row->legacy_path, $content);
     $row->body = $source_parser->getBody();
 
     // Set the case documents to the source ids used in
     // AtrCaseDocumentMigration.
-    // @todo Handle edge case where one chunk exists.
-    $case_document_links = $source_parser->find('.atr-bottom-left p a');
+    $case_document_links = $source_parser->queryPath->find('.atr-bottom-left p a, .atr-bottom-left ul.case li a');
     $row->case_document_ids = array();
-    foreach ($case_document_links as $case_document_link) {
-      $row->case_document_ids[] = $case_document_link->attr('href');
+
+    if (count($case_document_links) < 2) {
+      $row->case_document_ids[] = $row->url_path;
+    }
+    else {
+      foreach ($case_document_links as $case_document_link) {
+        $case_document_url = $case_document_link->attr('href');
+        $row->case_document_ids[] = $row->url_path . MIGRATE_CHUNK_SEPARATOR . $case_document_url;
+      }
     }
 
-    // Set to admin for now.
+    // Set to admin.
     $row->uid = 1;
   }
 }
@@ -671,19 +673,18 @@ class AtrCaseMigration extends AtrCaseCsvMigration {
 /**
  * This source parser is used to parse the case index page markup.
  */
-class AtrCaseSourceParser extends SourceParser {
+class AtrCaseSourceParser extends NGNodeSourceParser {
   /**
    * Clean the html right before pulling the body.
    */
   protected function cleanHtml() {
     parent::cleanHtml();
-  }
 
-  /**
-   * Required by abstract.  Empty as no Obtainers are needed.
-   */
-  public function setDefaultObtainersInfo() {
+    $this->queryPath->find('h1')->first()->remove();
+    $this->queryPath->find('h3')->first()->remove();
 
+    HtmlCleanUp::removeWrapperElements($this->queryPath, array('.atr-bottom-left'));
+    HtmlCleanUp::removeTableBackgrounds($this->queryPath);
   }
 }
 

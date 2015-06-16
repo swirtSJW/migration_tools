@@ -207,7 +207,7 @@ class HtmlCleanUp {
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    */
-  protected static function removeWrapperElements($query_path, array $selectors) {
+  public static function removeWrapperElements($query_path, array $selectors) {
     foreach ($selectors as $selector) {
       $children = $query_path->find($selector)->children();
       $children->unwrap();
