@@ -783,6 +783,8 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
       return FALSE;
     }
 
+    $row->legacy_path = $row->url_path = $row->url_info['relative'];
+
     // Get date from index page markup.
     $date_raw = $row->chunk->parent()->find('.news-date')->text();
     if (preg_match('/\([a-zA-Z]+\.? [0-9]{1,2}, [0-9]{4}\)/', $row->date, $matches)) {
