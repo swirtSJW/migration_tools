@@ -314,33 +314,652 @@ class AtrPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
   }
 }
 
-
 /**
- * Migrates .html files from /civil to page nodes.
- *
- * @package doj_migration
- * @subpackage civil
+ * Class AtrIndustryMigration.
  */
-class AtrCaseMigration extends JusticeHtmlToCaseMigration {
+class AtrIndustryMigration extends JusticeCsvMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
+    $source_file = __DIR__ . '/../sources/industry_codes.csv';
+    parent::__construct($arguments, $source_file);
+
+    $this->description = t('Migrates industries for ATR cases.');
+    $this->destination = new MigrateDestinationTerm('industry');
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'code' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Topic ID',
+        ),
+      ),
+      MigrateDestinationTerm::getKeySchema()
+    );
+
+    $this->addFieldMapping('name', 'name');
+    $this->addFieldMapping('field_industry_code', 'code');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
+    // Note: Remember to subtract 1 from column number.
+    $columns[0] = array('name', 'Industry Name');
+    $columns[1] = array('code', 'Industry Code');
+
+    return $columns;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
+    // This is used by the migration analysis tool and is not necessary
+    // for a functioning migration.
+    return array();
+  }
+}
+
+/**
+ * Class AtrCaseCsvMigration.
+ *
+ * This is the parent class for both AtrCaseMigration and
+ * AtrCaseDocumentMigration.
+ */
+class AtrCaseCsvMigration extends JusticeCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+    $source_file = __DIR__ . '/../sources/atr-cases.csv';
+    parent::__construct($arguments, $source_file);
+
+    $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+
+    // Create redirects using relative, legacy path of static file.
+    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
+    // Note: Remember to subtract 1 from column number.
+    $columns[0] = array('url', 'Case Index URL');
+    $columns[1] = array('title', 'Case/Party Name');
+    $columns[2] = array('date_opened', 'Date Opened');
+    $columns[3] = array('date_closed', 'Date Closed');
+    $columns[4] = array('matter_type', 'Matter Type');
+    $columns[5] = array('court', 'Court');
+    $columns[6] = array('industry', 'Industry');
+    $columns[7] = array('codes', 'NAIC/SIC Code');
+    $columns[8] = array('violation', 'Violation');
+    $columns[9] = array('market', 'Market');
+    $columns[10] = array('keywords', 'Case Keywords');
+
+    return $columns;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
+    // This is used by the migration analysis tool and is not necessary
+    // for a functioning migration.
+    return array();
+  }
+
+}
+
+/**
+ * Class AtrCaseMigration.
+ *
+ * @package doj_migration
+ * @subpackage atr
+ */
+class AtrCaseMigration extends AtrCaseCsvMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    parent::__construct($arguments);
+
+    $this->dependencies = array(
+      'Organization',
+      'AtrIndustry',
+      'AtrCaseDocument',
+    );
+    $this->description = t('Migrates ATR Cases.');
+
+    // Create a map object for tracking the relationships between source rows.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'url' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Title',
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+    $this->destination = new MigrateDestinationNode('case');
+
+    // Define non-simple field mappings.
+    $this->addFieldMapping('title', 'title');
+    $this->addFieldMapping('field_case_body', 'body');
+    $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_case_date', 'date_opened');
+    $this->addFieldMapping('field_case_date:to', 'date_closed');
+    $this->addFieldMapping('field_case_type', 'matter_type');
+    $this->addFieldMapping('field_brief_federal_court', 'court')->callbacks(array($this, 'translateCourtValues'));
+    $this->addFieldMapping('field_brief_court_level')->defaultValue('district_court');
+    $this->addFieldMapping('field_case_market', 'market');
+
+    // Node that AtrCaseDocument implements createStub().
+    // @see https://www.drupal.org/node/1013506
+    $this->addFieldMapping('field_case_documents', 'case_document_ids')->sourceMigration('AtrCaseDocument');
+
+    $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
+    $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(TRUE);
+
+    $this->addFieldMapping('field_case_industry', 'industry')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
+    $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
+
+    $this->addFieldMapping('field_case_tags', 'keywords');
+    $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(TRUE);
+
+    $this->addPathDnmMapping(array(
+      'field_case_topic',
+      'field_case_component',
+      'field_case_overview',
+      'field_case_link',
+      'field_case_attachments',
+      'field_case_images',
+      'field_case_teaser',
+    ));
+  }
+
+  /**
+   * Returns the tid of an industry term, given an industry code.
+   *
+   * @param string $code
+   *   The industry code.
+   *
+   * @return string
+   *   The taxonomy term id.
+   */
+  protected function getIndustryTermByCode($code) {
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'taxonomy_term')
+      ->entityCondition('bundle', 'industry')
+      ->fieldCondition('field_industry_code', 'value', $code, '=')
+      ->addMetaData('account', user_load(1));
+    $result = $query->execute();
+
+    if (isset($result['taxonomy_term'])) {
+      $tids = array_keys($result['taxonomy_term']);
+      $tid = reset($tids);
+
+      return $tid;
+    }
+
+    $this->migrationMessage('Could not find corresponding industry term for code "@code"', array('@code' => $code), WATCHDOG_ERROR);
+
+    return NULL;
+  }
+
+  /**
+   * Returns the corresponding field value for an incorrectly labeled court.
+   *
+   * @param string $value
+   *   The original, incorrect value.
+   *
+   * @return string
+   *   The corrected value, or else the original if none can be found.
+   */
+  protected function translateCourtValues($value) {
+    $map = array(
+      'District of Rhode Island' => 'Rhode Island, District of',
+      'District of Puerto Rico' => 'Puerto Rico, District of',
+      'District of New Hampshire' => 'New Hampshire, District of',
+      'District of Massachusetts' => 'Massachusetts, District of',
+      'District of Maine' => 'Maine, District of',
+      'District of Vermont' => 'Vermont, District of',
+      'Western District of New York' => 'New York, Western District',
+      'Southern District of New York' => 'New York, Southern District',
+      'Northern District of New York' => 'New York, Northern District',
+      'Eastern District of New York' => 'New York, Eastern District',
+      'District of Connecticut' => 'Connecticut, District of',
+      'District of Delaware' => 'Delaware, District of',
+      'District of New Jersey' => 'New Jersey, District of',
+      'Eastern District of Pennsylvania' => 'Pennsylvania, Eastern District',
+      'Middle District of Pennsylvania' => 'Pennsylvania, Middle District',
+      'Western District of Pennsylvania' => 'Pennsylvania, Western District',
+      'District of the Virgin Islands' => 'Virgin Islands, District of',
+      'District of Maryland' => 'Maryland, District of',
+      'Eastern District of North Carolina' => 'North Carolina, Eastern District',
+      'Middle District of North Carolina' => 'North Carolina, Middle District',
+      'Western District of North Carolina' => 'North Carolina, Western District',
+      'District of South Carolina' => 'South Carolina, District of',
+      'Eastern District of Virginia' => 'Virginia, Eastern District',
+      'Western District of Virginia' => 'Virginia, Western District',
+      'Northern District of West Virginia' => 'West Virginia, Northern District',
+      'Southern District of West Virginia' => 'West Virginia, Southern District',
+      'Eastern District of Louisiana' => 'Louisiana, Eastern District',
+      'Middle District of Louisiana' => 'Louisiana, Middle District',
+      'Western District of Louisiana' => 'Louisiana, Western District',
+      'Northern District of Mississippi' => 'Mississippi, Northern District',
+      'Southern District of Mississippi' => 'Mississippi, Southern District',
+      'Eastern District of Texas' => 'Texas, Eastern District',
+      'Northern District of Texas' => 'Texas, Northern District',
+      'Southern District of Texas' => 'Texas, Southern District',
+      'Western District of Texas' => 'Texas, Western District',
+      'Eastern District of Kentucky' => 'Kentucky, Eastern District',
+      'Western District of Kentucky' => 'Kentucky, Western District',
+      'Eastern District of Michigan' => 'Michigan, Eastern District',
+      'Western District of Michigan' => 'Michigan, Western District',
+      'Northern District of Ohio' => 'Ohio, Northern District',
+      'Southern District of Ohio' => 'Ohio, Southern District',
+      'Eastern District of Tennessee' => 'Tennessee, Eastern District',
+      'Middle District of Tennessee' => 'Tennessee, Middle District',
+      'Western District of Tennessee' => 'Tennessee, Western District',
+      'Northern District of Illinois' => 'Illinois, Northern District',
+      'Central District of Illinois' => 'Illinois, Central District',
+      'Southern District of Illinois' => 'Illinois, Southern District',
+      'Northern District of Indiana' => 'Indiana, Northern District',
+      'Southern District of Indiana' => 'Indiana, Southern District',
+      'Eastern District of Wisconsin' => 'Wisconsin, Eastern District',
+      'Western District of Wisconsin' => 'Wisconsin, Western District',
+      'Eastern District of Arkansas' => 'Arkansas, Eastern District',
+      'Western District of Arkansas' => 'Arkansas, Western District',
+      'Northern District of Iowa' => 'Iowa, Northern District',
+      'Southern District of Iowa' => 'Iowa, Southern District',
+      'District of Minnesota' => 'Minnesota, District of',
+      'Eastern District of Missouri' => 'Missouri, Eastern District',
+      'Western District of Missouri' => 'Missouri, Western District',
+      'District of Nebraska' => 'Nebraska, District of',
+      'District of North Dakota' => 'North Dakota, District of',
+      'District of South Dakota' => 'South Dakota, District of',
+      'District of Alaska' => 'Alaska, District of',
+      'District of Arizona' => 'Arizona, District of',
+      'Central District of California' => 'California, Central District',
+      'Eastern District of California' => 'California, Eastern District of',
+      'Northern District of California' => 'California, Northern District',
+      'Southern District of California' => 'California, Southern District',
+      'District of Guam' => 'Guam, District of',
+      'District of Hawaii' => 'Hawaii, District of',
+      'District of Idaho' => 'Idaho, District of',
+      'District of Montana' => 'Montana, District of',
+      'District of Nevada' => 'Nevada, District of',
+      'District of the Northern Mariana Islands' => 'Northern Mariana Islands, District of the',
+      'District of Oregon' => 'Oregon, District of',
+      'Eastern District of Washington' => 'Washington, Eastern District',
+      'Western District of Washington' => 'Washington, Western District',
+      'District of Colorado' => 'Colorado, District of',
+      'District of Kansas' => 'Kansas, District of',
+      'District of New Mexico' => 'New Mexico, District of',
+      'Eastern District of Oklahoma' => 'Oklahoma, Eastern District',
+      'Northern District of Oklahoma' => 'Oklahoma, Northern District',
+      'Western District of Oklahoma' => 'Oklahoma, Western District',
+      'District of Utah' => 'Utah, District of',
+      'District of Wyoming' => 'Wyoming, District of',
+      'Northern District of Alabama' => 'Alabama, Northern District',
+      'Middle District of Alabama' => 'Alabama, Middle District',
+      'Southern District of Alabama' => 'Alabama, Southern District',
+      'Northern District of Florida' => 'Florida, Northern District',
+      'Middle District of Florida' => 'Florida, Middle District',
+      'Southern District of Florida' => 'Florida, Southern District',
+      'Northern District of Georgia' => 'Georgia, Northern District',
+      'Middle District of Georgia' => 'Georgia, Middle District',
+      'Southern District of Georgia' => 'Georgia, Southern District',
+      'District of District of Columbia' => 'District of Columbia, District of',
+    );
+
+    if (!empty($map[$value])) {
+      return $map[$value];
+    }
+
+    return $value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    $content = file_get_contents($row->url);
+    $parsed_url = parse_url($row->url);
+    $row->legacy_path = $parsed_url['path'];
+
+    // Check whether a redirect to this page already exists, if so, do not
+    // migrate the "duplicate" content.
+    if ($this->isDuplicateByRedirect($row)) {
+      return FALSE;
+    }
+
+    $source_parser = new AtrCaseSourceParser($row->legacy_path, $row->filedata);
+    $row->body = $source_parser->getBody();
+
+    // Set the case documents to the source ids used in
+    // AtrCaseDocumentMigration.
+    // @todo Handle edge case where one chunk exists.
+    $case_document_links = $source_parser->find('.atr-bottom-left p a');
+    $row->case_document_ids = array();
+    foreach ($case_document_links as $case_document_link) {
+      $row->case_document_ids[] = $case_document_link->attr('href');
+    }
+
+    // Set to admin for now.
+    $row->uid = 1;
+  }
+}
+
+/**
+ * This source parser is used to parse the case index page markup.
+ */
+class AtrCaseSourceParser extends SourceParser {
+  /**
+   * Clean the html right before pulling the body.
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+  }
+
+  /**
+   * Required by abstract.  Empty as no Obtainers are needed.
+   */
+  public function setDefaultObtainersInfo() {
+
+  }
+}
+
+/**
+ * Class AtrCaseDocumentMigration.
+ *
+ * @package doj_migration
+ * @subpackage atr
+ */
+class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments) {
+    $arguments['source_parser_class'] = "NGNodeSourceParser";
+
+    $source_fields = array();
+
     // Define source directories.
     $source_dirs = array(
       'atr/cases',
     );
 
-    $options = array('recurse' => TRUE);
-    $arguments['source_parser_class'] = "AtrCaseSourceParser";
+    $regex = '/.*\.htm(l)?$/i';
+    $options = array(
+      'recurse' => FALSE,
+      'nomask' => '/^index\.html/',
+    );
+    $parser = new AtrCaseDocumentChunkParser();
 
-    // Parent constructor will set $this->source, $this->destination, and
-    // $this->map.
-    parent::__construct($arguments, $source_dirs, NULL, $options);
+    // Calling parent constructor will set $this->source and $this->map.
+    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
+
     $this->dependencies = array('Organization');
-    $this->description = t('Migrates cases from the Antitrust Division.');
-    $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
+    $this->description = t('Migrates ATR Case Documents.');
+    $this->destination = new MigrateDestinationNode('case_document');
+
+    $this->addFieldMapping('field_casedoc_body', 'body');
+    $this->addFieldMapping('field_casedoc_body:format')->defaultValue('wysiwyg');
+    $this->addFieldMapping('field_casedoc_date', 'date');
+    $this->addFieldMapping('field_casedoc_type', 'title')->callbacks(array($this, 'mapCaseDocumentType'));
+
+    $this->addFieldMapping('field_casedoc_attachments', 'attachment_filename');
+    $this->addFieldMapping('field_casedoc_attachments:source_type')->defaultValue('filename');
+    $this->addFieldMapping('field_casedoc_attachments:file_class')->defaultValue('MigrateFileUri');
+    $this->addFieldMapping('field_casedoc_attachments:destination_dir', 'destination_dir');
+    $this->addFieldMapping('field_casedoc_attachments:source_dir', 'source_dir');
+    $this->addFieldMapping('field_casedoc_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+
+    $this->addFieldMapping('og_group_ref')
+      ->defaultValue('atr')
+      ->sourceMigration('Organization');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+
+    // The chunk is actually the <a> element from the index page.
+    $row->chunk = $row->filedata;
+    unset($row->filedata);
+
+    // If there is more than one chunk, $row->fileid will look something like:
+    // Filename-?MIGRATECHUNK?-Chunk-ID. If there is only one chunk,
+    // $row->fileid will simply be the filename.
+    $fileid_parts = explode('-?MIGRATECHUNK?-', $row->fileid);
+    $row->parent_file_path = $fileid_parts[0];
+    $row->chunk_id = $fileid_parts[1];
+
+    if (empty($row->chunk) || !is_object($row->chunk)) {
+      $this->migrationMessage('No chunk was present from file "@file"', array('@file' => $row->fileid), WATCHDOG_ERROR);
+      return FALSE;
+    }
+
+    // If the chunk id is not set, then there were less than 2 chunks in the
+    // file. In that case, we test to see if at least one anchor tag exists.
+    // @see MigrateListFiles::getIDsFromFiles().
+    if (!$row->chunk_id) {
+      $row->chunk_id = $row->chunk->attr('href');
+    }
+
+    if (empty($row->chunk_id)) {
+      $this->migrationMessage('No chunk id was present for chunk from file "@file".', array('@file' => $row->fileid), WATCHDOG_ERROR);
+      return FALSE;
+    }
+
+    // Get more information about the linked file.
+    $current_dir = dirname($row->parent_file_path);
+    $row->url_info = $this->getUrlInfo($row->chunk_id, $current_dir);
+
+    // Ignore external URLs. E.g., link to
+    // http://www.gpo.gov/fdsys/pkg/FR-2013-05-22/pdf/2013-11832.pdf on
+    // http://www.justice.gov/atr/cases/abimodelo.html.
+    if ($row->url_info['external']) {
+      return FALSE;
+    }
+
+    // Get date from index page markup.
+    $date_raw = $row->chunk->parent()->find('.news-date')->text();
+    if (preg_match('/\([a-zA-Z]+\.? [0-9]{1,2}, [0-9]{4}\)/', $row->date, $matches)) {
+      $row->date = $matches[0];
+      $row->date = trim($row->date, " \t\n\r\0\x0B()");
+    }
+    else {
+      $this->migrationMessage("No date pattern was found for @file, source value is '@raw'.", array(
+        '@file' => $row->fileid,
+        '@raw' => $date_raw,
+      ));
+    }
+
+    // Manually set url_path and legacy_path before parent::prepareRow().
+    $row->url_path = $row->legacy_path = $row->url_info['relative_url'];
+
+    switch ($row->url_info['extension']) {
+      // If case document is HTML, parse and populate node body.
+      case "htm":
+      case "html":
+
+        try {
+          $row->filedata = file_get_contents($row->url_info['system_path']);
+        }
+        catch (Exception $e) {
+          $this->migrationMessage("Failed to load file '@file' referenced in '@parent'.", array(
+            '@file' => $row->url_info['system_path'],
+            '@parent' => $row->parent_file_path,
+          ), WATCHDOG_ERROR);
+
+          return FALSE;
+        }
+
+        parent::prepareRow($row);
+        $row->title = $this->sourceParser->getTitle();
+        $row->body = $this->sourceParser->getBody();
+
+        break;
+
+      // If case document is a pdf, attach it to the node.
+      case "pdf":
+        $row->title = $row->chunk->text();
+        parent::prepareRow($row);
+
+        // Create pdf attachments. $row->url_info['system_dir'] should be
+        // set for all local files and NULL for external files.
+        if ($row->url_info['system_dir']) {
+          $row->source_dir = $row->url_info['system_dir'];
+          $row->attachment_filename = $row->url_info['filename'];
+
+          // We don't create a redirect for the attachment. Instead, we point
+          // the legacy url to the new node via $row->legacy_path.
+          // $row->attachmentRedirects = array($row->url_path);
+
+          // Generate filepath based on article date.
+          $row->time_created = strtotime($row->date);
+          $year_created = date('Y', $row->time_created);
+          $month_created = date('m', $row->time_created);
+          $date_created = date('d', $row->time_created);
+          $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
+        }
+
+        break;
+    }
+  }
+
+  /**
+   * Provides detailed information on a URL.
+   *
+   * URLs may come in a variety of absolute or relative forms. E.g.,
+   *  - http://justice.gov/atr/cases/f238200/238245.htm
+   *  - /atr/cases/f238200/238245.htm
+   *  - /./f238200/238245.htm
+   *  - f238200/238245.htm
+   *  - http://www.gpo.gov/fdsys/pkg/FR-2014-05-20/pdf/2014-11577.pdf
+   *  - /doj/repo/legacy/www.justice.gov/atr/cases/f258800/258892.htm
+   *
+   * @param string $url
+   *   The URL for which to provide information.
+   *
+   * @param string $current_dir
+   *   The current directory of the file containing the link. This is used
+   *   when the URL is relative.
+   *
+   * @return array
+   *   An array of properties of the provided URL.
+   *
+   * @todo Create public gist of this function.
+   */
+  protected function getUrlInfo($url, $current_dir = '', $base_url = 'http://www.justice.gov') {
+    $parsed_url = parse_url($url);
+    $parsed_base_url = parse_url($base_url);
+
+    $info = array();
+    $info['original'] = $url;
+    $info['extension'] = pathinfo($url, PATHINFO_EXTENSION);
+    $info['filename'] = basename($url);
+
+    $info['is_relative'] = empty($parsed_url['scheme']) && !empty($parsed_url['path']) && (substr($parsed_url['path'], 0, 1) !== '/' || substr($parsed_url['path'], 0, 3) == '/./');
+    $info['external'] = !empty($parsed_url['host']) && !($parsed_base_url['host'] == $parsed_url['host']);
+
+    if ($info['is_relative'] && $current_dir) {
+      $info['directory'] = trim($current_dir, '/') . '/' . trim(dirname($url), '/');
+    }
+    else {
+      $info['directory'] = ltrim(dirname($url), '/');
+    }
+    // Remove occurrences of "/./" with "/".
+    $info['directory'] = str_replace('/./', '/', $info['directory']);
+
+    $info['absolute_url'] = url($info['directory'] . '/' . $info['filename'], array('absolute' => TRUE, 'base_url' => $base_url));
+    $info['relative_url'] = ltrim(url($info['directory'] . '/' . $info['filename']), '/');
+
+    if (!$info['external']) {
+      // If the base path was passed in the original URL,
+      if (strstr($info['absolute_url'], ltrim($this->baseDir, '/')) === FALSE) {
+        $info['system_path'] = $this->baseDir . '/' . $info['directory'] . '/' . $info['filename'];
+      }
+      else {
+        $info['system_path'] = '/' . $info['directory'] . '/' . $info['filename'];
+      }
+
+      $info['system_dir'] = dirname($info['system_path']);
+    }
+    else {
+      $info['system_path'] = NULL;
+      $info['system_dir'] = NULL;
+    }
+
+    return $info;
+  }
+
+  /**
+   * Finds a matching allowed value for a given case type value from source.
+   *
+   * Match is performed via substring search. E.g., if source value is "Final"
+   * and "Final Judgement" is an allowed value, "Final Judgement" will be
+   * returned.
+   *
+   * @param string $value
+   *   The type value from the source.
+   */
+  protected function mapCaseDocumentType($value) {
+    $field_casedoc_type = field_info_field('field_casedoc_type');
+    $allowed_values = list_allowed_values($field_casedoc_type);
+
+    foreach ($allowed_values as $key => $allowed_value) {
+      if (stristr($allowed_value, $value)) {
+        return $allowed_value;
+      }
+    }
+
+    $this->migrationMessage("No allowed value for field_casedoc_type was found, original value was '@value'.", array(
+      '@value' => $value,
+    ), WATCHDOG_ERROR);
+  }
+}
+
+/**
+ * This sourceparser is used parse the actual speech.
+ */
+class AtrCaseDocumentSourceParser extends SourceParser {
+
+  /**
+   * Clean the html right before pulling the body.
+   */
+  protected function cleanHtml() {
+    parent::cleanHtml();
+    HtmlCleanUp::removeTableBackgrounds($this->queryPath);
+    HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileid);
+  }
+
+  /**
+   * Required by abstract.  Empty as no Obtainers are needed.
+   */
+  public function setDefaultObtainersInfo() {
+
   }
 }
 
@@ -413,22 +1032,6 @@ class AtrPressSourceParser extends NGPressReleaseSourceParser {
     return $pdf_links;
   }
 }
-
-/**
- * SourceParser for /atr cases.
- *
- * @package doj_migration
- * @subpackage atr
- */
-class AtrCaseSourceParser  extends NGNodeSourceParser {
-  /**
-   * {@inheritdoc}
-   */
-  protected function cleanHtml() {
-    parent::cleanHtml();
-  }
-}
-
 
 /**
  * Obtainer for title property for /atr pages.
@@ -627,6 +1230,13 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     $fileid_parts = explode('-?MIGRATECHUNK?-', $row->fileid);
     $row->parent_file_path = $fileid_parts[0];
     $row->chunk_id = $fileid_parts[1];
+
+    // If the chunk id is not set, then there were less than 2 chunks in the
+    // file. In that case, we test to see if at least one anchor tag exists.
+    // @see MigrateListFiles::getIDsFromFiles().
+    if (!$row->chunk_id) {
+      $row->chunk_id = $row->chunk->attr('href');
+    }
 
     if (empty($row->chunk_id)) {
       $this->migrationMessage('No chunk id was present for chunk from file "@file"', array('@file' => $row->fileid), WATCHDOG_ERROR);
@@ -841,7 +1451,6 @@ class AtrSimpleSpeechSourceParser extends SourceParser {
   public function setDefaultObtainersInfo() {
 
   }
-
 }
 
 /**
@@ -874,22 +1483,24 @@ class AtrSpeechChunkParser extends JusticeChunkParser {
    * Sets $this->chunks.
    */
   public function setChunks() {
-    // The pattern is well established on ATR Yearly speech pages .
-    // @see http://www.justice.gov/atr/public/speeches/speech-2008.html
-    $this->chunks = $this->sourceParser->queryPath->find('.atr-bottom-left p a');
+    $this->chunks = $this->sourceParser->queryPath->find('.atr-bottom-left p a, .atr-bottom-left ul.case li a');
     if (!$this->chunks || !$this->chunks->text()) {
       $this->chunks = array();
-      $this->chunkparserMessage('Could not find chunks for JusticeChunkParser child class @class_name.', array('@class_name' => get_class()), WATCHDOG_ERROR);
+      $this->chunkparserMessage('Could not find chunks for JusticeChunkParser child class @class_name for file "@item_id".',
+        array(
+          '@class_name' => get_class(),
+          '@markup' => $this->sourceParser->queryPath->html(),
+          '@item_id' => $this->item_id,
+        ), WATCHDOG_ERROR);
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getChunkIDs() {
+  public function setChunkIds() {
     $chunks = $this->getChunks();
     $ids = array();
-    $this->chunkparserMessage("Processing @chunkcount chunks.", array('@chunkcount' => $chunks->count()), FALSE);
 
     foreach ($chunks as $chunk) {
       // The ID of each speech will be the uri of the link to a speech file.
@@ -901,9 +1512,20 @@ class AtrSpeechChunkParser extends JusticeChunkParser {
         $ids[] = $id;
       }
     }
-    $this->chunkparserMessage("Created @idcount chunk IDs.", array('@idcount' => count($ids)), FALSE, 2);
 
     return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * Note that this method is not called when there is only one chunk present.
+   */
+  public function getChunkIDs() {
+    // Note that we intentionally re-generate the chunk ids each time that this
+    // is called. This is because the chunks may have been changed by a
+    // call to setContent() since the last time that the ids were generated.
+    return $this->setChunkIds();
   }
 
   /**
@@ -912,20 +1534,44 @@ class AtrSpeechChunkParser extends JusticeChunkParser {
   public function getChunk($chunk_id) {
     $error_data = 'Data could not be migrated';
     $chunks = $this->getChunks();
-    $this->chunkparserMessage("Getting chunk @chunkid .", array('@chunkid' => $chunk_id), FALSE);
 
     if (!$chunks) {
       watchdog('doj_migration', 'No data chunks were found. Cannot search for chunk @chunk_id', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
       return $error_data;
     }
-    $chunk = $chunks->find("a[href='$chunk_id']");
 
-    if (!$chunk->innerHtml()) {
-      watchdog('doj_migration', 'Data could not be migrated for chunk "@chunk_id"', array('@chunk_id' => $chunk_id), WATCHDOG_ERROR);
+    // If the chunk id is not set, then there were less than 2 chunks in the
+    // file. In that case, we test to see if at least one anchor tag exists.
+    // @see MigrateListFiles::getIDsFromFiles().
+    if (!$chunk_id) {
+      $chunk = $chunks->find("a")->first();
+    }
+    // Otherwise, use $chunk_id to find the correct anchor.
+    else {
+      $chunk = $chunks->find("a[href='$chunk_id']");
+    }
+
+    if (!$chunk->html() && !$chunk->text()) {
+      watchdog('doj_migration', 'Data could not be migrated for chunk "@chunk_id" in file "@file". All chunks markup was: @chunks_markup', array(
+        '@chunk_id' => $chunk_id,
+        '@file' => $this->item_id,
+        '@chunks_markup' => $chunks->html(),
+      ), WATCHDOG_ERROR);
+
       return $error_data;
     }
     else {
       return $chunk;
     }
   }
+}
+
+/**
+ * Parses a single case index page into multiple case documents.
+ *
+ * @package doj_migration
+ * @subpackage core
+ */
+class AtrCaseDocumentChunkParser extends AtrSpeechChunkParser {
+
 }
