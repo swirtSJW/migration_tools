@@ -366,4 +366,31 @@ abstract class JusticeBaseMigration extends Migration {
       }
     }
   }
+
+  /**
+   * Determines if the current row is a duplicate using redirects as reference.
+   *
+   * Legacy paths from justice, should not be pointing to more than one node,
+   * If this is happening, it is a good sign that we are bringing in duplicate
+   * content.
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   *
+   * @return bool
+   *   Whether this row is a duplicate or not.
+   */
+  protected function isDuplicateByRedirect($row) {
+    $parsed = redirect_parse_url($row->legacy_path);
+    $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
+    $redirect = redirect_load_by_source($source);
+
+    if ($redirect) {
+      $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
+      $this->migrationMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
+      return TRUE;
+    }
+    return FALSE;
+  }
+
 }
