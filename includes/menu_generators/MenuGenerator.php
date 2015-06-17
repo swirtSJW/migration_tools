@@ -218,10 +218,16 @@ class MenuGeneratorEngineDefault {
     }
     if (!$this->queryPath) {
       require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
-      $ch = curl_init($this->parameters->getUriMenuLocation());
+      $page_uri = $this->parameters->getUriMenuLocation();
+      $ch = curl_init($page_uri);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
       $html = curl_exec($ch);
+      $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      if ($response != 200) {
+        drush_doj_migration_debug_output("The page at '$page_uri' returned a status of $response.  You might need to adjust '--menu-location-uri'.");
+      }
+
       curl_close($ch);
       $this->queryPath = htmlqp($html);
       $this->cleanQueryPathHtml();
@@ -377,48 +383,49 @@ class MenuGeneratorEngineDefault {
    *   level 1, and so on.
    * @param string $parent_uri
    *   The uri of the item's parent (optional).
-   * @param string $index
-   *   The numerical representation to the parent (optional).
    */
-  protected function recurse($css_selector = NULL, $prefix = '', $parent_uri = '', $index = 0) {
+  protected function recurse($css_selector = NULL, $prefix = '', $parent_uri = '') {
     module_load_include("inc", "doj_migration", "includes/doj_migration");
+    $last_uri = '';
     if (!isset($css_selector)) {
+      // This is the first run through a subpage so get the menu selector.
       $css_selector = $this->initialCssSelector;
     }
 
-    drush_doj_migration_debug_output("{$prefix}CSS SELECTOR: $css_selector ");
-
+    drush_doj_migration_debug_output("{$prefix}CSS SELECTOR: $css_selector child of $parent_uri");
     $query = $this->getQueryPath();
-    $elements = $query->find("{$css_selector}>*");
-    $j = 0;
-    $last_uri = '';
+    $elements = $query->find($css_selector)->children();
 
     foreach ($elements as $elem) {
-      if ($elem->tag() == 'ul') {
-        $index = '';
-        drush_doj_migration_debug_output("{$prefix}Im in {$css_selector} ul.");
-        $class_name = doj_migration_random_string();
-        $elem->attr('class', $class_name);
-        $this->recurse("{$css_selector}>ul.{$class_name}", "{$prefix}-", $last_uri, $index);
-      }
-      elseif ($elem->tag() == 'div') {
-        $index = '';
-        drush_doj_migration_debug_output("{$prefix}Im in {$css_selector} div.");
-        $class = $elem->attr('class');
-        $this->recurse("{$css_selector}>div.{$class}>ul", "{$prefix}-", $last_uri, $index);
-      }
-      elseif ($elem->tag() == 'li') {
-        $j++;
-        drush_doj_migration_debug_output("{$prefix}Im in {$css_selector} li.");
-        $li = $elem;
-        $anchors = $li->find('a:nth-child(1)');
-        $i = 0;
-        foreach ($anchors as $a) {
-          $i++;
-          $subindex = (empty($index)) ? $i : "{$index}.{$i}";
-          $this->addMenuElement($a->attr("href"), $a->text(), $prefix, $parent_uri, "{$j}.{$i}");
-          $last_uri = $a->attr("href");
-        }
+      $tag = $elem->tag();
+      switch ($tag) {
+        case 'li':
+          drush_doj_migration_debug_output("$prefix I'm in $tag $css_selector child of $parent_uri");
+          $children = $elem->children();
+          foreach ($children as $child) {
+            // Might be an anchor or might be a cluster of items.
+            if ($child->tag() == 'a') {
+              $this->addMenuElement($child->attr("href"), $child->text(), $prefix, $parent_uri);
+              $last_uri = $child->attr("href");
+            }
+            else {
+              $class_name = doj_migration_random_string();
+              $elem->attr('class', $class_name);
+              $this->recurse(".{$class_name}", $prefix, $last_uri);
+            }
+          }
+          break;
+
+        case 'ul':
+        case 'div':
+        default:
+          $last_uri = (empty($last_uri)) ? $parent_uri : $last_uri;
+          $new_prefix = ($tag == 'ul') ? $prefix . "-" : $prefix;
+          $class_name = doj_migration_random_string();
+          $elem->attr('class', $class_name);
+          drush_doj_migration_debug_output("$new_prefix I'm in $tag $class_name child of $last_uri");
+          $this->recurse(".{$class_name}", $new_prefix, $last_uri);
+          break;
       }
     }
   }
@@ -599,17 +606,14 @@ class MenuGeneratorEngineDefault {
    *   The prefix the title with that indicates the item's depth (optional).
    * @param string $parent_uri
    *   The uri of the menu items parent (optional).
-   * @param string $index
-   *   The numerical index of the item relative to its parent (optional).
    */
-  public function addMenuElement($link_path, $link_title, $prefix = '', $parent_uri = '', $index = NULL) {
+  public function addMenuElement($link_path, $link_title, $prefix = '', $parent_uri = '') {
     $link_path = $this->normalizeUri($link_path);
 
     if (empty($this->menu[$link_path])) {
       // This menu item does not exist yet so add it.
       $parent_uri = (empty($parent_uri)) ? '' : $this->normalizeUri($parent_uri);
       $this->menu[$link_path] = array(
-        'index' => $index,
         'prefix' => $prefix,
         'url' => $link_path,
         'parent_uri' => $parent_uri,
