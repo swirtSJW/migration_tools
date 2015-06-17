@@ -366,12 +366,73 @@ class AtrIndustryMigration extends JusticeCsvMigration {
 }
 
 /**
+ * Class AtrCsvMigration.
+ *
+ * This is the parent class of both AtrCaseMigration and
+ * AtrCaseDocumentMigration.
+ */
+abstract class AtrCsvMigration extends JusticeCsvToNodeMigration {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($arguments, $source_file, $options) {
+    $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
+    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
+
+    // Create redirects using relative, legacy path of static file.
+    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
+    $this->addSimpleMappings(array('title', 'uid'));
+
+    parent::__construct($arguments, $source_file, $options);
+  }
+
+  /**
+   * Returns the array of CSV columns in the case file.
+   */
+  public function caseCsvColumns() {
+    // Note: Remember to subtract 1 from column number.
+    $columns[0] = array('index_url', 'Case Index URL');
+    $columns[1] = array('title', 'Case/Party Name');
+    $columns[2] = array('date_opened', 'Date Opened');
+    $columns[3] = array('date_closed', 'Date Closed');
+    $columns[4] = array('matter_type', 'Matter Type');
+    $columns[5] = array('court', 'Court');
+    $columns[6] = array('industry', 'Industry');
+    $columns[7] = array('codes', 'NAIC/SIC Code');
+    $columns[8] = array('violation', 'Violation');
+    $columns[9] = array('market', 'Market');
+    $columns[10] = array('keywords', 'Case Keywords');
+
+    return $columns;
+  }
+
+  /**
+   * Returns the array of CSV columns in the case documents file.
+   */
+  public function caseDocumentCsvColumns() {
+    $columns = array();
+
+    // Note: Remember to subtract 1 from column number.
+    $columns[0] = array('index_url', 'Case Index URL');
+    $columns[1] = array('document_url', 'Document URL');
+    $columns[2] = array('date', 'Document Date');
+    $columns[3] = array('title', 'Document Title');
+    $columns[4] = array('type', 'Document Type');
+    $columns[5] = array('keywords', 'Document Keywords');
+
+    return $columns;
+  }
+
+}
+
+/**
  * Class AtrCaseMigration.
  *
  * @package doj_migration
  * @subpackage atr
  */
-class AtrCaseMigration extends JusticeCsvToNodeMigration {
+class AtrCaseMigration extends AtrCsvMigration {
 
   /**
    * {@inheritdoc}
@@ -381,12 +442,6 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
     $source_file = __DIR__ . '/../sources/atr-cases.csv';
     $options = array('header_rows' => TRUE);
     parent::__construct($arguments, $source_file, $options);
-
-    $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
-    $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
-
-    // Create redirects using relative, legacy path of static file.
-    $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
 
     $this->dependencies = array(
       'Organization',
@@ -398,7 +453,7 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
     // Create a map object for tracking the relationships between source rows.
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'url' => array(
+        'index_url' => array(
           'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
@@ -407,9 +462,8 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
       ),
       MigrateDestinationNode::getKeySchema()
     );
-    $this->destination = new MigrateDestinationNode('case');
 
-    $this->addSimpleMappings(array('title', 'uid'));
+    $this->destination = new MigrateDestinationNode('case');
 
     // Define non-simple field mappings.
     $this->addFieldMapping('field_case_body', 'body');
@@ -425,14 +479,14 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
 
     $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
     $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
-    $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(FALSE);
 
     $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
     $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
 
     $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
-    $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(FALSE);
 
     $this->addPathDnmMapping(array(
       'field_case_topic',
@@ -458,20 +512,7 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
    * {@inheritdoc}
    */
   public function csvcolumns() {
-    // Note: Remember to subtract 1 from column number.
-    $columns[0] = array('url', 'Case Index URL');
-    $columns[1] = array('title', 'Case/Party Name');
-    $columns[2] = array('date_opened', 'Date Opened');
-    $columns[3] = array('date_closed', 'Date Closed');
-    $columns[4] = array('matter_type', 'Matter Type');
-    $columns[5] = array('court', 'Court');
-    $columns[6] = array('industry', 'Industry');
-    $columns[7] = array('codes', 'NAIC/SIC Code');
-    $columns[8] = array('violation', 'Violation');
-    $columns[9] = array('market', 'Market');
-    $columns[10] = array('keywords', 'Case Keywords');
-
-    return $columns;
+    return $this->caseCsvColumns();
   }
 
   /**
@@ -486,7 +527,7 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
   /**
    * Returns the tids of industry terms, given an industry codes.
    *
-   * @param array $code
+   * @param array $codes
    *   An array of industry codes.
    *
    * @return array
@@ -636,10 +677,11 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->url);
+    $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->index_url);
     $content = file_get_contents($system_file_path);
-    $parsed_url = parse_url($row->url);
+    $parsed_url = parse_url($row->index_url);
     $row->url_path = $parsed_url['path'];
+    $row->legacy_path = trim($row->url_path, '/');
 
     // Check whether a redirect to this page already exists, if so, do not
     // migrate the "duplicate" content.
@@ -652,21 +694,35 @@ class AtrCaseMigration extends JusticeCsvToNodeMigration {
 
     // Set the case documents to the source ids used in
     // AtrCaseDocumentMigration.
-    $case_document_links = $source_parser->queryPath->find('.atr-bottom-left p a, .atr-bottom-left ul.case li a');
-    $row->case_document_ids = array();
-
-    if (count($case_document_links) < 2) {
-      $row->case_document_ids[] = $row->url_path;
-    }
-    else {
-      foreach ($case_document_links as $case_document_link) {
-        $case_document_url = $case_document_link->attr('href');
-        $row->case_document_ids[] = $row->url_path . MIGRATE_CHUNK_SEPARATOR . $case_document_url;
-      }
-    }
+    $row->case_document_ids = $this->getCaseDocumentIds($this->index_url);
 
     // Set to admin.
     $row->uid = 1;
+  }
+
+  /**
+   * Gets the ids (abs URLS) of all case documents associated with a case.
+   *
+   * @param string $index_url
+   *   The URL of the case index page.
+   *
+   * @return array
+   *   An array of case document ids (absolute urls).
+   */
+  protected function getCaseDocumentIds($index_url) {
+    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+    $source_file = __DIR__ . '/../sources/atr-case-documents.csv';
+    $options = array('header_rows' => TRUE);
+    $atr_case_documents = new MigrateSourceCSV($source_file, $this->caseDocumentCsvColumns(), $options);
+
+    $ids = array();
+    while ($row = $atr_case_documents->getNextRow()) {
+      if ($row->index_url == $index_url) {
+        $ids[] = $row->document_url;
+      }
+    }
+
+    return $ids;
   }
 }
 
@@ -694,39 +750,39 @@ class AtrCaseSourceParser extends NGNodeSourceParser {
  * @package doj_migration
  * @subpackage atr
  */
-class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
+class AtrCaseDocumentMigration extends AtrCsvMigration {
 
   /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $arguments['source_parser_class'] = "NGNodeSourceParser";
-
-    $source_fields = array();
-
-    // Define source directories.
-    $source_dirs = array(
-      'atr/cases',
-    );
-
-    $regex = '/.*\.htm(l)?$/i';
-    $options = array(
-      'recurse' => FALSE,
-      'nomask' => '/^index\.html/',
-    );
-    $parser = new AtrCaseDocumentChunkParser();
-
-    // Calling parent constructor will set $this->source and $this->map.
-    parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
+    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+    $source_file = __DIR__ . '/../sources/atr-case-documents.csv';
+    $options = array('header_rows' => TRUE);
+    parent::__construct($arguments, $source_file, $options);
 
     $this->dependencies = array('Organization');
     $this->description = t('Migrates ATR Case Documents.');
+
+    // Create a map object for tracking the relationships between source rows.
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'document_url' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Title',
+        ),
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
     $this->destination = new MigrateDestinationNode('case_document');
 
     $this->addFieldMapping('field_casedoc_body', 'body');
     $this->addFieldMapping('field_casedoc_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_casedoc_date', 'date');
-    $this->addFieldMapping('field_casedoc_type', 'title')->callbacks(array($this, 'mapCaseDocumentType'));
+    $this->addFieldMapping('field_casedoc_type', 'type')->callbacks(array($this, 'mapTypeToAllowedValue'));
 
     $this->addFieldMapping('field_casedoc_attachments', 'attachment_filename');
     $this->addFieldMapping('field_casedoc_attachments:source_type')->defaultValue('filename');
@@ -734,10 +790,47 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
     $this->addFieldMapping('field_casedoc_attachments:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_casedoc_attachments:source_dir', 'source_dir');
     $this->addFieldMapping('field_casedoc_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+  }
 
-    $this->addFieldMapping('og_group_ref')
-      ->defaultValue('atr')
-      ->sourceMigration('Organization');
+  /**
+   * Maps a type value to the corresponding select list key.
+   *
+   * @param string $value
+   *   The value from the source.
+   *
+   * @return string
+   *   The corresponding select list key, or else the raw value.
+   */
+  protected function mapTypeToAllowedValue($value) {
+    $field_casedoc_type = field_info_field('field_casedoc_type');
+    $allowed_values = list_allowed_values($field_casedoc_type);
+    foreach ($allowed_values as $key => $allowed_value) {
+      if ($allowed_value == $value) {
+        return $key;
+      }
+    }
+
+    $this->migrationMessage("Could not find allowed value for field_casedoc_type, source value was '@value',", array(
+      '@value' => $value,
+    ), WATCHDOG_WARNING);
+
+    return $value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function csvcolumns() {
+    return $this->caseDocumentCsvColumns();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
+    // This is used by the migration analysis tool and is not necessary
+    // for a functioning migration.
+    return array();
   }
 
   /**
@@ -745,62 +838,10 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
    */
   public function prepareRow($row) {
 
-    // The chunk is actually the <a> element from the index page.
-    $row->chunk = $row->filedata;
-    unset($row->filedata);
-
-    // If there is more than one chunk, $row->fileid will look something like:
-    // Filename-?MIGRATECHUNK?-Chunk-ID. If there is only one chunk,
-    // $row->fileid will simply be the filename.
-    $fileid_parts = explode('-?MIGRATECHUNK?-', $row->fileid);
-    $row->parent_file_path = $fileid_parts[0];
-    $row->chunk_id = $fileid_parts[1];
-
-    if (empty($row->chunk) || !is_object($row->chunk)) {
-      $this->migrationMessage('No chunk was present from file "@file"', array('@file' => $row->fileid), WATCHDOG_ERROR);
-      return FALSE;
-    }
-
-    // If the chunk id is not set, then there were less than 2 chunks in the
-    // file. In that case, we test to see if at least one anchor tag exists.
-    // @see MigrateListFiles::getIDsFromFiles().
-    if (!$row->chunk_id) {
-      $row->chunk_id = $row->chunk->attr('href');
-    }
-
-    if (empty($row->chunk_id)) {
-      $this->migrationMessage('No chunk id was present for chunk from file "@file".', array('@file' => $row->fileid), WATCHDOG_ERROR);
-      return FALSE;
-    }
-
     // Get more information about the linked file.
-    $current_dir = dirname($row->parent_file_path);
-    $row->url_info = $this->getUrlInfo($row->chunk_id, $current_dir);
-
-    // Ignore external URLs. E.g., link to
-    // http://www.gpo.gov/fdsys/pkg/FR-2013-05-22/pdf/2013-11832.pdf on
-    // http://www.justice.gov/atr/cases/abimodelo.html.
-    if ($row->url_info['external']) {
-      return FALSE;
-    }
-
-    $row->legacy_path = $row->url_path = $row->url_info['relative'];
-
-    // Get date from index page markup.
-    $date_raw = $row->chunk->parent()->find('.news-date')->text();
-    if (preg_match('/\([a-zA-Z]+\.? [0-9]{1,2}, [0-9]{4}\)/', $row->date, $matches)) {
-      $row->date = $matches[0];
-      $row->date = trim($row->date, " \t\n\r\0\x0B()");
-    }
-    else {
-      $this->migrationMessage("No date pattern was found for @file, source value is '@raw'.", array(
-        '@file' => $row->fileid,
-        '@raw' => $date_raw,
-      ));
-    }
-
-    // Manually set url_path and legacy_path before parent::prepareRow().
-    $row->url_path = $row->legacy_path = $row->url_info['relative_url'];
+    $current_dir = dirname($row->document_url);
+    $row->url_info = $this->getUrlInfo($row->document_url, $current_dir);
+    $row->legacy_path = $row->url_path = $row->url_info['relative_url'];
 
     switch ($row->url_info['extension']) {
       // If case document is HTML, parse and populate node body.
@@ -813,43 +854,80 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
         catch (Exception $e) {
           $this->migrationMessage("Failed to load file '@file' referenced in '@parent'.", array(
             '@file' => $row->url_info['system_path'],
-            '@parent' => $row->parent_file_path,
+            '@parent' => $row->index_url,
           ), WATCHDOG_ERROR);
 
           return FALSE;
         }
 
-        parent::prepareRow($row);
-        $row->title = $this->sourceParser->getTitle();
+        $this->sourceParser = new AtrCaseDocumentSourceParser($row->url_info['relative_url'], $row->filedata);
         $row->body = $this->sourceParser->getBody();
+
+        // Attach pdf if present.
+        $pdf_links = $this->sourceParser->queryPath->find('a')->filterPreg('/PDF/');
+        foreach ($pdf_links as $pdf_link) {
+          $pdf_url = $pdf_link->attr('href');
+          $url_info = $this->getUrlInfo(trim($pdf_url), $this->url_info['directory']);
+          $row->source_dir[] = $url_info['system_dir'];
+          $row->attachment_filename[] = $url_info['filename'];
+          $row->attachmentRedirects[] = $url_info['relative_url'];
+        }
+
+        // Attach wpd links if present.
+        $wpd_links = $this->sourceParser->queryPath->find('a')->filterPreg('/WordPerfect/');
+        foreach ($wpd_links as $wpd_link) {
+          $url_info = $this->getUrlInfo(trim($wpd_link->attr('href')), $this->url_info['directory']);
+          $row->source_dir[] = $url_info['system_dir'];
+          $row->attachment_filename[] = $url_info['filename'];
+          $row->attachmentRedirects[] = $url_info['relative_url'];
+        }
 
         break;
 
       // If case document is a pdf, attach it to the node.
       case "pdf":
-        $row->title = $row->chunk->text();
-        parent::prepareRow($row);
+        $row->source_dir = $row->url_info['system_dir'];
+        $row->attachment_filename = $row->url_info['filename'];
 
-        // Create pdf attachments. $row->url_info['system_dir'] should be
-        // set for all local files and NULL for external files.
-        if ($row->url_info['system_dir']) {
-          $row->source_dir = $row->url_info['system_dir'];
-          $row->attachment_filename = $row->url_info['filename'];
-
-          // We don't create a redirect for the attachment. Instead, we point
-          // the legacy url to the new node via $row->legacy_path.
-          // $row->attachmentRedirects = array($row->url_path);
-
-          // Generate filepath based on article date.
-          $row->time_created = strtotime($row->date);
-          $year_created = date('Y', $row->time_created);
-          $month_created = date('m', $row->time_created);
-          $date_created = date('d', $row->time_created);
-          $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
-        }
+        // We don't create a redirect for the attachment. Instead, we point
+        // the legacy url to the new node via $row->legacy_path.
+        // $row->attachmentRedirects = array($row->url_path);
 
         break;
     }
+
+    // Generate filepath based on case document date.
+    $row->time_created = strtotime($row->date);
+    $year_created = date('Y', $row->time_created);
+    $month_created = date('m', $row->time_created);
+    $date_created = date('d', $row->time_created);
+    $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
+
+    $row->uid = 1;
+
+    // Run workbench functions in parent class.
+    parent::prepareRow($row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, $row) {
+    parent::complete($entity, $row);
+
+    if (module_exists('redirect') && !empty($row->attachmentRedirects)) {
+      $this->createAttachmentRedirect($entity, $row->attachmentRedirects, 'field_casedoc_attachments');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entities = entity_load('node', $entity_id);
+    $entity = reset($entities);
+
+    $this->rollbackAttachmentRedirect($entity, 'field_casedoc_attachments');
   }
 
   /**
@@ -868,7 +946,7 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
    *
    * @param string $current_dir
    *   The current directory of the file containing the link. This is used
-   *   when the URL is relative.
+   *   to determine absolute path when the URL is relative. E.g., 'atr/cases'.
    *
    * @return array
    *   An array of properties of the provided URL.
@@ -891,7 +969,7 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
       $info['directory'] = trim($current_dir, '/') . '/' . trim(dirname($url), '/');
     }
     else {
-      $info['directory'] = ltrim(dirname($url), '/');
+      $info['directory'] = ltrim(dirname($parsed_url['path']), '/');
     }
     // Remove occurrences of "/./" with "/".
     $info['directory'] = str_replace('/./', '/', $info['directory']);
@@ -917,37 +995,12 @@ class AtrCaseDocumentMigration extends NGJusticeHtmlToNodeMigration {
 
     return $info;
   }
-
-  /**
-   * Finds a matching allowed value for a given case type value from source.
-   *
-   * Match is performed via substring search. E.g., if source value is "Final"
-   * and "Final Judgement" is an allowed value, "Final Judgement" will be
-   * returned.
-   *
-   * @param string $value
-   *   The type value from the source.
-   */
-  protected function mapCaseDocumentType($value) {
-    $field_casedoc_type = field_info_field('field_casedoc_type');
-    $allowed_values = list_allowed_values($field_casedoc_type);
-
-    foreach ($allowed_values as $key => $allowed_value) {
-      if (stristr($allowed_value, $value)) {
-        return $allowed_value;
-      }
-    }
-
-    $this->migrationMessage("No allowed value for field_casedoc_type was found, original value was '@value'.", array(
-      '@value' => $value,
-    ), WATCHDOG_ERROR);
-  }
 }
 
 /**
  * This sourceparser is used parse the actual speech.
  */
-class AtrCaseDocumentSourceParser extends SourceParser {
+class AtrCaseDocumentSourceParser extends NGNodeSourceParser {
 
   /**
    * Clean the html right before pulling the body.
@@ -955,14 +1008,6 @@ class AtrCaseDocumentSourceParser extends SourceParser {
   protected function cleanHtml() {
     parent::cleanHtml();
     HtmlCleanUp::removeTableBackgrounds($this->queryPath);
-    HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileid);
-  }
-
-  /**
-   * Required by abstract.  Empty as no Obtainers are needed.
-   */
-  public function setDefaultObtainersInfo() {
-
   }
 }
 
@@ -972,7 +1017,7 @@ class AtrCaseDocumentSourceParser extends SourceParser {
  * @package doj_migration
  * @subpackage atr
  */
-class AtrPageSourceParser  extends NGNodeSourceParser {
+class AtrPageSourceParser extends NGNodeSourceParser {
   /**
    * {@inheritdoc}
    */
@@ -1567,14 +1612,4 @@ class AtrSpeechChunkParser extends JusticeChunkParser {
       return $chunk;
     }
   }
-}
-
-/**
- * Parses a single case index page into multiple case documents.
- *
- * @package doj_migration
- * @subpackage core
- */
-class AtrCaseDocumentChunkParser extends AtrSpeechChunkParser {
-
 }

@@ -281,10 +281,10 @@ abstract class JusticeBaseMigration extends Migration {
     $field = $entity->$field_name;
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
-        $file = file_load($item['fid']);
-        $url = file_create_url($file->uri);
-        $parsed_url = parse_url($url);
-        $destination = ltrim($parsed_url['path'], '/');
+        // $file = file_load($item['fid']);
+        // $url = file_create_url($file->uri);
+        // $parsed_url = parse_url($url);
+        // $destination = ltrim($parsed_url['path'], '/');
         $source = $source_urls[$delta];
 
         // Create redirect.
@@ -293,7 +293,7 @@ abstract class JusticeBaseMigration extends Migration {
           $redirect = new stdClass();
           redirect_object_prepare($redirect);
           $redirect->source = $source;
-          $redirect->redirect = $destination;
+          $redirect->redirect = "file/{$item['fid']}/download";
           redirect_save($redirect);
         }
       }
