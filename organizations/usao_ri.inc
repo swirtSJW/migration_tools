@@ -228,8 +228,6 @@ class UsaoRiPressSourceParser extends NGDistrictPressReleaseSourceParser {
     parent::cleanHtml();
 
     $this->queryPath->find('p >strong')->remove();
-    $this->queryPath->find("a[href='mailto:USARI.Media@usdoj.gov']")->remove();
-    $this->queryPath->find("a[href='http://www.justice.gov/usao/justice101/']")->remove();
   }
 }
 
@@ -319,12 +317,6 @@ class UsaoRiObtainBody extends ObtainBody {
    */
   public static function cleanString($text) {
     $text = parent::cleanString($text);
-    $remove = array(
-      '###',
-      'Contact: 401-709-5357',
-      'To assist the media and the public, a  glossary of federal judicial terms and procedures is available at',
-    );
-    $text = str_replace($remove, '', $text);
 
     return $text;
   }
