@@ -1237,7 +1237,6 @@ class AtrGalleryImagesMigration extends JusticeHtmlToGalleryImagesMigration {
  * Migrates speeeches from /atr.
  *
  * @package doj_migration
- * @subpackage usao-sdny
  */
 class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
 
@@ -1294,7 +1293,18 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     $row->title = ObtainTitle::cleanString($row->chunk->text());
     $row->speaker_name = $row->chunk->parent()->prev('h3')->text();
     $row->speaker_role = $row->chunk->parent()->prev('p > em')->text();
-    $row->date = $row->chunk->parent()->prev('.news-date')->text();
+    $date_string = $row->chunk->parent()->prev('.news-date')->text();
+    if (empty($date_string)) {
+      $date = '';
+    }
+    else {
+      $date = date('n/d/Y', strtotime($date_string));
+      if (!empty($date)) {
+        // Output success to show progress to aid debugging.
+        $this->migrationMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+      }
+    }
+    $row->field_speech_date = $date;
 
     // Generate file destination path.
     $row->destination_dir = "public:///atr/speeches";
