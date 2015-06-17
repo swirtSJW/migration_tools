@@ -169,6 +169,9 @@ class UsaoNdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
     $title->addMethod('pluckSelector', array("#headline", 1));
 
+    $subtitle = new ObtainerInfo('subtitle');
+    $subtitle->addMethod('pluckSelector', array('h2 > em', 1));
+
     $date = new ObtainerInfo('date', "UsaoNdtxObtainDate");
     $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod('pluckProbableDate');
@@ -176,6 +179,7 @@ class UsaoNdtxPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $pr_number = new ObtainerInfo('prNumber', "UsaoNdtxObtainPrNumber");
 
     $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $subtitle;
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
 
