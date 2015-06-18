@@ -210,6 +210,7 @@ class UsaoCoPressReleaseMigration extends NGDistrictPressReleaseMigration {
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+    $row->body = str_replace('<div class="contentSub">              .', '<div class="contentSub">', $row->body);
   }
 }
 
