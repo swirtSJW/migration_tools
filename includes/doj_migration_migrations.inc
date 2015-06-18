@@ -267,7 +267,7 @@ return array (
     ),
     'usao-pr' =>
     array (
-      'title' => 'District of Puerto Rico',
+      'title' => 'District of Vermont',
     ),
     'usao-ndin' =>
     array (
@@ -340,6 +340,22 @@ return array (
     'criminal-oia' =>
     array (
       'title' => 'Office of International Affairs',
+    ),
+    'usao-vt' =>
+    array (
+      'title' => 'District of Vermont',
+    ),
+    'usao-ndtx' =>
+    array (
+      'title' => 'District of Northern Texas',
+    ),
+    'usao-cdil' =>
+    array (
+      'title' => 'Central District of Illinois',
+    ),
+    'usao-cdca' =>
+    array (
+      'title' => 'Central District of California',
     ),
   ),
   'migrations' =>
@@ -919,6 +935,21 @@ return array (
       'group_name' => 'usao-edva',
       'class_name' => 'UsaoEdvaPressReleaseMigration',
     ),
+    'AtrCase' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrCaseMigration',
+    ),
+    'AtrCaseDocument' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrCaseDocumentMigration',
+    ),
+    'AtrIndustry' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrIndustryMigration',
+    ),
     'AtrGallery' =>
     array (
       'group_name' => 'atr',
@@ -928,6 +959,11 @@ return array (
     array (
       'group_name' => 'atr',
       'class_name' => 'AtrGalleryImagesMigration',
+    ),
+    'AtrSpeech' =>
+    array (
+      'group_name' => 'atr',
+      'class_name' => 'AtrSpeechMigration',
     ),
     'UsaoCtFile' =>
     array (
@@ -1463,6 +1499,81 @@ return array (
     array (
       'group_name' => 'criminal-oia',
       'class_name' => 'CriminalOiaFileMigration',
+    ),
+    'UsaoVtPage' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtPageMigration',
+    ),
+    'UsaoVtFile' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtFileMigration',
+    ),
+    'UsaoVtPressRelease' =>
+    array (
+      'group_name' => 'usao-vt',
+      'class_name' => 'UsaoVtPressReleaseMigration',
+    ),
+    'UsaoNdtxPage' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxPageMigration',
+    ),
+    'UsaoNdtxFile' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxFileMigration',
+    ),
+    'UsaoNdtxPressRelease' =>
+    array (
+      'group_name' => 'usao-ndtx',
+      'class_name' => 'UsaoNdtxPressReleaseMigration',
+    ),
+    'UsaoCdilPage' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilPageMigration',
+    ),
+    'UsaoCdilFile' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilFileMigration',
+    ),
+    'UsaoCdilPressRelease' =>
+    array (
+      'group_name' => 'usao-cdil',
+      'class_name' => 'UsaoCdilPressReleaseMigration',
+    ),
+    'UsaoCdcaPage' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaPageMigration',
+    ),
+    'UsaoCdcaFile' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaFileMigration',
+    ),
+    'UsaoCdcaPressRelease' =>
+    array (
+      'group_name' => 'usao-cdca',
+      'class_name' => 'UsaoCdcaPressReleaseMigration',
+    ),
+    'UsaoCoPage' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoPageMigration',
+    ),
+    'UsaoCoFile' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoFileMigration',
+    ),
+    'UsaoCoPressRelease' =>
+    array (
+      'group_name' => 'usao-co',
+      'class_name' => 'UsaoCoPressReleaseMigration',
     ),
   ),
 );

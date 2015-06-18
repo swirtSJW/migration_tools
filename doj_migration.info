@@ -59,6 +59,7 @@ files[] = includes/source_parsers/HtmlToSpeechSourceParser.php
 files[] = includes/source_parsers/HtmlToSpeechSpanishSourceParser.php
 files[] = includes/source_parsers/PressReleaseSourceParser.php
 files[] = includes/source_parsers/SourceParser.php
+files[] = includes/source_parsers/SimpleSourceParser.php
 
 files[] = includes/source_parsers/NGDistrictPressReleaseSourceParser.php
 files[] = includes/source_parsers/NGDistrictPageSourceParser.php
@@ -175,3 +176,8 @@ files[] = organizations/criminal.inc
 files[] = organizations/criminal_vns.inc
 files[] = organizations/atr_espanol.inc
 files[] = organizations/criminal_oia.inc
+files[] = organizations/usao_vt.inc
+files[] = organizations/usao_ndtx.inc
+files[] = organizations/usao_cdil.inc
+files[] = organizations/usao_cdca.inc
+files[] = organizations/usao_co.inc

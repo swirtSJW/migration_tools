@@ -131,7 +131,7 @@ abstract class NGSourceParser {
   /**
    * Create the queryPath object.
    */
-  private function initQueryPath() {
+  protected function initQueryPath() {
     // If query path is already initialized, get out.
     if (isset($this->queryPath)) {
       return;
@@ -236,7 +236,6 @@ abstract class NGSourceParser {
     }
   }
 
-
   /**
    * Geocode a string.
    *
@@ -286,6 +285,23 @@ abstract class NGSourceParser {
       }
 
       return $address;
+    }
+  }
+
+  /**
+   * Set the html var after some cleaning.
+   */
+  protected function cleanHtml() {
+    try {
+      $this->initQueryPath();
+      HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
+      HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
+
+      // Clean up specific to the Justice site.
+      HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
+    }
+    catch (Exception $e) {
+      $this->sourceParserMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 }

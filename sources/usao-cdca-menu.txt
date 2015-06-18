@@ -1,0 +1,21 @@
+HOME{"url":"http://www.justice.gov/usao/cac/index.html"}
+ABOUT{"url":"usao-cdca/about-us-attorneys-office"}
+-About the District{"url":"usao-cdca/our-district"}
+-Employment{"url":"usao-cdca/employment"}
+NEWS{"url":"http://www.justice.gov/usao/cac/news.html"}
+-Recent Events{"url":"usao-cdca/recent-events"}
+DIVISIONS{"url":"usao-cdca/divisions"}
+-Civil Division {"url":"usao-cdca/civil-division-0"}
+-Criminal Division {"url":"usao-cdca/contact-us-1"}
+-Tax Division {"url":"usao-cdca/tax-division-0"}
+-Administrative Division {"url":"usao-cdca/administrative-division"}
+PROGRAMS{"url":"usao-cdca/programs"}
+-Community Outreach{"url":"usao-cdca/community-outreach"}
+-Reporting a Crime{"url":"usao-cdca/reporting-crime"}
+-Reporting a Civil Rights Violation{"url":"usao-cdca/reporting-civil-rights-violation"}
+-Preventing Identity Theft{"url":"usao-cdca/preventing-identity-theft"}
+-Victim Witness Assistance {"url":"usao-cdca/victimwitness"}
+DOJ/Countrywide Settlement{"url":"usao-cdca/dojcountrywide-settlement-information"}
+DOJ/SunTrust Mortgage Settlement{"url":"usao-cdca/dojsuntrust-mortgage-settlement-information"}
+DOJ/Wells Fargo Mortgage Settlement{"url":"usao-cdca/dojwells-fargo-mortgage-settlement-information"}
+CONTACT US{"url":"usao-cdca/contact-us-0"}
