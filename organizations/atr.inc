@@ -731,7 +731,7 @@ class AtrCaseMigration extends AtrCsvMigration {
     if (!empty($flipped_array[$value])) {
       $new_value = $flipped_array[$value];
       if ($key = $this->mapValueToSelectListKey('field_brief_federal_court', $new_value)) {
-         return $key;
+        return $key;
       }
     }
 
@@ -750,7 +750,15 @@ class AtrCaseMigration extends AtrCsvMigration {
     parent::prepareRow($row);
 
     $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->index_url);
-    $content = file_get_contents($system_file_path);
+
+    try {
+      $content = file_get_contents($system_file_path);
+    }
+    catch (Exception $e) {
+      $this->migrationMessage("Could not load file '@file'", array('@file' => $system_file_path), WATCHDOG_ERROR);
+      return FALSE;
+    }
+
     $parsed_url = parse_url($row->index_url);
     $row->url_path = $parsed_url['path'];
     $row->legacy_path = trim($row->url_path, '/');
