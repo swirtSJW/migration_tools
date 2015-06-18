@@ -324,7 +324,8 @@ class AtrIndustryMigration extends JusticeCsvMigration {
    */
   public function __construct($arguments) {
     $source_file = __DIR__ . '/../sources/industry_codes.csv';
-    parent::__construct($arguments, $source_file);
+    $options = array('header_rows' => TRUE);
+    parent::__construct($arguments, $source_file, $options);
 
     $this->description = t('Migrates industries for ATR cases.');
     $this->destination = new MigrateDestinationTerm('industry');
@@ -424,6 +425,29 @@ abstract class AtrCsvMigration extends JusticeCsvToNodeMigration {
     return $columns;
   }
 
+  /**
+   * Maps a type value to the corresponding select list key.
+   *
+   * @param string $field_name
+   *   The machine name of the field for which to find keys.
+   *
+   * @param string $value
+   *   The value from the source.
+   *
+   * @return string
+   *   The corresponding select list key, or else the raw value.
+   */
+  protected function mapValueToSelectListKey($field_name, $value) {
+    $field = field_info_field($field_name);
+    $allowed_values = list_allowed_values($field);
+    foreach ($allowed_values as $key => $allowed_value) {
+      if ($allowed_value == $value) {
+        return $key;
+      }
+    }
+
+    return FALSE;
+  }
 }
 
 /**
@@ -470,7 +494,7 @@ class AtrCaseMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_case_date', 'date_opened');
     $this->addFieldMapping('field_case_date:to', 'date_closed');
-    $this->addFieldMapping('field_case_type', 'matter_type');
+    $this->addFieldMapping('field_case_type', 'matter_type')->callbacks(array($this, 'mapTypeToAllowedValue'));
     $this->addFieldMapping('field_brief_federal_court', 'court')->callbacks(array($this, 'translateCourtValues'));
     $this->addFieldMapping('field_brief_court_level')->defaultValue('district_court');
     $this->addFieldMapping('field_case_market', 'market');
@@ -525,6 +549,28 @@ class AtrCaseMigration extends AtrCsvMigration {
   }
 
   /**
+   * Maps a type value to the corresponding select list key.
+   *
+   * @param string $value
+   *   The value from the source.
+   *
+   * @return string
+   *   The corresponding select list key, or else the raw value.
+   */
+  protected function mapTypeToAllowedValue($value) {
+    if ($key = $this->mapValueToSelectListKey('field_case_type', $value)) {
+      return $key;
+    }
+
+    $this->migrationMessage("Could not find allowed value for @field_name, source value was '@value',", array(
+      '@field_name' => 'field_case_type',
+      '@value' => $value,
+    ), WATCHDOG_WARNING);
+
+    return $value;
+  }
+
+  /**
    * Returns the tids of industry terms, given an industry codes.
    *
    * @param array $codes
@@ -536,6 +582,12 @@ class AtrCaseMigration extends AtrCsvMigration {
   protected function getIndustryTermByCode($codes) {
     $tids = array();
     foreach ($codes as $code) {
+
+      // Skip empty codes.
+      if (!$code) {
+        continue;
+      }
+
       $query = new EntityFieldQuery();
       $query->entityCondition('entity_type', 'taxonomy_term')
         ->entityCondition('bundle', 'industry')
@@ -550,7 +602,10 @@ class AtrCaseMigration extends AtrCsvMigration {
         $tids[] = $tid;
       }
       else {
-        $this->migrationMessage('Could not find corresponding industry term for code "@code"', array('@code' => $code), WATCHDOG_ERROR);
+        $this->migrationMessage('Could not find corresponding industry term for code "@code" in "@file".', array(
+          '@code' => $code,
+          '@file' => $this->sourceValues->index_url,
+        ), WATCHDOG_ERROR);
       }
     }
 
@@ -567,6 +622,11 @@ class AtrCaseMigration extends AtrCsvMigration {
    *   The corrected value, or else the original if none can be found.
    */
   protected function translateCourtValues($value) {
+    // Not all values are wrong! Try first.
+    if ($key = $this->mapValueToSelectListKey('field_brief_federal_court', $value)) {
+      return $key;
+    }
+
     $map = array(
       'District of Rhode Island' => 'Rhode Island, District of',
       'District of Puerto Rico' => 'Puerto Rico, District of',
@@ -612,6 +672,7 @@ class AtrCaseMigration extends AtrCsvMigration {
       'Eastern District of Tennessee' => 'Tennessee, Eastern District',
       'Middle District of Tennessee' => 'Tennessee, Middle District',
       'Western District of Tennessee' => 'Tennessee, Western District',
+      'Eastern District of Illinois' => 'Illinois, Eastern District',
       'Northern District of Illinois' => 'Illinois, Northern District',
       'Central District of Illinois' => 'Illinois, Central District',
       'Southern District of Illinois' => 'Illinois, Southern District',
@@ -664,9 +725,20 @@ class AtrCaseMigration extends AtrCsvMigration {
       'District of District of Columbia' => 'District of Columbia, District of',
     );
 
-    if (!empty($map[$value])) {
-      return $map[$value];
+    // Whoops.
+    $flipped_array = array_flip($map);
+
+    if (!empty($flipped_array[$value])) {
+      $new_value = $flipped_array[$value];
+      if ($key = $this->mapValueToSelectListKey('field_brief_federal_court', $new_value)) {
+         return $key;
+      }
     }
+
+    $this->migrationMessage("Could not find allowed value for field_brief_federal_court, source value was '@value' in '@file'", array(
+      '@value' => $value,
+      '@file' => $this->sourceValues->index_url,
+    ), WATCHDOG_WARNING);
 
     return $value;
   }
@@ -694,7 +766,7 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     // Set the case documents to the source ids used in
     // AtrCaseDocumentMigration.
-    $row->case_document_ids = $this->getCaseDocumentIds($this->index_url);
+    $row->case_document_ids = $this->getCaseDocumentIds($row->index_url);
 
     // Set to admin.
     $row->uid = 1;
@@ -716,6 +788,7 @@ class AtrCaseMigration extends AtrCsvMigration {
     $atr_case_documents = new MigrateSourceCSV($source_file, $this->caseDocumentCsvColumns(), $options);
 
     $ids = array();
+    $atr_case_documents->performRewind();
     while ($row = $atr_case_documents->getNextRow()) {
       if ($row->index_url == $index_url) {
         $ids[] = $row->document_url;
@@ -802,15 +875,12 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
    *   The corresponding select list key, or else the raw value.
    */
   protected function mapTypeToAllowedValue($value) {
-    $field_casedoc_type = field_info_field('field_casedoc_type');
-    $allowed_values = list_allowed_values($field_casedoc_type);
-    foreach ($allowed_values as $key => $allowed_value) {
-      if ($allowed_value == $value) {
-        return $key;
-      }
+    if ($key = $this->mapValueToSelectListKey('field_casedoc_type', $value)) {
+      return $key;
     }
 
-    $this->migrationMessage("Could not find allowed value for field_casedoc_type, source value was '@value',", array(
+    $this->migrationMessage("Could not find allowed value for @field_name, source value was '@value',", array(
+      '@field_name' => 'field_casedoc_type',
       '@value' => $value,
     ), WATCHDOG_WARNING);
 
