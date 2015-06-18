@@ -20,15 +20,15 @@ class UsaoCoPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-          0 => 'usao/co',
-          43 => 'usao/co/caseupdates',
-        );
+      0 => 'usao/co',
+      43 => 'usao/co/caseupdates',
+    );
     $options = array('recurse' => FALSE);
     $extension_regex = '/.*\.(html|htm)$/i';
 
     $arguments['source_parser_class'] = "UsaoCoPageSourceParser";
 
-     // Configuring Obtainers.
+    // Configuring Obtainers.
     $title = new ObtainerInfo('title', "UsaoCoObtainTitlePage");
     $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
@@ -109,51 +109,51 @@ class UsaoCoPressReleaseMigration extends NGDistrictPressReleaseMigration {
    */
   public function __construct($arguments) {
     $arguments['district'] = "usao-co";
-    $arguments['component_tid'] = 1742;
+    $arguments['component_tid'] = 1741;
     $source_dirs = array(
-          1 => 'usao/co/news/2013/aug',
-          2 => 'usao/co/news/2013/nov',
-          3 => 'usao/co/news/2013/sept',
-          4 => 'usao/co/news/2013/feb',
-          5 => 'usao/co/news/2013/dec',
-          6 => 'usao/co/news/2013/jun',
-          7 => 'usao/co/news/2013/apr',
-          8 => 'usao/co/news/2013/may',
-          9 => 'usao/co/news/2013/mar',
-          10 => 'usao/co/news/2013/oct',
-          11 => 'usao/co/news/2013/jan',
-          12 => 'usao/co/news/2013/july',
-          13 => 'usao/co/news/2015/feb',
-          14 => 'usao/co/news/2015/apr',
-          15 => 'usao/co/news/2015/may',
-          16 => 'usao/co/news/2015/mar',
-          17 => 'usao/co/news/2015/jan',
-          18 => 'usao/co/news/2011/January2011',
-          19 => 'usao/co/news/2011/February2011',
-          20 => 'usao/co/news/2011',
-          21 => 'usao/co/news/2011/July2011',
-          22 => 'usao/co/news/2011/April2011',
-          23 => 'usao/co/news/2011/June2011',
-          24 => 'usao/co/news/2011/August2011',
-          25 => 'usao/co/news/2011/May2011',
-          26 => 'usao/co/news/2011/September2011',
-          27 => 'usao/co/news/2011/March2011',
-          28 => 'usao/co/news/2011/December2011',
-          29 => 'usao/co/news/2011/November2011',
-          30 => 'usao/co/news/2011/October2011',
-          31 => 'usao/co/news/2014/aug',
-          32 => 'usao/co/news/2014/jul',
-          33 => 'usao/co/news/2014/nov',
-          34 => 'usao/co/news/2014/sept',
-          35 => 'usao/co/news/2014/feb',
-          36 => 'usao/co/news/2014/dec',
-          37 => 'usao/co/news/2014/jun',
-          38 => 'usao/co/news/2014/apr',
-          39 => 'usao/co/news/2014/may',
-          40 => 'usao/co/news/2014/mar',
-          41 => 'usao/co/news/2014/oct',
-          42 => 'usao/co/news/2014/jan',
-        );
+      1 => 'usao/co/news/2013/aug',
+      2 => 'usao/co/news/2013/nov',
+      3 => 'usao/co/news/2013/sept',
+      4 => 'usao/co/news/2013/feb',
+      5 => 'usao/co/news/2013/dec',
+      6 => 'usao/co/news/2013/jun',
+      7 => 'usao/co/news/2013/apr',
+      8 => 'usao/co/news/2013/may',
+      9 => 'usao/co/news/2013/mar',
+      10 => 'usao/co/news/2013/oct',
+      11 => 'usao/co/news/2013/jan',
+      12 => 'usao/co/news/2013/july',
+      13 => 'usao/co/news/2015/feb',
+      14 => 'usao/co/news/2015/apr',
+      15 => 'usao/co/news/2015/may',
+      16 => 'usao/co/news/2015/mar',
+      17 => 'usao/co/news/2015/jan',
+      18 => 'usao/co/news/2011/January2011',
+      19 => 'usao/co/news/2011/February2011',
+      20 => 'usao/co/news/2011',
+      21 => 'usao/co/news/2011/July2011',
+      22 => 'usao/co/news/2011/April2011',
+      23 => 'usao/co/news/2011/June2011',
+      24 => 'usao/co/news/2011/August2011',
+      25 => 'usao/co/news/2011/May2011',
+      26 => 'usao/co/news/2011/September2011',
+      27 => 'usao/co/news/2011/March2011',
+      28 => 'usao/co/news/2011/December2011',
+      29 => 'usao/co/news/2011/November2011',
+      30 => 'usao/co/news/2011/October2011',
+      31 => 'usao/co/news/2014/aug',
+      32 => 'usao/co/news/2014/jul',
+      33 => 'usao/co/news/2014/nov',
+      34 => 'usao/co/news/2014/sept',
+      35 => 'usao/co/news/2014/feb',
+      36 => 'usao/co/news/2014/dec',
+      37 => 'usao/co/news/2014/jun',
+      38 => 'usao/co/news/2014/apr',
+      39 => 'usao/co/news/2014/may',
+      40 => 'usao/co/news/2014/mar',
+      41 => 'usao/co/news/2014/oct',
+      42 => 'usao/co/news/2014/jan',
+    );
     $options = array('recurse' => FALSE);
     $extension_regex = '/.*\.(html|htm)$/i';
 
@@ -192,24 +192,25 @@ class UsaoCoPressReleaseMigration extends NGDistrictPressReleaseMigration {
    */
   public function prepareRow($row) {
     $skip_these = array(
-          0 => '/usao/co/news/2011/October2011/index.html',
-          1 => '/usao/co/news/2011/November2011/index.html',
-          2 => '/usao/co/news/2011/December2011/index.html',
-          3 => '/usao/co/news/2011/March2011/index.html',
-          4 => '/usao/co/news/2011/September2011/index.html',
-          5 => '/usao/co/news/2011/May2011/index.html',
-          6 => '/usao/co/news/2011/August2011/index.html',
-          7 => '/usao/co/news/2011/June2011/index.html',
-          8 => '/usao/co/news/2011/April2011/index.html',
-          9 => '/usao/co/news/2011/July2011/index.html',
-          10 => '/usao/co/news/2011/index.html',
-          11 => '/usao/co/news/2011/February2011/index.html',
-          12 => '/usao/co/news/2011/January2011/index.html',
-          13 => '/usao/co/news/2014/jun/6-17-14.html',
-    	);
+      0 => '/usao/co/news/2011/October2011/index.html',
+      1 => '/usao/co/news/2011/November2011/index.html',
+      2 => '/usao/co/news/2011/December2011/index.html',
+      3 => '/usao/co/news/2011/March2011/index.html',
+      4 => '/usao/co/news/2011/September2011/index.html',
+      5 => '/usao/co/news/2011/May2011/index.html',
+      6 => '/usao/co/news/2011/August2011/index.html',
+      7 => '/usao/co/news/2011/June2011/index.html',
+      8 => '/usao/co/news/2011/April2011/index.html',
+      9 => '/usao/co/news/2011/July2011/index.html',
+      10 => '/usao/co/news/2011/index.html',
+      11 => '/usao/co/news/2011/February2011/index.html',
+      12 => '/usao/co/news/2011/January2011/index.html',
+      13 => '/usao/co/news/2014/jun/6-17-14.html',
+    );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+    $row->body = str_replace('<div class="contentSub">              .', '<div class="contentSub">', $row->body);
   }
 }
 
