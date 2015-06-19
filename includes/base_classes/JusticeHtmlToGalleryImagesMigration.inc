@@ -96,7 +96,13 @@ abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigr
 
     // Create a new SourceParser to handle HTML content.
     try {
-      $source_parser = new SourceParser($row->url_path, $row->filedata);
+      $html = $row->filedata;
+      // BUG: There is a problem created here because we are taking content
+      // that was gathered from a queryPath object and passing it to a new
+      // queryPath object.  We have never been able to figure out why double
+      // queryPathing leads to bad characters being created from harmless
+      // html entities.
+      $source_parser = new SourceParser($row->url_path, $html);
 
       $image_url = $source_parser->queryPath->find('.download a')->attr('href');
 
