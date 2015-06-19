@@ -357,6 +357,10 @@ return array (
     array (
       'title' => 'Central District of California',
     ),
+    'usao-vi' =>
+    array (
+      'title' => 'District of Virgin Islands',
+    ),
   ),
   'migrations' =>
   array (
@@ -1574,6 +1578,21 @@ return array (
     array (
       'group_name' => 'usao-co',
       'class_name' => 'UsaoCoPressReleaseMigration',
+    ),
+    'UsaoViPage' =>
+    array (
+      'group_name' => 'usao-vi',
+      'class_name' => 'UsaoViPageMigration',
+    ),
+    'UsaoViFile' =>
+    array (
+      'group_name' => 'usao-vi',
+      'class_name' => 'UsaoViFileMigration',
+    ),
+    'UsaoViPressRelease' =>
+    array (
+      'group_name' => 'usao-vi',
+      'class_name' => 'UsaoViPressReleaseMigration',
     ),
   ),
 );
