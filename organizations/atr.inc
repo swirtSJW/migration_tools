@@ -1621,6 +1621,7 @@ class AtrSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     $this->addFieldMapping('og_group_ref')
       ->defaultValue('atr')
       ->sourceMigration('Organization');
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
 
   /**
