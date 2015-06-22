@@ -477,13 +477,15 @@ class AtrFileMigration extends JusticeDeployableBinaryFileMigration {
     // Match .pdf files only.
     $source_dirs = array(
       'atr',
-
     );
 
     $regex = '/.*\.(pdf|txt|rtf|doc|docx|xls|xlsx|csv|mp3|mp4|wpd|wp|qpw|xml|ppt|pptx|db|rdf|swf|tex|vcf|wav|wps|xht|xml|zip)/i';
     $dest_dir = 'public:///atr/docs';
 
-    $options = array('recurse' => TRUE);
+    $options = array(
+      'recurse' => TRUE,
+      'nomask' => '/(\.\.?|CVS|cases.*)$/',
+    );
 
     // This will setup $this->map, $this->destination, and $this->source.
     // It will also add field mappings for file location and redirects, which
@@ -791,7 +793,7 @@ class AtrCaseMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_case_component')->defaultValue(array($component_tid));
     $this->addFieldMapping('field_case_component:source_type')->defaultValue('tid');
 
-    $this->addFieldMapping('field_case_tags', 'keywords');
+    // $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(FALSE);
 
