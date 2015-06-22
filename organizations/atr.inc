@@ -510,7 +510,7 @@ class AtrCaseMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
     $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
 
-    $this->addFieldMapping('field_case_tags', 'keywords');
+    // $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(FALSE);
 
