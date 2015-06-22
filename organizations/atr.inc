@@ -1155,6 +1155,7 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_casedoc_attachments:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_casedoc_attachments:source_dir', 'source_dir');
     $this->addFieldMapping('field_casedoc_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+    $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
 
   /**
