@@ -742,6 +742,7 @@ class AtrCaseMigration extends AtrCsvMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
+    $component_tid = 376;
     $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
     $source_file = __DIR__ . '/../sources/atr-cases.csv';
     $options = array('header_rows' => TRUE);
@@ -787,6 +788,8 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
     $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
+    $this->addFieldMapping('field_case_component')->defaultValue(array($component_tid));
+    $this->addFieldMapping('field_case_component:source_type')->defaultValue('tid');
 
     $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
@@ -794,7 +797,6 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     $this->addPathDnmMapping(array(
       'field_case_topic',
-      'field_case_component',
       'field_case_overview',
       'field_case_link',
       'field_case_attachments',
