@@ -1,0 +1,21 @@
+HOME{"url":"usao-edny"}
+ABOUT{"url":"usao-edny/about"}
+NEWS{"url":"http://www.justice.gov/usao/nye/pr/index.php"}
+MEET THE U.S. ATTORNEY{"url":"usao-edny/kelly-t-currie"}
+-Former U.S. Attorneys{"url":"usao-edny/former-united-states-attorneys"}
+DIVISIONS{"url":"usao-edny/divisions"}
+-Appeals Division {"url":"usao-edny/appeals-division"}
+-Civil Division{"url":"usao-edny/civil-division"}
+-Criminal Division{"url":"usao-edny/criminal-division"}
+PROGRAMS{"url":"usao-edny/programs"}
+-Victim Witness{"url":"usao-edny/victim-witness"}
+-Pending Cases{"url":"usao-edny/victim-witness-pending-cases"}
+-Addition Resources {"url":"usao-edny/victim-witness-resources"}
+-Complaint Form{"url":"http://www.justice.gov/usao/nye/vw/complaintform/ComplaintForm.pdf"}
+-Complaint Form En Español{"url":"http://www.justice.gov/usao/nye/vw/complaintform/complaintformspanish.pdf"}
+EMPLOYMENT{"url":"usao-edny/careers"}
+-Assistant U.S. Attorneys{"url":"usao-edny/assistant-u-s-attorney-positions"}
+-Support Staff{"url":"usao-edny/support-staff"}
+-Law School Internships{"url":"usao-edny/voluntary-internships-law-students"}
+-Student Internships{"url":"usao-edny/student-internship-opportunities"}
+CONTACT US{"url":"usao-edny/contact-us"}

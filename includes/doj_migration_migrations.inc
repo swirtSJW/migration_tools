@@ -361,6 +361,10 @@ return array (
     array (
       'title' => 'District of Virgin Islands',
     ),
+    'usao-edny' =>
+    array (
+      'title' => 'Eastern District of New York',
+    ),
   ),
   'migrations' =>
   array (
@@ -1593,6 +1597,21 @@ return array (
     array (
       'group_name' => 'usao-vi',
       'class_name' => 'UsaoViPressReleaseMigration',
+    ),
+    'UsaoEdnyPage' =>
+    array (
+      'group_name' => 'usao-edny',
+      'class_name' => 'UsaoEdnyPageMigration',
+    ),
+    'UsaoEdnyFile' =>
+    array (
+      'group_name' => 'usao-edny',
+      'class_name' => 'UsaoEdnyFileMigration',
+    ),
+    'UsaoEdnyPressRelease' =>
+    array (
+      'group_name' => 'usao-edny',
+      'class_name' => 'UsaoEdnyPressReleaseMigration',
     ),
   ),
 );
