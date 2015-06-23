@@ -452,6 +452,10 @@ class AtrPageMigration extends NGJusticeHtmlToPageMigration {
       '/atr/overview.html',
       '/atr/foia.html',
       '/atr/contact.html',
+      '/atr/public/eag/262643.htm',
+      '/atr/google760bbb7d6ce2dfa3.html',
+      '/atr/cvarneybio.htm',
+      '/atr/cases.html',
     );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
