@@ -1455,6 +1455,18 @@ class AtrPressSourceParser extends NGPressReleaseSourceParser {
  * @subpackage atr
  */
 class AtrObtainTitlePage extends ObtainTitle {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      'Public Workshops',
+    );
+    $text = str_ireplace($remove, '', $text);
+
+    return $text;
+  }
 }
 
 /**
@@ -2006,6 +2018,7 @@ class AtrObtainBody extends ObtainBody {
   public static function cleanString($text) {
     $remove = array(
       '<!--#include virtual="/atr/ssi/atr-footer.ssi" -->',
+      '<h1>Public Workshops</h1>',
     );
     $text = str_ireplace($remove, '', $text);
     $text = parent::cleanString($text);
