@@ -82,7 +82,7 @@ class AtrPageMigration extends NGJusticeHtmlToPageMigration {
       807 => 'atr/public/taskforces',
       808 => 'atr/public/testimony',
       809 => 'atr/public/workshops',
-      810 => 'atr/public/workshops/ag2010',
+      // 810 => 'atr/public/workshops/ag2010',
       811 => 'atr/public/workshops/airlines2008',
       812 => 'atr/public/workshops/docs',
       813 => 'atr/public/workshops/docs/202661',
@@ -136,6 +136,11 @@ class AtrPageMigration extends NGJusticeHtmlToPageMigration {
       869 => 'atr/public/workshops/mfn',
       870 => 'atr/public/workshops/pae',
       874 => 'atr/rss',
+      875 => 'atr/cases/amex',
+      876 => 'atr/cases/apple/exhibits',
+      877 => 'atr/cases/ascapbmi',
+      878 => 'atr/cases/bazaarvoice',
+      879 => 'atr/cases/usairways',
     );
 
     $options = array('recurse' => FALSE);
@@ -1462,6 +1467,7 @@ class AtrObtainTitlePage extends ObtainTitle {
     $text = parent::cleanString($text);
     $remove = array(
       'Public Workshops',
+      'USDOJ: Antitrust Division',
     );
     $text = str_ireplace($remove, '', $text);
 
