@@ -6,7 +6,7 @@ About the Division{"url":"atr/about-division"}
 -Antitrust Laws and You{"url":"atr/antitrust-laws-and-you"}
 -Assistant Attorney General{"url":"atr/meet-assistant-attorney-general-0"}
 -Sections and Offices{"url":"atr/sections-and-offices"}
-Public Documents {"url":"atr/redirect-page-20"}
+Public Documents {"url":"atr/public-documents"}
 -Antitrust Statutes{"url":"http://www.justice.gov/atr/public/divisionmanual/chapter2.pdf"}
 -Appellate Briefs{"url":"atr/appellate-briefs"}
 -Articles and Papers{"url":"atr/articles-and-papers"}
