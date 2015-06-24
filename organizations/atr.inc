@@ -619,7 +619,7 @@ class AtrIndustryMigration extends JusticeCsvMigration {
     parent::__construct($arguments, $source_file, $options);
 
     $this->description = t('Migrates industries for ATR cases.');
-    $this->destination = new MigrateDestinationTerm('industry');
+    $this->destination = new MigrateDestinationTerm('industry', array('allow_duplicate_terms' => TRUE));
     $this->map = new MigrateSQLMap($this->machineName,
       array(
         'code' => array(
