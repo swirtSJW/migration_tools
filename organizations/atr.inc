@@ -669,13 +669,16 @@ abstract class AtrCsvMigration extends JusticeCsvToNodeMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments, $source_file, $options) {
+    /*
+    // @codingStandardsIgnoreStart
     $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
     $this->addSimpleMappings(array('title', 'uid'));
-
+    // @codingStandardsIgnoreEnd
+    */
     parent::__construct($arguments, $source_file, $options);
   }
 
@@ -781,7 +784,15 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     $this->destination = new MigrateDestinationNode('case');
 
+    // This is to be run only AFTER the initial migration is run.
+    // This class has been converted to an "update-only" migration.
+    // @see https://www.drupal.org/node/1117454.
+    $this->systemOfRecord = Migration::DESTINATION;
+    $this->addFieldMapping('nid', 'index_url')->sourceMigration('AtrCase');
+
     // Define non-simple field mappings.
+    /*
+    // @codingStandardsIgnoreStart
     $this->addFieldMapping('field_case_body', 'body');
     $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_case_date', 'date_opened');
@@ -790,21 +801,28 @@ class AtrCaseMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_brief_federal_court', 'court')->callbacks(array($this, 'translateCourtValues'));
     $this->addFieldMapping('field_brief_court_level')->defaultValue('district_court');
     $this->addFieldMapping('field_case_market', 'market');
-
     $this->addFieldMapping('field_case_documents', 'case_document_ids')->sourceMigration('AtrCaseDocument');
-
     $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
     $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(FALSE);
+    // @codingStandardsIgnoreEnd
+    */
 
     $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
     $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
+
+    /*
+    // @codingStandardsIgnoreStart
     $this->addFieldMapping('field_case_component')->defaultValue(array($component_tid));
     $this->addFieldMapping('field_case_component:source_type')->defaultValue('tid');
 
     // $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(FALSE);
+    // @codingStandardsIgnoreEnd
+    */
+
+    $this->addFieldMapping('field_case_name', 'title');
 
     $this->addPathDnmMapping(array(
       'field_case_topic',
@@ -814,15 +832,6 @@ class AtrCaseMigration extends AtrCsvMigration {
       'field_case_images',
       'field_case_teaser',
     ));
-
-    // Configuring Obtainers.
-    /*
-    $title = new ObtainerInfo('title', "ObtainTitle");
-    $title->addMethod('pluckSelector', array("h1", 1));
-    $title->addMethod('pluckSelector', array("title", 1));
-
-    $arguments['obtainers_info'][] = $title;
-    */
   }
 
   /**
@@ -1041,6 +1050,8 @@ class AtrCaseMigration extends AtrCsvMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    /*
+    // @codingStandardsIgnoreStart
     $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->index_url);
 
     try {
@@ -1070,6 +1081,8 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     // Set to admin.
     $row->uid = 1;
+    // @codingStandardsIgnoreEnd
+    */
   }
 
   /**
