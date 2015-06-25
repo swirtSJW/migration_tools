@@ -345,7 +345,7 @@ class ObtainHtml extends Obtainer {
    *   The string appearing before the <br> or the full string if no <br>.
    */
   public static function trimAtBr($text = '', $position = 'before') {
-    $texts = splitOnBr($text);
+    $texts = self::splitOnBr($text);
 
     if ($position == 'before') {
       return $texts[0];
@@ -368,7 +368,7 @@ class ObtainHtml extends Obtainer {
    *   The string appearing before the blank <br> or the full string if no <br>.
    */
   protected function trimAtBrBlank($text, $qp_element, $max_length = 0) {
-    $texts = splitOnBr($text);
+    $texts = self::splitOnBr($text);
     $trimmed = '';
     $lines_used = 0;
     foreach ($texts as $line_num => $line) {
