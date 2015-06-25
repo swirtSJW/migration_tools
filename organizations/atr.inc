@@ -875,7 +875,6 @@ class AtrCaseMigration extends AtrCsvMigration {
   protected function getIndustryTermByCode($codes) {
     $tids = array();
     foreach ($codes as $code) {
-
       // Skip empty codes.
       if (!$code) {
         continue;
@@ -889,8 +888,8 @@ class AtrCaseMigration extends AtrCsvMigration {
       $result = $query->execute();
 
       if (isset($result['taxonomy_term'])) {
-        $tids = array_keys($result['taxonomy_term']);
-        $tid = reset($tids);
+        $term_ids = array_keys($result['taxonomy_term']);
+        $tid = reset($term_ids);
 
         $tids[] = $tid;
       }
