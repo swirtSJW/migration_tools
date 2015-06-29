@@ -1162,9 +1162,14 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
       ),
       MigrateDestinationNode::getKeySchema()
     );
-
+    // This is to be run only AFTER the initial migration is run.
+    // This class has been converted to an "update-only" migration.
+    // @see https://www.drupal.org/node/1117454.
+    $this->systemOfRecord = Migration::DESTINATION;
+    $this->addFieldMapping('nid', 'document_url')->sourceMigration('AtrCaseDocument');
     $this->destination = new MigrateDestinationNode('case_document');
-
+    /*
+    // @codingStandardsIgnoreStart
     $this->addFieldMapping('field_casedoc_body', 'body');
     $this->addFieldMapping('field_casedoc_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_casedoc_date', 'date');
@@ -1176,6 +1181,9 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_casedoc_attachments:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_casedoc_attachments:source_dir', 'source_dir');
     $this->addFieldMapping('field_casedoc_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
+    // @codingStandardsIgnoreEnd
+     */
+
     $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
 
@@ -1222,6 +1230,8 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
    */
   public function prepareRow($row) {
 
+    /*
+    // @codingStandardsIgnoreStart
     // Get more information about the linked file.
     $current_dir = dirname($row->document_url);
     $row->url_info = $this->getUrlInfo($row->document_url, $current_dir);
@@ -1288,9 +1298,12 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
 
     $row->uid = 1;
-
+    // @codingStandardsIgnoreEnd
+     */
+    $this->migrationMessage('Updating: @destination', array('@destination' => $row->document_url), WATCHDOG_DEBUG, 0);
     // Run workbench functions in parent class.
     parent::prepareRow($row);
+
   }
 
   /**
