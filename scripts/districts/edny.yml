@@ -1,5 +1,6 @@
 abbreviation: usao-edny
 full_name: Eastern District of New York
 directory: usao/nye
+file_extensions: [htm, html, php]
 pr_subdirectory: pr
 component_tid: 1971

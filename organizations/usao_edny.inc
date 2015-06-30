@@ -116,12 +116,34 @@ class UsaoEdnyPressReleaseMigration extends NGDistrictPressReleaseMigration {
   public function __construct($arguments) {
     $arguments['district'] = "usao-edny";
     $arguments['component_tid'] = 1971;
+
     $source_dirs = array(
       1 => 'usao/nye/pr',
       2 => 'usao/nye/pr/2013',
+      15 => 'usao/nye/pr/January14',
+      18 => 'usao/nye/pr/February14',
+      19 => 'usao/nye/pr/March14',
+      14 => 'usao/nye/pr/April14',
+      17 => 'usao/nye/pr/May14',
+      9 => 'usao/nye/pr/June14',
+      20 => 'usao/nye/pr/July14',
+      16 => 'usao/nye/pr/August14',
+      8 => 'usao/nye/pr/September14',
+      11 => 'usao/nye/pr/October14',
+      5 => 'usao/nye/pr/November14',
+      6 => 'usao/nye/pr/December14',
+      13 => 'usao/nye/pr/January15',
+      12 => 'usao/nye/pr/February15',
+      4 => 'usao/nye/pr/March15',
+      10 => 'usao/nye/pr/April15',
+      7 => 'usao/nye/pr/May15',
+      30 => 'usao/nye/pr/June15',
+      31 => 'usao/nye/pr/July15',
+      32 => 'usao/nye/pr/August15',
+      33 => 'usao/nye/pr/September15',
     );
     $options = array('recurse' => FALSE);
-    $extension_regex = '/.*\.(html|htm)$/i';
+    $extension_regex = '/.*\.(htm|html|php)$/i';
 
     $arguments['source_parser_class'] = "UsaoEdnyPressSourceParser";
 
@@ -133,15 +155,24 @@ class UsaoEdnyPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
     $title->addMethod('pluckSelector', array("#headline", 1));
 
+    $subtitle = new ObtainerInfo('subtitle', "UsaoEdnyObtainTitlePressRelease");
+    $subtitle->addMethod('pluckAnySelectorUntilValid', array('h3'));
+
     $date = new ObtainerInfo('date', "UsaoEdnyObtainDate");
     $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod('pluckProbableDate');
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoEdnyObtainPrNumber");
 
+    $body = new ObtainerInfo('body', 'UsaoEdnyPressreleaseObtainBody');
+    $body->addMethod('findTopBodyHtml');
+    $body->addMethod('findClassContentSub');
+
     $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $subtitle;
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
+    $arguments['obtainers_info'][] = $body;
 
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
   }
@@ -162,6 +193,8 @@ class UsaoEdnyPressReleaseMigration extends NGDistrictPressReleaseMigration {
       '/usao/nye/pr/pressrel_2006.html',
       '/usao/nye/pr/pressrel_2009.html',
       '/usao/nye/pr/pressrel_2011.html',
+      '/usao/nye/pr/index.php',
+      '/usao/nye/pr/attachments.php',
     );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
@@ -196,6 +229,12 @@ class UsaoEdnyPressSourceParser extends NGDistrictPressReleaseSourceParser {
    */
   protected function cleanHtml() {
     parent::cleanHtml();
+
+    $this->queryPath->find('div.printer')->remove();
+    $this->queryPath->find('.twitter-follow-button')->remove();
+    $this->queryPath->find('.twitter-share-button')->remove();
+    $this->queryPath->find('hr')->remove();
+    $this->queryPath->find("br[clear = 'left']")->remove();
   }
 }
 
@@ -260,4 +299,61 @@ class UsaoEdnyObtainPrNumber extends ObtainId {
  * @see Obtainer.api.php
  */
 class UsaoEdnyObtainDate extends ObtainDate {
+}
+
+/**
+ * Obtainer for body property for /usao-edny press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-edny
+ * @see Obtainer.api.php
+ */
+class UsaoEdnyPressreleaseObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      '<?php if(!$print) echo "',
+      '<?php include("../attachments.php"); ?>',
+      '$print = $_GET["print"];',
+      'if(!$print)',
+      'echo "<link rel=\'stylesheet\' href=\'../../includes/usao-style.css\' type=\'text/css\' media=\'all\' />";',
+      'include("../../includes/usao-header.ssi")',
+      '<a href="https://twitter.com/SDNYNews" class="twitter-follow-button" data-show-count="false">Follow @EDNYNews</a>',
+      'include("../attachments.php"); ?',
+      'style="float: left;"',
+      'echo "<link rel=\'stylesheet\' href=\'../../css/usao_print.css\' type=\'text/css\' media=\'all\' />";',
+      '<link rel="stylesheet" href="../../css/usao_print.css" type="text/css" media="all" />',
+      'style="float: right;',
+      '<p>"; else echo "</p>',
+      '"; else     echo "',
+      '<p>"; ?&gt;</p>',
+      'include("../../includes/usao-footer.ssi");',
+      'include("../../includes/usao-rightCol.ssi");',
+      '<a class="twitter-follow-button" data-show-count="false" href="https://twitter.com/EDNYNews">Follow @EDNYNews</a>',
+      '<?php',
+      '<br/>"; ?>',
+      '"; ?>',
+      '?>',
+      "else\n",
+      'class="printer"',
+      ' ? ',
+      'margin-bottom:19px;',
+      'margin-right:12px;',
+      'text-indent:48px',
+    );
+
+    $text = str_ireplace($remove, '', $text);
+    // Fix the tweet link that gets mangled by the sourceparser as it goes from
+    // php to html.
+    $text = str_ireplace("'Tweet<br />", "'>Tweet</a><br/>", $text);
+
+    // Now that it is fixed, remove the twitter link.
+    $regex = "/<a\shref=\'https:\/\/twitter\.com([^\"]*)\'>([^\"]*)<\/a>/i";
+    $text = preg_replace($regex, '', $text);
+
+    return $text;
+  }
 }
