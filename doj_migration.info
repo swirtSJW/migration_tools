@@ -184,3 +184,4 @@ files[] = organizations/usao_co.inc
 files[] = organizations/usao_vi.inc
 files[] = organizations/usao_edny.inc
 files[] = organizations/usao_edar.inc
+files[] = organizations/usao_de.inc
