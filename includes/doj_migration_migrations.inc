@@ -385,6 +385,10 @@ return array (
     array (
       'title' => 'Northern District of Oklahoma',
     ),
+    'usao-sdca' =>
+    array (
+      'title' => 'Southern District of California',
+    ),
   ),
   'migrations' =>
   array (
@@ -1707,6 +1711,21 @@ return array (
     array (
       'group_name' => 'usao-ndok',
       'class_name' => 'UsaoNdokPressReleaseMigration',
+    ),
+    'UsaoSdcaPage' =>
+    array (
+      'group_name' => 'usao-sdca',
+      'class_name' => 'UsaoSdcaPageMigration',
+    ),
+    'UsaoSdcaFile' =>
+    array (
+      'group_name' => 'usao-sdca',
+      'class_name' => 'UsaoSdcaFileMigration',
+    ),
+    'UsaoSdcaPressRelease' =>
+    array (
+      'group_name' => 'usao-sdca',
+      'class_name' => 'UsaoSdcaPressReleaseMigration',
     ),
   ),
 );
