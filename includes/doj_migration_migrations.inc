@@ -365,6 +365,10 @@ return array (
     array (
       'title' => 'Eastern District of New York',
     ),
+    'usao-edar' =>
+    array (
+      'title' => 'Eastern District of Arkansas',
+    ),
   ),
   'migrations' =>
   array (
@@ -1612,6 +1616,21 @@ return array (
     array (
       'group_name' => 'usao-edny',
       'class_name' => 'UsaoEdnyPressReleaseMigration',
+    ),
+    'UsaoEdarPage' =>
+    array (
+      'group_name' => 'usao-edar',
+      'class_name' => 'UsaoEdarPageMigration',
+    ),
+    'UsaoEdarFile' =>
+    array (
+      'group_name' => 'usao-edar',
+      'class_name' => 'UsaoEdarFileMigration',
+    ),
+    'UsaoEdarPressRelease' =>
+    array (
+      'group_name' => 'usao-edar',
+      'class_name' => 'UsaoEdarPressReleaseMigration',
     ),
   ),
 );
