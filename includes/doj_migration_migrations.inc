@@ -369,6 +369,10 @@ return array (
     array (
       'title' => 'Eastern District of Arkansas',
     ),
+    'usao-de' =>
+    array (
+      'title' => 'District of Deleware',
+    ),
   ),
   'migrations' =>
   array (
@@ -1631,6 +1635,21 @@ return array (
     array (
       'group_name' => 'usao-edar',
       'class_name' => 'UsaoEdarPressReleaseMigration',
+    ),
+    'UsaoDePage' =>
+    array (
+      'group_name' => 'usao-de',
+      'class_name' => 'UsaoDePageMigration',
+    ),
+    'UsaoDeFile' =>
+    array (
+      'group_name' => 'usao-de',
+      'class_name' => 'UsaoDeFileMigration',
+    ),
+    'UsaoDePressRelease' =>
+    array (
+      'group_name' => 'usao-de',
+      'class_name' => 'UsaoDePressReleaseMigration',
     ),
   ),
 );
