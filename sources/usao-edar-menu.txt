@@ -4,11 +4,10 @@ ABOUT{"url":"usao-edar/about"}
 NEWS{"url":"http://www.justice.gov/usao/are/news.html"}
 MEET THE U.S. ATTORNEY{"url":"usao-edar/christopher-r-thyer"}
 PROGRAMS{"url":"usao-edar/law-enforcement-coordinating-committee-lecc"}
--Law Enforcement Coordinating Committee (LECC) 
-{"url":"usao-edar/law-enforcement-coordinating-committee-lecc-0"}
+-Law Enforcement Coordinating Committee (LECC){"url":"usao-edar/law-enforcement-coordinating-committee-lecc-0"}
 -Project Safe Childhood{"url":"usao-edar/project-safe-childhood"}
 -Project Safe Neighborhoods{"url":"usao-edar/project-safe-neighborhoods"}
 -Anti-Terrorism Advisory Council (ATAC) {"url":"usao-edar/anti-terrorism-advisory-council-atac"}
 -Victim Witness Assistance{"url":"usao-edar/victim-witness-assistance"}
 -Weed & Seed{"url":"usao-edar/weed-seed"}
-{"url":""}
+
