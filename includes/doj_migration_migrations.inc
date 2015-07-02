@@ -373,6 +373,10 @@ return array (
     array (
       'title' => 'District of Deleware',
     ),
+    'usao-wy' =>
+    array (
+      'title' => 'District of Wyoming',
+    ),
   ),
   'migrations' =>
   array (
@@ -1650,6 +1654,21 @@ return array (
     array (
       'group_name' => 'usao-de',
       'class_name' => 'UsaoDePressReleaseMigration',
+    ),
+    'UsaoWyPage' =>
+    array (
+      'group_name' => 'usao-wy',
+      'class_name' => 'UsaoWyPageMigration',
+    ),
+    'UsaoWyFile' =>
+    array (
+      'group_name' => 'usao-wy',
+      'class_name' => 'UsaoWyFileMigration',
+    ),
+    'UsaoWyPressRelease' =>
+    array (
+      'group_name' => 'usao-wy',
+      'class_name' => 'UsaoWyPressReleaseMigration',
     ),
   ),
 );
