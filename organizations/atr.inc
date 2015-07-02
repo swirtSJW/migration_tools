@@ -784,15 +784,7 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     $this->destination = new MigrateDestinationNode('case');
 
-    // This is to be run only AFTER the initial migration is run.
-    // This class has been converted to an "update-only" migration.
-    // @see https://www.drupal.org/node/1117454.
-    $this->systemOfRecord = Migration::DESTINATION;
-    $this->addFieldMapping('nid', 'index_url')->sourceMigration('AtrCase');
-
     // Define non-simple field mappings.
-    /*
-    // @codingStandardsIgnoreStart
     $this->addFieldMapping('field_case_body', 'body');
     $this->addFieldMapping('field_case_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_case_date', 'date_opened');
@@ -805,22 +797,14 @@ class AtrCaseMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_case_violation', 'violation')->separator('|');
     $this->addFieldMapping('field_case_violation:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_violation:ignore_case')->defaultValue(FALSE);
-    // @codingStandardsIgnoreEnd
-    */
-
     $this->addFieldMapping('field_case_industry', 'codes')->separator('|')->callbacks(array($this, 'getIndustryTermByCode'));
     $this->addFieldMapping('field_case_industry:source_type')->defaultValue('tid');
-
-    /*
-    // @codingStandardsIgnoreStart
     $this->addFieldMapping('field_case_component')->defaultValue(array($component_tid));
     $this->addFieldMapping('field_case_component:source_type')->defaultValue('tid');
 
     // $this->addFieldMapping('field_case_tags', 'keywords');
     $this->addFieldMapping('field_case_tags:create_term')->defaultValue(TRUE);
     $this->addFieldMapping('field_case_tags:ignore_case')->defaultValue(FALSE);
-    // @codingStandardsIgnoreEnd
-    */
 
     $this->addFieldMapping('field_case_name', 'title');
 
@@ -1050,8 +1034,6 @@ class AtrCaseMigration extends AtrCsvMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    /*
-    // @codingStandardsIgnoreStart
     $system_file_path = str_replace('http://www.justice.gov', $this->baseDir, $row->index_url);
 
     try {
@@ -1081,8 +1063,6 @@ class AtrCaseMigration extends AtrCsvMigration {
 
     // Set to admin.
     $row->uid = 1;
-    // @codingStandardsIgnoreEnd
-    */
   }
 
   /**
@@ -1162,14 +1142,9 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
       ),
       MigrateDestinationNode::getKeySchema()
     );
-    // This is to be run only AFTER the initial migration is run.
-    // This class has been converted to an "update-only" migration.
-    // @see https://www.drupal.org/node/1117454.
-    $this->systemOfRecord = Migration::DESTINATION;
-    $this->addFieldMapping('nid', 'document_url')->sourceMigration('AtrCaseDocument');
+
     $this->destination = new MigrateDestinationNode('case_document');
-    /*
-    // @codingStandardsIgnoreStart
+
     $this->addFieldMapping('field_casedoc_body', 'body');
     $this->addFieldMapping('field_casedoc_body:format')->defaultValue('wysiwyg');
     $this->addFieldMapping('field_casedoc_date', 'date');
@@ -1181,8 +1156,6 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $this->addFieldMapping('field_casedoc_attachments:destination_dir', 'destination_dir');
     $this->addFieldMapping('field_casedoc_attachments:source_dir', 'source_dir');
     $this->addFieldMapping('field_casedoc_attachments:file_replace')->defaultValue(FILE_EXISTS_REUSE);
-    // @codingStandardsIgnoreEnd
-     */
 
     $this->addFieldMapping('context')->defaultValue('no_right_sidebar');
   }
@@ -1230,8 +1203,6 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
    */
   public function prepareRow($row) {
 
-    /*
-    // @codingStandardsIgnoreStart
     // Get more information about the linked file.
     $current_dir = dirname($row->document_url);
     $row->url_info = $this->getUrlInfo($row->document_url, $current_dir);
@@ -1298,9 +1269,7 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
 
     $row->uid = 1;
-    // @codingStandardsIgnoreEnd
-     */
-    $this->migrationMessage('Updating: @destination', array('@destination' => $row->document_url), WATCHDOG_DEBUG, 0);
+
     // Run workbench functions in parent class.
     parent::prepareRow($row);
 
