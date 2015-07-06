@@ -1266,7 +1266,7 @@ class AtrCaseDocumentMigration extends AtrCsvMigration {
     $year_created = date('Y', $row->time_created);
     $month_created = date('m', $row->time_created);
     $date_created = date('d', $row->time_created);
-    $row->destination_dir = "public:///atr/case_documents/$year_created/$month_created/$date_created";
+    $row->destination_dir = "public:///atr/case-documents/attachments/$year_created/$month_created/$date_created";
 
     $row->uid = 1;
 
