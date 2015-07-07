@@ -377,6 +377,10 @@ return array (
     array (
       'title' => 'District of Wyoming',
     ),
+    'usao-ednc' =>
+    array (
+      'title' => 'Eastern District of North Carolina',
+    ),
   ),
   'migrations' =>
   array (
@@ -1669,6 +1673,21 @@ return array (
     array (
       'group_name' => 'usao-wy',
       'class_name' => 'UsaoWyPressReleaseMigration',
+    ),
+    'UsaoEdncPage' =>
+    array (
+      'group_name' => 'usao-ednc',
+      'class_name' => 'UsaoEdncPageMigration',
+    ),
+    'UsaoEdncFile' =>
+    array (
+      'group_name' => 'usao-ednc',
+      'class_name' => 'UsaoEdncFileMigration',
+    ),
+    'UsaoEdncPressRelease' =>
+    array (
+      'group_name' => 'usao-ednc',
+      'class_name' => 'UsaoEdncPressReleaseMigration',
     ),
   ),
 );
