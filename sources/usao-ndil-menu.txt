@@ -1,0 +1,18 @@
+HOME{"url":"usao-ndil"}
+ABOUT{"url":"usao-ndil/about"}
+-En Espanol{"url":"usao-ndil/informacion"}
+THE US ATTORNEY{"url":"usao-ndil/zachary-t-fardon"}
+NEWS{"url":"http://www.justice.gov/usao/iln/pr/chicago/2015/index.html"}
+-Rockford Press Room{"url":"http://www.justice.gov/usao/iln/pr/rockford/2015/index.html"}
+PROGRAMS{"url":"usao-ndil/programs"}
+-Project Safe Childhood{"url":"http://www.projectsafechildhood.gov"}
+-ATAC{"url":"http://http://www.justice.gov/usao/iln/programs.html#ATAC"}
+-LECC{"url":"http://http://www.justice.gov/usao/iln/programs.html#LECC"}
+-Project Safe Neighborhood{"url":"http://http://www.justice.gov/usao/iln/programs.html#PSN"}
+-Victim Witness Assistance{"url":"http://http://www.justice.gov/usao/iln/programs.html#VWA"}
+-Information for Victims in Large Cases{"url":"usao-ndil/information-victims-large-cases"}
+EMPLOYMENT{"url":"usao-ndil/employment-opportunities"}
+-Benefits{"url":"http://http://www.justice.gov/usao/iln/employment.html#Benefits"}
+-Law School Intern Program{"url":"usao-ndil/northern-district-illinois-law-student-volunteer-intern-program"}
+-Diversity{"url":"http://http://www.justice.gov/usao/iln/employment.html#Diversity"}
+CONTACT US{"url":"usao-ndil/contact-us"}

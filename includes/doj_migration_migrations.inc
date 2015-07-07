@@ -389,6 +389,10 @@ return array (
     array (
       'title' => 'Southern District of California',
     ),
+    'usao-ndil' =>
+    array (
+      'title' => 'Northern District of Illinois',
+    ),
   ),
   'migrations' =>
   array (
@@ -1726,6 +1730,21 @@ return array (
     array (
       'group_name' => 'usao-sdca',
       'class_name' => 'UsaoSdcaPressReleaseMigration',
+    ),
+    'UsaoNdilPage' =>
+    array (
+      'group_name' => 'usao-ndil',
+      'class_name' => 'UsaoNdilPageMigration',
+    ),
+    'UsaoNdilFile' =>
+    array (
+      'group_name' => 'usao-ndil',
+      'class_name' => 'UsaoNdilFileMigration',
+    ),
+    'UsaoNdilPressRelease' =>
+    array (
+      'group_name' => 'usao-ndil',
+      'class_name' => 'UsaoNdilPressReleaseMigration',
     ),
   ),
 );
