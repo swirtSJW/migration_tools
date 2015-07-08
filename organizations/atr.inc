@@ -669,16 +669,12 @@ abstract class AtrCsvMigration extends JusticeCsvToNodeMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments, $source_file, $options) {
-    /*
-    // @codingStandardsIgnoreStart
     $this->addFieldMapping('og_group_ref')->defaultValue('atr')->sourceMigration('Organization');
     $this->addFieldMapping('workbench_moderation_state_new')->defaultValue('published');
 
     // Create redirects using relative, legacy path of static file.
     $this->addFieldMapping('migrate_redirects', 'legacy_path')->separator('|');
     $this->addSimpleMappings(array('title', 'uid'));
-    // @codingStandardsIgnoreEnd
-    */
     parent::__construct($arguments, $source_file, $options);
   }
 
