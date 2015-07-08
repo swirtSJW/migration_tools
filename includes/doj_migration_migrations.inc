@@ -381,6 +381,10 @@ return array (
     array (
       'title' => 'Eastern District of North Carolina',
     ),
+    'usao-ndok' =>
+    array (
+      'title' => 'Northern District of Oklahoma',
+    ),
   ),
   'migrations' =>
   array (
@@ -1688,6 +1692,21 @@ return array (
     array (
       'group_name' => 'usao-ednc',
       'class_name' => 'UsaoEdncPressReleaseMigration',
+    ),
+    'UsaoNdokPage' =>
+    array (
+      'group_name' => 'usao-ndok',
+      'class_name' => 'UsaoNdokPageMigration',
+    ),
+    'UsaoNdokFile' =>
+    array (
+      'group_name' => 'usao-ndok',
+      'class_name' => 'UsaoNdokFileMigration',
+    ),
+    'UsaoNdokPressRelease' =>
+    array (
+      'group_name' => 'usao-ndok',
+      'class_name' => 'UsaoNdokPressReleaseMigration',
     ),
   ),
 );
