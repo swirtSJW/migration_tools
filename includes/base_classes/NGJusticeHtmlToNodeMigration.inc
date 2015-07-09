@@ -137,6 +137,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * Use the source parser to set properties in whatever order.
    */
   protected function setProperties($row) {
+    $row->content_type = $this->sourceParser->getContentType();
     $row->title = $this->sourceParser->getTitle();
     $row->body = $this->sourceParser->getBody();
   }

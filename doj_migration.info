@@ -193,3 +193,4 @@ files[] = organizations/usao_sdoh.inc
 files[] = organizations/usao_ndil.inc
 files[] = organizations/usao_sdoh_espanol.inc
 files[] = organizations/usao_wdwi.inc
+files[] = organizations/usao_wdpa.inc

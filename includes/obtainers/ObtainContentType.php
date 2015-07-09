@@ -25,4 +25,14 @@ class ObtainContentType extends Obtainer {
     return (stripos($text, $needle) !== FALSE) ? 'press_release' : '';
   }
 
+  /**
+   * Find 'Speeches By The U.S. Attorney' for Speech.
+   */
+  protected function findClassBreadcrumbSpeech() {
+    $body = $this->queryPath->find('.breadcrumb')->first();
+    $text = $body->text();
+    $needle = 'Speeches By The U.S. Attorney';
+
+    return (stripos($text, $needle) !== FALSE) ? 'speech' : '';
+  }
 }

@@ -405,6 +405,10 @@ return array (
     array (
       'title' => 'Western District of Wisconsin',
     ),
+    'usao-wdpa' =>
+    array (
+      'title' => 'Western District of Pennsylvania',
+    ),
   ),
   'migrations' =>
   array (
@@ -1797,6 +1801,26 @@ return array (
     array (
       'group_name' => 'usao-wdwi',
       'class_name' => 'UsaoWdwiPressReleaseMigration',
+    ),
+    'UsaoWdpaPage' =>
+    array (
+      'group_name' => 'usao-wdpa',
+      'class_name' => 'UsaoWdpaPageMigration',
+    ),
+    'UsaoWdpaFile' =>
+    array (
+      'group_name' => 'usao-wdpa',
+      'class_name' => 'UsaoWdpaFileMigration',
+    ),
+    'UsaoWdpaPressRelease' =>
+    array (
+      'group_name' => 'usao-wdpa',
+      'class_name' => 'UsaoWdpaPressReleaseMigration',
+    ),
+    'UsaoWdpaSpeech' =>
+    array (
+      'group_name' => 'usao-wdpa',
+      'class_name' => 'UsaoWdpaSpeechMigration',
     ),
   ),
 );
