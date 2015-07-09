@@ -393,6 +393,10 @@ return array (
     array (
       'title' => 'Northern District of Illinois',
     ),
+    'usao-sdoh' =>
+    array (
+      'title' => 'Southern District of Ohio',
+    ),
   ),
   'migrations' =>
   array (
@@ -1745,6 +1749,21 @@ return array (
     array (
       'group_name' => 'usao-ndil',
       'class_name' => 'UsaoNdilPressReleaseMigration',
+    ),
+    'UsaoSdohPage' =>
+    array (
+      'group_name' => 'usao-sdoh',
+      'class_name' => 'UsaoSdohPageMigration',
+    ),
+    'UsaoSdohFile' =>
+    array (
+      'group_name' => 'usao-sdoh',
+      'class_name' => 'UsaoSdohFileMigration',
+    ),
+    'UsaoSdohPressRelease' =>
+    array (
+      'group_name' => 'usao-sdoh',
+      'class_name' => 'UsaoSdohPressReleaseMigration',
     ),
   ),
 );
