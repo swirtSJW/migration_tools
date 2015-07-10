@@ -397,6 +397,10 @@ return array (
     array (
       'title' => 'Southern District of Ohio',
     ),
+    'usao-sdoh-espanol' =>
+    array (
+      'title' => 'Distrito Sur De Ohio',
+    ),
   ),
   'migrations' =>
   array (
@@ -1764,6 +1768,16 @@ return array (
     array (
       'group_name' => 'usao-sdoh',
       'class_name' => 'UsaoSdohPressReleaseMigration',
+    ),
+    'UsaoSdohEspanolPage' =>
+    array (
+      'group_name' => 'usao-sdoh-espanol',
+      'class_name' => 'UsaoSdohEspanolPageMigration',
+    ),
+    'UsaoSdohEspanolFile' =>
+    array (
+      'group_name' => 'usao-sdoh-espanol',
+      'class_name' => 'UsaoSdohEspanolFileMigration',
     ),
   ),
 );
