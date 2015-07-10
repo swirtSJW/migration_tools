@@ -401,6 +401,10 @@ return array (
     array (
       'title' => 'Distrito Sur De Ohio',
     ),
+    'usao-wdwi' =>
+    array (
+      'title' => 'Western District of Wisconsin',
+    ),
   ),
   'migrations' =>
   array (
@@ -1778,6 +1782,21 @@ return array (
     array (
       'group_name' => 'usao-sdoh-espanol',
       'class_name' => 'UsaoSdohEspanolFileMigration',
+    ),
+    'UsaoWdwiPage' =>
+    array (
+      'group_name' => 'usao-wdwi',
+      'class_name' => 'UsaoWdwiPageMigration',
+    ),
+    'UsaoWdwiFile' =>
+    array (
+      'group_name' => 'usao-wdwi',
+      'class_name' => 'UsaoWdwiFileMigration',
+    ),
+    'UsaoWdwiPressRelease' =>
+    array (
+      'group_name' => 'usao-wdwi',
+      'class_name' => 'UsaoWdwiPressReleaseMigration',
     ),
   ),
 );

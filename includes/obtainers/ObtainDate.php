@@ -313,6 +313,11 @@ class ObtainDate extends ObtainHtml {
     // Fix mispellings and abbreviations.
     $replace = array(
       'septmber' => 'september',
+      'arpil' => 'april',
+      'febraury' => 'february',
+      '2103' => '2013',
+      '2104' => '2014',
+      '2105' => '2015',
     );
     $text = str_ireplace(array_keys($replace), array_values($replace), $text);
 
