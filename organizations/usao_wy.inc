@@ -46,7 +46,12 @@ class UsaoWyPageMigration extends NGJusticeHtmlToPageMigration {
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('findSubBannerAlt');
 
+    $body = new ObtainerInfo('body', 'UsaoWyObtainBody');
+    $body->addMethod('findTopBodyHtml');
+    $body->addMethod('findClassContentSub');
+
     $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $body;
 
     // Parent constructor will set $this->source, $this->destination, and
     // $this->map.
@@ -286,4 +291,26 @@ class UsaoWyObtainPrNumber extends ObtainId {
  * @see Obtainer.api.php
  */
 class UsaoWyObtainDate extends ObtainDate {
+}
+
+/**
+ * Obtainer for body property for /usao-wy basic pages.
+ *
+ * @package doj_migration
+ * @subpackage usao-wy
+ * @see Obtainer.api.php
+ */
+class UsaoWyObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $remove = array(
+      'align="justify"',
+    );
+    $text = str_ireplace($remove, '', $text);
+    $text = parent::cleanString($text);
+
+    return $text;
+  }
 }
