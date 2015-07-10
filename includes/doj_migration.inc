@@ -323,8 +323,20 @@ function doj_migration_legacy_to_uri($legacy_uri) {
   if ($redirect) {
     $nid = str_replace("node/", "", $redirect->redirect);
     $node = node_load($nid);
+
     if ($node && array_key_exists('alias', $node->path) && !empty($node->path['alias'])) {
+
       return $node->path['alias'];
+    }
+
+    // Check for language other than und, because the aliases are intentionally
+    // saved with language undefined, even for a spanish node.  A spanish node,
+    // when loaded does not find an alias.
+    if (!empty($node->language) && ($node->language != LANGUAGE_NONE)) {
+      // Some other language in play, so lookup the alias directly.
+      $path = url($redirect->redirect);
+      $path = ltrim($path, '/');
+      return $path;
     }
 
     if ($node) {
