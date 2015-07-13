@@ -132,7 +132,7 @@ class UsaoDePressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('pluckSelector', array('h2', 1));
-    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center']", 1));
     $title->addMethod('pluckSelector', array("#headline", 1));
 
     $date = new ObtainerInfo('date', "UsaoDeObtainDate");
@@ -207,6 +207,19 @@ class UsaoDeObtainTitlePage extends ObtainTitle {
  * @see Obtainer.api.php
  */
 class UsaoDeObtainTitlePressRelease extends ObtainTitlePressRelease {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      '<strong>',
+      '</strong>',
+    );
+    $text = str_ireplace($remove, '', $text);
+
+    return $text;
+  }
 }
 
 /**
