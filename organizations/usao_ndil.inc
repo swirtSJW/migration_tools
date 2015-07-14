@@ -38,7 +38,7 @@ class UsaoNdilPageMigration extends NGJusticeHtmlToPageMigration {
     $title->addMethod('findSubBannerAlt');
 
     $body = new ObtainerInfo('body', 'UsaoNdilObtainBody');
-    $body->addMethod('pluckSelector', array("#content", 1));
+    $body->addMethod('pluckSelector', array('.contentSub', 1, 'html'));
     $body->addMethod('findTopBodyHtml');
     $body->addMethod('findClassContentSub');
 
