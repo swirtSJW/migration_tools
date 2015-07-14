@@ -6,7 +6,7 @@
  */
 
 /**
- * Migrates .html files from /usao-sdoh-espanol to page nodes.
+ * Migrates .html files from /usao-sdoh-es to page nodes.
  *
  * @package doj_migration
  * @subpackage usao-sdoh-espanol
@@ -42,7 +42,7 @@ class UsaoSdohEspanolPageMigration extends NGJusticeHtmlToPageMigration {
     $this->dependencies = array('UsaoDistrict');
     $this->description = t('Migrates pages from the Distrito Sur De Ohio.');
     $this->addFieldMapping('og_group_ref')
-    ->defaultValue('usao-sdoh-espanol')
+    ->defaultValue('usao-sdoh-es')
     ->sourceMigration('UsaoDistrict');
     $this->addFieldMapping('language')->defaultValue('es');
   }
@@ -61,7 +61,7 @@ class UsaoSdohEspanolPageMigration extends NGJusticeHtmlToPageMigration {
 }
 
 /**
- * SourceParser for /usao-sdoh-espanol pages.
+ * SourceParser for /usao-sdoh-es pages.
  *
  * @package doj_migration
  * @subpackage usao-sdoh-espanol
@@ -76,7 +76,7 @@ class UsaoSdohEspanolPageSourceParser  extends NGDistrictPageSourceParser {
 }
 
 /**
- * Obtainer for title property for /usao-sdoh-espanol pages.
+ * Obtainer for title property for /usao-sdoh-es pages.
  *
  * @package doj_migration
  * @subpackage usao-sdoh-espanol
