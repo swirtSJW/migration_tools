@@ -165,6 +165,7 @@ class UsaoWyPressReleaseMigration extends NGDistrictPressReleaseMigration {
       38 => 'usao/wy/news/2013/07july',
       39 => 'usao/wy/news/2013/12december',
       40 => 'usao/wy/news/2013/09september',
+      41 => 'usao/wy/news/2015/07july',
     );
     $options = array('recurse' => FALSE);
     $extension_regex = '/.*\.(html|htm)$/i';

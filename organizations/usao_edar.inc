@@ -155,6 +155,7 @@ class UsaoEdarPressReleaseMigration extends NGDistrictPressReleaseMigration {
       27 => 'usao/are/news/2013/May',
       28 => 'usao/are/news/2013/February',
       29 => 'usao/are/news/2013/December',
+      30 => 'usao/are/news/2015/July',
     );
     $options = array('recurse' => FALSE);
     $extension_regex = '/.*\.(html|htm)$/i';
