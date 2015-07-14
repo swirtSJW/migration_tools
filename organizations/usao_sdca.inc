@@ -147,9 +147,11 @@ class UsaoSdcaPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('pluckSelector', array('h2', 1));
     $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
+    $title->addMethod('pluckSelector', array("#headline > p", 1));
     $title->addMethod('pluckSelector', array("#headline", 1));
 
     $subtitle = new ObtainerInfo('subtitle', "UsaoSdcaObtainTitlePressRelease");
+    $subtitle->addMethod('pluckSelector', array("#headline > p > em", 1));
     $subtitle->addMethod('pluckSelector', array("#subheadl", 1));
 
     $date = new ObtainerInfo('date', "UsaoSdcaObtainDate");
