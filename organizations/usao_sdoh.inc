@@ -143,15 +143,23 @@ class UsaoSdohPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $title->addMethod('pluckSelector', array(".contentSub > div > div[align='center'] > p > strong > u", 1));
     $title->addMethod('pluckSelector', array('h4', 1));
 
+    $subtitle = new ObtainerInfo('subtitle');
+    $subtitle->addMethod('pluckSelector', array(".contentSub > div > div > p[align='center'] > em", 1));
+
     $date = new ObtainerInfo('date', "UsaoSdohObtainDate");
     $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod('pluckProbableDate');
 
     $pr_number = new ObtainerInfo('prNumber', "UsaoSdohObtainPrNumber");
+    $body = new ObtainerInfo('body', 'UsaoSdohObtainBody');
+    $body->addMethod('findTopBodyHtml');
+    $body->addMethod('findClassContentSub');
 
     $arguments['obtainers_info'][] = $title;
+    $arguments['obtainers_info'][] = $subtitle;
     $arguments['obtainers_info'][] = $date;
     $arguments['obtainers_info'][] = $pr_number;
+    $arguments['obtainers_info'][] = $body;
 
     parent::__construct($arguments, $source_dirs, $options, $extension_regex);
   }
@@ -264,6 +272,29 @@ class UsaoSdohObtainDate extends ObtainDate {
     );
     $text = str_ireplace($remove, '', $text);
     $text = str_ireplace('2103', '2013', $text);
+
+    return $text;
+  }
+}
+
+/**
+ * Custom obtainer for body property for /usao-sdoh.
+ *
+ * @package doj_migration
+ * @subpackage usao-sdoh
+ * @see Obtainer.api.php
+ */
+class UsaoSdohObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      'CONTACT: Jennifer Thornton',
+      '(614) 469-5715',
+    );
+    $text = str_ireplace($remove, '', $text);
 
     return $text;
   }
