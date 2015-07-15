@@ -218,6 +218,7 @@ class UsaoSdcaPressSourceParser extends NGDistrictPressReleaseSourceParser {
    */
   protected function cleanHtml() {
     parent::cleanHtml();
+    HtmlCleanUp::removeTableBackgrounds($this->queryPath);
   }
 }
 
