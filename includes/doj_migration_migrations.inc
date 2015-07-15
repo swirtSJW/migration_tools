@@ -409,6 +409,10 @@ return array (
     array (
       'title' => 'Western District of Pennsylvania',
     ),
+    'crt-fdny' =>
+    array (
+      'title' => 'United States v. City of New York FDNY Employment Discrimination Case',
+    ),
   ),
   'migrations' =>
   array (
@@ -1821,6 +1825,16 @@ return array (
     array (
       'group_name' => 'usao-wdpa',
       'class_name' => 'UsaoWdpaSpeechMigration',
+    ),
+    'CrtFdnyPage' =>
+    array (
+      'group_name' => 'crt-fdny',
+      'class_name' => 'CrtFdnyPageMigration',
+    ),
+    'CrtFdnyFile' =>
+    array (
+      'group_name' => 'crt-fdny',
+      'class_name' => 'CrtFdnyFileMigration',
     ),
   ),
 );
