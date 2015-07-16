@@ -151,7 +151,7 @@ class UsaoNdilPressReleaseMigration extends NGDistrictPressReleaseMigration {
     $date->addMethod('pluckProbableDate');
 
     $body = new ObtainerInfo('body', 'UsaoNdilObtainBody');
-    $body->addMethod('pluckSelector', array("div[align='justify']", 1));
+    $body->addMethod('pluckSelector', array("div[align='justify']", 1, 'html'));
     $body->addMethod('findTopBodyHtml');
     $body->addMethod('findClassContentSub');
 
