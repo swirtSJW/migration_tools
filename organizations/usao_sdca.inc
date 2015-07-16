@@ -133,8 +133,7 @@ class UsaoSdcaPressReleaseMigration extends NGDistrictPressReleaseMigration {
       7 => 'usao/cas/press/2014/trueblue',
       8 => 'usao/cas/press/2014/cryspal2',
       9 => 'usao/cas/press/2015',
-      // No html press releases exist, only pdf for now.
-      // 10 => 'usao/cas/press/2013',
+      10 => 'usao/cas/press/2013',
     );
     $options = array('recurse' => FALSE);
     $extension_regex = '/.*\.(html|htm)$/i';
