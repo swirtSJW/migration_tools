@@ -413,6 +413,10 @@ return array (
     array (
       'title' => 'United States v. City of New York FDNY Employment Discrimination Case',
     ),
+    'crt-njcsc' =>
+    array (
+      'title' => 'US v. State of New Jersey Civil Service Commission',
+    ),
   ),
   'migrations' =>
   array (
@@ -1835,6 +1839,16 @@ return array (
     array (
       'group_name' => 'crt-fdny',
       'class_name' => 'CrtFdnyFileMigration',
+    ),
+    'CrtNjcscPage' =>
+    array (
+      'group_name' => 'crt-njcsc',
+      'class_name' => 'CrtNjcscPageMigration',
+    ),
+    'CrtNjcscFile' =>
+    array (
+      'group_name' => 'crt-njcsc',
+      'class_name' => 'CrtNjcscFileMigration',
     ),
   ),
 );
