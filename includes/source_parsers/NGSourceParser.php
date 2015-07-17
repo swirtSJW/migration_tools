@@ -41,6 +41,7 @@ abstract class NGSourceParser {
     $html = StringCleanUp::fixEncoding($html);
     $html = StringCleanUp::stripWindowsCRChars($html);
     $html = StringCleanUp::fixWindowSpecificChars($html);
+    $html = StringCleanUp::removePhp($html);
     $this->html = $html;
 
     $this->setDefaultObtainersInfo();

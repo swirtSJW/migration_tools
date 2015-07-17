@@ -352,4 +352,27 @@ class StringCleanUp {
 
     return $text;
   }
+
+  /**
+   * Removes all php from the markup.
+   *
+   * @param string $html
+   *   Html from a page.
+   *
+   * @return string
+   *   String with any php code removed.
+   */
+  public static function removePhp($html) {
+    $count = substr_count($html, '<?');
+    $i = 1;
+    while ($i++ <= $count) {
+      $startpos = stripos($html, '<?');
+      $endpos = stripos($html, '?>') + 2;
+      $length = $endpos - $startpos;
+      if ($length > 0) {
+        $html = substr_replace($html, '', $startpos, $length);
+      }
+    }
+    return $html;
+  }
 }
