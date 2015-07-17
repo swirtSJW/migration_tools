@@ -367,7 +367,7 @@ class StringCleanUp {
     $i = 1;
     while ($i++ <= $count) {
       $startpos = stripos($html, '<?');
-      $endpos = stripos($html, '?>') + 2;
+      $endpos = stripos($html, '?>') + 1;
       $length = $endpos - $startpos;
       if ($length > 0) {
         $html = substr_replace($html, '', $startpos, $length);

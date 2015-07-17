@@ -417,6 +417,10 @@ return array (
     array (
       'title' => 'US v. State of New Jersey Civil Service Commission',
     ),
+    'crt' =>
+    array (
+      'title' => 'Civil Rights Division',
+    ),
   ),
   'migrations' =>
   array (
@@ -1849,6 +1853,21 @@ return array (
     array (
       'group_name' => 'crt-njcsc',
       'class_name' => 'CrtNjcscFileMigration',
+    ),
+    'CrtPage' =>
+    array (
+      'group_name' => 'crt',
+      'class_name' => 'CrtPageMigration',
+    ),
+    'CrtFile' =>
+    array (
+      'group_name' => 'crt',
+      'class_name' => 'CrtFileMigration',
+    ),
+    'CrtSpeech' =>
+    array (
+      'group_name' => 'crt',
+      'class_name' => 'CrtSpeechMigration',
     ),
   ),
 );
