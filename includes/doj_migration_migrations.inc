@@ -421,6 +421,10 @@ return array (
     array (
       'title' => 'Civil Rights Division',
     ),
+    'crt-military' =>
+    array (
+      'title' => 'Service Members',
+    ),
   ),
   'migrations' =>
   array (
@@ -1868,6 +1872,16 @@ return array (
     array (
       'group_name' => 'crt',
       'class_name' => 'CrtSpeechMigration',
+    ),
+    'CrtMilitaryPage' =>
+    array (
+      'group_name' => 'crt-military',
+      'class_name' => 'CrtMilitaryPageMigration',
+    ),
+    'CrtMilitaryFile' =>
+    array (
+      'group_name' => 'crt-military',
+      'class_name' => 'CrtMilitaryFileMigration',
     ),
   ),
 );

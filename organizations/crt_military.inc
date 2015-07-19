@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Defines migration classes for Civil Rights Division, Military.
+ * Defines migration classes for Service Members.
  */
 
 /**
@@ -20,11 +20,11 @@ class CrtMilitaryPageMigration extends NGJusticeHtmlToPageMigration {
 
     // Define source directories.
     $source_dirs = array(
-      0 => 'crt/military',
+      0 => 'crt/spec_topics/military',
     );
 
-    $options = array('recurse' => TRUE);
-    $extension_regex = '/.*\.(html|htm)$/i';
+    $options = array('recurse' => FALSE);
+    $extension_regex = '/.*\.(html|htm|php)$/i';
 
     $arguments['source_parser_class'] = "CrtMilitaryPageSourceParser";
 
@@ -33,11 +33,9 @@ class CrtMilitaryPageMigration extends NGJusticeHtmlToPageMigration {
     $title->addMethod('findBreadcrumbLastNonAnchor', array('.breadcrumb'));
     $title->addMethod('findBreadcrumbLastAnchor', array('.breadcrumb'));
     $title->addMethod('pluckSelector', array("h1", 1));
-    $title->addMethod('pluckSelector', array("h2", 1));
     $title->addMethod('pluckSelector', array("title", 1));
 
-    $body = new ObtainerInfo('body', 'UsaoNdilObtainBody');
-    $body->addMethod('pluckSelector', array("blockquote", 1));
+    $body = new ObtainerInfo('body', 'CrtMilitaryObtainBody');
     $body->addMethod('findTopBodyHtml');
     $body->addMethod('findClassContentSub');
 
@@ -48,7 +46,7 @@ class CrtMilitaryPageMigration extends NGJusticeHtmlToPageMigration {
     // $this->map.
     parent::__construct($arguments, $source_dirs, $extension_regex, $options);
     $this->dependencies = array('Organization');
-    $this->description = t('Migrates pages from the Civil Rights Division, Military.');
+    $this->description = t('Migrates pages from the Service Members.');
     $this->addFieldMapping('og_group_ref')
     ->defaultValue('crt-military')
     ->sourceMigration('Organization');
@@ -59,17 +57,25 @@ class CrtMilitaryPageMigration extends NGJusticeHtmlToPageMigration {
    */
   public function prepareRow($row) {
     $skip_these = array(
-      '/crt/military/cases.htm',
-      '/crt/military/cases_spanish.htm',
-      '/crt/military/contact_us_spanish.htm',
-      '/crt/military/faq_spanish.htm',
-      '/crt/military/file_claim_spanish.htm',
-      '/crt/military/other_sources_spanish.htm',
-      '/crt/military/press_releases_spanish.htm',
-      '/crt/military/press_releases_spanish.html',
-      '/crt/military/scra_summary_spanish.html',
-      '/crt/military/mil_search.html',
-      '/crt/military/mil_search2.html',
+      '/crt/spec_topics/military/divisions.html',
+      '/crt/spec_topics/military/about.html',
+      '/crt/spec_topics/military/meetattorney.html',
+      '/crt/spec_topics/military/news.html',
+      '/crt/spec_topics/military/cases.htm',
+      '/crt/spec_topics/military/index_old.html',
+      '/crt/spec_topics/military/uformatted_news.html',
+      '/crt/spec_topics/military/statutes/statutes.html',
+      '/crt/spec_topics/military/contact_us.htm',
+      '/crt/spec_topics/military/press_releases.htm',
+      '/crt/spec_topics/military/contact.html',
+      '/crt/spec_topics/military/faq.htm',
+      '/crt/spec_topics/military/faq.html',
+      '/crt/spec_topics/military/programs.html',
+      '/crt/spec_topics/military/file_claim.htm',
+      '/crt/spec_topics/military/news_old.html',
+      '/crt/spec_topics/military/other_sources.htm',
+      '/crt/spec_topics/military/news.php',
+      '/crt/spec_topics/military/news_template.php',
     );
     if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
@@ -89,12 +95,12 @@ class CrtMilitaryFileMigration extends JusticeDeployableBinaryFileMigration {
    * {@inheritdoc}
    */
   public function __construct($arguments) {
-    $this->description = t('Migrates non-image files from the crt/military subdirectory.');
+    $this->description = t('Migrates non-image files from the crt/spec_topics/military subdirectory.');
     $this->dependencies = array('Organization');
 
     // Match .pdf files only.
     $source_dirs = array(
-      'crt/military',
+      'crt/spec_topics/military',
     );
 
     $dest_dir = 'public:///crt-military/docs';
@@ -143,4 +149,25 @@ class CrtMilitaryObtainTitlePage extends ObtainTitle {
 
 }
 
+/**
+ * Obtainer for body property for /usao-ndil press releases.
+ *
+ * @package doj_migration
+ * @subpackage usao-ndil
+ * @see Obtainer.api.php
+ */
+class CrtMilitaryObtainBody extends ObtainBody {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
 
+    $text = parent::cleanString($text);
+    $text = preg_replace("/<h1\><img[^>]+\><\/h1\>/i", "", $text);
+    $text = preg_replace("/<h1\><a name=\"top\" id=\"top\" \> <img[^>]+\><\/a\><\/h1\>/i", "", $text);
+    $text = preg_replace("/<h1\><a id=\"top\" name=\"top\" \> <img[^>]+\><\/a\><\/h1\>/i", "", $text);
+    $text = preg_replace('/<div class=\"breadcrumb\">(.*?)<\/div>/s', "", $text);
+
+    return $text;
+  }
+}
