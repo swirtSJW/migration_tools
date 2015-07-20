@@ -397,7 +397,7 @@ return array (
     array (
       'title' => 'Southern District of Ohio',
     ),
-    'usao-sdoh-espanol' =>
+    'usao-sdoh-es' =>
     array (
       'title' => 'Distrito Sur De Ohio',
     ),
@@ -1795,12 +1795,12 @@ return array (
     ),
     'UsaoSdohEspanolPage' =>
     array (
-      'group_name' => 'usao-sdoh-espanol',
+      'group_name' => 'usao-sdoh-es',
       'class_name' => 'UsaoSdohEspanolPageMigration',
     ),
     'UsaoSdohEspanolFile' =>
     array (
-      'group_name' => 'usao-sdoh-espanol',
+      'group_name' => 'usao-sdoh-es',
       'class_name' => 'UsaoSdohEspanolFileMigration',
     ),
     'UsaoWdwiPage' =>
