@@ -16,6 +16,7 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
   /**
    * {@inheritdoc}
    */
+  
   public function __construct($arguments) {
     // @codingStandardsIgnoreStart
     // Define source directories.
@@ -164,28 +165,26 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
       177 => 'crt/foia/readingroom/frequent_requests/ada_settlements/fl',
       178 => 'crt/foia/readingroom/frequent_requests/ada_settlements/il',
       179 => 'crt/foia/readingroom/frequent_requests/ada_settlements/cn',
+
       180 => 'crt/foia/readingroom/frequent_requests/title_i_settlements',
       181 => 'crt/foia/readingroom/frequent_requests/days_inn',
       182 => 'crt/foia/readingroom/bostonjfk',
       183 => 'crt/foia/readingroom/wilmington',
       185 => 'crt/records/vot/obj_letters',
-
-      // Temporarilly removed until they figure out what to do with letters
-      // that have no titles.
-      // 186 => 'crt/records/vot/obj_letters/letters/NC',
-      // 187 => 'crt/records/vot/obj_letters/letters/NY',
-      // 188 => 'crt/records/vot/obj_letters/letters/AZ',
-      // 189 => 'crt/records/vot/obj_letters/letters/VA',
-      // 190 => 'crt/records/vot/obj_letters/letters/SC',
-      // 191 => 'crt/records/vot/obj_letters/letters/GA',
-      // 192 => 'crt/records/vot/obj_letters/letters/AL',
-      // 193 => 'crt/records/vot/obj_letters/letters/TX',
-      // 194 => 'crt/records/vot/obj_letters/letters/MS',
-      // 195 => 'crt/records/vot/obj_letters/letters/MI',
-      // 196 => 'crt/records/vot/obj_letters/letters/CA',
-      // 197 => 'crt/records/vot/obj_letters/letters/SD',
-      // 198 => 'crt/records/vot/obj_letters/letters/FL',
-      // 199 => 'crt/records/vot/obj_letters/letters/LA',
+      186 => 'crt/records/vot/obj_letters/letters/NC',
+      187 => 'crt/records/vot/obj_letters/letters/NY',
+      188 => 'crt/records/vot/obj_letters/letters/AZ',
+      189 => 'crt/records/vot/obj_letters/letters/VA',
+      190 => 'crt/records/vot/obj_letters/letters/SC',
+      191 => 'crt/records/vot/obj_letters/letters/GA',
+      192 => 'crt/records/vot/obj_letters/letters/AL',
+      193 => 'crt/records/vot/obj_letters/letters/TX',
+      194 => 'crt/records/vot/obj_letters/letters/MS',
+      195 => 'crt/records/vot/obj_letters/letters/MI',
+      196 => 'crt/records/vot/obj_letters/letters/CA',
+      197 => 'crt/records/vot/obj_letters/letters/SD',
+      198 => 'crt/records/vot/obj_letters/letters/FL',
+      199 => 'crt/records/vot/obj_letters/letters/LA',
       202 => 'crt/records',
       203 => 'crt/employment',
       204 => 'crt/contact',
@@ -230,7 +229,6 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
       // 90 => 'crt/spec_topics/military/news',
       // 300 => 'crt/spec_topics/fdny',
       // 350 => 'crt/spec_topics/njcsc',
-
     );
     // @codingStandardsIgnoreEnd
 
@@ -259,11 +257,15 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
     $title->addMethod('pluckSelector', array("p[align='center'] > strong", 1));
     $title->addMethod('pluckSelector', array("p[align='CENTER'] > strong", 1));
     $title->addMethod('pluckSelector', array("div[align='center'] > b", 1));
-    $title->addMethod(pluckSelector, array('p > center > strong', 1));
+    $title->addMethod('pluckSelector', array('p > center > strong', 1));
     $title->addMethod('pluckSelector', array("p[align='center']", 1));
     $title->addMethod('pluckSelector', array("div[align='center']", 1));
     $title->addMethod('findSelectorAttribute', array("img", 'title'));
     $title->addMethod('pluckSelector', array("title", 1));
+    $title->addMethod('pluckSelector', array('center > strong', 1));
+    $title->addMethod('pluckSelector', array('p > strong > u', 1));
+    $title->addMethod('pluckSelector', array('.ag-top > strong', 1));
+    $title->addMethod('pluckSelector', array('p > strong', 1));
 
     $arguments['obtainers_info'][] = $title;
 
@@ -326,6 +328,10 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
       '/crt/records/vot/obj_letters/index.php',
       '/crt/pressroom/index.php',
       '/crt/pressroom/more_news.php',
+      '/crt/about/osc/index.html',
+      '/crt/about/cor/briefs.php',
+      '/crt/about/hce/documents/weaversettle_files/header.htm',
+      '/crt/about/crm/mlk/jpg4a.php',
 
       // Miscellaneous cruft.
       '/crt/contact/election/snippet.html',
@@ -337,14 +343,174 @@ class CrtPageMigration extends NGJusticeHtmlToPageMigration {
       '/crt/spec_topics/wellsfargo/_include.php',
       '/crt/about/hce/cases/race.php',
       '/crt/index_features.html',
+      '/crt/legalinfo/stateandlocal.htm',
+      '/crt/legalinfo/howtofile_other.htm',
+      '/crt/legalinfo/natlorg_spanish.htm',
+      '/crt/508/report/jobline.htm',
+      '/crt/legalinfo/natlorg-eng.htm',
+      '/crt/about/cor/Pubs/manuals/complain.html',
+      '/crt/legalinfo/otherpost911info.htm',
+      '/crt/legalinfo/nordwg_mission.html',
+      '/crt/legalinfo/nordwg_statements.html',
+      '/crt/legalinfo/otheragencies.html',
+      '/crt/legalinfo/discrimupdate.htm',
+      '/crt/legalinfo/howtofile.htm',
+      '/crt/legalinfo/howtofile_CRT.htm',
+      '/crt/legalinfo/natorigin.htm',
+      '/crt/legalinfo/schools.htm',
+      '/crt/legalinfo/nordwg_brochure.html',
+      '/crt/legalinfo/natlorg-esp.htm',
+      '/crt/legalinfo/yourrights.htm',
+      '/crt/records/vot/obj_letters/letters/new_ltr/old_names/mobile_withdrawal.htm',
+      '/crt/foia/readingroom/bostonjfk/text/aatemplate.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Violence-Demonstrations-Bombings.htm',
+      '/crt/foia/readingroom/bostonjfk/text/police misconduct.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Freedom March on Washington.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Desegregation of Schools.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Departmental and Citizen Correspondence.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Enforcement of Voting Rights.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Involuntary.htm',
+      '/crt/foia/readingroom/bostonjfk/text/University of Mississippi.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Commmittees and reports.htm',
+      '/crt/foia/readingroom/bostonjfk/text/University of Alabama.htm',
+      '/crt/foia/readingroom/bostonjfk/text/Civil Rights Demonstrations.htm',
+      '/crt/foia/readingroom/bostonjfk/text/ABA Committee on Civil Rights.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_settlements/dc/dc_1.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr206.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr210.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr207.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr208.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr205.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/ltr209.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_coreletter/cltr119.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_tal/tal840.html',
+      '/crt/foia/readingroom/frequent_requests/ada_tal/tal817.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_tal/tal803.htm',
+      '/crt/foia/readingroom/frequent_requests/ada_tal/tal828.html',
+      '/crt/about/osc/templ.php',
+      '/crt/about/osc/index1.html',
+      '/crt/about/osc/index_old.html',
+      '/crt/about/osc/INTRO.php',
+      '/crt/508/report/itmalt1.php',
+      '/crt/about/spl/documents/dpd/detroit_cover_2.html',
+      '/crt/about/spl/documents/cleveland_erratum.php',
+      '/crt/about/spl/documents/miss_juv_info_notice_5-24-05.html',
+      '/crt/about/spl/mississippi_juvenile.html',
+      '/crt/about/hce/documents/Copy of lanzcenotice.php',
+      '/crt/about/hce/documents/centier_exhibit_8.html',
+      '/crt/about/hce/documents/dkcdcomp.php',
+      '/crt/about/hce/documents/sarasota_pr.html',
+      '/crt/about/hce/documents/montezumasettle.html',
+      '/crt/about/hce/documents/waisbord_pr.html',
+      '/crt/about/hce/documents/makowskysettle_pr.html',
+      '/crt/about/hce/documents/bonanzacomp.html',
+      '/crt/about/hce/documents/1st_nationalbank_pr.html',
+      '/crt/about/hce/documents/extra.html',
+      '/crt/about/hce/documents/s_16settlepr.html',
+      '/crt/about/hce/documents/deerrun_pr.html',
+      '/crt/about/hce/documents/madridsettle_pr.html',
+      '/crt/about/hce/documents/brief_opinions.html',
+      '/crt/about/hce/documents/comptoncomp.php',
+      '/crt/about/hce/documents/test.html',
+      '/crt/about/hce/documents/ltjacksonorder.html',
+      '/crt/about/hce/documents/renaissance_pr.html',
+      '/crt/about/hce/documents/twining_pr.html',
+      '/crt/about/hce/documents/blakely_attachments.html',
+      '/crt/about/hce/documents/beaudetsettle.html',
+      '/crt/about/hce/documents/maui_pr.html',
+      '/crt/about/hce/documents/turnberrysettlepr.html',
+      '/crt/about/hce/documents/shanriecomp2.php',
+      '/crt/about/hce/housing_scraexplain.html',
+      '/crt/about/hce/hcehome.html',
+      '/crt/about/hce/hcehome_spanish.html',
+      '/crt/about/hce/index_spanish.html',
+      '/crt/about/hce/booklet.html',
+      '/crt/about/hce/title8.php',
+      '/crt/about/hce/mortpr.html',
+      '/crt/about/hce/index.html',
+      '/crt/about/hce/index2.html',
+      '/crt/about/emp/index.html',
+      '/crt/about/emp/ugespsummary.html',
+      '/crt/about/emp/work.html',
+      '/crt/about/emp/links.html',
+      '/crt/about/cor/byagency/title9finalcommon.php',
+      '/crt/about/emp/uniformguidelines.html',
+      '/crt/about/emp/eeoc.html',
+      '/crt/about/emp/papers.html',
+      '/crt/about/emp/pressreleases.html',
+      '/crt/about/emp/faq.html',
+      '/crt/about/cor/Pubs/gsalepguidance.html',
+      '/crt/about/cor/coord/coordTable.php',
+      '/crt/about/cor/byagency/dhsix.php',
+      '/crt/about/cor/byagency/dhsvi.php',
+      '/crt/about/cor/Pubs/hhsrevisedlepguidance.html',
+      '/crt/about/vot/sec_5/pendinglistOld.php',
+      '/crt/about/vot/nvra/in_nvra_comp.php',
+      '/crt/about/vot/nvra/pulaski_comp.php',
+      '/crt/about/vot/nvra/nynvra_comp.php',
+      '/crt/about/vot/nvra/pulaski_cd.php',
+      '/crt/about/vot/nvra/mo_nvra_comp.php',
+      '/crt/about/edu/ellpage_spanish.php',
+      '/crt/about/hce/documents/waisbordsettle.php',
+      '/crt/about/osc/htm/Otherlinks.php',
     );
-    if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
+
+    if (doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
+    $row_html = $row->filedata;
+
+    if (strstr($row_html, 'META HTTP-EQUIV=REFRESH CONTENT')) {
+
+      $message = '- @fileid  -> Skipped: intentionally.';
+      watchdog('doj_migration', $message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+
+      return FALSE;
+    }
+    if (strstr($row_html, 'header(')) {
+
+      $message = '- @fileid  -> Skipped: intentionally.';
+      watchdog('doj_migration', $message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+
       return FALSE;
     }
 
-    // Logic could go here to check the path using isInPath() to apply titles
-    // to all the letters that have no titles.
-
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;      
+    }
+    if (strstr($row->fileid,'crt/about/vot/sec_203/documents') && empty($row->title)) {
+      $row->title = "Voting Rights Act Section 203 Cases";
+    }
+    if (strstr($row->fileid,'crt/about/spl/documents') && empty($row->title)) {
+      $row->title = "Special Litigation Section Cases and Matters";
+    }
+    if (strstr($row->fileid,'crt/about/hce/documents') && empty($row->title)) {
+      $row->title = "Housing and Civil Enforcement Cases";
+    }
+    if (strstr($row->fileid,'crt/about/edu/documents') && empty($row->title)) {
+      $row->title = "Educational Opportunities Section Cases";
+    }
+    if (strstr($row->fileid,'crt/about/cor/lep') && empty($row->title)) {
+      $row->title = "Federal Coordination and Compliance Section Publications";
+    }
+    if (strstr($row->fileid,'crt/about/vot/litigation') && empty($row->title)) {
+      $row->title = "Voting Rights Act Cases";
+    }
+    if (strstr($row->fileid,'crt/records/vot/obj_letters/letters') && empty($row->title)) {
+      $row->title = "Voting Determination Letter";
+    }
+    if (strstr($row->fileid,'crt/foia/readingroom/frequent_requests/ada_tal') && empty($row->title)) {
+      $row->title = "Americans with Disabilities Act Technical Assistance Letters";
+    }
+    if (strstr($row->fileid,'crt/foia/readingroom/frequent_requests/ada_coreletter') && empty($row->title)) {
+      $row->title = "Americans with Disabilities Act Core Letter";
+    }
+    if (strstr($row->fileid,'crt/about/vot/notices') && empty($row->title)) {
+      $row->title = "Section 5 Notices of Submissions";
+    }
+    if (strstr($row->fileid,'crt/about/vot/hava') && empty($row->title)) {
+      $row->title = "Help America Vote Act";
+    }
   }
 }
 
@@ -401,6 +567,44 @@ class CrtPageSourceParser  extends NGNodeSourceParser {
   protected function cleanHtml() {
     parent::cleanHtml();
   }
+  
+  /**
+   * Getter.
+   */
+  public function getTitle() {
+    $title = $this->getProperty('title');
+    $paths = array(
+      'crt/about/vot/sec_203/documents',
+      'crt/about/spl/documents',
+      'crt/about/hce/documents',
+      'crt/about/edu/documents',
+      'crt/about/cor/lep',
+      'crt/about/vot/litigation',
+      'crt/records/vot/obj_letters/letters',
+      'crt/foia/readingroom/frequent_requests/ada_tal',
+      'crt/foia/readingroom/frequent_requests/ada_coreletter',
+      'crt/about/vot/notices',
+      'crt/about/vot/hava',
+    );
+
+    if (empty($title) && $this->isInPath($paths,$this->fileId)) {
+      $this->sourceParserMessage("The title for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+    }
+
+    return $title;
+  }
+  
+  public function isInPath(array $paths, $row) {
+    foreach ($paths as $path) {
+      // Is the file in one of the paths?
+      if (stripos($row->fileid, $path) !== FALSE) {
+        // The file is in the path.
+        return TRUE;
+      }
+    }
+    // This file is not in any of the paths.
+    return FALSE;
+  }
 }
 
 /**
@@ -411,9 +615,7 @@ class CrtPageSourceParser  extends NGNodeSourceParser {
  * @see Obtainer.api.php
  */
 class CrtObtainTitlePage extends ObtainTitle {
-
 }
-
 
 /**
  * Migrates Speeches from /crt.
@@ -446,12 +648,15 @@ class CrtSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
     $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
     $title->addMethod('pluckSelector', array("#headline", 1));
+    $title->addMethod('pluckSelector', array(".presscontenttitle", 1));
     $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
 
     $date = new ObtainerInfo('date', "CrtObtainDate");
     $date->addMethod('pluckSelector', array("#contentstart > p", 1));
     $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
+    $date->addMethod('pluckSelector', array(".speechdate", 1));
+    $date->addMethod('pluckSelector', array("p[align='center']", 1));
     $date->addMethod('pluckProbableDate');
 
     $pr_number = new ObtainerInfo('prNumber', "CrtObtainPrNumber");
@@ -466,17 +671,68 @@ class CrtSpeechMigration extends NGJusticeHtmlToSpeechMigration {
     ->defaultValue('crt')
     ->sourceMigration('Organization');
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    
+    $skip_these = array(
+      '/crt/speeches/2010/crt-speech-100429-spanish.html',
+      '/crt/speeches/2009/crt-speech-091113-spanish.htm',
+      '/crt/speeches/wjk_article.php',
+      '/crt/speeches/crt_speech_070322.php',
+      '/crt/speeches/index.php',                                                                                                  
+      '/crt/speeches/crt_testimony_070621.php',
+      '/crt/speeches/ag_remarks_mlk08.php',
+      '/crt/speeches/crt_speech_070131.php',
+      '/crt/speeches/crt_speech_070326.php',
+      '/crt/speeches/rc_speech_june_29_2006.php',                                                                                      
+      '/crt/speeches/aug_20_2006_ltr.php',
+      '/crt/speeches/rc_speech_july_12_2006.php',                                                                                 
+      '/crt/speeches/sept_20_06_speech.php',
+      '/crt/speeches/crt_speech_09212006.php',                                                                                    
+      '/crt/speeches/aug_4_2006_ltr.php',
+      '/crt/speeches/aug_4_2006_ltr.php',                                                                                         
+      '/crt/speeches/nov_15_2005_ltr.php',
+      '/crt/speeches/nov_25_2005_ajc.php',
+      '/crt/speeches/speech10312006.php',
+      '/crt/speeches/wjk_remarks_11-16-06.php', 
+    );
+    if (doj_migration_skip_file($row->fileid, $skip_these)) {
+      return FALSE;
+    }
+
+    $row_html = $row->filedata;
+
+    if (strstr($row_html, 'META HTTP-EQUIV=REFRESH CONTENT')) {
+      $message = '- @fileid  -> Skipped: intentionally.';
+      watchdog('doj_migration', $message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+
+      return FALSE;
+    }
+    if (strstr($row_html, 'header(')) {
+      $message = '- @fileid  -> Skipped: intentionally.';
+      watchdog('doj_migration', $message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+
+      return FALSE;
+    }
+
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;      
+    }
+  }
 }
 
 /**
- * SourceParser for /crt Speeches.
+ * SourceParser for /usao-wdpa speeches.
  *
  * @package doj_migration
- * @subpackage crt
+ * @subpackage usao-wdpa
  */
-class CrtPressSourceParser extends NGSpeechSourceParser {
+class CrtSpeechSourceParser extends NGSpeechSourceParser {
   /**
-   * {@inheritdoc}
+   * Clean the html right before pulling the body.
    */
   protected function cleanHtml() {
     parent::cleanHtml();
@@ -491,7 +747,22 @@ class CrtPressSourceParser extends NGSpeechSourceParser {
  * @see Obtainer.api.php
  */
 class CrtObtainTitleSpeech extends ObtainTitle {
+  /**
+   * {@inheritdoc}
+   */
+  public static function cleanString($text) {
+    $text = parent::cleanString($text);
+    $remove = array(
+      'Worker Hotline',
+      '1-800-255-7688',
+      
+      'Employer Hotline',
+      '1-800-255-8155',
+    );
+    $text = str_ireplace($remove, '', $text);
 
+    return $text;
+  }
 }
 
 /**
@@ -506,10 +777,6 @@ class CrtObtainPrNumber extends ObtainId {
    * Finds the press release number from markup.
    */
   protected function findPrNumber() {
-    $text = '';
-    // $element = $this->queryPath->find('p')->last();
-    // $this->setElementToRemove($element);
-    // $text = $element->text();
 
     return $text;
   }
