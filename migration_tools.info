@@ -10,6 +10,7 @@ dependencies[] = redirect
 dependencies[] = pathauto
 
 ; Miscellaneous
+files[] = includes/CheckFor.inc
 files[] = includes/HtmlCleanUp.php
 files[] = includes/StringCleanUp.php
 files[] = includes/LegacyUrlWithAnchorFixer.php
