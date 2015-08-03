@@ -286,11 +286,11 @@ Example:  In May the directories might have stopped at `usao/are/news/2015/May` 
 
 To help debugging migrations, toggle terminal debug output on by running 
 
-    drush vset doj_migration_drush_debug TRUE
+    drush vset doj_migration_tools_drush_debug TRUE
 
 Additionally you can make the migration stop on lack of title or date by setting the value
 
-    drush vset doj_migration_drush_stop_on_error TRUE
+    drush vset doj_migration_tools_drush_stop_on_error TRUE
 
 ## Migrate the images 
 Images are pretty straightforward and require little effort.   The path argument is for the original location of the images in the source.
