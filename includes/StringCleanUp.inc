@@ -375,4 +375,60 @@ class StringCleanUp {
     }
     return $html;
   }
+
+
+  /**
+   * Decodes all HTML entities, including numeric and hexadecimal ones.
+   *
+   * @param mixed $string
+   *   A string.
+   *
+   * @return string
+   *   decoded HTML.
+   */
+  public static function decodeHtmlEntityNumeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
+    $string = html_entity_decode($string, $quote_style, $charset);
+    $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', 'migration_tools_hex_chr_utf8_callback', $string);
+    $string = preg_replace_callback('/&#([0-9]+)/', 'migration_tools_chr_utf8_callback', $string);
+    return $string;
+  }
+
+  /**
+   * Callback helper.
+   */
+  public static function migration_tools_hex_chr_utf8_callback($matches = array()) {
+    return migration_tools_chr_utf8(hexdec($matches[1]));
+  }
+
+  /**
+   * Callback helper.
+   */
+  public static function migration_tools_chr_utf8_callback($matches = array()) {
+    return migration_tools_chr_utf8($matches[1]);
+  }
+
+  /**
+   * Multi-byte chr(): Will turn a numeric argument into a UTF-8 string.
+   *
+   * @param mixed $num
+   *   A number.
+   *
+   * @return string
+   *   The char represented by the number.
+   */
+  public static function migration_tools_chr_utf8($num) {
+    if ($num < 128) {
+      return chr($num);
+    }
+    if ($num < 2048) {
+      return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+    }
+    if ($num < 65536) {
+      return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    }
+    if ($num < 2097152) {
+      return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+    }
+    return '';
+  }
 }

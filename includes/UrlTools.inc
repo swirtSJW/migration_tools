@@ -4,7 +4,7 @@
  * Functions for handling urls.
  */
 
-class urlTools extends MigrationTools {
+class urlTools {
   /**
    * Take a legacy uri, and map it to an alias.
    *
@@ -14,7 +14,7 @@ class urlTools extends MigrationTools {
    * @return string
    *   The alias matching the legacy uri, or an empty sting.
    */
-  public static function migration_legacy_to_uri($legacy_uri) {
+  public static function convertLegacyToAlias($legacy_uri) {
    $redirect = redirect_load_by_source($legacy_uri);
    if ($redirect) {
      $nid = str_replace("node/", "", $redirect->redirect);
@@ -62,5 +62,61 @@ class urlTools extends MigrationTools {
     // @TODO Need to alter connection to old path but it won't come from fileid.
     $row->url_path = substr($row->fileid, 1);
     $row->legacy_path = $row->url_path;
+  }
+
+
+  /**
+   * Convert a relative url to absolute.
+   *
+   * @param string $rel
+   *   Relative url.
+   * @param string $base
+   *   Base url.
+   * @param string $subpath
+   *   An optional sub-path to check for when translating relative URIs that are
+   *   not root based.
+   *
+   * @return string
+   *   The relative url transformed to absolute.
+   */
+  public static function convertRelativeToAbsoluteUrl($rel, $base, $subpath = '') {
+    // Return if already absolute URL.
+    if (parse_url($rel, PHP_URL_SCHEME) != '') {
+      return $rel;
+    }
+
+    // Check for presence of subpath in $rel to see if a subpath is missing.
+    if ((!empty($subpath)) && (!stristr($rel, $subpath))) {
+      // The subpath is not present, so add it.
+      $rel = $subpath . '/' . $rel;
+    }
+
+    // Queries and anchors.
+    if ($rel[0] == '#' || $rel[0] == '?') {
+      return $base . $rel;
+    }
+
+    // Parse base URL and convert to local variables:
+    // $scheme, $host, $path.
+    extract(parse_url($base));
+
+    // Remove non-directory element from path.
+    $path = preg_replace('#/[^/]*$#', '', $path);
+
+    // Destroy path if relative url points to root.
+    if ($rel[0] == '/') {
+      $path = '';
+    }
+
+    // Dirty absolute URL.
+    $abs = "$host$path/$rel";
+
+    // Replace '//' or '/./' or '/foo/../' with '/'.
+    $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+    for ($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {
+    }
+
+    // Absolute URL is ready.
+    return $scheme . '://' . $abs;
   }
 }

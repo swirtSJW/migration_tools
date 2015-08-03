@@ -168,7 +168,7 @@ abstract class Obtainer {
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = migration_tools_html_entity_decode_numeric($string);
+    $string = strongcleanup::decodehtmlentitynumeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 

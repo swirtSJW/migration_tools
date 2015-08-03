@@ -14,6 +14,7 @@ files[] = includes/CheckFor.inc
 files[] = includes/HtmlCleanUp.inc
 files[] = includes/MigrationMessage.inc
 files[] = includes/StringCleanUp.inc
+files[] = includes/TaxonomyTools.inc
 ;files[] = includes/LegacyUrlWithAnchorFixer.inc
 
 ; Menu Generator

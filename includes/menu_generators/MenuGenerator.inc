@@ -409,7 +409,7 @@ class MenuGeneratorEngineDefault {
               $last_uri = $child->attr("href");
             }
             else {
-              $class_name = migration_tools_random_string();
+              $class_name = self::generaterandomstring();
               $elem->attr('class', $class_name);
               $this->recurse(".{$class_name}", $prefix, $last_uri);
             }
@@ -421,7 +421,7 @@ class MenuGeneratorEngineDefault {
         default:
           $last_uri = (empty($last_uri)) ? $parent_uri : $last_uri;
           $new_prefix = ($tag == 'ul') ? $prefix . "-" : $prefix;
-          $class_name = migration_tools_random_string();
+          $class_name = self::generaterandomstring();
           $elem->attr('class', $class_name);
           drush_migration_tools_debug_output("$new_prefix I'm in $tag $class_name child of $last_uri");
           $this->recurse(".{$class_name}", $new_prefix, $last_uri);
@@ -650,5 +650,20 @@ class MenuGeneratorEngineDefault {
     $url .= (!empty($parsed_url['fragment'])) ? '#' . $parsed_url['fragment'] : '';
 
     return $url;
+  }
+
+  /**
+   * Generate a random string.
+   *
+   * @return string
+   *   Random string.
+   */
+  public static function generateRandomString() {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randstring = '';
+    for ($i = 0; $i < 10; $i++) {
+      $randstring .= $characters[rand(0, strlen($characters))];
+    }
+    return $randstring;
   }
 }

@@ -25,7 +25,7 @@ class ObtainLocation extends ObtainHtml {
 
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = migration_tools_html_entity_decode_numeric($text);
+    $text = strongcleanup::decodehtmlentitynumeric($text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);

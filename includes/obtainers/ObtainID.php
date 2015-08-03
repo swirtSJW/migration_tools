@@ -37,7 +37,7 @@ class ObtainID extends ObtainHtml {
   public static function cleanString($text) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = migration_tools_html_entity_decode_numeric($text);
+    $text = strongcleanup::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
