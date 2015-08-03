@@ -1,9 +1,0 @@
-Asset Forfeiture Program Home{"url":"afp/asset-forfeiture-program"}
-Participants and Roles {"url":"afp/participants-and-roles"}
-Annual Financial Statements {"url":"afp/annual-financial-statements"}
-Reports to Congress {"url":"afp/reports-congress-14"}
-The Fund {"url":"afp/fund"}
-Types of Federal Forfeiture {"url":"afp/types-federal-forfeiture"}
-Contract Information{"url":"afp/contract-information-0"}
-AFP FOIA {"url":"afp/freedom-information-act"}
-Contact the Program {"url":"afp/contact-program"}

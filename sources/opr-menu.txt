@@ -1,8 +1,0 @@
-Office of Professional Responsibility Home{"url":"opr"}
-About the Office{"url":"opr/about-office-and-opr-policies-and-procedures"}
-Meet the Counsel{"url":"opr/meet-counsel"}
-How to File a Complaint{"url":"opr/how-file-complaint"}
-Resources{"url":"opr/resources"}
-- OPR Regulation Links{"url":"opr/opr-regulations-links-0"}
-OPR FOIA{"url":"opr/opr-foia"}
-Contact OPR{"url":"opr/contact-opr"}

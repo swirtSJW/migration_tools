@@ -1,9 +1,0 @@
-Left {"url":"<nolink>","expanded":true}
--Site Map {"url":"http:\/\/www.justice.gov\/usao\/sitemap.html"}
--Accessibility {"url":"http:\/\/www.justice.gov\/usao\/accessibility.html"}
--FOIA {"url":"http:\/\/www.justice.gov\/usao\/resources\/"}
--Privacy Policy {"url":"http:\/\/www.justice.gov\/privacy-file.htm"}
--Legal Policies & Disclaimers {"url":"http:\/\/www.justice.gov\/legalpolicies.htm"}
-Right {"url":"<nolink>","expanded":true}
--Justice.gov {"url":"<front>"}
--USA.gov {"url":"http:\/\/www.usa.gov"}

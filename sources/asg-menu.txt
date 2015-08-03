@@ -1,6 +1,0 @@
-Office of the Associate Attorney General Home {"url":"asg"}
-About the Office {"url":"asg\/about-office"}
-Meet the Associate Attorney General {"url":"asg\/meet-associate-attorney-general"}
-Press Room {"url":"asg\/press-room"}
-Selected Publications {"url":"asg\/selected-publications"}
-OASG FOIA {"url":"asg\/oasg-freedom-information-act"}

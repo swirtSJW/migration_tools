@@ -1,7 +1,0 @@
- Office of the Attorney General Home {"url":"ag"}
- About the Office {"url":"ag/about-office"}
- Meet the Attorney General {"url":"ag/meet-attorney-general"}
- Press Room {"url":"ag/press-room"}
-- The Attorney General's Weekly Video Message {"url":""}
- Selected Publications {"url":"ag/selected-publications"}
- OAG FOIA {"url":"ag/oag-freedom-information-act"}

@@ -1,7 +1,0 @@
-Office of International Affairs Home{"url":"criminal-oia"}
-Regarding Extradition{"url":"criminal-oia/frequently-asked-questions-regarding-extradition"}
-Regarding Evidence Located Abroad{"url":"criminal-oia/frequently-asked-questions-regarding-evidence-located-abroad"}
-Civil Cases{"url":"civil/office-international-judicial-assistance-0"}
-Press Room{"url":"criminal-oia/oia-press-room"}
-Career Opportunities{"url":"criminal-oia/career-opportunities"}
-Criminal Division Home{"url":"criminal"}

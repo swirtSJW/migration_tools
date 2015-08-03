@@ -1,7 +1,0 @@
-Victim Notification Program Home{"url":"criminal-vns"}
-Pending Criminal Division Cases{"url":"criminal-fraud/case/public-hearings-upcoming-public-hearings-pending-criminal-division-cases"}
-Victim Rights (Derechos De Las Víctimas){"url":"criminal-vns/victim-rights"}
-Automated Victim Notification System{"url":"criminal-vns/department-justices-automated-victim-notification-system-avns"}
-Crime Victims' Rights Act Complaint Form{"url":"criminal-vns/crime-victims-rights-act-complaint-form"}
-Victim Witness Liaisons{"url":"criminal-vns/victim-witness-liaisons-points-contact-criminal-division"}
-Criminal Division Home{"url":"criminal"}

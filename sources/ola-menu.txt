@@ -1,9 +1,0 @@
- Office of Legislative Affairs Home {"url":"ola"}
- About the Office {"url":"ola/about-office"}
- Meet the Assistant Attorney General {"url":"ola/meet-assistant-attorney-general"}
- Testimony {"url":"ola/testimony"}
- Views Letters {"url":"ola/views-letters"}
- Employment and Internship Opportunities {"url":"ola/employment-and-internship-opportunities"}
- Resources {"url":"ola/resources"}
- OLA FOIA {"url":"ola/ola-freedom-information-act"}
- Contact the Office {"url":"ola/contact-office"}
