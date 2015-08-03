@@ -1,12 +1,12 @@
 ### Setup
-* Set $conf['doj_migration_base_dir'] correctly for your local machine
+* Set $conf['migration_tools_base_dir'] correctly for your local machine
 * Rsync down private://wordpress
 
 ### Copying unmanaged images:
 To recursively copy image files from the current directory to a destination:
 
 There is a drush command that will move the images to public:// from
-$conf['doj_migration_base_dir'] for any given organization:
+$conf['migration_tools_base_dir'] for any given organization:
 
 drush dmi <organization_abbreviation>
 
@@ -143,7 +143,7 @@ districts).
 The process differences required by the different menus is encapsulated in the 
 MenuGeneratorEngine classes.
 
-If you look at doj_migration.drush.inc you will see that the menu generation 
+If you look at migration_tools.drush.inc you will see that the menu generation 
 engine is currently hardcoded to use the district menu generation class.
 
 A possible improvement to the code would be to allow classes to be switched 
@@ -156,14 +156,14 @@ There are two settings through drupal variables that can aid in building and
 debugging a migration.  The default for each is FALSE but can be overidden in
 your settings.local.php
 
-variable: doj_migration_drush_debug
+variable: migration_tools_drush_debug
   Enables output to be seen in the terminal on a file by file basis to see
   what elements are being found by the obtainers and migrated. Default is FALSE.
-  Enable debug output: drush vset doj_migration_drush_debug TRUE
+  Enable debug output: drush vset migration_tools_drush_debug TRUE
 
-doj_migration_drush_stop_on_error
-  When doj_migration_drush_debug is TRUE and a warning is thrown by the
+migration_tools_drush_stop_on_error
+  When migration_tools_drush_debug is TRUE and a warning is thrown by the
   messsaging system that is of the level WATCHDOG_ERROR, WATCHDOG_CRITICAL,
   WATCHDOG_ALERT, WATCHDOG_EMERGENCY.
   Default is FALSE.
-  Enable stop on error: drush vset doj_migration_drush_stop_on_error TRUE
+  Enable stop on error: drush vset migration_tools_drush_stop_on_error TRUE

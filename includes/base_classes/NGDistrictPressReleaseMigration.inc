@@ -9,7 +9,7 @@
  *
  * Parent class for all district press releases from static HTML.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class NGDistrictPressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
 

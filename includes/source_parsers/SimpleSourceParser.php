@@ -8,7 +8,7 @@
 /**
  * Class SimpleSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class SimpleSourceParser extends NGSourceParser {
 

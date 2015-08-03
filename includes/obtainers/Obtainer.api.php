@@ -9,7 +9,7 @@
 /**
  * Obtainer for title property for /atr pages.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage atr
  */
 class ObtainExample extends ObtainHtml {

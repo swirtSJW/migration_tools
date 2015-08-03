@@ -41,7 +41,7 @@ function doj_migrate_prepare_vocab_terms($legacy_term = '', $vocabulary = '') {
         }
 
         if (!taxonomy_get_term_by_name($term, $vocabulary)) {
-          watchdog('doj_migration', 'Creating new topic term "@topic" in vocabulary: @vocabulary.', array('@topic' => $term, '@vocabulary' => $vocabulary));
+          watchdog('migration_tools', 'Creating new topic term "@topic" in vocabulary: @vocabulary.', array('@topic' => $term, '@vocabulary' => $vocabulary));
           $vocab = taxonomy_vocabulary_machine_name_load($vocabulary);
           $term_obj = new stdClass();
           $term_obj->name = $term;
@@ -86,7 +86,7 @@ function doj_migrate_prepare_topic_term($legacy_term) {
         $term = doj_migrate_standardize_component_terms($term);
         if (!taxonomy_get_term_by_name($term, 'topic')
           && !taxonomy_get_term_by_name($term, 'component')) {
-          doj_migration_create_term($term, 'topic');
+          migration_tools_create_term($term, 'topic');
           $terms[$key] = $term;
         }
       }
@@ -108,9 +108,9 @@ function doj_migrate_prepare_topic_term($legacy_term) {
  * @param string $vocab_name
  *   The name of the vocabulary.
  */
-function doj_migration_create_term($term, $vocab_name) {
+function migration_tools_create_term($term, $vocab_name) {
   if (!taxonomy_get_term_by_name($term, $vocab_name)) {
-    watchdog('doj_migration', 'Creating new topic term "@term".', array('@term' => $term));
+    watchdog('migration_tools', 'Creating new topic term "@term".', array('@term' => $term));
     $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
     $term_obj = new stdClass();
     $term_obj->name = $term;
@@ -199,7 +199,7 @@ function doj_migrate_standardize_component_terms($legacy_term) {
  * @param bool $print_redirects
  *   Whether we want to show the redirects or not.
  */
-function doj_migration_redirect_check($org_id, $print_redirects = FALSE, $content_type = 'page') {
+function migration_tools_redirect_check($org_id, $print_redirects = FALSE, $content_type = 'page') {
   // @todo Integrate this kind of functionality with the migrate message
   // system.
   // Get all org nodes.
@@ -263,25 +263,25 @@ function doj_migration_redirect_check($org_id, $print_redirects = FALSE, $conten
  * @return string
  *   decoded HTML.
  */
-function doj_migration_html_entity_decode_numeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
+function migration_tools_html_entity_decode_numeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
   $string = html_entity_decode($string, $quote_style, $charset);
-  $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', 'doj_migration_hex_chr_utf8_callback', $string);
-  $string = preg_replace_callback('/&#([0-9]+)/', 'doj_migration_chr_utf8_callback', $string);
+  $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', 'migration_tools_hex_chr_utf8_callback', $string);
+  $string = preg_replace_callback('/&#([0-9]+)/', 'migration_tools_chr_utf8_callback', $string);
   return $string;
 }
 
 /**
  * Callback helper.
  */
-function doj_migration_hex_chr_utf8_callback($matches = array()) {
-  return doj_migration_chr_utf8(hexdec($matches[1]));
+function migration_tools_hex_chr_utf8_callback($matches = array()) {
+  return migration_tools_chr_utf8(hexdec($matches[1]));
 }
 
 /**
  * Callback helper.
  */
-function doj_migration_chr_utf8_callback($matches = array()) {
-  return doj_migration_chr_utf8($matches[1]);
+function migration_tools_chr_utf8_callback($matches = array()) {
+  return migration_tools_chr_utf8($matches[1]);
 }
 
 /**
@@ -293,7 +293,7 @@ function doj_migration_chr_utf8_callback($matches = array()) {
  * @return string
  *   The char represented by the number.
  */
-function doj_migration_chr_utf8($num) {
+function migration_tools_chr_utf8($num) {
   if ($num < 128) {
     return chr($num);
   }
@@ -318,7 +318,7 @@ function doj_migration_chr_utf8($num) {
  * @return string
  *   The alias matching the legacy uri, or an empty sting. g
  */
-function doj_migration_legacy_to_uri($legacy_uri) {
+function migration_tools_legacy_to_uri($legacy_uri) {
   $redirect = redirect_load_by_source($legacy_uri);
   if ($redirect) {
     $nid = str_replace("node/", "", $redirect->redirect);
@@ -346,7 +346,7 @@ function doj_migration_legacy_to_uri($legacy_uri) {
       }
     }
   }
-  watchdog("doj_migration", "legacy uri @legacy_uri does not have a node associated with it", array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
+  watchdog("migration_tools", "legacy uri @legacy_uri does not have a node associated with it", array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT);
   // Without legacy path yet migrated in, leave the link to source content
   // so that the redirects can handle it when that content is migrate/created.
   return "http://www.justice.gov/{$legacy_uri}";
@@ -358,7 +358,7 @@ function doj_migration_legacy_to_uri($legacy_uri) {
  * @return string
  *   Random string.
  */
-function doj_migration_random_string() {
+function migration_tools_random_string() {
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $randstring = '';
   for ($i = 0; $i < 10; $i++) {
@@ -381,7 +381,7 @@ function doj_migration_random_string() {
  * @return string
  *   The relative url transformed to absolute.
  */
-function doj_migration_relative_to_absolute_url($rel, $base, $subpath = '') {
+function migration_tools_relative_to_absolute_url($rel, $base, $subpath = '') {
   // Return if already absolute URL.
   if (parse_url($rel, PHP_URL_SCHEME) != '') {
     return $rel;
@@ -438,7 +438,7 @@ function doj_migration_relative_to_absolute_url($rel, $base, $subpath = '') {
  * @return string
  *   Aliased abbreviation.
  */
-function doj_migration_district_abbreviation_alias($abbreviation) {
+function migration_tools_district_abbreviation_alias($abbreviation) {
   // Get rid of the usao- prefix we added to all district abbreviations.
   $abbreviation = str_replace("usao-", "", $abbreviation);
 

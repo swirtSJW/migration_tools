@@ -10,7 +10,7 @@
  *
  * Parent class for all migrations from static HTML to page content type.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class NGJusticeHtmlToPageMigration extends NGJusticeHtmlToNodeMigration {
 

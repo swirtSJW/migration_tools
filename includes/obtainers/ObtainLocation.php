@@ -24,8 +24,8 @@ class ObtainLocation extends ObtainHtml {
     $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $text = doj_migration_html_entity_decode_numeric($text);
+    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+    $text = migration_tools_html_entity_decode_numeric($text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringCleanUp::superTrim($text);

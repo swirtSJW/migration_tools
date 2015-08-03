@@ -10,7 +10,7 @@
 /**
  * Class NGDistrictPageSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class NGDistrictPageSourceParser extends NGNodeSourceParser {
 

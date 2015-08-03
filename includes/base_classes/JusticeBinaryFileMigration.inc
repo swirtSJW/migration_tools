@@ -8,7 +8,7 @@
 /**
  * Class JusticeBinaryFileMigration.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
 

@@ -32,7 +32,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
    */
   protected function setLocation() {
     try {
-      module_load_include('inc', 'doj_migration', 'includes/HtmlCleanUp');
+      module_load_include('inc', 'migration_tools', 'includes/HtmlCleanUp');
 
       // Location string.
       $ls = HtmlCleanUp::extractFirstElement($this->queryPath, '.speechlocation');
@@ -48,7 +48,7 @@ class HtmlToSpeechSourceParser extends SourceParser {
       $this->country = $address['country'];
     }
     catch (Exception $e) {
-      watchdog("doj_migration", "{$this->fileid} failed to acquire a location, error: {$e->getMessage()}");
+      watchdog("migration_tools", "{$this->fileid} failed to acquire a location, error: {$e->getMessage()}");
     }
   }
 
@@ -88,15 +88,15 @@ class HtmlToSpeechSourceParser extends SourceParser {
           $this->speechDate = $date->format('Y-m-d');
         }
         else {
-          watchdog("doj_migration", "{$this->fileId} date does not have the format l, F j, Y: {$sds}");
+          watchdog("migration_tools", "{$this->fileId} date does not have the format l, F j, Y: {$sds}");
         }
       }
       else {
-        watchdog("doj_migration", "{$this->fileId} failed to acquire a date");
+        watchdog("migration_tools", "{$this->fileId} failed to acquire a date");
       }
     }
     catch(Exception $e) {
-      watchdog("doj_migration", "{$this->fileId} failed to acquire a date :error {$e->getMessage()}");
+      watchdog("migration_tools", "{$this->fileId} failed to acquire a date :error {$e->getMessage()}");
     }
   }
 

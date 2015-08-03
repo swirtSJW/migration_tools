@@ -167,8 +167,8 @@ abstract class Obtainer {
    */
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $string = doj_migration_html_entity_decode_numeric($string);
+    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+    $string = migration_tools_html_entity_decode_numeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
@@ -251,11 +251,11 @@ abstract class Obtainer {
     $type = get_class($this);
     watchdog($type, $message, $variables, $severity);
 
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print("$type: $formatted_message", 2);
-      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
-        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
   }

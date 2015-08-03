@@ -12,7 +12,7 @@ require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
 /**
  * Class NGSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class NGSourceParser {
 
@@ -189,7 +189,7 @@ abstract class NGSourceParser {
    * Prints a log message separator to drush.
    */
   protected function drushPrintSeparator() {
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       drush_print(str_repeat('-', 40));
       $this->sourceParserMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
     }
@@ -228,11 +228,11 @@ abstract class NGSourceParser {
     $type = get_class($this);
     watchdog($type, $message, $variables, $severity);
 
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print($formatted_message, $indent);
-      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
-        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
   }
@@ -262,12 +262,12 @@ abstract class NGSourceParser {
         // Note that calling this too many times (as in very large migrations)
         // may exceed the API request limit for geocoder's source data.
         $point = geocoder('google', $string);
-        module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+        module_load_include('inc', 'migration_tools', 'includes/migration_tools');
         try {
           $address = doj_migrate_convert_geocoded_point_to_address($point);
         }
         catch (Exception $e) {
-          watchdog("doj_migration", "The geocoder failed: {$e->getMessage()}");
+          watchdog("migration_tools", "The geocoder failed: {$e->getMessage()}");
         }
 
         if (!$address) {

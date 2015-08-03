@@ -9,7 +9,7 @@
  *
  * Parent class for dataset migrations with source data stored in a JSON feed.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class JusticeJsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
 
@@ -77,6 +77,6 @@ class JusticeJsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    doj_migration_prepare_workbench_settings($entity, $row);
+    migration_tools_prepare_workbench_settings($entity, $row);
   }
 }

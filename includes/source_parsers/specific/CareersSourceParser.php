@@ -8,7 +8,7 @@
 /**
  * Class CareersSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class CareersSourceParser extends SourceParser {
 

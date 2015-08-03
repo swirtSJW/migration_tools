@@ -8,7 +8,7 @@
 /**
  * Class JusticeUserMigration.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeUserMigration extends JusticeCsvMigration {
 

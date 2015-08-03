@@ -10,7 +10,7 @@
  *
  * Parent class for all migrations with source data stored in files.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
 
@@ -45,7 +45,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
   public function __construct($arguments, $source_fields, $source_dirs, $regex, $options = array(), MigrateContentParser $parser = NULL) {
     parent::__construct($arguments);
 
-    $this->baseDir = variable_get('doj_migration_base_dir', DOJ_LEGACY_WEBROOT);
+    $this->baseDir = variable_get('migration_tools_base_dir', DOJ_LEGACY_WEBROOT);
 
     // Define the directories containing files to be migrated.
     $absolute_dirs = $this->prependJusticeFilepath($source_dirs);
@@ -192,7 +192,7 @@ abstract class JusticeFileSourceMigration extends JusticeBaseMigration {
     // @todo Move this to NGJusticeHtmlToNodeMigration after
     // JusticeHtmlToNodeMigration is completely deprecated.
     if (is_subclass_of($this, 'JusticeHtmlToNodeMigration') || (is_subclass_of($this, 'NGJusticeHtmlToNodeMigration'))) {
-      if (variable_get('doj_migration_display_report', TRUE)) {
+      if (variable_get('migration_tools_display_report', TRUE)) {
         $this->printNodeMigrationReport($report_rows);
       }
     }

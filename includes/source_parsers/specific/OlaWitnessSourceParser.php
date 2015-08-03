@@ -120,7 +120,7 @@ class OlaWitnessSourceParser extends SourceParser {
     $pieces = explode("/", $href);
     $name = array_pop($pieces);
     $dir = array_pop($pieces);
-    $src_dir = variable_get("doj_migration_base_dir") . "/ola/testimony/{$dir}" . "/";
+    $src_dir = variable_get("migration_tools_base_dir") . "/ola/testimony/{$dir}" . "/";
     return $src_dir;
   }
 

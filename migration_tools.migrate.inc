@@ -4,13 +4,13 @@
  * @file
  * Contains definitions of doj migrations.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 
 /**
  * Implements hook_migrate_api().
  */
-function doj_migration_migrate_api() {
+function migration_tools_migrate_api() {
 
   $disable_hooks = array(
     'redirect_insert' => array(
@@ -34,7 +34,7 @@ function doj_migration_migrate_api() {
     ),
   );
 
-  $api = include __DIR__ . "/includes/doj_migration_migrations.inc";
+  $api = include __DIR__ . "/includes/migration_tools_migrations.inc";
 
   foreach ($api['groups'] as $key => $info) {
     // Run the title through t().

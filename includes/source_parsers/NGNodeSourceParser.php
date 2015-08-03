@@ -8,7 +8,7 @@
 /**
  * Class NGNodeSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class NGNodeSourceParser extends NGSourceParser {
   protected $body;

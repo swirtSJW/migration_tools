@@ -140,7 +140,7 @@ class MenuGenerator {
 
     // Set defaults.
     $this->fileName = $this->parameters->getOrganization() . "-menu.txt";
-    $this->fileOutputDirectory = DRUPAL_ROOT . "/sites/all/modules/custom/doj_migration/sources";
+    $this->fileOutputDirectory = DRUPAL_ROOT . "/sites/all/modules/custom/migration_tools/sources";
   }
 
 
@@ -152,7 +152,7 @@ class MenuGenerator {
     $content = $this->engine->generate();
 
     $file = $this->fileOutputDirectory . "/" . $this->fileName;
-    drush_doj_migration_debug_output($content);
+    drush_migration_tools_debug_output($content);
 
     try {
       $fh = fopen($file, 'w');
@@ -225,7 +225,7 @@ class MenuGeneratorEngineDefault {
       $html = curl_exec($ch);
       $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
       if ($response != 200) {
-        drush_doj_migration_debug_output("The page at '$page_uri' returned a status of $response.  You might need to adjust '--menu-location-uri'.");
+        drush_migration_tools_debug_output("The page at '$page_uri' returned a status of $response.  You might need to adjust '--menu-location-uri'.");
       }
 
       curl_close($ch);
@@ -271,7 +271,7 @@ class MenuGeneratorEngineDefault {
       $this->collapseMenu();
       $this->elementsToContent($this->menu);
     }
-    drush_doj_migration_debug_output("Built a menu with {$this->menuCounter} items from $menu_elements elements.");
+    drush_migration_tools_debug_output("Built a menu with {$this->menuCounter} items from $menu_elements elements.");
 
     return $this->content;
   }
@@ -306,7 +306,7 @@ class MenuGeneratorEngineDefault {
         if (empty($item->prefix) && $in_group) {
           // This is a first tier page with a path in this group so process it.
           $query = $this->getQueryPath($uri);
-          drush_doj_migration_debug_output("PROCESSING: " . $this->parameters->getUriMenuLocation());
+          drush_migration_tools_debug_output("PROCESSING: " . $this->parameters->getUriMenuLocation());
           $this->recurse();
         }
       }
@@ -346,14 +346,14 @@ class MenuGeneratorEngineDefault {
       unset($item);
       $prefix_level--;
     }
-    drush_doj_migration_debug_output('Menu object after collapsing:');
-    drush_doj_migration_debug_output($this->menu);
+    drush_migration_tools_debug_output('Menu object after collapsing:');
+    drush_migration_tools_debug_output($this->menu);
     if (!empty($this->menu['orphans'])) {
-      drush_doj_migration_debug_output('Menu orphans present:');
-      drush_doj_migration_debug_output($this->menu['orphans']);
+      drush_migration_tools_debug_output('Menu orphans present:');
+      drush_migration_tools_debug_output($this->menu['orphans']);
     }
     else {
-      drush_doj_migration_debug_output('Menu collapsed without orphans.');
+      drush_migration_tools_debug_output('Menu collapsed without orphans.');
     }
   }
 
@@ -385,14 +385,14 @@ class MenuGeneratorEngineDefault {
    *   The uri of the item's parent (optional).
    */
   protected function recurse($css_selector = NULL, $prefix = '', $parent_uri = '') {
-    module_load_include("inc", "doj_migration", "includes/doj_migration");
+    module_load_include("inc", "migration_tools", "includes/migration_tools");
     $last_uri = '';
     if (!isset($css_selector)) {
       // This is the first run through a subpage so get the menu selector.
       $css_selector = $this->initialCssSelector;
     }
 
-    drush_doj_migration_debug_output("{$prefix}CSS SELECTOR: $css_selector child of $parent_uri");
+    drush_migration_tools_debug_output("{$prefix}CSS SELECTOR: $css_selector child of $parent_uri");
     $query = $this->getQueryPath();
     $elements = $query->find($css_selector)->children();
 
@@ -400,7 +400,7 @@ class MenuGeneratorEngineDefault {
       $tag = $elem->tag();
       switch ($tag) {
         case 'li':
-          drush_doj_migration_debug_output("$prefix I'm in $tag $css_selector child of $parent_uri");
+          drush_migration_tools_debug_output("$prefix I'm in $tag $css_selector child of $parent_uri");
           $children = $elem->children();
           foreach ($children as $child) {
             // Might be an anchor or might be a cluster of items.
@@ -409,7 +409,7 @@ class MenuGeneratorEngineDefault {
               $last_uri = $child->attr("href");
             }
             else {
-              $class_name = doj_migration_random_string();
+              $class_name = migration_tools_random_string();
               $elem->attr('class', $class_name);
               $this->recurse(".{$class_name}", $prefix, $last_uri);
             }
@@ -421,9 +421,9 @@ class MenuGeneratorEngineDefault {
         default:
           $last_uri = (empty($last_uri)) ? $parent_uri : $last_uri;
           $new_prefix = ($tag == 'ul') ? $prefix . "-" : $prefix;
-          $class_name = doj_migration_random_string();
+          $class_name = migration_tools_random_string();
           $elem->attr('class', $class_name);
-          drush_doj_migration_debug_output("$new_prefix I'm in $tag $class_name child of $last_uri");
+          drush_migration_tools_debug_output("$new_prefix I'm in $tag $class_name child of $last_uri");
           $this->recurse(".{$class_name}", $new_prefix, $last_uri);
           break;
       }
@@ -529,8 +529,8 @@ class MenuGeneratorEngineDefault {
     }
     else {
       // This is an internal uri so see what it redirects to.
-      module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-      $uri = doj_migration_legacy_to_uri($this->reassembleURL($parsed_url, FALSE));
+      module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+      $uri = migration_tools_legacy_to_uri($this->reassembleURL($parsed_url, FALSE));
     }
 
     return $uri;
@@ -620,10 +620,10 @@ class MenuGeneratorEngineDefault {
         'title' => $link_title,
         'children' => array(),
       );
-      drush_doj_migration_debug_output("ADDED: $link_path to menu");
+      drush_migration_tools_debug_output("ADDED: $link_path to menu");
     }
     else {
-      drush_doj_migration_debug_output("ALREADY HAVE: $link_path in menu");
+      drush_migration_tools_debug_output("ALREADY HAVE: $link_path in menu");
     }
   }
 

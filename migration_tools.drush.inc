@@ -7,7 +7,7 @@
 /**
  * Implements hook_drush_command().
  */
-function doj_migration_drush_command() {
+function migration_tools_drush_command() {
   $items = array();
 
   $items['doj-migrate-images'] = array(
@@ -79,7 +79,7 @@ function doj_migration_drush_command() {
     'description' => "Imports a menu for a specific organic group.",
     'aliases' => array('digm'),
     'arguments' => array(
-      'file' => 'Required. menu text file name. Assumed that file exists in sites/all/module/custom/doj_migration/sources',
+      'file' => 'Required. menu text file name. Assumed that file exists in sites/all/module/custom/migration_tools/sources',
       'organization' => 'The organization to migrate',
     ),
     'examples' => array(
@@ -124,7 +124,7 @@ function doj_migration_drush_command() {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_fix_legacy_links($migration = NULL) {
+function drush_migration_tools_doj_migrate_fix_legacy_links($migration = NULL) {
   $fixer = new MigrationNodesLegacyLinksFixer();
 
   $nid_list = drush_get_option('idlist');
@@ -147,7 +147,7 @@ function drush_doj_migration_doj_migrate_fix_legacy_links($migration = NULL) {
     }
   }
   catch (Exception $e) {
-    drush_doj_migration_debug_output($e->getMessage());
+    drush_migration_tools_debug_output($e->getMessage());
   }
 
   $fixer->fix();
@@ -161,11 +161,11 @@ function drush_doj_migration_doj_migrate_fix_legacy_links($migration = NULL) {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_images($organization) {
+function drush_migration_tools_doj_migrate_images($organization) {
   // Let's get our source directory, and our output directory.
-  $source_directory = variable_get("doj_migration_base_dir");
+  $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
-    throw new Exception("the doj_migration_base_dir variable has not been defined");
+    throw new Exception("the migration_tools_base_dir variable has not been defined");
   }
 
   if ($wrapper = file_stream_wrapper_get_instance_by_uri('public://')) {
@@ -175,7 +175,7 @@ function drush_doj_migration_doj_migrate_images($organization) {
     throw new Exception("We couldn't get the absolute path for public://");
   }
 
-  doj_migration_move_images($source_directory, $organization, $output_directory);
+  migration_tools_move_images($source_directory, $organization, $output_directory);
 }
 
 /**
@@ -184,7 +184,7 @@ function drush_doj_migration_doj_migrate_images($organization) {
  * @param string $groups
  *   A string of group abbreviations, separated by commas.
  */
-function drush_doj_migration_doj_generate_migrate_commands($groups) {
+function drush_migration_tools_doj_generate_migrate_commands($groups) {
   drush_print("");
   drush_print('drush migrate-register');
   drush_print("");
@@ -222,7 +222,7 @@ function drush_doj_migration_doj_generate_migrate_commands($groups) {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_html_folders($organization) {
+function drush_migration_tools_doj_migrate_html_folders($organization) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
 
@@ -240,7 +240,7 @@ function drush_doj_migration_doj_migrate_html_folders($organization) {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_migrate_file_folders($organization) {
+function drush_migration_tools_doj_migrate_file_folders($organization) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
   drush_print_r(doj_migrate_find_folders_with_files($organization,
@@ -267,9 +267,9 @@ function drush_doj_migration_doj_migrate_file_folders($organization) {
  *   If migrate_html_base_dir variable is not set.
  */
 function doj_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
-  $source_directory = variable_get("doj_migration_base_dir");
+  $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
-    throw new Exception("the doj_migration_base_dir variable has not been defined");
+    throw new Exception("the migration_tools_base_dir variable has not been defined");
   }
   $organization_dir = $source_directory . "/{$organization}";
 
@@ -291,7 +291,7 @@ function doj_migrate_find_folders_with_files($organization, $exts, $ignore = arr
     // Remove the file part.
     $pieces = array_slice($pieces, 0, count($pieces) - 1);
     $key = implode("/", $pieces);
-    $ignore_folder = doj_migration_ignore_folder($key, $ignore);
+    $ignore_folder = migration_tools_ignore_folder($key, $ignore);
     if (!empty($key) && !$ignore_folder) {
       $folders[$key] = TRUE;
     }
@@ -311,7 +311,7 @@ function doj_migrate_find_folders_with_files($organization, $exts, $ignore = arr
  * @return bool
  *   Should this folder be ignored.
  */
-function doj_migration_ignore_folder($folder, $ignore = array()) {
+function migration_tools_ignore_folder($folder, $ignore = array()) {
   $ignore_it = FALSE;
 
   foreach ($ignore as $string) {
@@ -337,7 +337,7 @@ function doj_migration_ignore_folder($folder, $ignore = array()) {
  * @param string $parent_output_directory
  *   The directory where we want to save all the images.
  */
-function doj_migration_move_images($parent_input_directory, $directory, $parent_output_directory) {
+function migration_tools_move_images($parent_input_directory, $directory, $parent_output_directory) {
 
   // Make the directory where our files will go.
   $final_output_directory = "$parent_output_directory/$directory";
@@ -356,20 +356,20 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
         mkdir($final_output_directory, 0777, TRUE);
       }
 
-      watchdog("doj_migration", "FILE: @file EXT: @ext \n", array('@file' => $file, 'ext' => $ext));
+      watchdog("migration_tools", "FILE: @file EXT: @ext \n", array('@file' => $file, 'ext' => $ext));
 
       if (copy("$final_input_directory/$file", "$final_output_directory/$file")) {
         $count++;
-        watchdog("doj_migration", "File @file was copied to $final_output_directory \n", array('@file' => $file));
+        watchdog("migration_tools", "File @file was copied to $final_output_directory \n", array('@file' => $file));
       }
       else {
-        watchdog("doj_migration", "There was an error copying @file \n", array('@file' => $file), WATCHDOG_ERROR);
+        watchdog("migration_tools", "There was an error copying @file \n", array('@file' => $file), WATCHDOG_ERROR);
       }
     }
     // If we are dealing with a directory, let's recurse.
     elseif (is_dir("$final_input_directory/$file") && "{$file}" != "." && "{$file}" != "..") {
-      watchdog("doj_migration", "Found a directory {$file} \n");
-      doj_migration_move_images($final_input_directory, $file, $final_output_directory);
+      watchdog("migration_tools", "Found a directory {$file} \n");
+      migration_tools_move_images($final_input_directory, $file, $final_output_directory);
     }
   }
   if ($count > 0) {
@@ -381,7 +381,7 @@ function doj_migration_move_images($parent_input_directory, $directory, $parent_
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_generate_menu($organization) {
+function drush_migration_tools_doj_generate_menu($organization) {
   $css_selector = drush_get_option('css-selector');
   $local_base_uri = drush_get_option('local-base-uri');
   $menu_location_uri = drush_get_option('menu-location-uri');
@@ -425,21 +425,21 @@ function drush_doj_migration_doj_generate_menu($organization) {
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_generate_menu_district($organization) {
-  module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-  doj_migration_create_menu_file("usao|" . $organization, TRUE);
+function drush_migration_tools_doj_generate_menu_district($organization) {
+  module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+  migration_tools_create_menu_file("usao|" . $organization, TRUE);
 }
 
 /**
  * Drush command callback.
  */
-function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
-  module_load_include('inc', 'doj_migration', 'includes/doj_migration');
+function drush_migration_tools_doj_import_group_menu($file_name, $group_abbrev) {
+  module_load_include('inc', 'migration_tools', 'includes/migration_tools');
   module_load_include('inc', 'doj_sitewide', 'includes/doj_sitewide.groups');
 
   $group = doj_sitewide_load_org_by_abbrev($group_abbrev);
   $group_menu_name = 'menu-og-' . $group->nid;
-  $file_path = DRUPAL_ROOT . '/' . drupal_get_path('module', 'doj_migration') . '/sources/' . $file_name;
+  $file_path = DRUPAL_ROOT . '/' . drupal_get_path('module', 'migration_tools') . '/sources/' . $file_name;
 
   drush_menu_import_import($file_path, $group_menu_name);
 }
@@ -450,8 +450,8 @@ function drush_doj_migration_doj_import_group_menu($file_name, $group_abbrev) {
  * @param string $config_filename
  *   The filename of the YML file containing the organization configuration.
  */
-function drush_doj_migration_doj_generate_migration_class($config_filename) {
-  module_load_include('inc', 'doj_migration', 'includes/drush/DojMigrationGenerator');
+function drush_migration_tools_doj_generate_migration_class($config_filename) {
+  module_load_include('inc', 'migration_tools', 'includes/drush/DojMigrationGenerator');
 
   // Default type option to 'organization'.
   $org_type = drush_get_option('type');
@@ -470,13 +470,13 @@ function drush_doj_migration_doj_generate_migration_class($config_filename) {
 }
 
 /**
- * Wrapper function to output info if doj_migration_drush_debug = TRUE.
+ * Wrapper function to output info if migration_tools_drush_debug = TRUE.
  *
  * @param mixed $output
  *   Thing to pass to drush_print_r().
  */
-function drush_doj_migration_debug_output($output = '') {
-  if (variable_get('doj_migration_drush_debug', FALSE)) {
+function drush_migration_tools_debug_output($output = '') {
+  if (variable_get('migration_tools_drush_debug', FALSE)) {
     drush_print_r($output);
   }
 }

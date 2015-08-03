@@ -15,11 +15,11 @@ class HtmlToSpeechSpanishSourceParser extends HtmlToSpeechSourceParser {
         $this->speechDate = JusticeBaseMigration::dojMigrationESDateConvertWDMY($sds);
       }
       else {
-        watchdog("doj_migration", "{$this->fileId} failed to acquire a date");
+        watchdog("migration_tools", "{$this->fileId} failed to acquire a date");
       }
     }
     catch(Exception $e) {
-      watchdog("doj_migration", "{$this->fileId} failed to acquire a date :error {$e->getMessage()}");
+      watchdog("migration_tools", "{$this->fileId} failed to acquire a date :error {$e->getMessage()}");
     }
   }
 }

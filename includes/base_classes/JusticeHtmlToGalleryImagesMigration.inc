@@ -119,7 +119,7 @@ abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigr
       $row->field_gallery_image_body = $source_parser->queryPath->find('.image-desc')->text();
     }
     catch (Exception $e) {
-      watchdog('doj_migration', 'Image migration failed for Gallery Image @row_id. File will be skipped. Error message: @error', array('@row_id' => $row->id, '@error' => $e->getMessage()), WATCHDOG_ERROR);
+      watchdog('migration_tools', 'Image migration failed for Gallery Image @row_id. File will be skipped. Error message: @error', array('@row_id' => $row->id, '@error' => $e->getMessage()), WATCHDOG_ERROR);
       return FALSE;
     }
   }
@@ -134,7 +134,7 @@ abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigr
 /**
  * Parses a single gallery into a list gallery images.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage core
  * @see GalleryImagesMigration
  */

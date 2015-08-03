@@ -9,7 +9,7 @@
 /**
  * Class NGSpeechSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 
 abstract class NGSpeechSourceParser extends NGNodeSourceParser {

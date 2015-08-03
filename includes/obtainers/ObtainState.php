@@ -86,8 +86,8 @@ class ObtainState extends ObtainHtml {
     $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'doj_migration', 'includes/doj_migration');
-    $string = doj_migration_html_entity_decode_numeric($string);
+    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+    $string = migration_tools_html_entity_decode_numeric($string);
 
     // Remove white space-like things from the ends and decodes html entities.
     $string = StringCleanUp::superTrim($string);

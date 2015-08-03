@@ -8,7 +8,7 @@
 /**
  * Disable wordpress_migrate.
  */
-function doj_migration_update_7000(&$sandbox) {
+function migration_tools_update_7000(&$sandbox) {
   // We are finished migrating from wordpress.
   module_disable(array('wordpress_migrate'));
 }
@@ -16,7 +16,7 @@ function doj_migration_update_7000(&$sandbox) {
 /**
  * Reset incorrectly entered group abbreviation.
  */
-function doj_migration_update_7001() {
+function migration_tools_update_7001() {
   $update = db_update('migrate_map_organization')
     ->fields(array('sourceid1' => 'criminal-disasters'))
     ->condition('sourceid1', 'criminal-disaster')
@@ -36,6 +36,6 @@ function doj_migration_update_7001() {
 /**
  * Remove EDCA Spanish organization node.
  */
-function doj_migration_update_7002() {
+function migration_tools_update_7002() {
   node_delete(310976);
 }

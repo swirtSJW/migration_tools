@@ -9,7 +9,7 @@
 /**
  * Class NGPressReleaseSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 
 abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {

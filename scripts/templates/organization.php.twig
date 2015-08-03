@@ -8,7 +8,7 @@
 /**
  * Migrates .html files from /{{ info.abbreviation }} to page nodes.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigration {
@@ -54,7 +54,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
    */
   public function prepareRow($row) {
     $skip_these = array();
-    if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
+    if (migration_tools_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
   }
@@ -63,7 +63,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
 /**
  * Migrates binary files from /{{ info.abbreviation }}.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFileMigration {
@@ -103,7 +103,7 @@ class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFil
 /**
  * SourceParser for /{{ info.abbreviation }} pages.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class_base_name }}PageSourceParser  extends NGNodeSourceParser {
@@ -118,7 +118,7 @@ class {{ info.class_base_name }}PageSourceParser  extends NGNodeSourceParser {
 /**
  * Obtainer for title property for /{{ info.abbreviation }} pages.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  * @see Obtainer.api.php
  */
@@ -131,7 +131,7 @@ class {{ info.class_base_name }}ObtainTitlePage extends ObtainTitle {
 /**
  * Migrates press releases from /{{ info.abbreviation }}.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPressReleaseMigration {
@@ -184,7 +184,7 @@ class {{ info.class_base_name }}PressReleaseMigration extends NGJusticeHtmlToPre
 /**
  * SourceParser for /{{ info.abbreviation }} press releases.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
 class {{ info.class_base_name }}PressSourceParser extends NGPressReleaseSourceParser {
@@ -199,7 +199,7 @@ class {{ info.class_base_name }}PressSourceParser extends NGPressReleaseSourcePa
 /**
  * Obtainer for title property for /{{ info.abbreviation }} press releases.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  * @see Obtainer.api.php
  */
@@ -210,7 +210,7 @@ class {{ info.class_base_name }}ObtainTitlePressRelease extends ObtainTitlePress
 /**
  * Obtainer for prNumber property for /{{ info.abbreviation }} press releases.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  * @see Obtainer.api.php
  */
@@ -231,7 +231,7 @@ class {{ info.class_base_name }}ObtainPrNumber extends ObtainId {
 /**
  * Custom obtainer for date property for /{{ info.abbreviation }}.
  *
- * @package doj_migration
+ * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  * @see Obtainer.api.php
  */

@@ -9,7 +9,7 @@
  *
  * Parent class for all migrations from static HTML to speech content type.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class NGJusticeHtmlToSpeechMigration extends NGJusticeHtmlToNodeMigration {
 

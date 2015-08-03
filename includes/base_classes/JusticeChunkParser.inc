@@ -12,7 +12,7 @@
  * separate destination node. Used for 'many to many' migrations where
  * each file contains content for more than one destination.
  *
- * @package doj_migration
+ * @package migration_tools
  * @see AtrSpeechChunkParser for example extension
  */
 abstract class JusticeChunkParser extends MigrateContentParser {
@@ -101,11 +101,11 @@ abstract class JusticeChunkParser extends MigrateContentParser {
     if ($severity) {
       watchdog($type, $message, $variables, $severity);
     }
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print("$type: $formatted_message", $indent);
-      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
-        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
   }

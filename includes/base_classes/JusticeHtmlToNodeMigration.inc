@@ -10,7 +10,7 @@
  *
  * Parent class for all migrations from static HTML to any content type.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
@@ -125,7 +125,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    doj_migration_prepare_workbench_settings($entity, $row);
+    migration_tools_prepare_workbench_settings($entity, $row);
 
     // Sidestep language to get redirects and aliases working for all users.
     parent::languageSideStep($entity);
@@ -140,7 +140,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     parent::languageReturnStep($entity);
 
     if (isset($entity->nid) && $entity->nid) {
-      doj_migration_complete_workbench_settings($entity, $row);
+      migration_tools_complete_workbench_settings($entity, $row);
     }
   }
 
@@ -164,7 +164,7 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      watchdog('doj_migration', $message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING);
+      watchdog('migration_tools', $message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING);
       return TRUE;
     }
     return FALSE;

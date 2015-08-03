@@ -12,7 +12,7 @@ require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
 /**
  * Class SourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class SourceParser {
 
@@ -289,7 +289,7 @@ class SourceParser {
    */
   public function getUsState() {
     $query_path = $this->queryPath;
-    $states_blob = trim(file_get_contents(drupal_get_path('module', 'doj_migration') . '/sources/us-states.txt'));
+    $states_blob = trim(file_get_contents(drupal_get_path('module', 'migration_tools') . '/sources/us-states.txt'));
     $states = explode("\n", $states_blob);
     $elements = $query_path->find('p');
     foreach ($elements as $element) {
@@ -540,7 +540,7 @@ class SourceParser {
    * Prints a log message separator to drush.
    */
   protected function drushPrintSeparator() {
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       drush_print(str_repeat('-', 40));
       $this->sourceParserMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
     }
@@ -579,7 +579,7 @@ class SourceParser {
     $type = get_class($this);
     watchdog($type, $message, $variables, $severity);
 
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print($formatted_message, $indent);
     }

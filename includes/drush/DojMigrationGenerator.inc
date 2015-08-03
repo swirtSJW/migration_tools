@@ -33,7 +33,7 @@ class DojMigrationGenerator {
 
   /**
    * @var string
-   *   The filepath of the doj_migration module directory.
+   *   The filepath of the migration_tools module directory.
    */
   protected $modulePath;
 
@@ -49,7 +49,7 @@ class DojMigrationGenerator {
    */
   public function __construct($config_filename, $org_type) {
     $this->orgType = $org_type;
-    $this->modulePath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'doj_migration');
+    $this->modulePath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'migration_tools');
     $this->setTemplateConfig();
     $this->setOrgConfig($config_filename);
   }
@@ -128,16 +128,16 @@ class DojMigrationGenerator {
    * Adding the file info to the .info file.
    */
   public function writeMigrationInfo() {
-    // Let's add the file to doj_migration.info.
+    // Let's add the file to migration_tools.info.
     $include_filename = str_replace("-", "_", $this->orgConfig['abbreviation']);
-    $info_file = "{$this->modulePath}/doj_migration.info";
+    $info_file = "{$this->modulePath}/migration_tools.info";
     $include_filepath = "organizations/{$include_filename}.inc";
     $text = "files[] = {$include_filepath}\n";
 
     $contents = file_get_contents($info_file);
     if (strpos($contents, $text) == FALSE) {
       file_put_contents($info_file, $text, FILE_APPEND);
-      drush_print_r("$include_filepath has been added to doj_migration.info.");
+      drush_print_r("$include_filepath has been added to migration_tools.info.");
     }
   }
 
@@ -145,9 +145,9 @@ class DojMigrationGenerator {
    * Add the group and the migrations to the api array.
    */
   public function registerMigration() {
-    // Now, Let's add the necessary info to doj_migration.migrate.inc
-    $migrations_filepath = "{$this->modulePath}/includes/doj_migration_migrations.inc";
-    $api = include "{$this->modulePath}/includes/doj_migration_migrations.inc";
+    // Now, Let's add the necessary info to migration_tools.migrate.inc
+    $migrations_filepath = "{$this->modulePath}/includes/migration_tools_migrations.inc";
+    $api = include "{$this->modulePath}/includes/migration_tools_migrations.inc";
 
     $migrations = array('Page', 'File');
     if (!empty($this->orgConfig['pr_subdirectory'])) {

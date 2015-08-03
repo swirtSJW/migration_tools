@@ -7,14 +7,14 @@
 
 /**
  * The default system path for the DOJ legacy webroot. Can be overriden via
- * doj_migration_base_dir variable.
+ * migration_tools_base_dir variable.
  */
 define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
 
 /**
  * Abstract intermediate class holding common settings.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeBaseMigration extends Migration {
 
@@ -222,7 +222,7 @@ abstract class JusticeBaseMigration extends Migration {
     catch (Exception $e) {
       $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $pdf_file_path, '@exception' => $e->getMessage()));
       $this->queueMessage($message);
-      watchdog('doj_migration', $message);
+      watchdog('migration_tools', $message);
     }
   }
 
@@ -249,7 +249,7 @@ abstract class JusticeBaseMigration extends Migration {
     catch (Exception $e) {
       $message = t('Could not parse attached PDF for @fileid. Exception thrown: @exception', array('@fileid' => $pdf_file_path, '@exception' => $e->getMessage()));
       $this->queueMessage($message);
-      watchdog('doj_migration', $message);
+      watchdog('migration_tools', $message);
     }
   }
 
@@ -274,7 +274,7 @@ abstract class JusticeBaseMigration extends Migration {
     if (empty($source_urls)) {
       // Nothing to be done here.
       $json_entity = json_encode($entity);
-      watchdog("doj_migration", "redirect was not created for attachment in entity {$json_entity}");
+      watchdog("migration_tools", "redirect was not created for attachment in entity {$json_entity}");
       return;
     }
 
@@ -358,11 +358,11 @@ abstract class JusticeBaseMigration extends Migration {
     $type = get_class($this);
     watchdog($type, $message, $variables, $severity);
 
-    if (drupal_is_cli() && variable_get('doj_migration_drush_debug', FALSE)) {
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
       drush_print($formatted_message, $indent);
-      if ((variable_get('doj_migration_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
-        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset doj_migration_drush_stop_on_error FALSE\" to disable auto-stop.");
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
   }

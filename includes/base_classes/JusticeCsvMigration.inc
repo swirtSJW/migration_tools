@@ -10,7 +10,7 @@
  *
  * Parent class for all migrations with CSV data source.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeCsvMigration extends JusticeBaseMigration {
 
@@ -48,7 +48,7 @@ abstract class JusticeCsvMigration extends JusticeBaseMigration {
  *
  * Parent class for all migrations with CSV data source.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeCsvToNodeMigration extends JusticeCsvMigration {
 
@@ -63,7 +63,7 @@ abstract class JusticeCsvToNodeMigration extends JusticeCsvMigration {
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    doj_migration_prepare_workbench_settings($entity, $row);
+    migration_tools_prepare_workbench_settings($entity, $row);
   }
 
   /**
@@ -71,7 +71,7 @@ abstract class JusticeCsvToNodeMigration extends JusticeCsvMigration {
    */
   public function complete($entity, $row) {
     if (isset($entity->nid) && $entity->nid) {
-      doj_migration_complete_workbench_settings($entity, $row);
+      migration_tools_complete_workbench_settings($entity, $row);
     }
   }
 

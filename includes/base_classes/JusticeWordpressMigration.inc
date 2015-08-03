@@ -10,7 +10,7 @@ define('DOJ_LEGACY_WORDPRESS_DIR', DRUPAL_ROOT . '/../../legacy/wordpress_export
 /**
  * Implementation of WordPressMigration, for blog entries.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
 
@@ -67,7 +67,7 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
   public function prepare($node, $row) {
     parent::prepare($node, $row);
 
-    doj_migration_prepare_workbench_settings($node, $row);
+    migration_tools_prepare_workbench_settings($node, $row);
   }
 
   /**
@@ -75,7 +75,7 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
    */
   public function complete($entity, $row) {
     if (isset($entity->nid) && $entity->nid) {
-      doj_migration_complete_workbench_settings($entity, $row);
+      migration_tools_complete_workbench_settings($entity, $row);
     }
   }
 }
@@ -83,7 +83,7 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
 /**
  * Implementation of WordPressMigration, for court decisions.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
 
@@ -139,7 +139,7 @@ abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
    */
   public function prepare($node, $row) {
     parent::prepare($node, $row);
-    doj_migration_prepare_workbench_settings($node, $row);
+    migration_tools_prepare_workbench_settings($node, $row);
   }
 
   /**
@@ -147,7 +147,7 @@ abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
    */
   public function complete($entity, $row) {
     if (isset($entity->nid) && $entity->nid) {
-      doj_migration_complete_workbench_settings($entity, $row);
+      migration_tools_complete_workbench_settings($entity, $row);
     }
   }
 }

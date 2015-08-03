@@ -9,7 +9,7 @@
  *
  * Parent class for all migrations from static HTML to any content type.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
 
@@ -146,7 +146,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * {@inheritdoc}
    */
   public function prepare($entity, $row) {
-    doj_migration_prepare_workbench_settings($entity, $row);
+    migration_tools_prepare_workbench_settings($entity, $row);
 
     // Sidestep language to get redirects and aliases working for all users.
     parent::languageSideStep($entity);
@@ -161,7 +161,7 @@ abstract class NGJusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     parent::languageReturnStep($entity);
 
     if (isset($entity->nid) && $entity->nid) {
-      doj_migration_complete_workbench_settings($entity, $row);
+      migration_tools_complete_workbench_settings($entity, $row);
     }
   }
 

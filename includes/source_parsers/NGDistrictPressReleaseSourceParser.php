@@ -10,7 +10,7 @@
 /**
  * Class NGDicstrictPressReleaseSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 class NGDistrictPressReleaseSourceParser extends NGPressReleaseSourceParser {
 

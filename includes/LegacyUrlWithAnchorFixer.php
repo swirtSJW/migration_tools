@@ -48,7 +48,7 @@ class MigrationNodesLegacyLinksFixer {
         throw new Exception("The migration map table does not exist for this migration");
       }
 
-      drush_doj_migration_debug_output("Getting nids from the {$migration_name} migration.");
+      drush_migration_tools_debug_output("Getting nids from the {$migration_name} migration.");
 
       // Lets get all the nodes relevant to this migration.
       $query = db_select($table_name, "t");
@@ -112,7 +112,7 @@ class MigrationNodesLegacyLinksFixer {
 
       // Check the node is of the supported types.
       if ($type != "page" && $type != "press_release" && $type != "case") {
-        drush_doj_migration_debug_output("Ignored node {$node->nid} of unsupported type {$type}.");
+        drush_migration_tools_debug_output("Ignored node {$node->nid} of unsupported type {$type}.");
         return FALSE;
       }
 
@@ -123,7 +123,7 @@ class MigrationNodesLegacyLinksFixer {
     }
     catch(Exception $e) {
       // This node is malformed, lets not process it.
-      drush_doj_migration_debug_output("Node {$node->nid} is malformed.");
+      drush_migration_tools_debug_output("Node {$node->nid} is malformed.");
     }
 
     if ($items == FALSE) {
@@ -178,7 +178,7 @@ class MigrationNodesLegacyLinksFixer {
       }
       catch(Exception $e) {
         // Here we can see what is being ignored.
-        // drush_doj_migration_debug_output("URL IGNORED: {$href} \n");
+        // drush_migration_tools_debug_output("URL IGNORED: {$href} \n");
       }
 
       $new_href = NULL;
@@ -187,7 +187,7 @@ class MigrationNodesLegacyLinksFixer {
           $new_href = $fixer->fix();
         }
         catch(Exception $e) {
-          drush_doj_migration_debug_output("URL WITHOUT REDIRECT: {$href}");
+          drush_migration_tools_debug_output("URL WITHOUT REDIRECT: {$href}");
         }
       }
 
@@ -223,7 +223,7 @@ class MigrationNodesLegacyLinksFixer {
         $wrapper = entity_metadata_wrapper('node', $node);
         $wrapper->{"field_{$type}_body"}->value->set($new_body);
         node_save($node);
-        drush_doj_migration_debug_output("Modified Node: " . $node->nid);
+        drush_migration_tools_debug_output("Modified Node: " . $node->nid);
       }
     }
   }
@@ -232,10 +232,10 @@ class MigrationNodesLegacyLinksFixer {
    * Print the original links followed by the new fixed links.
    */
   public function printExtraDebugging() {
-    drush_doj_migration_debug_output("Changed links:");
+    drush_migration_tools_debug_output("Changed links:");
     foreach ($this->debugInfo as $href => $new_href) {
-      drush_doj_migration_debug_output("Legacy: " . $href);
-      drush_doj_migration_debug_output("New: " . $new_href);
+      drush_migration_tools_debug_output("Legacy: " . $href);
+      drush_migration_tools_debug_output("New: " . $new_href);
     }
   }
 

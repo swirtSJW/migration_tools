@@ -9,7 +9,7 @@
  *
  * Parent class for all migrations from static HTML to case content type.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 abstract class NGJusticeHtmlToCaseMigration extends NGJusticeHtmlToNodeMigration {
 

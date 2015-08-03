@@ -9,7 +9,7 @@
 /**
  * Class NGCaseSourceParser.
  *
- * @package doj_migration
+ * @package migration_tools
  */
 
 abstract class NGCaseSourceParser extends NGNodeSourceParser {
