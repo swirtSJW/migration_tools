@@ -104,11 +104,11 @@ class PressReleaseSourceParser extends SourceParser {
 
       $this->title = $title;
       // Output to show progress to aid debugging.
-      $this->sourceParserMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 1);
+      new MigrationMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 1);
     }
     catch (Exception $e) {
       $this->title = '';
-      $this->sourceParserMessage("Error setting title.", array(), WATCHDOG_ERROR, 1);
+      new MigrationMessage("Error setting title.", array(), WATCHDOG_ERROR, 1);
     }
   }
 

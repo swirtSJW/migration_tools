@@ -95,7 +95,7 @@ class SourceParser {
       $this->queryPath = htmlqp($html, NULL, $qp_options);
     }
     catch (Exception $e) {
-      $this->sourceParserMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      new MigrationMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 
@@ -111,7 +111,7 @@ class SourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath, $this->arguments);
     }
     catch (Exception $e) {
-      $this->sourceParserMessage('Failed to clean the html, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      new MigrationMessage('Failed to clean the html, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 
@@ -131,7 +131,7 @@ class SourceParser {
   protected function setDate($date = '') {
     if (empty($date)) {
       $date_string = $this->runObtainer('ObtainDate', 'date');
-      $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+      new MigrationMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
       if (empty($date_string)) {
         $date = '';
@@ -144,7 +144,7 @@ class SourceParser {
     $this->date = $date;
 
     // Output to show progress to aid debugging.
-    $this->sourceParserMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+    new MigrationMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
   }
 
   /**
@@ -196,11 +196,11 @@ class SourceParser {
       $this->title = $title;
 
       // Output to show progress to aid debugging.
-      $this->sourceParserMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 2);
+      new MigrationMessage('Title found --> @title', array('@title' => $this->title), WATCHDOG_DEBUG, 2);
     }
     catch (Exception $e) {
       $this->title = '';
-      $this->sourceParserMessage("Error setting title.", array(), WATCHDOG_ERROR);
+      new MigrationMessage("Error setting title.", array(), WATCHDOG_ERROR);
     }
   }
 
@@ -513,11 +513,11 @@ class SourceParser {
       if (empty($method_stack)) {
         $method_stack = $this->getObtainerMethods($obtainer_methods_key);
       }
-      $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $obtainer_methods_key, '@obtainer_class' => $obtainer_class));
+      new MigrationMessage("Obtaining @key via @obtainer_class", array('@key' => $obtainer_methods_key, '@obtainer_class' => $obtainer_class));
       $text = $this->obtain($obtainer_class, $this->queryPath, $method_stack);
     }
     catch (Exception $e) {
-      $this->sourceParserMessage("Failed to set @key, Exception: @error_message", array(
+      new MigrationMessage("Failed to set @key, Exception: @error_message", array(
         '@key' => $obtainer_methods_key,
         '@error_message' => $e->getMessage(),
       ), WATCHDOG_ERROR);
@@ -542,7 +542,7 @@ class SourceParser {
   protected function drushPrintSeparator() {
     if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       drush_print(str_repeat('-', 40));
-      $this->sourceParserMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
+      new MigrationMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
     }
   }
 

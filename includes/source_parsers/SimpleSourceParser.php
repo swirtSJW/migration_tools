@@ -37,7 +37,7 @@ class SimpleSourceParser extends NGSourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {
-      $this->sourceParserMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      new MigrationMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 

@@ -27,7 +27,7 @@ class DistrictPressReleaseSpanishSourceParser extends DistrictPressReleaseSource
       }
       $this->setObtainerMethods(array('date' => $method_stack));
       $date_string = $this->runObtainer('ObtainDateSpanish', 'date');
-      $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+      new MigrationMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
       if (empty($date_string)) {
         $date = '';

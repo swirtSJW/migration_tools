@@ -95,31 +95,31 @@ abstract class NGSourceParser {
       if (!empty($methods)) {
         // There are methods to run, so run them.
         $obtainer = new $class($this->queryPath, $methods);
-        $this->sourceParserMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
+        new MigrationMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
 
         $text = $obtainer->obtain();
         $length = strlen($text);
         if (!$length) {
           // It's too long to be helpful in output so just show the length.
-          $this->sourceParserMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
+          new MigrationMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
-          $this->sourceParserMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+          new MigrationMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
         }
         else {
           // It's too long to be helpful in output so just show the length.
-          $this->sourceParserMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
+          new MigrationMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
         }
       }
       else {
         // There were no methods to run so message.
-        $this->sourceParserMessage("There were no methods to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
+        new MigrationMessage("There were no methods to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
       }
 
     }
     catch (Exception $e) {
-      $this->sourceParserMessage("@file_id Failed to set @key, Exception: @error_message", array(
+      new MigrationMessage("@file_id Failed to set @key, Exception: @error_message", array(
         '@file_id' => $this->fileId,
         '@key' => $property,
         '@error_message' => $e->getMessage(),
@@ -163,7 +163,7 @@ abstract class NGSourceParser {
     if ($convert_from != 'UTF-8') {
       // This was not UTF-8 so report the anomaly.
       $message = "Converted from: @convert_from";
-      $this->sourceParserMessage($message, array('@convert_from' => $convert_from), WATCHDOG_INFO, 1);
+      new MigrationMessage($message, array('@convert_from' => $convert_from), WATCHDOG_INFO, 1);
     }
 
     $qp_options = array(
@@ -177,7 +177,7 @@ abstract class NGSourceParser {
 
     }
     catch (Exception $e) {
-      $this->sourceParserMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      new MigrationMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
 
     if (!is_object($this->queryPath)) {
@@ -191,7 +191,7 @@ abstract class NGSourceParser {
   protected function drushPrintSeparator() {
     if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       drush_print(str_repeat('-', 40));
-      $this->sourceParserMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
+      new MigrationMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
     }
   }
 
@@ -276,13 +276,13 @@ abstract class NGSourceParser {
           $address['country'] = '';
           $message = "@fileid Could not look up location because geocoder returned nothing. The API request limit may have been exceeded.";
           $variables = array('@fileid' => $this->fileId);
-          $this->sourceParserMessage($address, $variables, WATCHDOG_INFO, 2);
+          new MigrationMessage($address, $variables, WATCHDOG_INFO, 2);
         }
       }
       else {
         $message = "@fileid Could not look up location because geocoder module is not enabled";
         $variables = array('@fileid' => $this->fileId);
-        $this->sourceParserMessage($address, $variables, WATCHDOG_INFO, 2);
+        new MigrationMessage($address, $variables, WATCHDOG_INFO, 2);
       }
 
       return $address;
@@ -302,7 +302,7 @@ abstract class NGSourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {
-      $this->sourceParserMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      new MigrationMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 }

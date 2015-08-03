@@ -103,7 +103,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            $this->obtainerMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
+            new MigrationMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }

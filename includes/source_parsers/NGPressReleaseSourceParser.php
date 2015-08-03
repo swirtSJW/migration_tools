@@ -22,7 +22,7 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
    */
   public function getDate() {
     $date_string = $this->getProperty('date');
-    $this->sourceParserMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+    new MigrationMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
     if (empty($date_string)) {
       $date = '';
@@ -31,7 +31,7 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
       $date = date('n/d/Y', strtotime($date_string));
       if (!empty($date)) {
         // Output success to show progress to aid debugging.
-        $this->sourceParserMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+        new MigrationMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
       }
     }
 
