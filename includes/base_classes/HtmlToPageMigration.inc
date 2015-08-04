@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Defines NGJusticeHtmlToPageMigration class.
+ * Defines HtmlToPageMigration class.
  */
 
 /**
- * Class NGJusticeHtmlToPageMigration.
+ * Class HtmlToPageMigration.
  *
  * Parent class for all migrations from static HTML to page content type.
  *
  * @package migration_tools
  */
-abstract class NGJusticeHtmlToPageMigration extends NGJusticeHtmlToNodeMigration {
+abstract class HtmlToPageMigration extends HtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.

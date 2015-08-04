@@ -1,23 +1,26 @@
 <?php
-
 /**
  * @file
- * Defines JusticeHtmlToNodeMigration class.
+ * Defines HtmlToNodeMigration class.
  */
 
 /**
- * Class JusticeHtmlToNodeMigration.
+ * Class HtmlToNodeMigration.
  *
  * Parent class for all migrations from static HTML to any content type.
  *
  * @package migration_tools
  */
-abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
+abstract class HtmlToNodeMigration extends FileSourceMigration {
 
+  /**
+   * @var string $sourceParserClass
+   *   The class name of the source parser. Used to instantiate $sourceParser.
+   */
   protected $sourceParserClass;
 
   /**
-   * @var SourceParser $source_parser
+   * @var NGSourceParser $source_parser
    *   The source parser object for a given row.
    */
   protected $sourceParser;
@@ -56,11 +59,8 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
       $this->sourceParserClass = $arguments['source_parser_class'];
     }
     else {
-      $this->sourceParserClass = "SourceParser";
+      $this->sourceParserClass = "NGNodeSourceParser";
     }
-
-    // The destination is the page content type.
-    $this->destination = new MigrateDestinationNode('page');
 
     // Map fields where source field name is same as destination field name.
     $this->addSimpleMappings(array(
@@ -91,7 +91,9 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
-    parent::prepareRow($row);
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
 
     // Sets $row->legacy_path and $row->url_path.
     if (empty($row->legacy_path) || empty($row->url_path)) {
@@ -107,16 +109,35 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     // Set to admin for now.
     $row->uid = 1;
 
-    // Create a new SourceParser to handle HTML content.
-    $this->sourceParser = new $this->sourceParserClass($row->url_path, $row->filedata, array(), $this->getArguments());
+    // Get the source parser ready.
+    if (!empty($row->filedata)) {
+      $this->initializeSourceParser($row);
 
-    // We check that everything has been initialized correctly to keep children
-    // classes from having to do all this checks.
-    if (!is_object($this->sourceParser->queryPath)) {
-      $this->queueMessage(t("@fileid failed to initialize QueryPath", array('@fileid' => $row->fileid)));
-      return FALSE;
+      // Get the properties from the source parser.
+      $this->setProperties($row);
     }
+  }
 
+  /**
+   * Create a new SourceParser to handle HTML content.
+   */
+  protected function initializeSourceParser($row) {
+    $source_parser = new $this->sourceParserClass($row->url_path, $row->filedata);
+
+    $obtainers_info = $this->getArgument("obtainers_info");
+    if (isset($obtainers_info) && is_array($obtainers_info)) {
+      foreach ($obtainers_info as $oi) {
+        $source_parser->addObtainerInfo($oi);
+      }
+    }
+    $this->sourceParser = $source_parser;
+  }
+
+  /**
+   * Use the source parser to set properties in whatever order.
+   */
+  protected function setProperties($row) {
+    $row->content_type = $this->sourceParser->getContentType();
     $row->title = $this->sourceParser->getTitle();
     $row->body = $this->sourceParser->getBody();
   }
@@ -142,31 +163,5 @@ abstract class JusticeHtmlToNodeMigration extends JusticeFileSourceMigration {
     if (isset($entity->nid) && $entity->nid) {
       migration_tools_complete_workbench_settings($entity, $row);
     }
-  }
-
-  /**
-   * Is this document a duplicate? Determine this by using redirect objects.
-   *
-   * Legacy paths from justice, should not be pointing to more than one node,
-   * If this is happening, it is a good sign that we are bringing in duplicate
-   * content.
-   *
-   * @param object $row
-   *   A row object as delivered by migrate.
-   *
-   * @return bool
-   *   Whether this row is a duplicate or not.
-   */
-  protected function isDuplicateByRedirect($row) {
-    $parsed = redirect_parse_url($row->legacy_path);
-    $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
-    $redirect = redirect_load_by_source($source);
-
-    if ($redirect) {
-      $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      watchdog('migration_tools', $message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING);
-      return TRUE;
-    }
-    return FALSE;
   }
 }

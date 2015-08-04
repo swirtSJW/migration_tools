@@ -1,17 +1,17 @@
 <?php
 /**
  * @file
- * Defines JusticeJsonToDatasetMigration class.
+ * Defines JsonToDatasetMigration class.
  */
 
 /**
- * Class JusticeJsonToDatasetMigration.
+ * Class JsonToDatasetMigration.
  *
  * Parent class for dataset migrations with source data stored in a JSON feed.
  *
  * @package migration_tools
  */
-class JusticeJsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
+class JsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
 
   /**
    * Prepare the JSON source.
@@ -24,7 +24,7 @@ class JusticeJsonToDatasetMigration extends OpenDataJSONtoDatasetMigration {
    */
   public function __construct($arguments) {
     // Use a specific source but allow for possible overides in extention.
-    $arguments['json_source_url'] = empty($arguments['json_source_url']) ? 'http://www.justice.gov/data.json' : $arguments['json_source_url'];
+    $arguments['json_source_url'] = empty($arguments['json_source_url']) ? 'http://www.somesite.com/data.json' : $arguments['json_source_url'];
 
     parent::__construct($arguments);
 

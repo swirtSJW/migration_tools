@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Defines JusticeCsvMigration class.
+ * Defines CsvMigration class.
  */
 
 /**
- * Class JusticeCsveMigration.
+ * Class CsvMigration.
  *
  * Parent class for all migrations with CSV data source.
  *
  * @package migration_tools
  */
-abstract class JusticeCsvMigration extends JusticeBaseMigration {
+abstract class CsvMigration extends MTBaseMigration {
 
   /**
    * {@inheritdoc}
@@ -50,7 +50,7 @@ abstract class JusticeCsvMigration extends JusticeBaseMigration {
  *
  * @package migration_tools
  */
-abstract class JusticeCsvToNodeMigration extends JusticeCsvMigration {
+abstract class JusticeCsvToNodeMigration extends CsvMigration {
 
   /**
    * {@inheritdoc}

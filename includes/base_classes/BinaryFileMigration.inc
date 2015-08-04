@@ -2,15 +2,15 @@
 
 /**
  * @file
- * Defines JusticeBinaryFileMigration class.
+ * Defines BinaryFileMigration class.
  */
 
 /**
- * Class JusticeBinaryFileMigration.
+ * Class BinaryFileMigration.
  *
  * @package migration_tools
  */
-abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
+abstract class BinaryFileMigration extends FileSourceMigration {
 
   /**
    * Prepare a file migration.
@@ -125,41 +125,3 @@ abstract class JusticeBinaryFileMigration extends JusticeFileSourceMigration {
   }
 }
 
-/**
- * Adding functionality that allows files to be added to a deployment plan
- */
-abstract class JusticeDeployableBinaryFileMigration extends JusticeBinaryFileMigration {
-
-  protected $deploymentPlan;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($arguments, $source_dirs, $dest_dir, $regex = NULL, $options = array()) {
-    parent::__construct($arguments, $source_dirs, $dest_dir, $regex, $options);
-    if (module_exists("doj_deploy")) {
-      $abbrev = $this->getOrganizationAbbreviation();
-      $this->deploymentPlan = _doj_deploy_find_plan_by_organization_abbreviation($abbrev);
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function complete($file, $row) {
-    parent::complete($file, $row);
-
-    // Let's add files to a deployment plan.
-    if (module_exists("doj_deploy") && $this->deploymentPlan) {
-      deploy_manager_add_to_plan($this->deploymentPlan, "file", $file);
-    }
-  }
-
-  /**
-   * Get the abbreviation of an organization.
-   *
-   * @return string
-   *   The abbreviation.
-   */
-  abstract public function getOrganizationAbbreviation();
-}

@@ -1,18 +1,18 @@
 <?php
 /**
  * @file
- * Defines NGJusticeHtmlToPressReleaseMigration class.
+ * Defines HtmlToPressReleaseMigration class.
  */
 
 /**
- * Class NGJusticeHtmlToPressReleaseMigration.
+ * Class HtmlToPressReleaseMigration.
  *
  * Parent class for all migrations from static HTML to press release
  * content type.
  *
  * @package migration_tools
  */
-abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeMigration {
+abstract class HtmlToPressReleaseMigration extends HtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.
@@ -35,14 +35,14 @@ abstract class NGJusticeHtmlToPressReleaseMigration extends NGJusticeHtmlToNodeM
     );
 
     if (empty($arguments['source_parser_class'])) {
-      $arguments['source_parser_class'] = "NGPressReleaseSourceParser";
+      $arguments['source_parser_class'] = "MTPressReleaseSourceParser";
     }
 
     if (array_key_exists('component_tid', $arguments)) {
       $component_tid = $arguments['component_tid'];
     }
     else {
-      throw new Exception(sprintf("%s: NGJusticeHtmlToPressReleaseMigration requires the component_tid argument.", $arguments['machine_name']));
+      throw new Exception(sprintf("%s: HtmlToPressReleaseMigration requires the component_tid argument.", $arguments['machine_name']));
     }
 
     // Calling parent constructor will set $this->source and $this->map.

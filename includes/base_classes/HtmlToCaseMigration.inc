@@ -1,17 +1,17 @@
 <?php
 /**
  * @file
- * Defines NGJusticeHtmlToCaseMigration class.
+ * Defines HtmlToCaseMigration class.
  */
 
 /**
- * Class NGJusticeHtmlToCaseMigration.
+ * Class HtmlToCaseMigration.
  *
  * Parent class for all migrations from static HTML to case content type.
  *
  * @package migration_tools
  */
-abstract class NGJusticeHtmlToCaseMigration extends NGJusticeHtmlToNodeMigration {
+abstract class HtmlToCaseMigration extends HtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.

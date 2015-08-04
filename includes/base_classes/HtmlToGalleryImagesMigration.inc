@@ -5,11 +5,11 @@
  */
 
 /**
- * Class JusticeHtmlToGalleryImagesMigration
+ * Class HtmlToGalleryImagesMigration
  *
  * Migrates field collection items for Gallery nodes.
  */
-abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigration {
+abstract class HtmlToGalleryImagesMigration extends FileSourceMigration {
 
   /**
    * {@inheritdoc}
@@ -34,7 +34,7 @@ abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigr
     // Match .htm, .html files only.
     $regex = '/.*\.htm(l)?$/';
 
-    $parser = new JusticeGalleryChunkParser();
+    $parser = new GalleryChunkParser();
 
     // Calling parent constructor will set $this->source and $this->map.
     parent::__construct($arguments, $source_fields, $source_dirs, $regex, $options, $parser);
@@ -138,7 +138,7 @@ abstract class JusticeHtmlToGalleryImagesMigration extends JusticeFileSourceMigr
  * @subpackage core
  * @see GalleryImagesMigration
  */
-class JusticeGalleryChunkParser extends JusticeChunkParser {
+class GalleryChunkParser extends MTChunkParser {
 
   /**
    * Sets $this->chunks.

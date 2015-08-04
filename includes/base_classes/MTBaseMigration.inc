@@ -2,21 +2,21 @@
 
 /**
  * @file
- * Contains base migration class for all justice.gov migrations.
+ * Contains base migration class for all migrations.
  */
 
 /**
  * The default system path for the DOJ legacy webroot. Can be overriden via
  * migration_tools_base_dir variable.
  */
-define('DOJ_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
+define('MT_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
 
 /**
  * Abstract intermediate class holding common settings.
  *
  * @package migration_tools
  */
-abstract class JusticeBaseMigration extends Migration {
+abstract class MTBaseMigration extends Migration {
 
   /**
    * {@inheritdoc}
@@ -25,10 +25,6 @@ abstract class JusticeBaseMigration extends Migration {
     parent::__construct($arguments);
     $this->mergeArguments($arguments);
 
-    $this->team = array(
-      new MigrateTeamMember('Matthew Grasmick', 'matthew.grasmick@acquia.com', t('Architect')),
-    );
-    $this->issuePattern = 'https://acquiadojo.atlassian.net/browse/:id:';
   }
 
   /**

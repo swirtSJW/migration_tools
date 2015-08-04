@@ -1,17 +1,17 @@
 <?php
 /**
  * @file
- * Defines NGJusticeHtmlToSpeechMigration class.
+ * Defines HtmlToSpeechMigration class.
  */
 
 /**
- * Class NGJusticeHtmlToSpeechMigration.
+ * Class HtmlToSpeechMigration.
  *
  * Parent class for all migrations from static HTML to speech content type.
  *
  * @package migration_tools
  */
-abstract class NGJusticeHtmlToSpeechMigration extends NGJusticeHtmlToNodeMigration {
+abstract class HtmlToSpeechMigration extends HtmlToNodeMigration {
 
   /**
    * Define $this->source, $this->map, $this->destination, and simple mappings.

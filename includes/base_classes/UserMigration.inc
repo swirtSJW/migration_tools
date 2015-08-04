@@ -2,15 +2,15 @@
 
 /**
  * @file
- * Defines JusticeUserMigration class.
+ * Defines UserMigration class.
  */
 
 /**
- * Class JusticeUserMigration.
+ * Class UserMigration.
  *
  * @package migration_tools
  */
-abstract class JusticeUserMigration extends JusticeCsvMigration {
+abstract class UserMigration extends CsvMigration {
 
   /**
    * {@inheritdoc}

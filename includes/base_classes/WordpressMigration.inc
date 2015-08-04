@@ -5,14 +5,14 @@
  * Contains classes for migrations from Wordpress.
  */
 
-define('DOJ_LEGACY_WORDPRESS_DIR', DRUPAL_ROOT . '/../../legacy/wordpress_exports');
+define('MT_LEGACY_WORDPRESS_DIR', DRUPAL_ROOT . '/../../legacy/wordpress_exports');
 
 /**
  * Implementation of WordPressMigration, for blog entries.
  *
  * @package migration_tools
  */
-abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
+abstract class MTWordpressBlogEntry extends WordPressBlogEntry {
 
   /**
    * {@inheritdoc}
@@ -85,7 +85,7 @@ abstract class JusticeWordpressBlogEntry extends WordPressBlogEntry {
  *
  * @package migration_tools
  */
-abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
+abstract class MTWordpressCourtDecision extends WordPressBlogEntry {
 
   /**
    * {@inheritdoc}
@@ -153,9 +153,9 @@ abstract class JusticeWordpressCourtDecision extends WordPressBlogEntry {
 }
 
 /**
- * Class JusticeWordpressAuthor.
+ * Class MTWordpressAuthor.
  */
-abstract class JusticeWordpressAuthor extends WordPressAuthor {
+abstract class MTWordpressAuthor extends WordPressAuthor {
 
   /**
    * {@inheritdoc}
@@ -169,9 +169,9 @@ abstract class JusticeWordpressAuthor extends WordPressAuthor {
 }
 
 /**
- * Class JusticeWordpressAttachment.
+ * Class MTWordpressAttachment.
  */
-abstract class JusticeWordpressAttachment extends WordPressAttachment {
+abstract class MTWordpressAttachment extends WordPressAttachment {
 
   /**
    * {@inheritdoc}
@@ -186,17 +186,13 @@ abstract class JusticeWordpressAttachment extends WordPressAttachment {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    // Replace https with http for URLs point to blogs.justice.gov.
-    if (strpos($row->attachment_url, 'blogs.justice.gov') !== FALSE) {
-      $row->attachment_url = str_replace('https://', 'http://', $row->attachment_url);
-    }
   }
 }
 
 /**
- * Class JusticeWordpressAttachment.
+ * Class MTWordpressAttachment.
  */
-abstract class JusticeWordpressCategory extends WordPressCategory {
+abstract class MTWordpressCategory extends WordPressCategory {
 
   /**
    * {@inheritdoc}
@@ -221,7 +217,7 @@ abstract class JusticeWordpressCategory extends WordPressCategory {
  * @throws Exception
  */
 function doj_migrate_wordpress_prepare_file($filename) {
-  $source_directory = DOJ_LEGACY_WORDPRESS_DIR;
+  $source_directory = MT_LEGACY_WORDPRESS_DIR;
   $source_filepath = $source_directory . '/' . $filename;
   $dest_directory = 'wordpress://';
   $dest_filepath = $dest_directory . str_replace(' ', '%20', $filename);
