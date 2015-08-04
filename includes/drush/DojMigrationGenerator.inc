@@ -146,8 +146,8 @@ class DojMigrationGenerator {
    */
   public function registerMigration() {
     // Now, Let's add the necessary info to migration_tools.migrate.inc
-    $migrations_filepath = "{$this->modulePath}/includes/migration_tools_migrations.inc";
-    $api = include "{$this->modulePath}/includes/migration_tools_migrations.inc";
+    // $migrations_filepath = "{$this->modulePath}/includes/migration_tools_migrations.inc";
+    // $api = include "{$this->modulePath}/includes/migration_tools_migrations.inc";
 
     $migrations = array('Page', 'File');
     if (!empty($this->orgConfig['pr_subdirectory'])) {
