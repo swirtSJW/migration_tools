@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Drush commands for DOJ Migration.
+ * Drush commands for Migration Tools.
  */
 
 /**
@@ -10,31 +10,19 @@
 function migration_tools_drush_command() {
   $items = array();
 
-  $items['doj-migrate-images'] = array(
+  $items['migration-tools-migrate-images'] = array(
     'description' => "Migrate all image files from a source directory to the public files directory.",
-    'aliases' => array('dmi'),
+    'aliases' => array('mtmi'),
     'arguments' => array(
       'organization' => 'The organization to migrate',
     ),
   );
 
-  $items['doj-generate-migrate-commands'] = array(
-    'description' => "Generates a list of migrate commands for one or more organic groups.",
-    'aliases' => array('dgmc'),
-    'arguments' => array(
-      'groups' => 'The abbreviation of the groups to migrate, separated by commas',
-    ),
-    'examples' => array(
-      'drush dgmc usao-sdal|als,tax' => 'Generate commands for the usao-sdal (source dir als) and tax groups.',
-    ),
-    'options' => array(
-      'brackets' => 'Prefixes each command with a bracketed checkbox. E.g., "[] command".',
-    ),
-  );
 
-  $items['doj-migrate-html-folders'] = array(
+
+  $items['migration-tools-html-folders'] = array(
     'description' => "Find all folders that contain html files.",
-    'aliases' => array('dmhf'),
+    'aliases' => array('mtscan'),
     'arguments' => array(
       'organization' => 'The organization to migrate',
     ),
@@ -43,13 +31,13 @@ function migration_tools_drush_command() {
       'extensions' => 'Comma delimited list of file extentions to find. (default: htm, html)',
     ),
     'examples' => array(
-      'drush dmhf usao-sdal' => 'Finds all directories in the source documents that contain .htm or .html files.',
-      'drush dmhf usao-sdal --extensions="htm,php"' => 'Finds all directories in the source documents that contain .htm or .php files.',
-      'drush dmhf usao-sdal --ignore="templates,archive"' => 'Finds all directories in the source documents that contain .htm or .html files except for the directories containing the word "templates" or "archive".',
+      'drush mtscan group_a' => 'Finds all directories in the source documents that contain .htm or .html files.',
+      'drush mtscan group_a --extensions="htm,php"' => 'Finds all directories in the source documents that contain .htm or .php files.',
+      'drush mtscan group_a --ignore="templates,archive"' => 'Finds all directories in the source documents that contain .htm or .html files except for the directories containing the word "templates" or "archive".',
     ),
   );
 
-  $items['doj-migrate-file-folders'] = array(
+  $items['migration-tools-file-folders'] = array(
     'description' => "Find all folders that contain binary/not-image files.",
     'aliases' => array('dmff'),
     'arguments' => array(
@@ -87,7 +75,7 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['doj-migrate-fix-legacy-links'] = array(
+  $items['migration-tools-fix-legacy-links'] = array(
     'description' => "Fix links utilizing anchors in a migration group.",
     'aliases' => array('dmfll'),
     'arguments' => array(
