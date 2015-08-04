@@ -35,16 +35,9 @@ files[] = includes/menu_generators/MenuGenerator.inc
 ;files[] = includes/base_classes/JusticeChunkParser.inc
 
 ; Source Parsers (need to be reworked - disabled for now)
-;files[] = includes/source_parsers/PressReleaseSourceParser.php
-;files[] = includes/source_parsers/SourceParser.php
-;files[] = includes/source_parsers/SimpleSourceParser.php
-;files[] = includes/source_parsers/NGDistrictPressReleaseSourceParser.php
-;files[] = includes/source_parsers/NGDistrictPageSourceParser.php
-;files[] = includes/source_parsers/NGSourceParser.php
-;files[] = includes/source_parsers/NGNodeSourceParser.php
-;files[] = includes/source_parsers/NGPressReleaseSourceParser.php
-;files[] = includes/source_parsers/NGSpeechSourceParser.php
-;files[] = includes/source_parsers/NGCaseSourceParser.php
+;files[] = includes/source_parsers/MTSourceParser.php
+;files[] = includes/source_parsers/MTSimpleSourceParser.php
+;files[] = includes/source_parsers/MTNodeSourceParser.php
 
 ; Obtainers (need to be reworked - disabled for now)
 ;files[] = includes/obtainers/Obtainer.php

@@ -1,18 +1,20 @@
 <?php
 /**
  * @file
- * Includes NGPressReleaseSourceParser class.
+ * Includes PressReleaseSourceParser class.
  *
  * This class contains customization to parse press releases.
+ *
+ * This is an example of how to parse something with a date and id number.
  */
 
 /**
- * Class NGPressReleaseSourceParser.
+ * Class PressReleaseSourceParser.
  *
  * @package migration_tools
  */
 
-abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
+abstract class PressReleaseSourceParser extends MTNodeSourceParser {
   protected $date;
   protected $subTitle;
   protected $prNumber;
@@ -102,11 +104,7 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
     $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
     $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
     $title->addMethod('pluckSelector', array("h2", 1));
-    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
-    $title->addMethod('pluckSelector', array("#headline", 1));
-    $title->addMethod('pluckSelector', array("p > strong > em", 1));
-    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
+
     $this->addObtainerInfo($title);
 
     $subtitle = new ObtainerInfo('subtitle', "ObtainSubTitle");
@@ -117,10 +115,6 @@ abstract class NGPressReleaseSourceParser extends NGNodeSourceParser {
     $date = new ObtainerInfo("date");
     $date->addMethod('pluckTableRow1Col2');
     $date->addMethod('pluckTableRow1Col1');
-    $date->addMethod('pluckTable2Row2Col2');
-    $date->addMethod('pluckSelector', array("p[align='center']", 1));
-    $date->addMethod('pluckSelector', array("#contentstart > p", 1));
-    $date->addMethod('pluckSelector', array(".newsRight", 1));
     $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
     $date->addMethod('pluckProbableDate');
     $this->addObtainerInfo($date);

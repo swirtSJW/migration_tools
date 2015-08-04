@@ -6,11 +6,11 @@
  */
 
 /**
- * Class SimpleSourceParser.
+ * Class MTSimpleSourceParser.
  *
  * @package migration_tools
  */
-class SimpleSourceParser extends NGSourceParser {
+class MTSimpleSourceParser extends MTSourceParser {
 
   /**
    * {@inheritdoc}
@@ -30,8 +30,6 @@ class SimpleSourceParser extends NGSourceParser {
     try {
       $this->initQueryPath();
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
-      HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
-      HtmlCleanUp::removeTableBackgrounds($this->queryPath);
 
       // Clean up specific to the Justice site.
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);

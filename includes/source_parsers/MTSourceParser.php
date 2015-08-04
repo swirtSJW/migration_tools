@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Includes NGSourceParser class, which parses static HTML files via queryPath.
+ * Includes MTSourceParser class, which parses static HTML files via queryPath.
  */
 
 // composer_manager is supposed to take care of including this library, but
@@ -10,11 +10,11 @@
 require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
 
 /**
- * Class NGSourceParser.
+ * Class MTSourceParser.
  *
  * @package migration_tools
  */
-abstract class NGSourceParser {
+abstract class MTSourceParser {
 
   protected $obtainersInfo;
   protected $fileId;
@@ -86,7 +86,7 @@ abstract class NGSourceParser {
 
     $obtainer_info = $this->obtainersInfo[$property];
     if (!isset($obtainer_info)) {
-      throw new Exception("NGSourceParser does not have obtainer info for the {$property} property");
+      throw new Exception("MTSourceParser does not have obtainer info for the {$property} property");
     }
 
     try {

@@ -1,18 +1,20 @@
 <?php
 /**
  * @file
- * Includes NGSpeechSourceParser class.
+ * Includes SpeechSourceParser class.
  *
  * This class contains customization to parse speeches.
+ *
+ * This is an example of extra processing to handle locations.
  */
 
 /**
- * Class NGSpeechSourceParser.
+ * Class SpeechSourceParser.
  *
  * @package migration_tools
  */
 
-abstract class NGSpeechSourceParser extends NGNodeSourceParser {
+abstract class SpeechSourceParser extends MTNodeSourceParser {
   protected $city;
   protected $country;
   protected $date;
@@ -163,23 +165,9 @@ abstract class NGSpeechSourceParser extends NGNodeSourceParser {
 
     $title = new ObtainerInfo("title");
     $title->addMethod('pluckAnySelectorUntilValid', array('h1', 10, 'html'));
-    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('pluckSelector', array("h2", 1));
-    $title->addMethod('pluckSelector', array(".contentSub > div > p[align='center'] > strong", 1));
-    $title->addMethod('pluckSelector', array(".contentSub > div > div > p > strong", 1));
-    $title->addMethod('pluckSelector', array("#headline", 1));
-    $title->addMethod('pluckSelector', array("p > strong > em", 1));
-    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 1));
     $this->addObtainerInfo($title);
 
     $date = new ObtainerInfo("date");
-    $date->addMethod('pluckTableRow1Col2');
-    $date->addMethod('pluckTableRow1Col1');
-    $date->addMethod('pluckTable2Row2Col2');
-    $date->addMethod('pluckSelector', array("p[align='center']", 1));
-    $date->addMethod('pluckSelector', array("#contentstart > p", 1));
-    $date->addMethod('pluckSelector', array(".newsRight", 1));
-    $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
     $date->addMethod('pluckProbableDate');
     $this->addObtainerInfo($date);
 

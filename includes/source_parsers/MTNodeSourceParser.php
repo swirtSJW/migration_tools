@@ -2,15 +2,15 @@
 
 /**
  * @file
- * Includes SourceParser class, which parses static HTML files via queryPath.
+ * Includes MTNodeSourceParser class, parses static HTML files via queryPath.
  */
 
 /**
- * Class NGNodeSourceParser.
+ * Class MTNodeSourceParser.
  *
  * @package migration_tools
  */
-class NGNodeSourceParser extends NGSourceParser {
+class MTNodeSourceParser extends MTSourceParser {
   protected $body;
   protected $title;
   // @codingStandardsIgnoreStart
@@ -55,9 +55,8 @@ class NGNodeSourceParser extends NGSourceParser {
     $this->addObtainerInfo($type);
 
     $title = new ObtainerInfo("title");
-    $title->addMethod('findClassBreadcrumbMenuContentLast');
-    $title->addMethod('pluckSelector', array("title", 1));
     $title->addMethod('pluckSelector', array("h1", 1));
+    $title->addMethod('pluckSelector', array("title", 1));
     $this->addObtainerInfo($title);
 
     $body = new ObtainerInfo("body");
