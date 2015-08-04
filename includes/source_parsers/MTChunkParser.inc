@@ -6,14 +6,13 @@
  */
 
 /**
- * Class JusticeChunkParser
+ * Class MTChunkParser
  *
  * Parses a single HTML file into many chunks, each of which is mapped to a
  * separate destination node. Used for 'many to many' migrations where
  * each file contains content for more than one destination.
  *
  * @package migration_tools
- * @see AtrSpeechChunkParser for example extension
  */
 abstract class MTChunkParser extends MigrateContentParser {
   /**

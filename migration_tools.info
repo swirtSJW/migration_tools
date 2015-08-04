@@ -20,20 +20,11 @@ files[] = includes/TaxonomyTools.inc
 ; Menu Generator
 files[] = includes/menu_generators/MenuGenerator.inc
 
-; Migrations (need to be reworked - disabled for now)
-;files[] = includes/base_classes/JusticeBaseMigration.inc
-;files[] = includes/base_classes/JusticeHtmlToNodeMigration.inc
-;files[] = includes/base_classes/JusticeFileSourceMigration.inc
-;files[] = includes/base_classes/JusticeBinaryFileMigration.inc
-;files[] = includes/base_classes/JusticeCsvMigration.inc
-;files[] = includes/base_classes/JusticeUserMigration.inc
-;files[] = includes/base_classes/NGJusticeHtmlToNodeMigration.inc
-;files[] = includes/base_classes/NGJusticeHtmlToPageMigration.inc
-
 ; Source Parsers (need to be reworked - disabled for now)
-;files[] = includes/source_parsers/MTSourceParser.php
-;files[] = includes/source_parsers/MTSimpleSourceParser.php
-;files[] = includes/source_parsers/MTNodeSourceParser.php
+files[] = includes/source_parsers/MTChunkParser.php
+files[] = includes/source_parsers/MTSourceParser.php
+files[] = includes/source_parsers/MTSimpleSourceParser.php
+files[] = includes/source_parsers/MTNodeSourceParser.php
 
 ; Obtainers
 files[] = includes/obtainers/Obtainer.php
