@@ -5,6 +5,9 @@
  */
 
 class ObtainContentType extends Obtainer {
+  // Finders for content type are unique to other finders.  They MUST return
+  // either the content type they are looking for OR ''.  They can not return
+  // one content type or another as they will not cascade.
   /**
    * Find IMMEDIATE RELEASE for Press Release.
    */
@@ -13,26 +16,5 @@ class ObtainContentType extends Obtainer {
     $text = $body->text();
     $needle = 'IMMEDIATE RELEASE';
     return (stripos($text, $needle) !== FALSE) ? 'press_release' : '';
-  }
-
-  /**
-   * Find IMMEDIATE RELEASE for Press Release.
-   */
-  protected function findPRClassBreadcrumbPressRelease() {
-    $body = $this->queryPath->find('.breadcrumb')->first();
-    $text = $body->text();
-    $needle = 'Press Release';
-    return (stripos($text, $needle) !== FALSE) ? 'press_release' : '';
-  }
-
-  /**
-   * Find 'Speeches By The U.S. Attorney' for Speech.
-   */
-  protected function findClassBreadcrumbSpeech() {
-    $body = $this->queryPath->find('.breadcrumb')->first();
-    $text = $body->text();
-    $needle = 'Speeches By The U.S. Attorney';
-
-    return (stripos($text, $needle) !== FALSE) ? 'speech' : '';
   }
 }

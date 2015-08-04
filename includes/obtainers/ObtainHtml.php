@@ -192,6 +192,75 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Find the content from the last anchor in the breadcrumb chain.
+   *
+   * @param string $selector
+   *   Selector of the breadcrumb container.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findBreadcrumbLastAnchor($selector) {
+    $text = '';
+    if (!empty($selector)) {
+      $breadcrumb = $this->queryPath->find($selector);
+      $text = $breadcrumb->find(a)->last()->text();
+      // This element makes up a bigger whole, so it is not set to be removed.
+      $this->setCurrentFindMethod("findBreadcrumbLastAnchor($selector)");
+    }
+    return $text;
+  }
+
+  /**
+   * Find the content from the last non-anchor in the breadcrumb chain.
+   *
+   * @param string $selector
+   *   Selector of the breadcrumb container.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findBreadcrumbLastNonAnchor($selector) {
+    $text = '';
+    if (!empty($selector)) {
+      $breadcrumb = $this->queryPath->find($selector);
+      // Clone the breadcrumb so the next operations are non-destructive.
+      $clone = clone $breadcrumb;
+      $clone->find(a)->remove();
+      $text = $clone->first()->text();
+      // This element makes up a bigger whole, so it is not set to be removed.
+      $this->setCurrentFindMethod("findBreadcrumbLastNonAnchor($selector)");
+    }
+    return $text;
+  }
+
+  /**
+   * Find any attribute of any selector.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param string $attribute
+   *   The attribute to find on the selector. Example: alt, title, etc.
+   * @param string $depth
+   *   (optional) The depth to find.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findSelectorAttribute($selector, $attribute, $depth = 1) {
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        $i++;
+        if ($i == $depth) {
+          $this->setCurrentFindMethod("findSelectorAttribute($selector, $attribute, " . $i . ')');
+          return $element->attr("{$attribute}");
+        }
+      }
+    }
+  }
+
+  /**
    * Plucker for nth xpath on the page.
    *
    * @param string $xpath

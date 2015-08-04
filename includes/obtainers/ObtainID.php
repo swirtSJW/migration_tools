@@ -11,21 +11,6 @@
 class ObtainID extends ObtainHtml {
 
   /**
-   * Method for returning the table cell at 3rd row, 1st column.
-   *
-   * @return text
-   *   The string found.
-   */
-  protected function pluckTable3y1x() {
-    $table = $this->queryPath->find("table");
-    $text = $this->pluckFromTable($table, 3, 1);
-
-    return $text;
-  }
-
-  // ***************** Helpers ***********************************************.
-
-  /**
    * Cleans $text and returns it.
    *
    * @param string $text
@@ -50,7 +35,7 @@ class ObtainID extends ObtainHtml {
       $text = StringCleanUp::fixEncoding($text);
     }
 
-    // Remove some strings that often accompany dates.
+    // Remove some strings that often accompany id numbers.
     $remove = array(
       'id:',
       'ID',

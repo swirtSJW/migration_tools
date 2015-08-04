@@ -13,8 +13,6 @@
  */
 class ObtainLocation extends ObtainHtml {
 
-  // ***************** Helpers ***********************************************.
-
   /**
    * {@inheritdoc}
    */

@@ -30,27 +30,22 @@ files[] = includes/menu_generators/MenuGenerator.inc
 ;files[] = includes/base_classes/NGJusticeHtmlToNodeMigration.inc
 ;files[] = includes/base_classes/NGJusticeHtmlToPageMigration.inc
 
-
-; Chunk Parsers (need to be reworked - disabled for now)
-;files[] = includes/base_classes/JusticeChunkParser.inc
-
 ; Source Parsers (need to be reworked - disabled for now)
 ;files[] = includes/source_parsers/MTSourceParser.php
 ;files[] = includes/source_parsers/MTSimpleSourceParser.php
 ;files[] = includes/source_parsers/MTNodeSourceParser.php
 
-; Obtainers (need to be reworked - disabled for now)
-;files[] = includes/obtainers/Obtainer.php
-;files[] = includes/obtainers/ObtainBody.php
-;files[] = includes/obtainers/ObtainContentType.php
-;files[] = includes/obtainers/ObtainHtml.php
-;files[] = includes/obtainers/ObtainCity.php
-;files[] = includes/obtainers/ObtainCountry.php
-;files[] = includes/obtainers/ObtainDate.php
-;files[] = includes/obtainers/ObtainDateSpanish.php
-;files[] = includes/obtainers/ObtainID.php
-;files[] = includes/obtainers/ObtainLocation.php
-;files[] = includes/obtainers/ObtainState.php
-;files[] = includes/obtainers/ObtainTitle.php
-;files[] = includes/obtainers/ObtainSubTitle.php
-;files[] = includes/obtainers/ObtainTitlePressRelease.php
+; Obtainers
+files[] = includes/obtainers/Obtainer.php
+files[] = includes/obtainers/ObtainBody.php
+files[] = includes/obtainers/ObtainContentType.php
+files[] = includes/obtainers/ObtainHtml.php
+files[] = includes/obtainers/ObtainCity.php
+files[] = includes/obtainers/ObtainCountry.php
+files[] = includes/obtainers/ObtainDate.php
+files[] = includes/obtainers/ObtainDateSpanish.php
+files[] = includes/obtainers/ObtainID.php
+files[] = includes/obtainers/ObtainLocation.php
+files[] = includes/obtainers/ObtainState.php
+files[] = includes/obtainers/ObtainTitle.php
+files[] = includes/obtainers/ObtainSubTitle.php
