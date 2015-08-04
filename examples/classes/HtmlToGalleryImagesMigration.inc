@@ -20,7 +20,7 @@ abstract class HtmlToGalleryImagesMigration extends FileSourceMigration {
       $this->dependencies = array($arguments["gallery_migration"]);
     }
     else {
-      throw new Exception("the 'gallery_migration' argument is required by JusticeHtmlToGalleryImagesMigration");
+      throw new Exception("the 'gallery_migration' argument is required by HtmlToGalleryImagesMigration");
     }
 
     // Define the fields that will be derived from the static files.

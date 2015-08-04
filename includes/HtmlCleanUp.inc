@@ -26,7 +26,7 @@ class HtmlCleanUp {
     HTMLCleanUp::removeElements($query_path, array(
       'a[name="sitemap"]',
       'a[name="maincontent"]',
-      'img[src="/gif/sealdoj.gif"]',
+      'img[src="/gif/sealmt.gif"]',
       'div.skip',
       'div.hdrwrpr',
       'div.breadcrumbmenu',
@@ -50,24 +50,6 @@ class HtmlCleanUp {
       $match->parent()->parent()->remove();
     }
 
-    // Replace incorrect domains with justice.gov.
-    $incorrect_domains = array(
-      "http://publicdevelopment.doj.gov",
-      "http://new-publicdevelopment.doj.gov",
-      "http://publicstaging.doj.gov",
-    );
-
-    foreach ($incorrect_domains as $incorrect) {
-      $matches = HtmlCleanUp::matchAll($query_path, "a", $incorrect, "attr", 'href');
-      foreach ($matches as $key => $match) {
-        $href = $match->attr('href');
-        $href = str_replace($incorrect, "", $href);
-        if (empty($href)) {
-          $href = "/";
-        }
-        $match->attr('href', $href);
-      }
-    }
 
     // Remove extraneous html wrapping elements, leaving children intact.
     HTMLCleanUp::removeWrapperElements($query_path, array(

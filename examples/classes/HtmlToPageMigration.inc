@@ -23,7 +23,7 @@ abstract class HtmlToPageMigration extends HtmlToNodeMigration {
    *   A flat array of the source directories containing html files.
    * @param string $regex
    *   The file mask. Only filenames matching this regex will be migrated.
-   *   This will default to '/.*\.htm(l)?$/' in JusticeHtmlToNodeMigration
+   *   This will default to '/.*\.htm(l)?$/' in HtmlToNodeMigration
    *   if NULL is passed in.
    * @param array $options
    *   Options that will be passed on to file_scan_directory(). See docs of that

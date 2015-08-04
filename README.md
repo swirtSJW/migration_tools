@@ -24,7 +24,7 @@ The following is a list of classes that exemplify various types of migrations.
 * Static HTML file migration:
     * CareersJobMigration
 * Chunk Parsing:
-    * JusticeChunkParser
+    * MTChunkParser
     * BriefChunkParser
     * GalleryChunkParser
 * Field Collections:
@@ -50,8 +50,8 @@ The following is a list of classes that exemplify various types of migrations.
 
 Since we have so much infrastructure developed around our html to node 
 migrations, it made sense to automate some of the process. The 
-`doj-generate-migration-class` drush command will automatically generate a 
-migration class for you. See `drush doj-generate-migration-class --help` for 
+`mt-generate-migration-class` drush command will automatically generate a 
+migration class for you. See `drush mt-generate-migration-class --help` for 
 command specification.
 
 The command accepts the following arguments:
@@ -113,7 +113,7 @@ This command will generate the migration for the District of Massachusetts.
 There are 2 drush commands to generate, and then import a menu.
 
 The generating command looks like this:
-> drush doj-generate-menu usao-az --css-selector='#navbar' --local-base-uri='usao-az' --menu-location-uri='usao/az'
+> drush mt-generate-menu usao-az --css-selector='#navbar' --local-base-uri='usao-az' --menu-location-uri='usao/az'
 
 The only parameter required is the abbreviation of the migration, in this 
 case usao-az. 
@@ -121,25 +121,23 @@ case usao-az.
 Other configuration is optional:
 
 * css-selector should be a css selector pointing to the outer-most ul of the 
-menu in justice.gov
+menu in the live site
 * local-base-uri should be the path to where the content is locally after a 
 migration has been run (ex. ag or usao-nm)
-* menu-location-uri should be a page in justice.gov containing the menu that 
-we want to generate (ex. oarm would be saying that the menu we care about is 
-locate at justice.gov/oarm)
+* menu-location-uri should be a page in the live site containing the menu that 
+we want to generate 
 
 After a migration is run, so the content is present locally (This is a 
 prerequisite of menu generation), and the menu is generated, we can then 
 import it.
 
 the import command is
-> drush doj-import-group-menu usao-ndny-menu.txt usao-ndny                                                              
+> drush MT-import-group-menu usao-ndny-menu.txt usao-ndny                                                              
 
 The command takes the file where the menu is (the script assumes this file is 
 inside the sources directory) and the abbreviation of the migration.
 
-We have found 2 menu patterns in justice.gov (one mainly for orgs, and one for 
-districts). 
+
 
 The process differences required by the different menus is encapsulated in the 
 MenuGeneratorEngine classes.
@@ -188,18 +186,18 @@ Basic steps for migration.
 # Get source tarball and decompress in correct location on stg and local dev.
 If you are unsure of the location or name of the tar you can look around.
 
-    drush @doj.stg ssh
+    drush @mt.stg ssh
     cd ~/migration-source
 
 Once you have found the location of the tar you need (most likely in migration/source/tars) copy it to where it belongs and untar it, but remove the copy (leaving the original in migration-source/tars)
-The location where you move it has to be such that it is in the place/path of where the content resides on the justice.gov, NOT where it is going to reside on drupal.
+The location where you move it has to be such that it is in the place/path of where the content resides on the legacy site, NOT where it is going to reside on drupal.
 When you have it in the right spot untar it with (altering the filename to suit)
 
     tar -zxvf usao.tnw.tar.gz
 
 Copy the tar to your local sandbox by scp:
 
-     scp doj.stg@staging-7820.prod.hosting.acquia.com:~/migration-source/tars/usao.tnw.tar.gz ~/workspace/doj/migration-source/usao/usao.tnw.tar.gz
+     scp mt.stg@staging-7820.prod.hosting.acquia.com:~/migration-source/tars/usao.tnw.tar.gz ~/workspace/mt/migration-source/usao/usao.tnw.tar.gz
 
 Untar it in the right location on your dev.
 
@@ -209,13 +207,13 @@ Untar it in the right location on your dev.
 In order to create a migration class for an organization or district, you will need the following information (some from taking a peek at the source directories, some from project people)
 
 1. Organization or District
-2. Path to source files (must match justice.gov path)
+2. Path to source files (must match legacy site path)
 3. New abbreviation for district or organization
 4. Term Id of vocabulary Component - Quickest way to get this is node/add/press_release then inspect the component field for the term that matches this organization / district.
 5. Location of press releases within the source directory. (sometimes there are multiple, pcik one for now and the others can be added later)
 
 # Build migration yml file (either organization or district)
-In sites/all/modules/custom/doj_migration create a new yml file in either scripts/districts or scripts/organizations  The yml file should be named according to the abbreviation of the migration.
+In sites/all/modules/custom/mt_migration create a new yml file in either scripts/districts or scripts/organizations  The yml file should be named according to the abbreviation of the migration.
 
 The contents of the yml file will resemble this
 
@@ -228,11 +226,11 @@ The contents of the yml file will resemble this
 After saving this file,  the appropriate drush command needs to be run to build the migration classes.  Modify it to use your yml file.
 
     # This is the command for a district.
-    drush doj-generate-migration-class wdtn.yml --type=district
+    drush mt-generate-migration-class wdtn.yml --type=district
     # This is the command for an organization.
-    drush doj-generate-migration-class tax.yml --type=organization
+    drush mt-generate-migration-class tax.yml --type=organization
     
-This will inspect the content of the source files looking for binary files, content pages and press releases. It will build the migration classes and add the files to doj_migration.info for inclusion.
+This will inspect the content of the source files looking for binary files, content pages and press releases. It will build the migration classes and add the files to mt_migration.info for inclusion.
 
 Register the new files with drupal: `drush cc all`
 
@@ -271,7 +269,7 @@ They can be skipped in prepareRow  within the migration class like this:
       '/usao/tnw/Corruption/Ostrowski/ostrowski_index.html',
     );
 
-    if (doj_migration_skip_file($row->fileid, $skip_these) || (parent::prepareRow($row) === FALSE)) {
+    if (mt_migration_skip_file($row->fileid, $skip_these) || (parent::prepareRow($row) === FALSE)) {
       return FALSE;
     }
   }
@@ -286,16 +284,16 @@ Example:  In May the directories might have stopped at `usao/are/news/2015/May` 
 
 To help debugging migrations, toggle terminal debug output on by running 
 
-    drush vset doj_migration_tools_drush_debug TRUE
+    drush vset mt_migration_tools_drush_debug TRUE
 
 Additionally you can make the migration stop on lack of title or date by setting the value
 
-    drush vset doj_migration_tools_drush_stop_on_error TRUE
+    drush vset mt_migration_tools_drush_stop_on_error TRUE
 
 ## Migrate the images 
 Images are pretty straightforward and require little effort.   The path argument is for the original location of the images in the source.
   
-    drush doj-migrate-images usao/tnw 
+    drush mt-migrate-images usao/tnw 
 
 ## Migrating Organization or Districts
 In some cases you will get a dependency not met error that will prevent the migration from running.  It is due to the way sync the database down to our dev.  It loses all the migration tables. Running these migrations will solve that problem. 
@@ -311,7 +309,7 @@ This is the first and easiest migration to handle.  If this is a district, this 
 
 Copy and paste the report from your terminal into a comment on the ticket.
 
-If this is an organization then you need to open .htaccess and add the abbreviation of the group abbreviation to the re-write rule on [this line](https://github.com/acquiadojo/justicegov/blob/integration/docroot/.htaccess#L151).
+If this is an organization then you need to open .htaccess and add the abbreviation of the group abbreviation to the re-write rule on [this line].
 
 ##  Migrate Content Type: Page
 The first time you run a migration you will want to migrate only a few pages to see that the Obtainer->finders are looking in the right spot to get the title and the body.  To run just a few you can limit the migration like this:
@@ -384,7 +382,7 @@ As a result, additional work is often needed to tune the finder method stacks fo
 When you have all the content migrated on your machine, run one of these commands to build the menu.
 
 
-    drush doj-generate-menu usao-wdtn --menu-location-uri='usao/tnw/index.htm' --local-base-uri='usao-wdtn' --css-selector='ul#navbar' --recurse='FALSE'
+    drush mt-generate-menu usao-wdtn --menu-location-uri='usao/tnw/index.htm' --local-base-uri='usao-wdtn' --css-selector='ul#navbar' --recurse='FALSE'
     
 The first argument is the abbreviation of organization or district.   
 The options:
@@ -393,7 +391,7 @@ The options:
 * selector is the css selector to use to find the menu on the page.
 * recurse Whether or not load and crawl the primary pages to obtain menu items from those pages.
 
-This will crawl the old menu and generate a text file for importing the menu.  Scan the menu for odd urls that may have gotten caught in the crawler.  If a full url appears, it is an indication that the page has not been migrated yet, so it links to the live site and will redirect accordingly when the page is eventually migrated. An http://  makes drupal treat it like an external link.  example: http://www.justice.gov/usao/pr/somepage.html  
+This will crawl the old menu and generate a text file for importing the menu.  Scan the menu for odd urls that may have gotten caught in the crawler.  If a full url appears, it is an indication that the page has not been migrated yet, so it links to the live site and will redirect accordingly when the page is eventually migrated. An http://  makes drupal treat it like an external link.  example: http://www.legacysite.com/foo/bar/somepage.html  
 
 The following command will import the menu.
 
@@ -421,11 +419,11 @@ Here are the basic steps:
 
 1.  Add an 'isType' check within prepareRow that will cause it to skip the document if it is not a 'press_release'. Using isType will cause it to give proper drush feedback.
 
-        if (doj_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE || (!self::isType('press_release', $row) ) {
+        if (mt_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE || (!self::isType('press_release', $row) ) {
           return FALSE;
          }
 
-1.  If you need a new finder (a way to identify the kind of document you are looking for) add them to `doj_migration/includes/obtainers/ObtainContentType.php`.  The only difference is that each finder returns the machine name of the content type it thinks it found, or '' if it turned out to be something else.  So any logic checks for the type, occur within the finder rather than on validate as is done in typical finders.
+1.  If you need a new finder (a way to identify the kind of document you are looking for) add them to `mt_migration/includes/obtainers/ObtainContentType.php`.  The only difference is that each finder returns the machine name of the content type it thinks it found, or '' if it turned out to be something else.  So any logic checks for the type, occur within the finder rather than on validate as is done in typical finders.
 
 # Restricting by a subpath 
 It might be necessary (due to the recursive method of file discovery) to exclude certain subpaths within the file system.  This can be done by creating an array of subpaths to exclude, then placing a call to isInPath() within prepareRow.
@@ -435,11 +433,11 @@ It might be necessary (due to the recursive method of file discovery) to exclude
 Returns true if the file being processed is within one of the paths specified.
 
 # Restricting by Date
-If you are faced with press releases from multiple years all mixed in one directory, and you are trying to restrict them to only things after 2012. It can be done using `doj_migration_date_after($date, $date_cutoff, $default = TRUE)` in prepareRow. 
+If you are faced with press releases from multiple years all mixed in one directory, and you are trying to restrict them to only things after 2012. It can be done using `mt_migration_date_after($date, $date_cutoff, $default = TRUE)` in prepareRow. 
 Example:
 
        // Skip any press releases prior to 2013.
-       if (!doj_migration_date_after($row->field_pr_date, '12/31/2012', FALSE)) {
+       if (!mt_migration_date_after($row->field_pr_date, '12/31/2012', FALSE)) {
          $message = '@fileid ------> Dated prior to 2013. Skipped: intentionally.';
          $this->migrationMessage($message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
          return FALSE;

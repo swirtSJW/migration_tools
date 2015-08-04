@@ -23,7 +23,7 @@ function migration_tools_menu_alter(&$items) {
   // classes, overwhelming PHP memory limit. We cannot disable migrate_ui
   // due to wordpress_migrate dependency on it, so we will instead unset this
   // menu router item.
-  if (variable_get("doj_migrate_ui_disabled", TRUE)) {
+  if (variable_get("mt_migrate_ui_disabled", TRUE)) {
     unset($items['admin/content/migrate']);
   }
 }

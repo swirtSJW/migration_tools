@@ -23,15 +23,13 @@ class MTSimpleSourceParser extends MTSourceParser {
 
   /**
    * Set the html var after some cleaning.
-   *
-   * @todo this is specific to justice so it should not be here.
    */
   protected function cleanHtml() {
     try {
       $this->initQueryPath();
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
 
-      // Clean up specific to the Justice site.
+      // Clean up specific to this site.
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {

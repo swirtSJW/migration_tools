@@ -48,7 +48,7 @@ abstract class FileSourceMigration extends MTBaseMigration {
     $this->baseDir = variable_get('migration_tools_base_dir', MT_LEGACY_WEBROOT);
 
     // Define the directories containing files to be migrated.
-    $absolute_dirs = $this->prependJusticeFilepath($source_dirs);
+    $absolute_dirs = $this->prependLegacyFilepath($source_dirs);
 
     // $list_files will provide migrate with a list of all files to be migrated.
     // $item_file provides methods for retrieving a file given an identifier.
@@ -67,7 +67,7 @@ abstract class FileSourceMigration extends MTBaseMigration {
    * @return array
    *   An array of absolute directory paths, based on $this->base_path.
    */
-  public function prependJusticeFilepath(array $relative_paths) {
+  public function prependLegacyFilepath(array $relative_paths) {
 
     $absolute_paths = array();
     foreach ($relative_paths as $key => $relative_path) {
@@ -188,10 +188,7 @@ abstract class FileSourceMigration extends MTBaseMigration {
    */
   public function postImport($report_rows = array()) {
     parent::postImport();
-
-    // @todo Move this to NGJusticeHtmlToNodeMigration after
-    // JusticeHtmlToNodeMigration is completely deprecated.
-    if (is_subclass_of($this, 'JusticeHtmlToNodeMigration') || (is_subclass_of($this, 'NGJusticeHtmlToNodeMigration'))) {
+ (is_subclass_of($this, 'HtmlToNodeMigration') || (is_subclass_of($this, 'HtmlToNodeMigration'))) {
       if (variable_get('migration_tools_display_report', TRUE)) {
         $this->printNodeMigrationReport($report_rows);
       }

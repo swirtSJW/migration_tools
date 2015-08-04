@@ -216,7 +216,7 @@ abstract class MTWordpressCategory extends WordPressCategory {
  *
  * @throws Exception
  */
-function doj_migrate_wordpress_prepare_file($filename) {
+function mt_migrate_wordpress_prepare_file($filename) {
   $source_directory = MT_LEGACY_WORDPRESS_DIR;
   $source_filepath = $source_directory . '/' . $filename;
   $dest_directory = 'wordpress://';

@@ -9,9 +9,9 @@ require_once DRUPAL_ROOT . "/../vendor/autoload.php";
 use Symfony\Component\Yaml\Parser;
 
 /**
- * Class DojMigrationGenerator.
+ * Class MtMigrationGenerator.
  */
-class DojMigrationGenerator {
+class MtMigrationGenerator {
 
   /**
    * @var string
@@ -38,7 +38,7 @@ class DojMigrationGenerator {
   protected $modulePath;
 
   /**
-   * Constructs DojMigrationGenerator object.
+   * Constructs MtMigrationGenerator object.
    *
    * @param string $config_filename
    *   The name of the yaml file containing the organization configuration.
@@ -237,10 +237,10 @@ class DojMigrationGenerator {
       // Generate an array of all subdirectories containing HTML.
       // @todo Replace usage of shell_exec() with direct calls to php function.
       if ($this->orgConfig['drush_alias']) {
-        $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} doj-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
+        $html_array_data = shell_exec("drush @{$this->templateConfig['drush_alias']} mt-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
       }
       else {
-        $html_array_data = shell_exec("drush doj-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
+        $html_array_data = shell_exec("drush mt-migrate-html-folders {$this->orgConfig['directory']} --extensions='{$extentions}'");
       }
       $data = explode("\n", $html_array_data);
 

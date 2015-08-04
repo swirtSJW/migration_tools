@@ -11,7 +11,7 @@
  * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigration {
+class {{ info.class_base_name }}PageMigration extends HtmlToPageMigration {
 
   /**
    * {@inheritdoc}
@@ -65,7 +65,7 @@ class {{ info.class_base_name }}PageMigration extends NGJusticeHtmlToPageMigrati
  * @package migration_tools
  * @subpackage {{ info.abbreviation }}
  */
-class {{ info.class_base_name }}FileMigration extends JusticeDeployableBinaryFileMigration {
+class {{ info.class_base_name }}FileMigration extends DeployableBinaryFileMigration {
 
   /**
    * {@inheritdoc}

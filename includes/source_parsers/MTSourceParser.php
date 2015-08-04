@@ -264,7 +264,7 @@ abstract class MTSourceParser {
         $point = geocoder('google', $string);
         module_load_include('inc', 'migration_tools', 'includes/migration_tools');
         try {
-          $address = doj_migrate_convert_geocoded_point_to_address($point);
+          $address = mt_migrate_convert_geocoded_point_to_address($point);
         }
         catch (Exception $e) {
           watchdog("migration_tools", "The geocoder failed: {$e->getMessage()}");
@@ -298,7 +298,7 @@ abstract class MTSourceParser {
       HtmlCleanUp::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
       HtmlCleanUp::removeFaultyImgLongdesc($this->queryPath);
 
-      // Clean up specific to the Justice site.
+      // Clean up specific to this site.
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {

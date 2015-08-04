@@ -88,8 +88,6 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
       "#footer",
       "a[title='Printer Friendly']",
       "a[href='#top']",
-      "a[href='http://www.justice.gov/usao/wvn']",
-      "a[href='https://www.justice.gov/usao/wvn']",
     );
     HtmlCleanUp::removeElements($this->queryPath, $selectors);
   }

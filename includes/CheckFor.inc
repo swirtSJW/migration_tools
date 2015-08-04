@@ -41,7 +41,7 @@ class CheckFor {
   /**
    * Determines if the current row is a duplicate using redirects as reference.
    *
-   * Legacy paths from justice, should not be pointing to more than one node,
+   * Legacy paths from site, should not be pointing to more than one node,
    * If this is happening, it is a good sign that we are bringing in duplicate
    * content.
    *

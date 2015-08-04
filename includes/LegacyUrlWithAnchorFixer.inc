@@ -323,9 +323,9 @@ class LegacyUrlWithAnchorFixer {
    */
   private function setPrefix() {
     // We could have a full url.
-    if (substr_count($this->url, "justice.gov") > 0) {
-      $pieces = explode("justice.gov/", $this->url);
-      $this->prefix = $pieces[0] . "justice.gov/";
+    if (substr_count($this->url, "somesite.gov") > 0) {
+      $pieces = explode("somesite.gov/", $this->url);
+      $this->prefix = $pieces[0] . "somesite.gov/";
     }
     // Else we might have a rooted url (/) or a relative url (../).
     else {

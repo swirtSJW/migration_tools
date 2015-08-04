@@ -10,7 +10,7 @@ class MenuGenerationParameters {
   private $uriMenuLocation;
   private $uriMenuLocationBasePath;
   private $uriLocalBase;
-  private $justiceUrl = "http://www.justice.gov";
+  private $domain = "http://www.somesite.gov";
   public $recurse;
   public $menuCounter;
   public $initialMenuLocation;
@@ -22,7 +22,7 @@ class MenuGenerationParameters {
     $this->organization = $organization;
 
     // Defaults.
-    $this->uriMenuLocation = $this->justiceUrl . "/" . $this->organization;
+    $this->uriMenuLocation = $this->domain . "/" . $this->organization;
     $this->setUriMenuLocationBasePath();
 
     $this->uriLocalBase = $this->organization;
@@ -31,8 +31,8 @@ class MenuGenerationParameters {
   /**
    * Setter.
    */
-  public function setJusticeUrl($justice_url) {
-    $this->justiceUrl = $justice_url;
+  public function setDomain($url) {
+    $this->domain = $url;
   }
 
   /**
@@ -55,7 +55,7 @@ class MenuGenerationParameters {
   public function setUriMenuLocation($uri_menu_location) {
     // If it is not an absolute path, make it one.
     if (stripos($uri_menu_location, '://') === FALSE) {
-      $this->uriMenuLocation = $this->justiceUrl . "/" . $uri_menu_location;
+      $this->uriMenuLocation = $this->domain . "/" . $uri_menu_location;
     }
     else {
       $this->uriMenuLocation = $uri_menu_location;
@@ -86,8 +86,8 @@ class MenuGenerationParameters {
   /**
    * Getter.
    */
-  public function getJusticeUrl() {
-    return $this->justiceUrl;
+  public function getDomain() {
+    return $this->domain;
   }
 
   /**
@@ -431,10 +431,10 @@ class MenuGeneratorEngineDefault {
   }
 
   /**
-   * Take uris from justice, and map them to the local uris from migrated pages.
+   * Take uris from legacy site and map them to the local uris from migrated pages.
    *
    * @param string $uri
-   *   the legacy uri coming from the menu in justice.gov.
+   *   the legacy uri coming from the menu in the legacy site.
    *
    * @return string
    *   The local uri to which the legacy uri is being redirected or full url.
@@ -442,7 +442,7 @@ class MenuGeneratorEngineDefault {
   public function normalizeUri($uri) {
     $uri = $this->cleanPath($uri);
 
-    $schema_and_domain = $this->parameters->getJusticeUrl();
+    $schema_and_domain = $this->parameters->getDomain();
     $local_base_path = $this->parameters->getUriLocalBase();
     $url_group_destination_path = $schema_and_domain . $local_base_path;
     $parsed_url_destination = parse_url($url_group_destination_path);
@@ -642,7 +642,7 @@ class MenuGeneratorEngineDefault {
     $url = '';
     if ($return_url) {
       $url .= (!empty($parsed_url['scheme'])) ? $parsed_url['scheme'] . '://' : 'http://';
-      $url .= (!empty($parsed_url['host'])) ? $parsed_url['host'] . '/' : $this->parameters->getJusticeUrl() . '/';
+      $url .= (!empty($parsed_url['host'])) ? $parsed_url['host'] . '/' : $this->parameters->getDomain() . '/';
     }
     // Trim the initial '/' to be Drupal friendly in the event of no host.
     $url .= (!empty($parsed_url['path'])) ? ltrim($parsed_url['path'], '/') : '';

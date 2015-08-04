@@ -6,10 +6,10 @@
  */
 
 /**
- * The default system path for the DOJ legacy webroot. Can be overriden via
+ * The default system path for the MT legacy webroot. Can be overriden via
  * migration_tools_base_dir variable.
  */
-define('MT_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.justice.gov');
+define('MT_LEGACY_WEBROOT', DRUPAL_ROOT . '/../../legacy/www.somesite.com');
 
 /**
  * Abstract intermediate class holding common settings.
@@ -202,7 +202,7 @@ abstract class MTBaseMigration extends Migration {
    */
   public function getPdfMetadata($pdf_file_path) {
     try {
-      $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/doj/xpdf/bin64/pdfinfo');
+      $pdfinfo_bin = variable_get('pdfinfo_binary', '/home/mt/xpdf/bin64/pdfinfo');
       $file_arg = escapeshellarg($pdf_file_path);
       $command = "$pdfinfo_bin $file_arg";
       $output = shell_exec($command);
@@ -236,7 +236,7 @@ abstract class MTBaseMigration extends Migration {
   public function getPdfContents($pdf_file_path) {
     try {
       // Get PDF contents.
-      $pdftotext_bin = variable_get('pdftotext_binary', '/home/doj/xpdf/bin64/pdftotext');
+      $pdftotext_bin = variable_get('pdftotext_binary', '/home/mt/xpdf/bin64/pdftotext');
       $pdf_parser = XPDF\PdfToText::create(array('pdftotext.binaries' => $pdftotext_bin));
       $pdf_contents = $pdf_parser->getText($pdf_file_path);
 

@@ -48,14 +48,14 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['doj-generate-menu'] = array(
+  $items['mt-generate-menu'] = array(
     'description' => "Generate a file to import a menu for an organization.",
     'aliases' => array('dgm'),
     'arguments' => array(
       'organization' => 'The abbreviation of the organization to migrate (ex. oarm, ola, etc.)',
     ),
     'options' => array(
-      'menu-location-uri' => "If the menu is in www.justice.gov/oarm/division/index.html then this option should be set to 'oarm/division/index.html'. If no option is given the default will be www.justice.gov/<organization>",
+      'menu-location-uri' => "If the menu is in www.somesite.gov/foo/bar/index.html then this option should be set to 'foo/bar/index.html'. If no option is given the default will be www.somesite.gov/<organization>",
       'local-base-uri' => "When pages are migrated into drupal they will usually be at <organization>/page-title-alias, if for some reason, <organization> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
       'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
       'engine' => "Optional. Sets the engine used for generation. Defaults to district.",
@@ -63,7 +63,7 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['doj-import-group-menu'] = array(
+  $items['mt-import-group-menu'] = array(
     'description' => "Imports a menu for a specific organic group.",
     'aliases' => array('digm'),
     'arguments' => array(
@@ -91,8 +91,8 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['doj-generate-migration-class'] = array(
-    'description' => "Generates a DOJ migration class.",
+  $items['mt-generate-migration-class'] = array(
+    'description' => "Generates a MT migration class.",
     'aliases' => array('dgm'),
     'arguments' => array(
       'config' => 'A yml file referencing the organization configuration to be used.',
@@ -112,7 +112,7 @@ function migration_tools_drush_command() {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_migrate_fix_legacy_links($migration = NULL) {
+function drush_migration_tools_mt_migrate_fix_legacy_links($migration = NULL) {
   $fixer = new MigrationNodesLegacyLinksFixer();
 
   $nid_list = drush_get_option('idlist');
@@ -149,7 +149,7 @@ function drush_migration_tools_doj_migrate_fix_legacy_links($migration = NULL) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_migrate_images($organization) {
+function drush_migration_tools_mt_migrate_images($organization) {
   // Let's get our source directory, and our output directory.
   $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
@@ -167,12 +167,12 @@ function drush_migration_tools_doj_migrate_images($organization) {
 }
 
 /**
- * Drush command callback for doj-generate-migrate-commands.
+ * Drush command callback for mt-generate-migrate-commands.
  *
  * @param string $groups
  *   A string of group abbreviations, separated by commas.
  */
-function drush_migration_tools_doj_generate_migrate_commands($groups) {
+function drush_migration_tools_mt_generate_migrate_commands($groups) {
   drush_print("");
   drush_print('drush migrate-register');
   drush_print("");
@@ -210,7 +210,7 @@ function drush_migration_tools_doj_generate_migrate_commands($groups) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_migrate_html_folders($organization) {
+function drush_migration_tools_mt_migrate_html_folders($organization) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
 
@@ -222,16 +222,16 @@ function drush_migration_tools_doj_migrate_html_folders($organization) {
     $extensions = explode(",", $extensions);
   }
 
-  drush_print_r(doj_migrate_find_folders_with_files($organization, $extensions, $ignore));
+  drush_print_r(mt_migrate_find_folders_with_files($organization, $extensions, $ignore));
 }
 
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_migrate_file_folders($organization) {
+function drush_migration_tools_mt_migrate_file_folders($organization) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
-  drush_print_r(doj_migrate_find_folders_with_files($organization,
+  drush_print_r(mt_migrate_find_folders_with_files($organization,
     array("pdf", "txt", "rtf", "doc", "docx", "xls", "xlsx", "csv", "mp3",
       "mp4", "wpd", "wp", "qpw", "xml", "ppt", "pptx"), $ignore));
 }
@@ -254,7 +254,7 @@ function drush_migration_tools_doj_migrate_file_folders($organization) {
  * @throws Exception
  *   If migrate_html_base_dir variable is not set.
  */
-function doj_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
+function mt_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
   $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
     throw new Exception("the migration_tools_base_dir variable has not been defined");
@@ -369,7 +369,7 @@ function migration_tools_move_images($parent_input_directory, $directory, $paren
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_generate_menu($organization) {
+function drush_migration_tools_mt_generate_menu($organization) {
   $css_selector = drush_get_option('css-selector');
   $local_base_uri = drush_get_option('local-base-uri');
   $menu_location_uri = drush_get_option('menu-location-uri');
@@ -413,7 +413,7 @@ function drush_migration_tools_doj_generate_menu($organization) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_generate_menu_district($organization) {
+function drush_migration_tools_mt_generate_menu_district($organization) {
   module_load_include('inc', 'migration_tools', 'includes/migration_tools');
   migration_tools_create_menu_file("usao|" . $organization, TRUE);
 }
@@ -421,11 +421,11 @@ function drush_migration_tools_doj_generate_menu_district($organization) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_doj_import_group_menu($file_name, $group_abbrev) {
+function drush_migration_tools_mt_import_group_menu($file_name, $group_abbrev) {
   module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-  module_load_include('inc', 'doj_sitewide', 'includes/doj_sitewide.groups');
+  module_load_include('inc', 'mt_sitewide', 'includes/mt_sitewide.groups');
 
-  $group = doj_sitewide_load_org_by_abbrev($group_abbrev);
+  $group = mt_sitewide_load_org_by_abbrev($group_abbrev);
   $group_menu_name = 'menu-og-' . $group->nid;
   $file_path = DRUPAL_ROOT . '/' . drupal_get_path('module', 'migration_tools') . '/sources/' . $file_name;
 
@@ -433,13 +433,13 @@ function drush_migration_tools_doj_import_group_menu($file_name, $group_abbrev) 
 }
 
 /**
- * Drush command callback for doj-generate-migration-class.
+ * Drush command callback for mt-generate-migration-class.
  *
  * @param string $config_filename
  *   The filename of the YML file containing the organization configuration.
  */
-function drush_migration_tools_doj_generate_migration_class($config_filename) {
-  module_load_include('inc', 'migration_tools', 'includes/drush/DojMigrationGenerator');
+function drush_migration_tools_mt_generate_migration_class($config_filename) {
+  module_load_include('inc', 'migration_tools', 'includes/drush/MtMigrationGenerator');
 
   // Default type option to 'organization'.
   $org_type = drush_get_option('type');
@@ -448,7 +448,7 @@ function drush_migration_tools_doj_generate_migration_class($config_filename) {
   }
 
   try {
-    $generator = new DojMigrationGenerator($config_filename, $org_type);
+    $generator = new MtMigrationGenerator($config_filename, $org_type);
     $generator->generate();
   }
   catch (Exception $e) {

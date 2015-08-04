@@ -44,13 +44,13 @@ abstract class CsvMigration extends MTBaseMigration {
 }
 
 /**
- * Class JusticeCsvToNodeMigration.
+ * Class MTCsvToNodeMigration.
  *
  * Parent class for all migrations with CSV data source.
  *
  * @package migration_tools
  */
-abstract class JusticeCsvToNodeMigration extends CsvMigration {
+abstract class MTCsvToNodeMigration extends CsvMigration {
 
   /**
    * {@inheritdoc}
