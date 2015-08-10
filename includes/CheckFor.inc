@@ -45,22 +45,46 @@ class CheckFor {
    * If this is happening, it is a good sign that we are bringing in duplicate
    * content.
    *
-   * @param object $row
-   *   A row object as delivered by migrate.
+   * @param string $legacy_path
+   *   The legacy path that would be registered as a redirect.
    *
    * @return bool
    *   Whether this row is a duplicate or not.
    */
-  protected function isDuplicateByRedirect($row) {
-    $parsed = redirect_parse_url($row->legacy_path);
+  public static function isDuplicateByRedirect($legacy_path) {
+    $parsed = redirect_parse_url($legacy_path);
     $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
     $redirect = redirect_load_by_source($source);
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      $this->migrationMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
+      new MigrationMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
       return TRUE;
     }
+    return FALSE;
+  }
+
+  /**
+   * Determine if a given file is within any of an array of paths.
+   *
+   * @param array $paths
+   *   Array of paths to check.
+   * @param object $row
+   *   A row object as delivered by migrate.
+   *
+   * @return bool
+   *   -TRUE if the file is one of the paths.
+   *   -FALSE if the file is not within one of the paths.
+   */
+  public static function isInPath(array $paths, $row) {
+    foreach ($paths as $path) {
+      // Is the file in one of the paths?
+      if (stripos($row->fileid, $path) !== FALSE) {
+        // The file is in the path.
+        return TRUE;
+      }
+    }
+    // This file is not in any of the paths.
     return FALSE;
   }
 

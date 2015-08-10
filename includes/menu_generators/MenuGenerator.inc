@@ -10,7 +10,7 @@ class MenuGenerationParameters {
   private $uriMenuLocation;
   private $uriMenuLocationBasePath;
   private $uriLocalBase;
-  private $domain = "http://www.somesite.gov";
+  private $domain;
   public $recurse;
   public $menuCounter;
   public $initialMenuLocation;
@@ -20,6 +20,7 @@ class MenuGenerationParameters {
    */
   public function __construct($organization) {
     $this->organization = $organization;
+    $this->setDomain(variable_get('migration_tools_base_domain', ''));
 
     // Defaults.
     $this->uriMenuLocation = $this->domain . "/" . $this->organization;

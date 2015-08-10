@@ -4,7 +4,7 @@
  * Functions for handling urls.
  */
 
-class urlTools {
+class UrlTools {
   /**
    * Take a legacy uri, and map it to an alias.
    *
@@ -118,5 +118,72 @@ class urlTools {
 
     // Absolute URL is ready.
     return $scheme . '://' . $abs;
+  }
+
+  /**
+   * Creates a redirect from a legacy path if one does not exist.
+   *
+   * @param string $source_path
+   *   The path or url of the legacy source.
+   * @param string $destination
+   *   The drupal destination of the redirect (example: node/123).
+   * @param object $destination_node
+   *   (required if the redirect is a node) Node object of the destination node.
+   */
+  public static function createRedirect($source_path, $destination, $destination_node = '') {
+    $alias = $destination;
+    if (!empty($source_path)) {
+      if (!empty($destination_node)) {
+        if (!empty($destination_node->nid)) {
+          $destination = $destination_node->nid;
+        }
+        if ((!empty($destination_node->path)) && (!empty($destination_node->path['alias']))) {
+          $alias = $destination_node->path['alias'];
+        }
+      }
+      // Check to see if the source and destination or alias are the same.
+      if (($source_path !== $destination) && ($source_path !== $alias) ) {
+        // The source and destination are different, so make the redirect.
+        $redirect = redirect_load_by_source($source_path);
+        if (!$redirect) {
+          // The redirect does not exists so create it.
+          $redirect = new stdClass();
+          redirect_object_prepare($redirect);
+          $redirect->source = $source_path;
+          $redirect->redirect = $destination;
+
+          redirect_save($redirect);
+          $message = 'Redirect created: @source ---> @destination';
+          $variables = array(
+              '@source' => $source_path,
+              '@destination' => $redirect->redirect,
+            );
+          new MigrationMessage($message, $variables, FALSE, 2);
+        }
+        else {
+          // The redirect already exists.
+          $message = 'The redirect of @legacy already exists pointing to @alias. A new one was not created.';
+          $variables = array(
+              '@legacy' => $source_path,
+              '@alias' => $redirect->redirect,
+            );
+          new MigrationMessage($message, $variables, FALSE, 2);
+        }
+      }
+      else {
+        // The source and destination are the same. So no redirect needed.
+        $message = 'The redirect of @source have idential source and destination. No redirect created.';
+        $variables = array(
+            '@source' => $source_path,
+          );
+        new MigrationMessage($message, $variables, FALSE, 2);
+      }
+    }
+    else {
+      // The is no value for redirect.
+      $message = 'The source path is missing. No redirect can be built.';
+      $variables = array();
+      new MigrationMessage($message, $variables, FALSE, 2);
+    }
   }
 }

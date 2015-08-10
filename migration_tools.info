@@ -2,6 +2,8 @@ name = "Migration Tools"
 description = "Tools to help process difficult migrations."
 package = Migration
 core = 7.x
+configure = admin/config/migration_tools
+
 dependencies[] = migrate
 ;dependencies[] = composer_manager
 ;dependencies[] = uuid
@@ -15,6 +17,7 @@ files[] = includes/HtmlCleanUp.inc
 files[] = includes/MigrationMessage.inc
 files[] = includes/StringCleanUp.inc
 files[] = includes/TaxonomyTools.inc
+files[] = includes/UrlTools.inc
 ;files[] = includes/LegacyUrlWithAnchorFixer.inc
 
 ; Menu Generator

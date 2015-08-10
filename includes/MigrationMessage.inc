@@ -28,6 +28,7 @@ class MigrationMessage {
    *   - WATCHDOG_NOTICE: (default) Normal but significant conditions.
    *   - WATCHDOG_INFO: Informational messages.
    *   - WATCHDOG_DEBUG: Debug-level messages.
+   *   - FALSE: Outputs the message to drush without calling Watchdog.
    *
    * @param int $indent
    *   (optional). Sets indentation for drush output. Defaults to 1.
@@ -49,12 +50,14 @@ class MigrationMessage {
         $type = 'unknown';
       }
     }
-    watchdog($type, $message, $variables, $severity);
+    if ($severity !== FALSE) {
+      watchdog($type, $message, $variables, $severity);
+    }
     // Check to see if this is run by drush and output is desired.
     if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       $formatted_message = format_string($message, $variables);
-      drush_print($formatted_message, $indent);
-      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR)) {
+      drush_print($type . ': ' . $formatted_message, $indent);
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR) && $severity !== FALSE) {
         throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
