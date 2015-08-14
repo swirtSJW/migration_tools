@@ -124,21 +124,22 @@ class UrlTools {
    * Creates a redirect from a legacy path if one does not exist.
    *
    * @param string $source_path
-   *   The path or url of the legacy source.
+   *   The path or url of the legacy source. MUST be INTERNAL to this site.
    * @param string $destination
-   *   The drupal destination of the redirect (example: node/123).
+   *   The destination of the redirect examples:
+   *     * path-a/path-b/the-node-title
+   *     * http://www.somesite.com
+   *
    * @param object $destination_node
    *   (required if the redirect is a node) Node object of the destination node.
    */
   public static function createRedirect($source_path, $destination, $destination_node = '') {
     $alias = $destination;
+    // @TODO Make filter to bail out of the source_path is not this site.
     if (!empty($source_path)) {
       if (!empty($destination_node)) {
         if (!empty($destination_node->nid)) {
-          $destination = $destination_node->nid;
-        }
-        if ((!empty($destination_node->path)) && (!empty($destination_node->path['alias']))) {
-          $alias = $destination_node->path['alias'];
+          $destination = 'node/' .$destination_node->nid;
         }
       }
       // Check to see if the source and destination or alias are the same.
