@@ -95,31 +95,31 @@ abstract class MTSourceParser {
       if (!empty($methods)) {
         // There are methods to run, so run them.
         $obtainer = new $class($this->queryPath, $methods);
-        new MigrationMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
+        migrationMessage::makeMessage("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
 
         $text = $obtainer->obtain();
         $length = strlen($text);
         if (!$length) {
           // It's too long to be helpful in output so just show the length.
-          new MigrationMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
+          migrationMessage::makeMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
-          new MigrationMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
+          migrationMessage::makeMessage('@property found --> @text', array('@property' => $property, '@text' => $text), WATCHDOG_DEBUG, 2);
         }
         else {
           // It's too long to be helpful in output so just show the length.
-          new MigrationMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
+          migrationMessage::makeMessage('@property found --> Length: @length', array('@property' => $property, '@length' => $length), WATCHDOG_DEBUG, 2);
         }
       }
       else {
         // There were no methods to run so message.
-        new MigrationMessage("There were no methods to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
+        migrationMessage::makeMessage("There were no methods to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
       }
 
     }
     catch (Exception $e) {
-      new MigrationMessage("@file_id Failed to set @key, Exception: @error_message", array(
+      migrationMessage::makeMessage("@file_id Failed to set @key, Exception: @error_message", array(
         '@file_id' => $this->fileId,
         '@key' => $property,
         '@error_message' => $e->getMessage(),
@@ -163,7 +163,7 @@ abstract class MTSourceParser {
     if ($convert_from != 'UTF-8') {
       // This was not UTF-8 so report the anomaly.
       $message = "Converted from: @convert_from";
-      new MigrationMessage($message, array('@convert_from' => $convert_from), WATCHDOG_INFO, 1);
+      migrationMessage::makeMessage($message, array('@convert_from' => $convert_from), WATCHDOG_INFO, 1);
     }
 
     $qp_options = array(
@@ -177,7 +177,7 @@ abstract class MTSourceParser {
 
     }
     catch (Exception $e) {
-      new MigrationMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      migrationMessage::makeMessage('Failed instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
 
     if (!is_object($this->queryPath)) {
@@ -191,7 +191,7 @@ abstract class MTSourceParser {
   protected function drushPrintSeparator() {
     if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
       drush_print(str_repeat('-', 40));
-      new MigrationMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
+      migrationMessage::makeMessage('@class: @file_id:', array('@class' => get_class($this), '@file_id' => $this->fileId), WATCHDOG_DEBUG, 0);
     }
   }
 
@@ -276,13 +276,13 @@ abstract class MTSourceParser {
           $address['country'] = '';
           $message = "@fileid Could not look up location because geocoder returned nothing. The API request limit may have been exceeded.";
           $variables = array('@fileid' => $this->fileId);
-          new MigrationMessage($address, $variables, WATCHDOG_INFO, 2);
+          migrationMessage::makeMessage($address, $variables, WATCHDOG_INFO, 2);
         }
       }
       else {
         $message = "@fileid Could not look up location because geocoder module is not enabled";
         $variables = array('@fileid' => $this->fileId);
-        new MigrationMessage($address, $variables, WATCHDOG_INFO, 2);
+        migrationMessage::makeMessage($address, $variables, WATCHDOG_INFO, 2);
       }
 
       return $address;
@@ -302,7 +302,7 @@ abstract class MTSourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {
-      new MigrationMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      migrationMessage::makeMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 }

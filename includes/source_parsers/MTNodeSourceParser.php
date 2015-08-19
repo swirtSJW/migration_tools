@@ -23,7 +23,7 @@ class MTNodeSourceParser extends MTSourceParser {
   public function getTitle() {
     $title = $this->getProperty('title');
     if (empty($title)) {
-      new MigrationMessage("The title for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+      migrationMessage::makeMessage("The title for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
     }
     return $title;
   }
@@ -35,7 +35,7 @@ class MTNodeSourceParser extends MTSourceParser {
     $this->cleanHtml();
     $body = $this->getProperty('body');
     if (empty($body)) {
-      new MigrationMessage("The body for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+      migrationMessage::makeMessage("The body for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
     }
     return $body;
   }

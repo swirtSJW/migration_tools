@@ -62,7 +62,7 @@ class TaxonomyTools {
    */
   private function createUniqueTerm($term, $vocab_name) {
     if (!taxonomy_get_term_by_name($term, $vocab_name)) {
-      new MigrationMessage('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
+      migrationMessage::makeMessage('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
       $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
       $term_obj = new stdClass();
       $term_obj->name = $term;

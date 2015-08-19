@@ -5,6 +5,31 @@
  */
 
 class UrlTools {
+
+  /**
+   * Grabs legacy redirects for this node from D6 and adds $row->redirects.
+   *
+   * This function needs to be called in prepareRow() of your migration.
+   *
+   * @param object $migration
+   *   The migration instance.
+   * @param object $row
+   *   The object of this row.
+   * @param string $db_reference_name
+   *   The Drupal name/identifier of the legacy database.
+   * @param object $source_connection
+   *   Database source connection from migration.
+   */
+  public static function collectD6Redirects(&$migration, &$row, $db_reference_name, $source_connection) {
+    // Gather existing redirects from legacy.
+    $row->redirects = Database::getConnection($db_reference_name, $source_connection)
+      ->select('path_redirect', 'r')
+      ->fields('r', array('source'))
+      ->condition('redirect', "node/$row->nid")
+      ->execute()
+      ->fetchCol();
+  }
+
   /**
    * Take a legacy uri, and map it to an alias.
    *
@@ -43,7 +68,7 @@ class UrlTools {
      }
    }
    $message = "legacy uri @legacy_uri does not have a node associated with it";
-   new MigrationMessage($message, array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT, 1);
+   migrationMessage::makeMessage($message, array('@legacy_uri' => $legacy_uri), WATCHDOG_ALERT, 1);
    // Without legacy path yet migrated in, leave the link to source content
    // so that the redirects can handle it when that content is migrate/created.
    return MIGRATION_BASE_URL . "/{$legacy_uri}";
@@ -137,6 +162,22 @@ class UrlTools {
     $alias = $destination;
     // @TODO Make filter to bail out of the source_path is not this site.
     if (!empty($source_path)) {
+      // Alter source path to remove any externals.
+      $source = parse_url($source_path);
+      $source_path = (!empty($source['path'])) ? $source['path'] : '';
+      // A path should not have a preceeding /.
+      $source_path = ltrim($source['path'], '/');
+      $source_options = array();
+      // Check for fragments (after #hash ).
+      if (!empty($source['fragment'])) {
+        $source_options['fragment'] = $source['fragment'];
+      }
+      // Check for query parameters (after ?).
+      if (!empty($source['query'])) {
+        parse_str($source['query'], $query);
+        $source_options['query'] = $query;
+      }
+
       if (!empty($destination_node)) {
         if (!empty($destination_node->nid)) {
           $destination = 'node/' .$destination_node->nid;
@@ -151,6 +192,7 @@ class UrlTools {
           $redirect = new stdClass();
           redirect_object_prepare($redirect);
           $redirect->source = $source_path;
+          $redirect->source_options = $source_options;
           $redirect->redirect = $destination;
 
           redirect_save($redirect);
@@ -159,7 +201,7 @@ class UrlTools {
               '@source' => $source_path,
               '@destination' => $redirect->redirect,
             );
-          new MigrationMessage($message, $variables, FALSE, 2);
+          migrationMessage::makeMessage($message, $variables, FALSE, 2);
         }
         else {
           // The redirect already exists.
@@ -168,7 +210,7 @@ class UrlTools {
               '@legacy' => $source_path,
               '@alias' => $redirect->redirect,
             );
-          new MigrationMessage($message, $variables, FALSE, 2);
+          migrationMessage::makeMessage($message, $variables, FALSE, 2);
         }
       }
       else {
@@ -177,14 +219,30 @@ class UrlTools {
         $variables = array(
             '@source' => $source_path,
           );
-        new MigrationMessage($message, $variables, FALSE, 2);
+        migrationMessage::makeMessage($message, $variables, FALSE, 2);
       }
     }
     else {
       // The is no value for redirect.
       $message = 'The source path is missing. No redirect can be built.';
       $variables = array();
-      new MigrationMessage($message, $variables, FALSE, 2);
+      migrationMessage::makeMessage($message, $variables, FALSE, 2);
+    }
+  }
+
+  /**
+   * Adds multiple redirects to the same destination.
+   *
+   * This is typically called within the migration's complete().
+   *
+   * @param array $redirects
+   *   An internal paths to build redirects FROM (ex: array('path/blah', 'foo'))
+   * @param string $destination
+   *   The destination of where the redirect should go TO (ex: 'node/123')
+   */
+  public static function createRedirectsMultiple(array $redirects, $destination) {
+    foreach ($redirects as $redirect) {
+      self::createRedirect($redirect, $destination);
     }
   }
 }

@@ -35,7 +35,7 @@ class MigrationMessage {
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
    */
-  public function __construct($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+  public static function makeMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     if (isset($trace[1])) {
@@ -61,5 +61,12 @@ class MigrationMessage {
         throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
+  }
+
+  /**
+   * Outputs a visual separator using the message system.
+   */
+  public static function makeSeparator() {
+    self::makeMessage("------------------------------------------------------", array(), FALSE, 0);
   }
 }

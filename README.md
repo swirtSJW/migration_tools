@@ -439,6 +439,6 @@ Example:
        // Skip any press releases prior to 2013.
        if (!mt_migration_date_after($row->field_pr_date, '12/31/2012', FALSE)) {
          $message = '@fileid ------> Dated prior to 2013. Skipped: intentionally.';
-         $this->migrationMessage($message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+         MigrationMessage::makeMessage($message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
          return FALSE;
        }
