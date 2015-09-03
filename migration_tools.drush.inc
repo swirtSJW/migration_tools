@@ -18,8 +18,6 @@ function migration_tools_drush_command() {
     ),
   );
 
-
-
   $items['migration-tools-html-folders'] = array(
     'description' => "Find all folders that contain html files.",
     'aliases' => array('mtscan'),
@@ -49,8 +47,8 @@ function migration_tools_drush_command() {
   );
 
   $items['mt-generate-menu'] = array(
-    'description' => "Generate a file to import a menu for an organization.",
-    'aliases' => array('dgm'),
+    'description' => "Generate a file to import a menu by crawling an html menu.",
+    'aliases' => array('dgm', 'migration-tools-generate-menu'),
     'arguments' => array(
       'organization' => 'The abbreviation of the organization to migrate (ex. oarm, ola, etc.)',
     ),
@@ -60,6 +58,19 @@ function migration_tools_drush_command() {
       'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
       'engine' => "Optional. Sets the engine used for generation. Defaults to district.",
       'recurse' => "Optional. Enables recursion for loading the pages in the initial menu, to look for more links. Defaults to FALSE.",
+    ),
+  );
+
+  $items['mt-menu-import-file-from-seed'] = array(
+    'description' => "Generate a file to import a menu from a simple csv seed file that contains depth, title, destination",
+    'aliases' => array('dgmiffs', 'migration-tools-menu-import-file-from-seed'),
+    'arguments' => array(
+      'seed-file-name' => 'The filename of the csv file. ex: menu-og-1659.csv',
+    ),
+    'options' => array(
+      'fallback-page' => "Optional. If no page exists for the path link to this Default: <front>",
+      'import-file-path' => 'Optional. The menu Feature based path where the import file should be created.',
+      'csv-path' => "Optional. The menu Feature based path to the seed  CSV file.",
     ),
   );
 
@@ -381,7 +392,7 @@ function drush_migration_tools_mt_generate_menu($organization) {
     'ust' => 'MenuGeneratorEngineUst',
   );
 
-  $parameters = new MenuGenerationParameters($organization);
+  $parameters = new MenuGenerationParametersHtmlCrawl($organization);
 
   if ($local_base_uri) {
     $parameters->setUriLocalBase($local_base_uri);
@@ -408,6 +419,27 @@ function drush_migration_tools_mt_generate_menu($organization) {
 
   $generator = new MenuGenerator($parameters, $engine);
   $file_name = $generator->generate();
+}
+
+/**
+ * Drush command callback for generating a menu import file from a simple csv.
+ *
+ * @param string $seed_csv_filename
+ *   The filename of the seed file to be processed.
+ */
+function drush_migration_tools_mt_menu_import_file_from_seed($seed_csv_filename) {
+  $csv_path = drush_get_option('csv-path');
+  $import_file_path = drush_get_option('import-file-path');
+  $fallback_page = drush_get_option('fallback-page', '<front>');
+
+  $parameters = new MenuGenerationParametersCsvParse($seed_csv_filename);
+  $parameters->setFallbackPage($fallback_page);
+  $parameters->setImportFilePath($import_file_path);
+  $parameters->setSourcePath($csv_path);
+
+  $engine = new MenuGeneratorEngineCsv($parameters);
+  $generator = new MenuGeneratorCsvParse($parameters, $engine);
+  $generator->generate();
 }
 
 /**

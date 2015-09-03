@@ -17,9 +17,12 @@ class NodeTools {
   public static function reassignBodyFilter($entity, $filter_machine_name) {
     if (!empty($entity->body) && is_array($entity->body)) {
       foreach ($entity->body as &$language) {
-        foreach ($language as $key => &$body) {
-          $body['value_format'] = $filter_machine_name;
-          $body['format'] = $filter_machine_name;
+        foreach ($language as $lang => &$body) {
+          // It is possible that $body is not an array.
+          if (is_array($body)) {
+            $body['value_format'] = $filter_machine_name;
+            $body['format'] = $filter_machine_name;
+          }
         }
         // Break the reference.
         unset($body);

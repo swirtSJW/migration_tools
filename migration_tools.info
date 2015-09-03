@@ -19,10 +19,19 @@ files[] = includes/NodeTools.inc
 files[] = includes/StringCleanUp.inc
 files[] = includes/TaxonomyTools.inc
 files[] = includes/UrlTools.inc
+files[] = includes/d6/OgTools.inc
 ;files[] = includes/LegacyUrlWithAnchorFixer.inc
 
 ; Menu Generator
-files[] = includes/menu_generators/MenuGenerator.inc
+files[] = includes/menu_generators/MenuGenerator.php
+files[] = includes/menu_generators/MenuGeneratorCsvParse.php
+files[] = includes/menu_generators/MenuGeneratorHtmlCrawl.php
+files[] = includes/menu_generators/MenuGenerationParameters.php
+files[] = includes/menu_generators/MenuGenerationParametersCsvParse.php
+files[] = includes/menu_generators/MenuGenerationParametersHtmlCrawl.php
+files[] = includes/menu_generators/MenuGeneratorEngine.php
+files[] = includes/menu_generators/MenuGeneratorEngineCsv.php
+files[] = includes/menu_generators/MenuGeneratorEngineHtmlCrawl.php
 
 ; Source Parsers (need to be reworked - disabled for now)
 files[] = includes/source_parsers/MTChunkParser.php
