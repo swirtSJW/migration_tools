@@ -350,7 +350,7 @@ abstract class MTBaseMigration extends Migration {
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
    */
-  protected function migrationMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+  protected function MigrationMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
     $type = get_class($this);
     watchdog($type, $message, $variables, $severity);
 

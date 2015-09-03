@@ -24,7 +24,7 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
    */
   public function getDate() {
     $date_string = $this->getProperty('date');
-    migrationMessage::makeMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+    MigrationMessage::makeMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
     if (empty($date_string)) {
       $date = '';
@@ -33,7 +33,7 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
       $date = date('n/d/Y', strtotime($date_string));
       if (!empty($date)) {
         // Output success to show progress to aid debugging.
-        migrationMessage::makeMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+        MigrationMessage::makeMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
       }
     }
 

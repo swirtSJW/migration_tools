@@ -33,7 +33,7 @@ class MTSimpleSourceParser extends MTSourceParser {
       HtmlCleanUp::stripOrFixLegacyElements($this->queryPath);
     }
     catch (Exception $e) {
-      migrationMessage::makeMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
+      MigrationMessage::makeMessage('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), WATCHDOG_ERROR);
     }
   }
 

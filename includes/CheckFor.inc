@@ -6,6 +6,72 @@
  */
 
 class CheckFor {
+
+  /**
+   * Examines a row to see if it contains a value. Outputs message if found.
+   *
+   * @param object $row
+   *   A migration row object.
+   * @param string $row_element
+   *   The row->{element} to examine.
+   * @param mixed $value
+   *   The actual value to look for. Defaults to finding an element not empty.
+   *
+   * @return bool
+   *   TRUE (and outputs a message) if element is found that matches the value.
+   *   FALSE if the element does not match the value.
+   */
+  public static function hasRowValue($row, $row_element, $value = '') {
+    $return = FALSE;
+    if (!empty($row) && property_exists($row, $row_element)) {
+      if (empty($value) && !empty($row->{$row_element})) {
+        // Special case where we are just looking for an element that is !empty.
+        $return = TRUE;
+        $message = "This row->@element contains a value.";
+        MigrationMessage::makeMessage($message, array('@element' => $row_element), FALSE, 1);
+      }
+      elseif (!empty($value) && !empty($row->{$row_element}) && $row->{$row_element} == $value) {
+        // The row element has just what we are looking for.
+        $return = TRUE;
+        $message = "This row->@element contains the value @value.";
+        MigrationMessage::makeMessage($message, array('@element' => $row_element, '@value' => $value), FALSE, 1);
+      }
+    }
+    return $return;
+  }
+
+  /**
+   * Examines a row to see if contains a value. Outputs message ERROR if found.
+   *
+   * @param object $row
+   *   A migration row object.
+   * @param string $row_element
+   *   The row->{element} to examine.
+   * @param mixed $value
+   *   The actual value to look for. Defaults to finding an element not empty.
+   *
+   * @return bool
+   *   TRUE (and outputs a message) if element is found that matches the value.
+   *   FALSE if the element does not match the value.
+   */
+  public static function stopOnRowValue($row, $row_element, $value = '') {
+    $found = self::hasRowValue($row, $row_element, $value);
+    if ($found) {
+      if (empty($value)) {
+        $message = "Stopped because row->@element contains a value";
+      }
+      else {
+        $message = "Stopped because row->@element has the value: @value";
+      }
+      // Output the entire row for inspection.
+      MigrationMessage::varDumpToDrush($row, 'OUTPUT $row');
+      // Output an error level message so it will stop the migration if
+      // vset migration_tools_drush_stop_on_error is set to TRUE.
+      MigrationMessage::makeMessage($message, array('@element' => $row_element, '@value' => $value), WATCHDOG_ERROR, 1);
+
+    }
+  }
+
   /**
    * Checks to see if a date comes after a cutoff.
    *
@@ -58,7 +124,7 @@ class CheckFor {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      migrationMessage::makeMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
+      MigrationMessage::makeMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
       return TRUE;
     }
     return FALSE;

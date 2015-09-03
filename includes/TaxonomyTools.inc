@@ -18,7 +18,7 @@ class TaxonomyTools {
    * @return string
    *   The term to be saved at the destination. Multiple terms are separated by
    *   "|" characters.
-  */
+   */
   public function prepareVocabTerms($legacy_term = '', $vocabulary = '') {
     $new_terms = '';
     $vocabulary = trim($vocabulary);
@@ -62,7 +62,7 @@ class TaxonomyTools {
    */
   private function createUniqueTerm($term, $vocab_name) {
     if (!taxonomy_get_term_by_name($term, $vocab_name)) {
-      migrationMessage::makeMessage('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
+      MigrationMessage::makeMessage('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
       $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
       $term_obj = new stdClass();
       $term_obj->name = $term;

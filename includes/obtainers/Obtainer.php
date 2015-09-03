@@ -79,7 +79,7 @@ abstract class Obtainer {
 
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
-        migrationMessage::makeMessage('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        MigrationMessage::makeMessage('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -144,7 +144,7 @@ abstract class Obtainer {
         // stack efficiently. Replace this with an iterator when it is ready.
         $method['method_name'] = $this->getCurrentFindMethod();
 
-        migrationMessage::makeMessage('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        MigrationMessage::makeMessage('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -153,7 +153,7 @@ abstract class Obtainer {
       }
     }
 
-    migrationMessage::makeMessage('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
+    MigrationMessage::makeMessage('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
   }
 
   /**

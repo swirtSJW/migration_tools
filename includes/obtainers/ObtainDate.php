@@ -28,11 +28,6 @@ class ObtainDate extends ObtainHtml {
   }
 
 
-
-
-
-
-
   /**
    * Finder method to find dates by its accompanying text.
    *
@@ -72,7 +67,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            migrationMessage::makeMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
+            MigrationMessage::makeMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }

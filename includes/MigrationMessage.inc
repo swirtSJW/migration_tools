@@ -69,4 +69,25 @@ class MigrationMessage {
   public static function makeSeparator() {
     self::makeMessage("------------------------------------------------------", array(), FALSE, 0);
   }
+
+  /**
+   * Dumps a var to drush terminal if run by drush.
+   *
+   * @param mixed $var
+   *   Any variable value to output.
+   * @param string $var_id
+   *   An optional string to identify what is being output.
+   */
+  public static function varDumpToDrush($var, $var_id = 'VAR DUMPs') {
+    // Check to see if this is run by drush and output is desired.
+    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
+      drush_print("{$var_id}: \n", 0);
+      if (!empty($var)) {
+        drush_print_r($var);
+      }
+      else {
+        drush_print("This variable was EMPTY. \n", 1);
+      }
+    }
+  }
 }
