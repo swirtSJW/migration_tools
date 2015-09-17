@@ -68,7 +68,7 @@ function migration_tools_drush_command() {
       'seed-file-name' => 'The filename of the csv file. ex: menu-og-1659.csv',
     ),
     'options' => array(
-      'fallback-page' => "Optional. If no page exists for the path link to this Default: <front>",
+      'fallback-page' => "Optional. If no page exists for the path link to this Default: <nolink>",
       'import-file-path' => 'Optional. The menu Feature based path where the import file should be created.',
       'csv-path' => "Optional. The menu Feature based path to the seed  CSV file.",
     ),
@@ -430,7 +430,7 @@ function drush_migration_tools_mt_generate_menu($organization) {
 function drush_migration_tools_mt_menu_import_file_from_seed($seed_csv_filename) {
   $csv_path = drush_get_option('csv-path');
   $import_file_path = drush_get_option('import-file-path');
-  $fallback_page = drush_get_option('fallback-page', '<front>');
+  $fallback_page = drush_get_option('fallback-page', '<nolink>');
 
   $parameters = new MenuGenerationParametersCsvParse($seed_csv_filename);
   $parameters->setFallbackPage($fallback_page);

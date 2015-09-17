@@ -11,8 +11,6 @@ class UrlTools {
    *
    * This function needs to be called in prepareRow() of your migration.
    *
-   * @param object $migration
-   *   The migration instance.
    * @param object $row
    *   The object of this row.
    * @param string $db_reference_name
@@ -20,7 +18,7 @@ class UrlTools {
    * @param object $source_connection
    *   Database source connection from migration.
    */
-  public static function collectD6Redirects(&$migration, &$row, $db_reference_name, $source_connection) {
+  public static function collectD6RedirectsToThisNode($row, $db_reference_name, $source_connection) {
     // Gather existing redirects from legacy.
     $row->redirects = Database::getConnection($db_reference_name, $source_connection)
       ->select('path_redirect', 'r')
@@ -188,6 +186,7 @@ class UrlTools {
 
     if (!empty($source_path)) {
       // Alter source path to remove any externals.
+      $source_path = self::fixSchemelessInternalUrl($source_path);
       $source = parse_url($source_path);
       $source_path = (!empty($source['path'])) ? $source['path'] : '';
       // A path should not have a preceeding /.
@@ -272,6 +271,59 @@ class UrlTools {
   }
 
   /**
+   * Removes the host if the url is intarnal but malformed.
+   *
+   * A url of 'mysite.com/path1/path2' is malformed because parse_url() will
+   * not recognise 'mysite.com' as the host without the scheme (http://) being
+   * present.  This method will remove the host if it is for this site and make
+   * the url a proper root relative path.
+   *
+   * @param string $url
+   *   A url.
+   *
+   * @return string
+   *   A url or path correctly modified for this site.
+   */
+  public static function fixSchemelessInternalUrl($url) {
+    if (!empty($url)) {
+      $parsed_url = parse_url($url);
+      if (empty($parsed_url['scheme'])) {
+        // It has no scheme, so check if it is a malformed internal url.
+        $host = self::getSiteHost();
+        $pos = stripos($url, $host);
+        if ($pos === 0) {
+          // The url is starting with a site's host.  Remove it.
+          $url = substr_replace($url, '', $pos, strlen($host));
+        }
+      }
+    }
+    return $url;
+  }
+
+  /**
+   * Returns the defined site host.
+   *
+   * @return string
+   *   The site host for this site example: 'mysite.com'.
+   *
+   * @throws MigrateException
+   *   If the base domain has not been defined in /admin/config/migration_tools.
+   */
+  public static function getSiteHost() {
+    // Obtain the designated url of the site.
+    $base_url = variable_get('migration_tools_base_domain', '');
+    $site_host = parse_url($base_url, PHP_URL_HOST);
+    if (!empty($site_host)) {
+      return $site_host;
+    }
+    else {
+      // There is no site host defined.
+      $message = "The base domain is needed, but has not been set. Visit /admin/config/migration_tools \n";
+      throw new MigrateException($message);
+    }
+  }
+
+  /**
    * Examines an url to see if it is within a allowed list of domains.
    *
    * @param string $url
@@ -285,6 +337,7 @@ class UrlTools {
    *   FALSE if the domain is not with the array of allowed.
    */
   public static function isAllowedDomain($url, $allowed_hosts) {
+    $url = self::fixSchemelessInternalUrl($url);
     $host = parse_url($url, PHP_URL_HOST);
     // Treat it as allowed until evaluated otherwise.
     $allowed = TRUE;
@@ -313,8 +366,8 @@ class UrlTools {
    */
   public static function isInternalUrl($url, $allowed_hosts = array()) {
     if (empty($allowed_hosts)) {
-      // Obtain the designated url of the site.
-      $site_host = variable_get('migration_tools_base_domain', '');
+      // Use the defined site host.
+      $site_host = self::getSiteHost();
       $allowed_hosts = array($site_host);
     }
 

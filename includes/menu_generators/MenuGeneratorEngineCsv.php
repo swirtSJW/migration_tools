@@ -44,9 +44,9 @@ class MenuGeneratorEngineCsv extends MenuGeneratorEngine {
   /**
    * Parses a line of csv and creates a line in the menu import file.
    *
-   * @param string $line
+   * @param array $line
    *   The line from the csv file in the form of
-   *   "-, Menu Item Title, http://mysite.com"
+   *   array("-", "Menu Item Title", "http://mysite.com")
    *
    * @return string
    *   The line for a menu item in a menu_import format.
@@ -57,22 +57,20 @@ class MenuGeneratorEngineCsv extends MenuGeneratorEngine {
   private function parseCSVLine($line) {
     if (count($line) > 3) {
       // Data is likey malformed, throw an exception.
+      $message = "Malformed line in CSV file: @line";
+      MigrationMessage::varDumpToDrush($line, $message);
       $message = "Error with CSV file: more than three items detected per line.  Each line should only contain 'depth, title, link'. \n";
       throw new MigrateException($message);
     }
-    $depth = (!empty($line[0])) ? $line[0] : '';
-    $title = (!empty($line[1])) ? $line[1] : '';
-    $link = (!empty($line[2])) ? $line[2] : '';
-    if (empty($link)) {
-      // This menu item is a non-link.
-      // Non-links should look like '-My Title'.
-      $menu_item = "{$depth}{$title}\n";
-    }
-    else {
-      // Links should be like '-My Title {"url":"https://www.site.com/blah"}'.
-      $url = $this->normalizeUri($link);
-      $menu_item = "{$depth}{$title} {\"url\":\"{$url}\"}\n";
-    }
+    $depth = trim((!empty($line[0])) ? $line[0] : '');
+    $title = trim((!empty($line[1])) ? $line[1] : '');
+    $backup_link = $this->parameters->getFallbackPage();
+    $link = trim((!empty($line[2])) ? $line[2] : $backup_link);
+    // If it uses the backup link, don't normalize it.
+    $url = ($link === $backup_link) ? $link : $this->normalizeUri($link);
+
+    // Menu items are like '-My Title {"url":"https://www.site.com/blah"}'.
+    $menu_item = "{$depth}{$title} {\"url\":\"{$url}\"}\n";
 
     return $menu_item;
   }

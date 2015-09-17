@@ -183,12 +183,12 @@ class MenuGenerationParameters {
 
 
   /**
-   * Setter for default fallback location to link to if the page does not exist.
+   * Setter for default fallback location to link to if no link is present.
    */
   public function setFallbackPage($fallback_link = NULL) {
     if ($fallback_link === NULL) {
       // Build the fallback link.
-      $fallback_link = "<front>";
+      $fallback_link = '<nolink>';
     }
     $this->fallbackPage = $fallback_link;
   }
@@ -200,6 +200,9 @@ class MenuGenerationParameters {
    *   The fallback page/location to use if there is none.
    */
   public function getFallbackPage() {
+    if (empty($this->fallbackPage)) {
+      $this->setFallbackPage();
+    }
     return $this->fallbackPage;
   }
 
