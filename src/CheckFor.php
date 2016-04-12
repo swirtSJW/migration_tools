@@ -210,4 +210,61 @@ class CheckFor {
     }
     return TRUE;
   }
+
+  /**
+   * Check file for redirects.
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   *
+   * @return bool
+   *   TRUE - destination URI(s).
+   *   FALSE - no detectable redirects exist in the page.
+   */
+  public static function hasHtmlRedirect($row) {
+    //Checks for meta refresh redirects. Does meta support relative urls???
+    $meta = qp($row)->find('meta[http-equiv="refresh"]')->attr("url");
+    if (!empty($meta)) {
+      return $meta;
+    }
+    // Checks for presence of Javascript. <script type="text/javascript">
+    $js = qp($row)->find('script[type="text/javascript"]');
+    if (!empty($js)) {
+      // Checks for window location JS redirects. window.location.href
+      $wlh = $js->attr('window.location.href');
+      if (!empty($wlh)) {
+        return $wlh;
+      }
+      // Checks for location JS redirects. location
+      $location = $js->attr('location');
+      if (!empty($location)) {
+        return $location;
+      }
+      // Checks for location href JS redirects. location.href
+      $lh = $js->attr('location.href');
+      if (!empty($lh)) {
+        return $lh;
+      }
+      // Checks for location assign JS redirects. location.assign
+      // Checks for location JS redirects. location
+      $la = $js->attr('location.assign');
+      if (!empty($la)) {
+        return $la;
+      }
+      // Checks for location replace JS redirects. location.replace
+      // Checks for location JS redirects. location
+      $lr = $js->attr('location.replace');
+      if (!empty($lr)) {
+        return $lr;
+      }
+    }
+
+    // Checks for human readable text redirects.
+    $human = qp($row)->find(body);
+      // Checks for 'this page has moved to'
+      $this_page = $human->text('this page has moved to');
+      if (!empty($this_page)) {
+        return $this_page;
+      }
+  }
 }
