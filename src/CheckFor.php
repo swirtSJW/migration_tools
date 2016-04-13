@@ -218,7 +218,7 @@ class CheckFor {
    *   A row object as delivered by migrate.
    *
    * @return bool
-   *   TRUE - destination URI(s).
+   *   TRUE - full URI(s) of the redirect destination(s).
    *   FALSE - no detectable redirects exist in the page.
    */
   public static function hasHtmlRedirect($row) {
@@ -266,5 +266,32 @@ class CheckFor {
       if (!empty($this_page)) {
         return $this_page;
       }
+  }
+
+  /**
+   * @param $redirect_url
+   *   A full destination URI.
+   * @return bool
+   *   TRUE - http response is valid, either 2xx or 3xx.
+   *   FALSE - https repose is invalid, either 1xx, 4xx, or 5xx
+   */
+  public static function urlExists($redirect_url) {
+    $handle = curl_init($redirect_url);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+    // Get the HTML or whatever is linked in $redirect_url.
+    $response = curl_exec($handle);
+    // Get status.
+    $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+    // Check that http code exists.
+    if ($httpCode) {
+      // Determines first digit of http code.
+      $first_digit = substr($httpCode, 0, 1);
+      // Filters for 2 or 3 as first digit
+      if ($first_digit == 2 || $first_digit == 3) {
+        return TRUE;
+      } else {
+        return FALSE;
+      }
+    }
   }
 }
