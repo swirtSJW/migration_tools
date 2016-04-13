@@ -26,8 +26,11 @@ class ObtainTitle extends ObtainHtml {
   protected function truncateString($string) {
     $split = $this->truncateThisWithoutHTML($string, 255, 2);
 
-    // @todo Add debugging to display $split['remaining'].
-    // $this->setTextDiscarded($split['remaining']);
+    // If something got trimmed off, message it.
+    if (!empty($split['remaining'])) {
+      $message = "The title was shortened and lost: @remainder";
+      MigrationMessage::makeMessage($message, array('@remainder' => $split['remaining']), WATCHDOG_ERROR, 2);
+    }
 
     return $split['truncated'];
   }
@@ -51,7 +54,7 @@ class ObtainTitle extends ObtainHtml {
     return $this->findSubBannerAttr('title');
   }
 
-/**
+  /**
    * Grab method to find the content sub-banner attribute.
    * @return string
    *   The text found.
@@ -103,7 +106,7 @@ class ObtainTitle extends ObtainHtml {
     $text = str_ireplace($break_tags, ' ', $text);
     $text = strip_tags($text);
     // Titles can not have html entities.
-    $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
+    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');

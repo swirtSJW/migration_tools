@@ -1,5 +1,7 @@
-migration_tools 7.x-1.x **-**-****
+migration_tools 7.x-1.x  ** - ** - ****
 -----------------------------------------------
+
+* Consolidate methods for cleaning node titles.
 * Add CHANGELOG.md
 * Moved URL and redirect related methods into UrlTools.inc
 

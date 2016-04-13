@@ -394,6 +394,21 @@ class StringCleanUp {
   }
 
   /**
+   * Prepares a string to be a Drupal node title.
+   *
+   * @param string $string
+   *   The string to be cleaned.
+   *
+   * @return string
+   *   The string html decoded, capped and trimmed.
+   */
+  public static function cleanTitle($string) {
+    $string = ObtainTitle::cleanString($string);
+    $string = ObtainTitle::truncateString($string);
+    return $string;
+  }
+
+  /**
    * Callback helper.
    */
   public static function migration_tools_hex_chr_utf8_callback($matches = array()) {

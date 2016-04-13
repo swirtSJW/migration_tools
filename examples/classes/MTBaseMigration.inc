@@ -148,11 +148,6 @@ abstract class MTBaseMigration extends Migration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
-    // Prepare title property by trimming to 255 chars and fixing encoding.
-    if (!empty($row->title)) {
-      $row->title = mb_strimwidth($row->title, 0, 255, "...");
-      $row->title = html_entity_decode($row->title, ENT_QUOTES, 'UTF-8');
-    }
   }
 
   /**
