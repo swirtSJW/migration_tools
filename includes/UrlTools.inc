@@ -271,6 +271,120 @@ class UrlTools {
   }
 
   /**
+   * Deletes any redirects associated files attached to an entity's file field.
+   *
+   * @param object $entity
+   *   The fully loaded entity.
+   *
+   * @param string $field_name
+   *   The machine name of the attachment field.
+   *
+   * @param string $language
+   *   Optional. Defaults to LANGUAGE_NONE.
+   */
+  public static function rollbackAttachmentRedirect($entity, $field_name, $language = LANGUAGE_NONE) {
+    $field = $entity->$field_name;
+    if (!empty($field[$language])) {
+      foreach ($field[$language] as $delta => $item) {
+        $file = file_load($item['fid']);
+        $url = file_create_url($file->uri);
+        $parsed_url = parse_url($url);
+        $destination = ltrim($parsed_url['path'], '/');
+        redirect_delete_by_path($destination);
+      }
+    }
+  }
+
+  /**
+   * Creates redirects for files attached to a given entity's field field.
+   *
+   * @param object $entity
+   *   The fully loaded entity.
+   *
+   * @param array $source_urls
+   *   A flat array of source urls that should redirect to the attachments
+   *   on this entity. $source_urls[0] will redirect to the first attachment,
+   *   $entity->$field_name[$language][0], and so on.
+   *
+   * @param string $field_name
+   *   The machine name of the attachment field.
+   *
+   * @param string $language
+   *   Optional. Defaults to LANGUAGE_NONE.
+   */
+  public static function createAttachmentRedirect($entity, $source_urls, $field_name, $language = LANGUAGE_NONE) {
+    if (empty($source_urls)) {
+      // Nothing to be done here.
+      $json_entity = json_encode($entity);
+      watchdog("migration_tools", "redirect was not created for attachment in entity {$json_entity}");
+      return;
+    }
+
+    $field = $entity->$field_name;
+    if (!empty($field[$language])) {
+      foreach ($field[$language] as $delta => $item) {
+        // $file = file_load($item['fid']);
+        // $url = file_create_url($file->uri);
+        // $parsed_url = parse_url($url);
+        // $destination = ltrim($parsed_url['path'], '/');
+        $source = $source_urls[$delta];
+
+        // Create redirect.
+        $redirect = redirect_load_by_source($source);
+        if (!$redirect) {
+          $redirect = new stdClass();
+          redirect_object_prepare($redirect);
+          $redirect->source = $source;
+          $redirect->redirect = "file/{$item['fid']}/download";
+          redirect_save($redirect);
+        }
+      }
+    }
+  }
+
+  /**
+   * Examines an uri and evaluates if it is an image.
+   *
+   * @param string $uri
+   *   A uri.
+   *
+   * @return bool
+   *   TRUE if this is an image uri, FALSE if it is not.
+   */
+  public static function isImageUri($uri) {
+    if (preg_match('/.*\.(jpg|gif|png|jpeg)$/i', $uri) !== 0) {
+      // Is an image uri.
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Fixes anchor links to PDFs so that they work in IE.
+   *
+   * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
+   * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+   */
+  public static function fixPdfLinkAnchors($query_path) {
+    $anchors = $query_path->find('a');
+    foreach ($anchors as $anchor) {
+      $url = $anchor->attr('href');
+      $contains_pdf_anchor = preg_match('/\.pdf#(p|_PAGE)([0-9]+)/i', $url, $matches);
+      if ($contains_pdf_anchor) {
+        $old_anchor = $matches[1];
+        $page_num = $matches[3];
+        $new_anchor = 'page=' . $page_num;
+        $new_url = str_replace($old_anchor, $new_anchor, $url);
+        $anchor->attr('href', $new_url);
+      }
+    }
+  }
+
+  /**
    * Removes the host if the url is intarnal but malformed.
    *
    * A url of 'mysite.com/path1/path2' is malformed because parse_url() will

@@ -50,7 +50,6 @@ class HtmlCleanUp {
       $match->parent()->parent()->remove();
     }
 
-
     // Remove extraneous html wrapping elements, leaving children intact.
     HTMLCleanUp::removeWrapperElements($query_path, array(
       'body > blockquote',
@@ -307,30 +306,6 @@ class HtmlCleanUp {
     }
   }
 
-  /**
-   * Fixes anchor links to PDFs so that they work in IE.
-   *
-   * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
-   *
-   * @param QueryPath $query_path
-   *   The QueryPath object with HTML markup.
-   *
-   * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
-   */
-  public static function fixPdfLinkAnchors($query_path) {
-    $anchors = $query_path->find('a');
-    foreach ($anchors as $anchor) {
-      $url = $anchor->attr('href');
-      $contains_pdf_anchor = preg_match('/\.pdf#(p|_PAGE)([0-9]+)/i', $url, $matches);
-      if ($contains_pdf_anchor) {
-        $old_anchor = $matches[1];
-        $page_num = $matches[3];
-        $new_anchor = 'page=' . $page_num;
-        $new_url = str_replace($old_anchor, $new_anchor, $url);
-        $anchor->attr('href', $new_url);
-      }
-    }
-  }
 
   /**
    * Empty anchors without name attribute will be stripped by ckEditor.
@@ -445,22 +420,6 @@ class HtmlCleanUp {
     }
   }
 
-  /**
-   * Examines an uri and evaluates if it is an image.
-   *
-   * @param string $uri
-   *   A uri.
-   *
-   * @return bool
-   *   TRUE if this is an image uri, FALSE if it is not.
-   */
-  public static function isImageUri($uri) {
-    if (preg_match('/.*\.(jpg|gif|png|jpeg)$/i', $uri) !== 0) {
-      // Is an image uri.
-      return TRUE;
-    }
-    return FALSE;
-  }
 
   /**
    * General matching function.
