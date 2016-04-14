@@ -2,6 +2,8 @@ migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
 * PSR-4 autoloader added to autoload classes
 * Renaming and moving of classes to support autoloading and namespacing.
+* Stub for redirect detection.
+* Destination URI validation.
 
 migration_tools 7.x-1.x  April 14, 2016
 -----------------------------------------------
