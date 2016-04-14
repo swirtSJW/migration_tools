@@ -8,6 +8,8 @@
  * as needed to obtain a city.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

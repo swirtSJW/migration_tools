@@ -1,13 +1,15 @@
 <?php
 /**
  * @file
- * MenuGenerationParameters class.
+ * MenuParameters class.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGenerationParameters for a generating a menu_import file.
+ * Class MenuParameters for a generating a menu_import file.
  */
-class MenuGenerationParameters {
+class MenuParameters {
   /**
    * The domain/host of the site where the new menu will live.
    * @var string

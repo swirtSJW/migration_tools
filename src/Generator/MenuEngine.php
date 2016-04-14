@@ -1,18 +1,20 @@
 <?php
 /**
  * @file
- * MenuGeneratorEngine class.
+ * MenuEngine class.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGeneratorEngine.
+ * Class MenuEngine.
  *
  * The engine parses the source to build the menu import file.
  */
-abstract class MenuGeneratorEngine {
+abstract class MenuEngine {
   /**
    * Menu generation parameters.
-   * @var MenuGenerationParameters
+   * @var MenuParameters
    */
   protected $parameters;
   /**

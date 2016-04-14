@@ -9,6 +9,8 @@
  * looking for, at which point it returns the string.
  */
 
+namespace MigrationTools\Obtainer;
+
 abstract class Obtainer {
 
   /**

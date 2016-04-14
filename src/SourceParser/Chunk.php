@@ -5,8 +5,10 @@
  * Contains classes for chunking HTML files.
  */
 
+namespace MigrationTools\SourceParser;
+
 /**
- * Class MTChunkParser
+ * Class Chunk
  *
  * Parses a single HTML file into many chunks, each of which is mapped to a
  * separate destination node. Used for 'many to many' migrations where
@@ -14,7 +16,7 @@
  *
  * @package migration_tools
  */
-abstract class MTChunkParser extends MigrateContentParser {
+abstract class Chunk extends MigrateContentParser {
   /**
    * $this->setContent() will be called by the migrate module once per file.
    * Other methods can rely on this being set.

@@ -8,6 +8,8 @@
  * as needed to obtain a location suitable for geoLocating.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

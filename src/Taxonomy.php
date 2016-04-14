@@ -5,7 +5,9 @@
  * Miscellaneous utility functions for dealing with taxonomy.
  */
 
-class TaxonomyTools {
+namespace MigrationTools;
+
+class Taxonomy {
   /**
    * Prepares taxonomy term(s) for the specified vocabulary and adds new ones.
    *
@@ -62,7 +64,7 @@ class TaxonomyTools {
    */
   private function createUniqueTerm($term, $vocab_name) {
     if (!taxonomy_get_term_by_name($term, $vocab_name)) {
-      MigrationMessage::makeMessage('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
+      Message::make('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
       $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
       $term_obj = new stdClass();
       $term_obj->name = $term;

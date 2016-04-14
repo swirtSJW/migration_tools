@@ -4,6 +4,8 @@
  * ObtainTitlePressRelease.
  */
 
+namespace MigrationTools\Obtainer;
+
 class ObtainDateSpanish extends ObtainDate {
 
   /**

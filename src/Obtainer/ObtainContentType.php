@@ -4,6 +4,8 @@
  * ObtainContentType.
  */
 
+namespace MigrationTools\Obtainer;
+
 class ObtainContentType extends Obtainer {
   // Finders for content type are unique to other finders.  They MUST return
   // either the content type they are looking for OR ''.  They can not return

@@ -1,8 +1,10 @@
 <?php
 /**
  * @file
- * MenuGeneratorCsvParse class.
+ * MenuCsvParse class.
  */
+
+namespace MigrationTools\Generator;
 
 /**
  * Creates a menu import file based on a CSV file.
@@ -12,11 +14,11 @@
  *  -, This Title, http://www.mysite.com
  * --, Subtitle, http://www.mysite.com/subpage.htm
  */
-class MenuGeneratorCsvParse extends MenuGenerator {
+class MenuCsvParse extends Menu {
   /**
    * {@inheritdoc}
    */
-  public function __construct(MenuGenerationParametersCsvParse $parameters, MenuGeneratorEngineCsv $engine) {
+  public function __construct(MenuParametersCsvParse $parameters, MenuEngineCsv $engine) {
     parent::__construct($parameters, $engine);
   }
 

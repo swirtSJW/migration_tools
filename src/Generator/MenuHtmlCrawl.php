@@ -1,13 +1,15 @@
 <?php
 /**
  * @file
- * MenuGeneratorHtmlCrawl class.
+ * MenuHtmlCrawl class.
  */
+
+namespace MigrationTools\Generator;
 
 /**
  * Creates a menu import file based on crawling a live html menu.
  */
-class MenuGeneratorHtmlCrawl extends MenuGenerator {
+class MenuHtmlCrawl extends MenuGenerator {
   /**
    * An array of menu elements.
    * @var array
@@ -17,7 +19,7 @@ class MenuGeneratorHtmlCrawl extends MenuGenerator {
   /**
    * {@inheritdoc}
    */
-  public function __construct(MenuGenerationParametersHtmlCrawl $parameters, MenuGenerationEngineHtmlCrawl $engine) {
+  public function __construct(MenuParametersHtmlCrawl $parameters, MenuEngineHtmlCrawl $engine) {
     parent::__construct($parameters, $engine);
     // Set defaults.
     $this->fileName = $this->parameters->getSubDirectory() . "-menu.txt";

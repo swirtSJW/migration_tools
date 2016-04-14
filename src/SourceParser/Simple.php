@@ -2,15 +2,17 @@
 
 /**
  * @file
- * Includes SourceParser class, which parses static HTML files via queryPath.
+ * Includes Simple source parser class, parses static HTML files via queryPath.
  */
 
+namespace MigrationTools\SourceParser;
+
 /**
- * Class MTSimpleSourceParser.
+ * Class Simple source parser.
  *
  * @package migration_tools
  */
-class MTSimpleSourceParser extends MTSourceParser {
+class Simple extends Base {
 
   /**
    * {@inheritdoc}

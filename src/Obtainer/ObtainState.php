@@ -8,6 +8,8 @@
  * as needed to obtain a state.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

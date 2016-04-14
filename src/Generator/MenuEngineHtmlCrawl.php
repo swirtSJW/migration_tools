@@ -1,15 +1,17 @@
 <?php
 /**
  * @file
- * MenuGeneratorEngineHtmlCrawl classe.
+ * MenuEngineHtmlCrawl classe.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGeneratorEngineHtmlCrawl for crawling a menu(s) from a live site.
+ * Class MenuEngineHtmlCrawl for crawling a menu(s) from a live site.
  *
  * NOTICE this class has not been tested since being refactored!
  */
-class MenuGeneratorEngineHtmlCrawl extends MenuGeneratorEngine {
+class MenuEngineHtmlCrawl extends MenuEngine {
   protected $queryPath;
   protected $initialCssSelector;
   protected $menu;
@@ -17,7 +19,7 @@ class MenuGeneratorEngineHtmlCrawl extends MenuGeneratorEngine {
   /**
    * Constructor.
    */
-  public function __construct(MenuGenerationParametersHtmlCrawl $parameters) {
+  public function __construct(MenuParametersHtmlCrawl $parameters) {
     $this->parameters = $parameters;
   }
 

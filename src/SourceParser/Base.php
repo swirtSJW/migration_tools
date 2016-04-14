@@ -5,6 +5,8 @@
  * Includes MTSourceParser class, which parses static HTML files via queryPath.
  */
 
+namespace MigrationTools\SourceParser;
+
 // composer_manager is supposed to take care of including this library, but
 // it doesn't seem to be working.
 require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
@@ -14,7 +16,7 @@ require_once DRUPAL_ROOT . '/sites/all/vendor/querypath/querypath/src/qp.php';
  *
  * @package migration_tools
  */
-abstract class MTSourceParser {
+abstract class Base {
 
   protected $obtainersInfo;
   protected $fileId;
@@ -100,7 +102,7 @@ abstract class MTSourceParser {
         $text = $obtainer->obtain();
         $length = strlen($text);
         if (!$length) {
-          // It's too long to be helpful in output so just show the length.
+          // Nothing was obtained.
           MigrationMessage::makeMessage('@property NOT found', array('@property' => $property), WATCHDOG_DEBUG, 2);
         }
         elseif ($length < 256) {

@@ -1,13 +1,15 @@
 <?php
 /**
  * @file
- * MenuGenerationParametersHtmlCrawl class.
+ * MenuParametersHtmlCrawl class.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGenerationParametersHtmlCrawl for a generating a menu_import file.
+ * Class MenuParametersHtmlCrawl for a generating a menu_import file.
  */
-class MenuGenerationParametersHtmlCrawl extends MenuGenerationParameters {
+class MenuParametersHtmlCrawl extends MenuParameters {
   public $initialMenuLocation;
   public $menuCounter;
 

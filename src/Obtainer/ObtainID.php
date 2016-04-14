@@ -5,6 +5,8 @@
  * Class ObtainID
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

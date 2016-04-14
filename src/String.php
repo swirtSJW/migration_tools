@@ -4,7 +4,9 @@
  * Helper function to clean up strings.
  */
 
-class StringCleanUp {
+namespace MigrationTools;
+
+class String {
   /**
    * Deal with encodings.
    *
@@ -17,7 +19,7 @@ class StringCleanUp {
   public static function fixEncoding($string = '') {
 
     // Fix and replace bizarre characters pre-encoding.
-    $string = StringCleanUp::convertFatalCharstoASCII($string);
+    $string = String::convertFatalCharstoASCII($string);
 
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
@@ -53,7 +55,7 @@ class StringCleanUp {
     }
 
     // Fix and replace bizarre characters to get those caused by encoding.
-    $string = StringCleanUp::convertFatalCharstoASCII($string);
+    $string = String::convertFatalCharstoASCII($string);
 
     // @TODO Here would be the spot to run a diff comparing before and after
     // encoding and then watchdog the offending character that results in �.
@@ -99,7 +101,7 @@ class StringCleanUp {
    */
   public static function convertFatalCharstoASCII($string = '') {
 
-    foreach (StringCleanUp::fatalCharsMap() as $weird => $normal) {
+    foreach (String::fatalCharsMap() as $weird => $normal) {
       $string = str_replace($weird, $normal, $string);
     }
 
@@ -186,7 +188,7 @@ class StringCleanUp {
    */
   public static function convertNonASCIItoASCII($string = '') {
 
-    foreach (StringCleanUp::funkyCharsMap() as $weird => $normal) {
+    foreach (String::funkyCharsMap() as $weird => $normal) {
       $string = str_replace($weird, $normal, $string);
     }
 
@@ -204,7 +206,7 @@ class StringCleanUp {
    */
   public static function stripFunkyChars($string = '') {
 
-    foreach (StringCleanUp::funkyCharsMap() as $weird => $normal) {
+    foreach (String::funkyCharsMap() as $weird => $normal) {
       $string = str_replace($weird, '', $string);
     }
 

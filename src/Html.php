@@ -4,7 +4,9 @@
  * Helper function to clean up HTML.
  */
 
-class HtmlCleanUp {
+namespace MigrationTools;
+
+class Html {
 
   /**
    * Removes legacy elements from HTML that are no longer needed.
@@ -23,7 +25,7 @@ class HtmlCleanUp {
     }
 
     // Remove elements and their children.
-    HTMLCleanUp::removeElements($query_path, array(
+    Html::removeElements($query_path, array(
       'a[name="sitemap"]',
       'a[name="maincontent"]',
       'img[src="/gif/sealmt.gif"]',
@@ -45,13 +47,13 @@ class HtmlCleanUp {
     ));
 
     // Remove external icon images.
-    $matches = HtmlCleanUp::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
+    $matches = Html::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
     foreach ($matches as $key => $match) {
       $match->parent()->parent()->remove();
     }
 
     // Remove extraneous html wrapping elements, leaving children intact.
-    HTMLCleanUp::removeWrapperElements($query_path, array(
+    Html::removeWrapperElements($query_path, array(
       'body > blockquote',
       '.bdywrpr',
       '.gridwrpr',
@@ -65,28 +67,28 @@ class HtmlCleanUp {
     $query_path->find('.narrow-bar')->removeAttr('style');
 
     // Remove matching elements containing only &nbsp; or nothing.
-    HTMLCleanUp::removeEmptyElements($query_path, array(
+    Html::removeEmptyElements($query_path, array(
       'div',
       'span',
       'p',
     ));
 
     // Remove black title bar with eagle image (if present).
-    HTMLCleanUp::removeTitleBarImage($query_path);
+    Html::removeTitleBarImage($query_path);
 
     // FIX.
     // Empty anchors without name attribute will be stripped by ckEditor.
-    HTMLCleanUp::fixNamedAnchors($query_path);
+    Html::fixNamedAnchors($query_path);
 
     // Some pages have images as subtitles. Turn those into html.
     $header_element = !empty($arguments['header_element']) ? $arguments['header_element'] : 'h2';
-    HTMLCleanUp::changeSubTitleImagesForHtml($query_path, $header_element);
+    Html::changeSubTitleImagesForHtml($query_path, $header_element);
 
     // Removing scripts used when linking to outside sources.
-    HtmlCleanUp::removeExtLinkJS($query_path);
+    Html::removeExtLinkJS($query_path);
 
     // Fix broken links to PDF anchors.
-    HTMLCleanUp::fixPdfLinkAnchors($query_path);
+    Html::fixPdfLinkAnchors($query_path);
   }
 
   /**
@@ -119,7 +121,7 @@ class HtmlCleanUp {
     // Put the shell on the html to extract with more certainty later.
     $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
     $query_path = htmlqp($html, NULL, array());
-    HTMLCleanUp::removeElements($query_path, $selectors);
+    Html::removeElements($query_path, $selectors);
 
     // Grab the html from the shell.
     $processed_html = $query_path->top('.throw-away-parser-shell')->innerHTML();
@@ -219,7 +221,7 @@ class HtmlCleanUp {
         $element->wrapInner($new_wrapper);
       }
     }
-    HTMLCleanUp::removeWrapperElements($query_path, $selectors);
+    Html::removeWrapperElements($query_path, $selectors);
   }
 
   /**
@@ -235,7 +237,7 @@ class HtmlCleanUp {
     foreach ($selectors as $selector) {
       $elements = $query_path->find($selector);
       foreach ($elements as $element) {
-        $contents = StringCleanUp::superTrim($element->innerXHTML());
+        $contents = String::superTrim($element->innerXHTML());
         $empty_values = array(
           '&nbsp;',
           '',
@@ -461,7 +463,7 @@ class HtmlCleanUp {
     $counter = 0;
     $matches = array();
     do {
-      $match = HtmlCleanUp::match($qp, $selector, $needle, $function, $parameter, $counter);
+      $match = Html::match($qp, $selector, $needle, $function, $parameter, $counter);
       if ($match) {
         $matches[] = $match;
         $counter++;
@@ -474,7 +476,7 @@ class HtmlCleanUp {
    * Like match, but removes all matching elements.
    */
   public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
-    $matches = HtmlCleanUp::matchAll($qp, $selector, $needle, $function, $parameter);
+    $matches = Html::matchAll($qp, $selector, $needle, $function, $parameter);
     foreach ($matches as $match) {
       $match->remove();
     }
@@ -496,7 +498,7 @@ class HtmlCleanUp {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchAttribute($qp, $selector, $needle, $attribute) {
-    return HtmlCleanUp::match($qp, $selector, $needle, "attr", $attribute);
+    return Html::match($qp, $selector, $needle, "attr", $attribute);
   }
 
   /**
@@ -513,7 +515,7 @@ class HtmlCleanUp {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchText($qp, $selector, $needle) {
-    return HtmlCleanUp::match($qp, $selector, $needle, "text");
+    return Html::match($qp, $selector, $needle, "text");
   }
 
   /**
@@ -527,7 +529,7 @@ class HtmlCleanUp {
    *   The text string for which to search.
    */
   public static function matchTextRemoveElement($qp, $selector, $needle) {
-    $element = HtmlCleanUp::match($qp, $selector, $needle, "text");
+    $element = Html::match($qp, $selector, $needle, "text");
     if ($element) {
       $element->remove();
     }
@@ -547,7 +549,7 @@ class HtmlCleanUp {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchHtml($qp, $selector, $needle) {
-    return HtmlCleanUp::match($qp, $selector, $needle, "html");
+    return Html::match($qp, $selector, $needle, "html");
   }
 
   /**
@@ -561,7 +563,7 @@ class HtmlCleanUp {
     foreach ($imgs as $img) {
       $longdesc_uri = $img->attr('longdesc');
       // Longdesc can not be a uri to an image file.  Should be to txt or html.
-      if (HtmlCleanup::isImageUri($longdesc_uri)) {
+      if (Html::isImageUri($longdesc_uri)) {
         $img->removeAttr('longdesc');
       }
     }

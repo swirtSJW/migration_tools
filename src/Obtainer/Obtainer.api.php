@@ -5,6 +5,7 @@
  * Contains example Obtainer class.
  */
 
+namespace MigrationTools\Obtainer;
 
 /**
  * Obtainer for title property for /atr pages.

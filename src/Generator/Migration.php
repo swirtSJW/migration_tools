@@ -5,13 +5,13 @@
  * Contains functions used for generating migration classes dynamically.
  */
 
-require_once DRUPAL_ROOT . "/../vendor/autoload.php";
+namespace MigrationTools\Generator;
 use Symfony\Component\Yaml\Parser;
 
 /**
  * Class MtMigrationGenerator.
  */
-class MtMigrationGenerator {
+class Migration {
 
   /**
    * @var string
@@ -38,7 +38,7 @@ class MtMigrationGenerator {
   protected $modulePath;
 
   /**
-   * Constructs MtMigrationGenerator object.
+   * Constructs Migration object.
    *
    * @param string $config_filename
    *   The name of the yaml file containing the organization configuration.

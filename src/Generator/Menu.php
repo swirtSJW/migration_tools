@@ -1,15 +1,17 @@
 <?php
 /**
  * @file
- * MenuGeneration class.
+ * Menu class.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGenerator.
+ * Class Menu.
  *
  * Builds a menu import file for use with menu_import module.
  */
-class MenuGenerator {
+class Menu {
   public $engine;
   private $fileName;
   private $fileOutputDirectory;
@@ -20,7 +22,7 @@ class MenuGenerator {
   /**
    * Constructor.
    */
-  public function __construct(MenuGenerationParameters $parameters, MenuGeneratorEngine $engine) {
+  public function __construct(MenuParameters $parameters, MenuEngine $engine) {
     $this->parameters = $parameters->build();
     $this->engine = $engine;
   }

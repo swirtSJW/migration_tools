@@ -1,20 +1,22 @@
 <?php
 /**
  * @file
- * MenuGeneratorEngineCsv methods for converting a csv to an menu import file.
+ * MenuEngineCsv methods for converting a csv to an menu import file.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGeneratorEngineCsv
+ * Class MenuEngineCsv
  *
  * Parses a CSV file and coverts it to a menu import file for use by the
  * menu-import module.  Correctly connecting legacy links to migrated URI's
  */
-class MenuGeneratorEngineCsv extends MenuGeneratorEngine {
+class MenuEngineCsv extends MenuEngine {
   /**
    * Constructor.
    */
-  public function __construct(MenuGenerationParametersCsvParse $parameters) {
+  public function __construct(MenuParametersCsvParse $parameters) {
     $this->parameters = $parameters;
   }
 

@@ -4,7 +4,9 @@
  * Functions for handling urls.
  */
 
-class UrlTools {
+namespace MigrationTools;
+
+class Url {
 
   /**
    * Grabs legacy redirects for this node from D6 and adds $row->redirects.
@@ -71,7 +73,7 @@ class UrlTools {
       }
     }
     $message = "legacy uri @legacy_uri does not have a node associated with it";
-    MigrationMessage::makeMessage($message, array('@legacy_uri' => $legacy_uri), WATCHDOG_NOTICE, 1);
+    Message::make($message, array('@legacy_uri' => $legacy_uri), WATCHDOG_NOTICE, 1);
     // Without legacy path yet migrated in, leave the link to source url
     // so that the redirects can handle it when that content is migrate/created.
     $base = variable_get('migration_tools_base_domain', '');
@@ -180,7 +182,7 @@ class UrlTools {
       $variables = array(
         '@source_path' => $source_path,
       );
-      MigrationMessage::makeMessage($message, $variables, FALSE, 2);
+      Message::make($message, $variables, FALSE, 2);
       return FALSE;
     }
 
@@ -225,7 +227,7 @@ class UrlTools {
             '@source' => $source_path,
             '@destination' => $redirect->redirect,
           );
-          MigrationMessage::makeMessage($message, $variables, FALSE, 2);
+          Message::make($message, $variables, FALSE, 2);
         }
         else {
           // The redirect already exists.
@@ -234,7 +236,7 @@ class UrlTools {
             '@legacy' => $source_path,
             '@alias' => $redirect->redirect,
           );
-          MigrationMessage::makeMessage($message, $variables, FALSE, 2);
+          Message::make($message, $variables, FALSE, 2);
         }
       }
       else {
@@ -243,14 +245,14 @@ class UrlTools {
         $variables = array(
           '@source' => $source_path,
         );
-        MigrationMessage::makeMessage($message, $variables, FALSE, 2);
+        Message::make($message, $variables, FALSE, 2);
       }
     }
     else {
       // The is no value for redirect.
       $message = 'The source path is missing. No redirect can be built.';
       $variables = array();
-      MigrationMessage::makeMessage($message, $variables, FALSE, 2);
+      Message::make($message, $variables, FALSE, 2);
     }
   }
 

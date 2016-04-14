@@ -8,6 +8,8 @@
  * as needed to obtain a date content.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

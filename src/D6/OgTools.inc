@@ -4,6 +4,8 @@
  * D6 Organic Groups tools.
  */
 
+namespace MigrationTools\D6;
+
 /**
  * OgTools.
  */

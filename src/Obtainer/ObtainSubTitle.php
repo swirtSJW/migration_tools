@@ -4,6 +4,8 @@
  * ObtainSubTitle.
  */
 
+namespace MigrationTools\Obtainer;
+
 class ObtainSubTitle extends ObtainTitle {
 
   /**

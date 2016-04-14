@@ -5,6 +5,8 @@
  * Contains static methods for checking on elements of a migration document.
  */
 
+namespace MigrationTools;
+
 class CheckFor {
 
   /**
@@ -28,13 +30,13 @@ class CheckFor {
         // Special case where we are just looking for an element that is !empty.
         $return = TRUE;
         $message = "This row->@element contains a value.";
-        MigrationMessage::makeMessage($message, array('@element' => $row_element), FALSE, 1);
+        Message::make($message, array('@element' => $row_element), FALSE, 1);
       }
       elseif (!empty($value) && !empty($row->{$row_element}) && $row->{$row_element} == $value) {
         // The row element has just what we are looking for.
         $return = TRUE;
         $message = "This row->@element contains the value @value.";
-        MigrationMessage::makeMessage($message, array('@element' => $row_element, '@value' => $value), FALSE, 1);
+        Message::make($message, array('@element' => $row_element, '@value' => $value), FALSE, 1);
       }
     }
     return $return;
@@ -64,10 +66,10 @@ class CheckFor {
         $message = "Stopped because row->@element has the value: @value";
       }
       // Output the entire row for inspection.
-      MigrationMessage::varDumpToDrush($row, 'OUTPUT $row');
+      Message::varDumpToDrush($row, 'OUTPUT $row');
       // Output an error level message so it will stop the migration if
       // vset migration_tools_drush_stop_on_error is set to TRUE.
-      MigrationMessage::makeMessage($message, array('@element' => $row_element, '@value' => $value), WATCHDOG_ERROR, 1);
+      Message::make($message, array('@element' => $row_element, '@value' => $value), WATCHDOG_ERROR, 1);
 
     }
   }
@@ -124,7 +126,7 @@ class CheckFor {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      MigrationMessage::makeMessage($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
+      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
       return TRUE;
     }
     return FALSE;

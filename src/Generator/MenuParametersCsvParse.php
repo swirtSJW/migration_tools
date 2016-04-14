@@ -1,13 +1,15 @@
 <?php
 /**
  * @file
- * MenuGenerationParametersCsvParse class.
+ * MenuParametersCsvParse class.
  */
 
+namespace MigrationTools\Generator;
+
 /**
- * Class MenuGenerationParametersCsvParse for a generating a menu_import file.
+ * Class MenuParametersCsvParse for a generating a menu_import file.
  */
-class MenuGenerationParametersCsvParse extends MenuGenerationParameters {
+class MenuParametersCsvParse extends MenuParameters {
 
   /**
    * Constructor.

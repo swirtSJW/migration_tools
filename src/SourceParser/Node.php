@@ -2,15 +2,17 @@
 
 /**
  * @file
- * Includes MTNodeSourceParser class, parses static HTML files via queryPath.
+ * Includes Node class, parses static HTML files via queryPath.
  */
 
+namespace MigrationTools\SourceParser;
+
 /**
- * Class MTNodeSourceParser.
+ * Class Node Source Parser.
  *
  * @package migration_tools
  */
-class MTNodeSourceParser extends MTSourceParser {
+class Node extends Base {
   protected $body;
   protected $title;
   // @codingStandardsIgnoreStart

@@ -8,6 +8,8 @@
  * as needed to obtain a title/heading and possible subtitle/subheading.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

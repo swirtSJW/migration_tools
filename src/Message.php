@@ -4,7 +4,9 @@
  * Helper class to manage watchdog and commandline messaging of migrations.
  */
 
-class MigrationMessage {
+namespace MigrationTools;
+
+class Message {
   /**
    * Logs a system message and outputs it to drush terminal if run from drush.
    *
@@ -35,7 +37,7 @@ class MigrationMessage {
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
    */
-  public static function makeMessage($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+  public static function make($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     if (isset($trace[1])) {
@@ -67,7 +69,7 @@ class MigrationMessage {
    * Outputs a visual separator using the message system.
    */
   public static function makeSeparator() {
-    self::makeMessage("------------------------------------------------------", array(), FALSE, 0);
+    self::make("------------------------------------------------------", array(), FALSE, 0);
   }
 
   /**

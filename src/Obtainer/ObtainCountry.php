@@ -8,6 +8,8 @@
  * as needed to obtain a country.
  */
 
+namespace MigrationTools\Obtainer;
+
 /**
  * {@inheritdoc}
  */

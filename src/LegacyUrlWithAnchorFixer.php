@@ -7,6 +7,8 @@
  * from migration groups, specific migrations, or given set of nids.
  */
 
+namespace MigrationTools;
+
 class MigrationNodesLegacyLinksFixer {
   private $nids = array();
   private $debugInfo = array();
