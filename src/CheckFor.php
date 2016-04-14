@@ -222,10 +222,15 @@ class CheckFor {
    *   FALSE - no detectable redirects exist in the page.
    */
   public static function hasHtmlRedirect($row) {
-    //Checks for meta refresh redirects. Does meta support relative urls???
-    $meta = qp($row)->find('meta[http-equiv="refresh"]')->attr("url");
-    if (!empty($meta)) {
-      return $meta;
+    // Checks for meta location redirects.
+    $meta_location = qp($row)->find('meta[http-equiv="location"')->attr("url");
+    if (!empty($meta_location)) {
+      return $meta_location;
+    }
+    // Checks for meta refresh redirects. Does support relative urls.
+    $meta_refresh = qp($row)->find('meta[http-equiv="refresh"]')->attr("url");
+    if (!empty($meta_refresh)) {
+      return $meta_refresh;
     }
     // Checks for presence of Javascript. <script type="text/javascript">
     $js = qp($row)->find('script[type="text/javascript"]');
@@ -261,7 +266,12 @@ class CheckFor {
 
     // Checks for human readable text redirects.
     $human = qp($row)->find(body);
-      // Checks for 'this page has moved to'
+      // Checks for 'this page has been moved to'.
+      $has_been = $human->text('This page has been moved to');
+      if (!empty($has_been)) {
+        return $has_been;
+      }
+      // Checks for 'this page has moved to'.
       $this_page = $human->text('this page has moved to');
       if (!empty($this_page)) {
         return $this_page;
