@@ -217,8 +217,8 @@ class CheckFor {
    * @param object $row
    *   A row object as delivered by migrate.
    *
-   * @return bool
-   *   TRUE - full URI(s) of the redirect destination(s).
+   * @return mixed
+   *   string - full URL of the redirect destination.
    *   FALSE - no detectable redirects exist in the page.
    */
   public static function hasHtmlRedirect($row) {
