@@ -44,9 +44,7 @@ function migration_tools_uninstall() {
 }
 
 /**
- * Reverting feature.
- *
- * Updates image display to "rendered image" so new caption field will display.
+ * Rebuild registry to accommodate anyone switching from 7.x-1.x to 7.x-2.x.
  */
 function migration_tools_update_7001() {
   registry_rebuild();
