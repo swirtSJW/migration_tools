@@ -42,3 +42,13 @@ function migration_tools_uninstall() {
 
   drupal_set_message(t('migration_tools has been uninstalled.'));
 }
+
+/**
+ * Reverting feature.
+ *
+ * Updates image display to "rendered image" so new caption field will display.
+ */
+function migration_tools_update_7001() {
+  registry_rebuild();
+  return "Rebuilt the registry to accommodate autoaded file changes from the 7.x-1.x to 7.x-2.x.";
+}
