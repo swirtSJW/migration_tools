@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add admin field for handling migration source location.
 * Modified settings location to reside with other Migrate settings.
 * Modified method of hiding the Migrate settings.
 * PSR-4 autoloader added to autoload classes
