@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Modified settings location to reside with other Migrate settings.
+* Modified method of hiding the Migrate settings.
 * PSR-4 autoloader added to autoload classes
 * Renaming and moving of classes to support autoloading and namespacing.
 

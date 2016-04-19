@@ -15,11 +15,11 @@ require_once 'vendor/autoload.php';
  */
 function migration_tools_menu_alter(&$items) {
   // Viewing this page calls the contstructors for all registered migration
-  // classes, overwhelming PHP memory limit. We cannot disable migrate_ui
-  // due to wordpress_migrate dependency on it, so we will instead unset this
-  // menu router item.
+  // classes, overwhelming PHP memory limit. So if desired, we will obscure
+  // the forms.
   if (variable_get("migration_tools_migrate_ui_hidden", FALSE)) {
-    unset($items['admin/content/migrate']);
+    $items['admin/content/migrate/configure']['page callback'] = array('migration_tools_migrate_ui_null');
+    $items['admin/content/migrate']['page arguments'] = array('migration_tools_migrate_ui_null');
   }
 }
 
@@ -112,13 +112,14 @@ function migration_tools_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['admin/config/migration_tools'] = array(
-    'title' => 'Migration Tools Settings',
+  $items['admin/content/migrate/migration_tools'] = array(
+    'title' => 'Migration Tools - settings',
     'description' => 'Settings for the Migration Tools module.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('migration_tools_admin'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array(MIGRATE_ACCESS_ADVANCED),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 150,
   );
   return $items;
 }
@@ -184,8 +185,24 @@ function migration_tools_admin() {
     '#type' => 'checkbox',
     '#title' => t('Hide Migrate UI'),
     '#default_value' => check_plain(variable_get('migration_tools_migrate_ui_hidden', '')),
-    '#description' => t("Checking this box will hide the Migrate UI to protect performance and require use of the drush interface.  Will require a menu cache flush to take effect."),
+    '#description' => t("Checking this box will hide the Migrate UI to protect performance and require use of the drush interface.  Requires a menu cache flush to take effect."),
     '#required' => FALSE,
   );
   return system_settings_form($form);
+}
+
+/**
+ * The callback function creates a form with only a form blocked message.
+ *
+ * @return array
+ *   A Drupal form array.
+ */
+function migration_tools_migrate_ui_null() {
+  $form = array();
+  $message = t('This form is blocked by a Migration Tools setting.');
+  $form['some_text'] = array(
+    '#markup' => "<p>$message</p>",
+  );
+
+  return $form;
 }

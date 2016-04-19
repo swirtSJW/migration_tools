@@ -2,7 +2,7 @@ name = "Migration Tools"
 description = "Tools to help process difficult migrations."
 package = Migration
 core = 7.x
-configure = admin/config/migration_tools
+configure = admin/content/migrate/migration_tools
 
 dependencies[] = migrate
 ;dependencies[] = composer_manager
