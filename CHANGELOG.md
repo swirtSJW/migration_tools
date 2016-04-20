@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add sourcer class to load html files from a local directory
+  https://www.drupal.org/node/2709651
 * Add admin field for handling migration source location.
 * Modified settings location to reside with other Migrate settings.
 * Modified method of hiding the Migrate settings.
