@@ -13,12 +13,15 @@ namespace MigrationTools\Source;
  * Assign the migration source created by this class to $this->source within
  * the migration class.
  */
-class HtmlFileSource {
+class HtmlFile {
   /**
    *The base domain destination for this source.
    * @var string
    */
   public $sourceDirectoryBase;
+  public $source;
+  public $listFiles;
+  public $ItemFile;
 
   /**
    * Prepare the file source.
@@ -29,15 +32,16 @@ class HtmlFileSource {
    * @param array $source_dirs
    *   An array of source directories, relative to $this->baseDir.
    * @param string $regex
-   *   The file mask. Only filenames matching this regex will be migrated.
+   *   (Optional) The file mask. Only filenames matching this regex will be
+   *   migrated.  Uses case insensitive .html and .htm if empty.
    * @param array $scan_options
    *   Options that will be passed on to file_scan_directory(). See docs of that
    *   core Drupal function for more information.
    * @param string $base_directory
    *   (Optional) The full migration source base directory if something other
-   *   other than the stored migration_tools_source_directory_base.
+   *   other than the stored migration_tools_source_directory_base is needed.
    */
-  public function __construct($source_dirs, $regex = '/.*\.htm(l)?$/i', $scan_options = array(), $base_directory = NULL) {
+  public function __construct($source_dirs, $regex = '', $scan_options = array(), $base_directory = NULL) {
     // Use the base directory defined by migration tools if none is present.
     if (empty($base_directory)) {
       $this->sourceDirectoryBase = variable_get('migration_tools_source_directory_base', NULL);
@@ -50,16 +54,33 @@ class HtmlFileSource {
       throw new \MigrateException("There was no source directory base specified.");
     }
 
+    // Use default regex of .html and .htm if none provided.
+    $regex = (empty($regex)) ? '/.*\.htm(l)?$/i' : $regex;
+
     // Define the directories containing files to be migrated.
     $this->prependLegacyFilepath($source_dirs);
 
     // $list_files will provide migrate with a list of all files to be migrated.
-    $list_files = new MigrateListFiles($source_dirs, $this->sourceDirectoryBase, $regex, $scan_options);
+    $this->listFiles = new \MigrateListFiles($source_dirs, $this->sourceDirectoryBase, $regex, $scan_options);
+
     // $item_file provides methods for retrieving a file given an identifier.
-    $item_file = new MigrateItemFile($this->sourceDirectoryBase, TRUE);
+    $this->ItemFile = new \MigrateItemFile($this->sourceDirectoryBase, TRUE);
+
     // Defines what will become $this->source, essential data source from which
     // to migrate.
-    return new MigrateSourceList($list_files, $item_file);
+    $this->source = new \MigrateSourceList($this->listFiles, $this->ItemFile);
+    return $this;
+
+  }
+
+  /**
+   * Getter for the MigrateSourceList.
+   *
+   * @return object
+   *   The MigrateSourceList object.
+   */
+  public function getSource() {
+    return $this->source;
   }
 
 
