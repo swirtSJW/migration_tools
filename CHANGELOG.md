@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add Migration\Base class.
 * Add sourcer class to load html files from a local directory
   https://www.drupal.org/node/2709651
 * Add admin field for handling migration source location.

@@ -27,20 +27,6 @@ abstract class MTBaseMigration extends Migration {
 
   }
 
-  /**
-   * Add multiple field mappings at once.
-   *
-   * @param array $mappings
-   *   An array of field mappings in the form of source_key => dest_key.
-   *
-   * @param bool $warn_on_override
-   *   Set to FALSE to prevent warnings when there's an existing mapping.
-   */
-  public function addFieldMappings(array $mappings, $warn_on_override = TRUE) {
-    foreach ($mappings as $source => $destination) {
-      $this->addFieldMapping($source, $destination, $warn_on_override);
-    }
-  }
 
   /**
    * Sets the field mapping for an organic group parent using uuid.
@@ -60,72 +46,6 @@ abstract class MTBaseMigration extends Migration {
     return $og_eid;
   }
 
-  /**
-   * Arguements in keyed array passed among migration classes and parsers.
-   *
-   * @var array $arguments
-   */
-  protected $arguments = array();
-  /**
-   * Basic cetter for $arguments.
-   *
-   * @return array
-   *   Whatever has been stored in $this->arguments.
-   */
-  public function getArguments() {
-    return $this->arguments;
-  }
-  /**
-   * Merges an array into the existing arguments array.
-   *
-   * @param array $new_args
-   *   An array matching the format of the arguments array, to be merged.
-   *
-   * @return array
-   *   Array of the complete arguments array with the new material.
-   */
-  protected function mergeArguments($new_args = '') {
-    if (!empty($new_args) && is_array($new_args)) {
-      $this->arguments = array_merge($this->arguments, $new_args);
-    }
-  }
-
-  /**
-   * Gets a single argument from the arguments array.
-   *
-   * @param string $arg_key
-   *   The key of the item to return from the Arguments array.
-   *
-   * @return mixed
-   *   Whatever is stored in the $keys's value, or NULL if not in the arguments.
-   */
-  protected function getArgument($arg_key = '') {
-    if (!empty($arg_key)) {
-      $args = $this->getArguments();
-      if (array_key_exists($arg_key, $args)) {
-        return $args[$arg_key];
-      }
-    }
-    return NULL;
-  }
-
-
-  /**
-   * Unsets NULL properties on a single dimensional object.
-   *
-   * @param obj $row
-   *   The object to iterate over.
-   */
-  public function removeEmptyProperties(&$row) {
-    foreach ($row as $key => $property) {
-      if (is_null($property)) {
-        unset($row->$key);
-      }
-      elseif (is_string($property) && !$property) {
-        unset($row->$key);
-      }
-    }
-  }
 
   /**
    * Adds path and path auto field mapping to 'Do not migrate' issue group.
