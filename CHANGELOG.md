@@ -10,6 +10,7 @@ migration_tools 7.x-2.x  ** - ** - ****
 * Renaming and moving of classes to support autoloading and namespacing.
 * Stub for redirect detection.
 * Destination URI validation.
+* Add migration-tools-html-file-list drush utility command. 
 
 migration_tools 7.x-1.x  April 14, 2016
 -----------------------------------------------
