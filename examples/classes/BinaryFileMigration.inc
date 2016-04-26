@@ -68,7 +68,7 @@ abstract class BinaryFileMigration extends FileSourceMigration {
    */
   public function prepareRow($row) {
     parent::prepareRow($row);
-    $row->filepath = $this->baseDir . $row->fileid;
+    $row->filepath = $this->baseDir . $row->fileId;
 
     // Nest migrated files deeply in directories. This will help to avoid
     // the gluster file system limitation caused by having too many files in a
@@ -89,7 +89,7 @@ abstract class BinaryFileMigration extends FileSourceMigration {
   public function complete($file, $row) {
     if (module_exists('redirect')) {
       // Strip leading /.
-      $src = substr($row->fileid, 1);
+      $src = substr($row->fileId, 1);
       $redirect = redirect_load_by_source($src);
       if (!$redirect) {
         // Strip leading public://.

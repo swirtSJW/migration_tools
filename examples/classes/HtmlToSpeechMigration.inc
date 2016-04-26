@@ -92,14 +92,14 @@ abstract class HtmlToSpeechMigration extends HtmlToNodeMigration {
     $row->title = $this->sourceParser->getTitle();
     $row->field_speech_date = $this->sourceParser->getDate();
     if (empty($row->field_speech_date)) {
-      $this->MigrationMessage("The speech @file_id has no date.", array("@file_id" => $row->fileid), WATCHDOG_ERROR);
+      $this->MigrationMessage("The speech @file_id has no date.", array("@file_id" => $row->fileId), WATCHDOG_ERROR);
     }
 
     // Validate that the date is not in the future.
     $date = $row->field_speech_date;
     $time = strtotime($date);
     if ($time > time()) {
-      $this->MigrationMessage("The speeech date for @file_id was in the future.", array("@file_id" => $row->fileid), WATCHDOG_ALERT);
+      $this->MigrationMessage("The speeech date for @file_id was in the future.", array("@file_id" => $row->fileId), WATCHDOG_ALERT);
     }
 
     $this->sourceParser->getLocation();

@@ -127,7 +127,7 @@ abstract class HtmlToNodeMigration extends FileSourceMigration {
     $obtainers_info = $this->getArgument("obtainers_info");
     if (isset($obtainers_info) && is_array($obtainers_info)) {
       foreach ($obtainers_info as $oi) {
-        $source_parser->addObtainerInfo($oi);
+        $source_parser->addObtainerJob($oi);
       }
     }
     $this->sourceParser = $source_parser;

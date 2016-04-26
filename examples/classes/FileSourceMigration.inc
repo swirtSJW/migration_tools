@@ -86,7 +86,7 @@ abstract class FileSourceMigration extends MTBaseMigration {
   public function generateLegacyPath($row) {
     // $row->url_path can be used as an identifer, whereas $row->legacy_path
     // may have multiple values.
-    $row->url_path = substr($row->fileid, 1);
+    $row->url_path = substr($row->fileId, 1);
     $row->legacy_path = $row->url_path;
 
     $this->handleIndexRedirect($row);
@@ -98,12 +98,12 @@ abstract class FileSourceMigration extends MTBaseMigration {
   public function handleIndexRedirect($row) {
     // Assume not an index until proven otherwise.
     $row->isIndex = FALSE;
-    // Check to see if $row->fileid == 'index.html' or 'index.php'.
-    if (preg_match('/index\.(htm(l?)|php)/', $row->fileid, $matches)) {
+    // Check to see if $row->fileId == 'index.html' or 'index.php'.
+    if (preg_match('/index\.(htm(l?)|php)/', $row->fileId, $matches)) {
       $row->isIndex = TRUE;
       // Determine root path. E.g., oip/index.html would have the root path
       // /oip.
-      $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileid), '/'), '/');
+      $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileId), '/'), '/');
 
       // Check to see if this alias already exists. E.g., if we are migrating
       // oip/index.html, see if an alias exists for /oip.

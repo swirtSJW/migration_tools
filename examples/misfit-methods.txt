@@ -1,0 +1,64 @@
+
+/**
+ * @file
+ * This page contains methods that need to be refactored to find a sensible
+ * home.  However, no home exists yet or they need to be refactored.
+ *
+ * This is not active code.
+ */
+
+
+ /**
+   * Geocode a string.
+   *
+   * @param string $string
+   *   A location string.
+   *
+   * @return array
+   *   An array with location information extracted from the string.
+   */
+  public function geoCodeString($string) {
+
+    // Geocode the location and parse into structured data for migration.
+    // Geocoder module is not an explicit dependency because most migrations
+    // do not rely on it. It should be disabled after use.
+    if (!empty($string)) {
+      if ($string == 'Washington, D.C.') {
+        // The most common entry, so skip geocoding.
+        $address['locality'] = 'Washington';
+        $address['administrative_area_level_1'] = 'DC';
+        $address['country'] = "US";
+      }
+      elseif (module_exists('geocoder')) {
+        // Note that calling this too many times (as in very large migrations)
+        // may exceed the API request limit for geocoder's source data.
+        $point = geocoder('google', $string);
+        module_load_include('inc', 'migration_tools', 'includes/migration_tools');
+        try {
+          $address = mt_migrate_convert_geocoded_point_to_address($point);
+        }
+        catch (Exception $e) {
+          watchdog("migration_tools", "The geocoder failed: {$e->getMessage()}");
+        }
+
+        if (!$address) {
+          $address['locality'] = '';
+          $address['administrative_area_level_1'] = '';
+          $address['country'] = '';
+          $message = "@fileid Could not look up location because geocoder returned nothing. The API request limit may have been exceeded.";
+          $variables = array('@fileid' => $this->fileId);
+          \MigrationTools\Message::make($address, $variables, WATCHDOG_INFO, 2);
+        }
+      }
+      else {
+        $message = "@fileid Could not look up location because geocoder module is not enabled";
+        $variables = array('@fileid' => $this->fileId);
+        \MigrationTools\Message::make($address, $variables, WATCHDOG_INFO, 2);
+      }
+
+      return $address;
+    }
+  }
+
+
+

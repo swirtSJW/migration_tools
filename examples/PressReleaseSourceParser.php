@@ -24,7 +24,7 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
    */
   public function getDate() {
     $date_string = $this->getProperty('date');
-    MigrationMessage::makeMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+    \MigrationTools\Message::make("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
     if (empty($date_string)) {
       $date = '';
@@ -33,7 +33,7 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
       $date = date('n/d/Y', strtotime($date_string));
       if (!empty($date)) {
         // Output success to show progress to aid debugging.
-        MigrationMessage::makeMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+        \MigrationTools\Message::make("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
       }
     }
 
@@ -99,9 +99,9 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
     parent::setDefaultObtainersInfo();
 
     $title = new ObtainerInfo("title", 'ObtainTitlePressRelease');
-    $title->addMethod('pluckAnySelectorUntilValid', array('h1'));
-    $title->addMethod('pluckSelector', array("#contentstart > div > h2", 2));
-    $title->addMethod('pluckSelector', array("h2", 1));
+    $title->addSearch('pluckAnySelectorUntilValid', array('h1'));
+    $title->addSearch('pluckSelector', array("#contentstart > div > h2", 2));
+    $title->addSearch('pluckSelector', array("h2", 1));
 
     $this->addObtainerInfo($title);
 
@@ -111,14 +111,14 @@ abstract class PressReleaseSourceParser extends MTNodeSourceParser {
     $this->addObtainerInfo($subtitle);
 
     $date = new ObtainerInfo("date");
-    $date->addMethod('pluckTableRow1Col2');
-    $date->addMethod('pluckTableRow1Col1');
-    $date->addMethod('pluckSelector', array(".BottomLeftContent", 1));
-    $date->addMethod('pluckProbableDate');
+    $date->addSearch('pluckTableRow1Col2');
+    $date->addSearch('pluckTableRow1Col1');
+    $date->addSearch('pluckSelector', array(".BottomLeftContent", 1));
+    $date->addSearch('pluckProbableDate');
     $this->addObtainerInfo($date);
 
     $pr_number = new ObtainerInfo('prNumber', "ObtainID");
-    $pr_number->addMethod("pluckTable3y1x");
+    $pr_number->addSearch("pluckTable3y1x");
     $this->addObtainerInfo($pr_number);
   }
 }

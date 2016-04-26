@@ -54,7 +54,7 @@ class {{ info.class_base_name }}PageMigration extends HtmlToPageMigration {
    */
   public function prepareRow($row) {
     $skip_these = array();
-    if (migration_tools_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE) {
+    if (migration_tools_skip_file($row->fileId, $skip_these) || parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
   }

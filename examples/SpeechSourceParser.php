@@ -55,7 +55,7 @@ abstract class SpeechSourceParser extends MTNodeSourceParser {
    */
   public function getDate() {
     $date_string = $this->getProperty('date');
-    MigrationMessage::makeMessage("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
+    \MigrationTools\Message::make("Raw Date: @date_string", array('@date_string' => $date_string), WATCHDOG_DEBUG, 2);
 
     if (empty($date_string)) {
       $date = '';
@@ -64,7 +64,7 @@ abstract class SpeechSourceParser extends MTNodeSourceParser {
       $date = date('n/d/Y', strtotime($date_string));
       if (!empty($date)) {
         // Output success to show progress to aid debugging.
-        MigrationMessage::makeMessage("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
+        \MigrationTools\Message::make("Formatted Date: @date", array('@date' => $date), WATCHDOG_DEBUG, 2);
       }
     }
 
@@ -102,10 +102,10 @@ abstract class SpeechSourceParser extends MTNodeSourceParser {
     catch (Exception $e) {
       $message = '@fileid failed geocoding: @error';
       $vars = array(
-        '@fileid' => $this->fileid,
+        '@fileid' => $this->fileId,
         '@error' => $e->getMessage(),
       );
-      MigrationMessage::makeMessage($message, $vars, WATCHDOG_WARNING, 2);
+      \MigrationTools\Message::make($message, $vars, WATCHDOG_WARNING, 2);
     }
   }
 
@@ -164,11 +164,11 @@ abstract class SpeechSourceParser extends MTNodeSourceParser {
     parent::setDefaultObtainersInfo();
 
     $title = new ObtainerInfo("title");
-    $title->addMethod('pluckAnySelectorUntilValid', array('h1', 10, 'html'));
+    $title->addSearch('pluckAnySelectorUntilValid', array('h1', 10, 'html'));
     $this->addObtainerInfo($title);
 
     $date = new ObtainerInfo("date");
-    $date->addMethod('pluckProbableDate');
+    $date->addSearch('pluckProbableDate');
     $this->addObtainerInfo($date);
 
     // Not all speech migrations have locations, register these without methods
