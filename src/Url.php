@@ -22,7 +22,7 @@ class Url {
    */
   public static function collectD6RedirectsToThisNode($row, $db_reference_name, $source_connection) {
     // Gather existing redirects from legacy.
-    $row->redirects = Database::getConnection($db_reference_name, $source_connection)
+    $row->redirects = \Database::getConnection($db_reference_name, $source_connection)
       ->select('path_redirect', 'r')
       ->fields('r', array('source'))
       ->condition('redirect', "node/$row->nid")
@@ -97,7 +97,7 @@ class Url {
     // may have multiple values.
 
     // @TODO Need to alter connection to old path but it won't come from fileid.
-    $row->url_path = substr($row->fileid, 1);
+    $row->url_path = substr($row->fileId, 1);
     $row->legacy_path = $row->url_path;
   }
 
@@ -553,8 +553,11 @@ class Url {
   }
 
   /**
-   * @param $redirect_url
+   * Checks if a URL actually resolves to a 'page' on the internet.
+   *
+   * @param string $redirect_url
    *   A full destination URI.
+   * 
    * @return bool
    *   TRUE - http response is valid, either 2xx or 3xx.
    *   FALSE - https repose is invalid, either 1xx, 4xx, or 5xx
@@ -565,15 +568,16 @@ class Url {
     // Get the HTML or whatever is linked in $redirect_url.
     $response = curl_exec($handle);
     // Get status.
-    $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+    $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
     // Check that http code exists.
-    if ($httpCode) {
+    if ($http_code) {
       // Determines first digit of http code.
-      $first_digit = substr($httpCode, 0, 1);
-      // Filters for 2 or 3 as first digit
+      $first_digit = substr($http_code, 0, 1);
+      // Filters for 2 or 3 as first digit.
       if ($first_digit == 2 || $first_digit == 3) {
         return TRUE;
-      } else {
+      }
+      else {
         return FALSE;
       }
     }
