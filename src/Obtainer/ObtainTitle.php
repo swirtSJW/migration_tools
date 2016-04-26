@@ -31,7 +31,7 @@ class ObtainTitle extends ObtainHtml {
     // If something got trimmed off, message it.
     if (!empty($split['remaining'])) {
       $message = "The title was shortened and lost: @remainder";
-      MigrationMessage::makeMessage($message, array('@remainder' => $split['remaining']), WATCHDOG_ERROR, 2);
+      \MigrationTools\Message::make($message, array('@remainder' => $split['remaining']), WATCHDOG_ERROR, 2);
     }
 
     return $split['truncated'];
@@ -111,12 +111,11 @@ class ObtainTitle extends ObtainHtml {
     $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = strongcleanup::decodehtmlentitynumeric($text);
+    $text = \MigrationTools\String::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = StringCleanUp::convertNonASCIItoASCII($text);
+    $text = \MigrationTools\String::convertNonASCIItoASCII($text);
     // Remove undesirable chars and strings.
     $remove = array(
       '&raquo;',
@@ -125,7 +124,7 @@ class ObtainTitle extends ObtainHtml {
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = StringCleanUp::superTrim($text);
+    $text = \MigrationTools\String::superTrim($text);
     // Remove multiple spaces.
     $text = preg_replace('!\s+!', ' ', $text);
     // Convert to ucwords If the entire thing is caps. Otherwise leave it alone
@@ -137,7 +136,7 @@ class ObtainTitle extends ObtainHtml {
       // Nearly the entire thing is caps.
       $text = strtolower($text);
     }
-    $text = StringCleanUp::makeWordsFirstCapital($text);
+    $text = \MigrationTools\String::makeWordsFirstCapital($text);
 
     return $text;
   }

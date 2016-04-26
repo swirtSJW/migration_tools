@@ -69,7 +69,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            MigrationMessage::makeMessage("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
+            \MigrationTools\Message::make("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
 
             return $text;
           }
@@ -106,17 +106,17 @@ class ObtainDate extends ObtainHtml {
 
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = StringCleanUp::decodehtmlentitynumeric($text);
+    $text = \MigrationTools\String::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = StringCleanUp::convertNonASCIItoASCII($text);
+    $text = \MigrationTools\String::convertNonASCIItoASCII($text);
 
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($text, 'UTF-8');
 
     if (!$is_utf8) {
-      $text = StringCleanUp::fixEncoding($text);
+      $text = \MigrationTools\String::fixEncoding($text);
     }
 
     // Remove some strings that often accompany dates.
@@ -176,7 +176,7 @@ class ObtainDate extends ObtainHtml {
     }
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = StringCleanUp::superTrim($text);
+    $text = \MigrationTools\String::superTrim($text);
 
     return $text;
   }

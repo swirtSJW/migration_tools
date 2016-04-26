@@ -8,63 +8,47 @@
 namespace MigrationTools\SourceParser;
 
 /**
- * Class Node Source Parser.
+ * Class SourceParser\Node
  *
  * @package migration_tools
  */
-class Node extends Base {
-  protected $body;
-  protected $title;
-  // @codingStandardsIgnoreStart
-  protected $content_type;
-  // @codingStandardsIgnoreEnd
+class Node extends HtmlBase {
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($file_id, $html, &$row) {
+    parent::__construct($file_id, $html, $row);
+
+  }
 
   /**
-   * Getter.
+   * Validate basic requirements and alert if needed.
    */
-  public function getTitle() {
-    $title = $this->getProperty('title');
-    if (empty($title)) {
-      MigrationMessage::makeMessage("The title for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+  protected function validateParse() {
+    // An empty title should throw an error.
+    if (empty($this->row->title)) {
+      \MigrationTools\Message::make("The title for @fileid is empty.", array("@fileid" => $this->fileId), \WATCHDOG_ALERT);
     }
-    return $title;
-  }
 
-  /**
-   * Getter.
-   */
-  public function getBody() {
-    $this->cleanHtml();
-    $body = $this->getProperty('body');
-    if (empty($body)) {
-      MigrationMessage::makeMessage("The body for @fileid is empty.", array("@fileid" => $this->fileId), WATCHDOG_ALERT);
+    // A body is not required, but should be cause for alarm.
+    if (empty($this->row->body)) {
+      \MigrationTools\Message::make("The body for @fileid is empty.", array("@fileid" => $this->fileId), \WATCHDOG_ALERT);
     }
-    return $body;
   }
 
-  /**
-   * Getter.
-   */
-  public function getContentType() {
-    return $this->getProperty('content_type');
-  }
 
   /**
    * {@inheritdoc}
    */
-  protected function setDefaultObtainersInfo() {
-    $type = new ObtainerInfo("content_type");
-    $this->addObtainerInfo($type);
+  protected function setDefaultObtainerJobs() {
+    // Basic nodes will only have a title and a body.  Other SourceParsers can
+    // extend this and additional Searches can be added in prepareRow.
+    $title = new \MigrationTools\Obtainer\Job('title', 'ObtainTitle');
+    $title->addSearch('pluckSelector', array("h1", 1));
+    $title->addSearch('pluckSelector', array("title", 1));
+    $this->addObtainerJob($title);
 
-    $title = new ObtainerInfo("title");
-    $title->addMethod('pluckSelector', array("h1", 1));
-    $title->addMethod('pluckSelector', array("title", 1));
-    $this->addObtainerInfo($title);
-
-    $body = new ObtainerInfo("body");
-    $body->addMethod('findTopBodyHtml');
-    $body->addMethod('findClassContentSub');
-    $this->addObtainerInfo($body);
+    $body = new \MigrationTools\Obtainer\Job('body', 'ObtainBody', TRUE);
+    $this->addObtainerJob($body);
   }
-
 }

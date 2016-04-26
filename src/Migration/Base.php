@@ -15,12 +15,33 @@ namespace MigrationTools\Migration;
 abstract class Base extends \Migration {
 
   /**
+   * @var string $sourceParserClass
+   *   The class name of the source parser. Used to instantiate $sourceParser.
+   */
+  protected $sourceParserClass;
+
+  /**
+   * @var SourceParser $sourceParser
+   *   The source parser object for a given row.
+   */
+  protected $sourceParser;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
     $this->mergeArguments($arguments);
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
   }
 
   /**
@@ -105,6 +126,21 @@ abstract class Base extends \Migration {
         unset($row->$key);
       }
     }
+  }
+
+  /**
+   * Create a new SourceParser to handle HTML content.
+   */
+  protected function initializeSourceParser($row) {
+    $source_parser = new $this->sourceParserClass($row->url_path, $row->filedata);
+
+    $obtainers_info = $this->getArgument("obtainers_info");
+    if (isset($obtainers_info) && is_array($obtainers_info)) {
+      foreach ($obtainers_info as $oi) {
+        $source_parser->addObtainerJob($oi);
+      }
+    }
+    $this->sourceParser = $source_parser;
   }
 
 }

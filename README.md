@@ -22,19 +22,21 @@ the tools can be utilized.
 
   * CheckFor: Common checks that can be implemented in prepareRow to evaluate
     and report on the results.
-  * HtmlCleanUp: Methods for sanitizing or cleaning up html pages or body
-    content.
-  * MigrationMessage: A messaging class to handle outputting useful information
+  * Html: Methods for sanitizing or cleaning up html pages or body
+    content using QueryPath.
+  * Message: A messaging class to handle outputting useful information
     to the terminal when running migrations or logging in Watchdog.
   * NodeTools: Methods for processing nodes.
-  * StringCleanUp: Methods for cleaning up aspects of string content.
+  * String: Methods for cleaning up aspects of string content.
   * TaxonomyTools: Methods for processing vocabularies and terms.
-  * UrlTools: Methods for handling URLS and processing redirects.
-  * Source Parsers:  A variety of parsers that can be used directly, or as an
+  * Url: Methods for handling URLS and processing redirects.
+  * SourceParsers:  A variety of parsers that can be used directly, or as an
     and example of a parser.
   * Obtainers: A collection of methods for processing html files to extract
     titles, dates, id numbers and other items from html pages with inconsistent
-    structure.
+    structure.  Use of Obtainers requires QueryPath library either through
+    the QueryPath module, or installed separately as a library from
+    https://github.com/technosophos/querypath
   * Menu Generators: Methods and drush commands for either building a menu by
     crawling html structure on a legacy site, or by processing a CSV list of
     menu headings and old urls from the legacy site.
@@ -226,7 +228,7 @@ They can be skipped in prepareRow  within the migration class like this:
       '/subdirectory/ski/ski_index.html',
     );
 
-    if (mt_migration_skip_file($row->fileid, $skip_these) || (parent::prepareRow($row) === FALSE)) {
+    if (mt_migration_skip_file($row->fileId, $skip_these) || (parent::prepareRow($row) === FALSE)) {
       return FALSE;
     }
   }
@@ -249,7 +251,7 @@ Copy and paste the report from your terminal into a comment on the ticket.
 If this is an organization then you need to open .htaccess and add the abbreviation of the group abbreviation to the re-write rule on [this line].
 
 ##  Migrate Content Type: Page
-The first time you run a migration you will want to migrate only a few pages to see that the Obtainer->finders are looking in the right spot to get the title and the body.  To run just a few you can limit the migration like this:
+The first time you run a migration you will want to migrate only a few pages to see that the Obtainers are looking in the right spot to get the title and the body.  To run just a few you can limit the migration like this:
 
      drush migrate-import UsaoWdtnPage --limit='2 items'
 
@@ -263,9 +265,9 @@ You can tune the stack of finder and plucker methods in the migration class or i
 
 Overriding them in the migration class looks like this:
 
-    $title = new ObtainerInfo("title", 'ObtainTitle');
-    $title->addMethod('pluckSelector', array("h1", 2));
-    $title->addMethod('findH1Any');
+    $title = new ObtainerJob("title", 'ObtainTitle');
+    $title->addSearch('pluckSelector', array("h1", 2));
+    $title->addSearch('findH1Any');
     $arguments['obtainers_info'][] = $title;
 
 Overriding them in the source parser looks like this:
@@ -356,7 +358,7 @@ Here are the basic steps:
 
 1.  Add an 'isType' check within prepareRow that will cause it to skip the document if it is not a 'press_release'. Using isType will cause it to give proper drush feedback.
 
-        if (mt_migration_skip_file($row->fileid, $skip_these) || parent::prepareRow($row) === FALSE || (!self::isType('press_release', $row) ) {
+        if (mt_migration_skip_file($row->fileId, $skip_these) || parent::prepareRow($row) === FALSE || (!self::isType('press_release', $row) ) {
           return FALSE;
          }
 
@@ -376,7 +378,7 @@ Example:
        // Skip any press releases prior to 2013.
        if (!mt_migration_date_after($row->field_pr_date, '12/31/2012', FALSE)) {
          $message = '@fileid ------> Dated prior to 2013. Skipped: intentionally.';
-         MigrationMessage::makeMessage($message, array('@fileid' => $row->fileid), WATCHDOG_WARNING);
+         \MigrationTools\Message::make($message, array('@fileid' => $row->fileId), WATCHDOG_WARNING);
          return FALSE;
        }
 

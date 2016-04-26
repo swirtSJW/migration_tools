@@ -70,6 +70,7 @@ class ObtainHtml extends Obtainer {
         }
       }
     }
+
     return $text;
   }
 

@@ -69,7 +69,6 @@ class HtmlFile {
     // Defines what will become $this->source, essential data source from which
     // to migrate.
     $this->source = new \MigrateSourceList($this->listFiles, $this->ItemFile);
-    return $this;
 
   }
 

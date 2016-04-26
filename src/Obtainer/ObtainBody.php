@@ -24,8 +24,7 @@ class ObtainBody extends ObtainHtml {
    *   The string that was found
    */
   protected function findTopBodyHtml() {
-    $element = $this->queryPath->top('body');
-
+    $element = $this->queryPath->top()->find('body');
     return $element->innerHtml();
   }
 }

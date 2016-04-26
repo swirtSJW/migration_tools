@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Connect Obtainer classes and add Obtainer\Job
+* Add SourceParser classes using Obtainer
 * Add Migration\Base class.
 * Add sourcer class to load html files from a local directory
   https://www.drupal.org/node/2709651

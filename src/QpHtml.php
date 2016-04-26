@@ -1,15 +1,18 @@
 <?php
 /**
  * @file
- * Helper function to clean up HTML.
+ * Helper function to clean up HTML using QueryPath.
  */
 
 namespace MigrationTools;
 
-class Html {
+class QpHtml {
 
   /**
-   * Removes legacy elements from HTML that are no longer needed.
+   * Removes legacy elements from HTML that are no longer needed. DEPRICATED.
+   *
+   * @TODO This method is way too specific to a given site.  I am leaving it
+   * here to remind me of some generic methods I need to make.
    *
    * @param QueryPath $query_path
    *   The QueryPath object with HTML markup.
@@ -25,7 +28,7 @@ class Html {
     }
 
     // Remove elements and their children.
-    Html::removeElements($query_path, array(
+    QpHtml::removeElements($query_path, array(
       'a[name="sitemap"]',
       'a[name="maincontent"]',
       'img[src="/gif/sealmt.gif"]',
@@ -47,13 +50,13 @@ class Html {
     ));
 
     // Remove external icon images.
-    $matches = Html::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
+    $matches = QpHtml::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
     foreach ($matches as $key => $match) {
       $match->parent()->parent()->remove();
     }
 
     // Remove extraneous html wrapping elements, leaving children intact.
-    Html::removeWrapperElements($query_path, array(
+    QpHtml::removeWrapperElements($query_path, array(
       'body > blockquote',
       '.bdywrpr',
       '.gridwrpr',
@@ -67,28 +70,24 @@ class Html {
     $query_path->find('.narrow-bar')->removeAttr('style');
 
     // Remove matching elements containing only &nbsp; or nothing.
-    Html::removeEmptyElements($query_path, array(
+    QpHtml::removeEmptyElements($query_path, array(
       'div',
       'span',
       'p',
     ));
 
     // Remove black title bar with eagle image (if present).
-    Html::removeTitleBarImage($query_path);
-
-    // FIX.
-    // Empty anchors without name attribute will be stripped by ckEditor.
-    Html::fixNamedAnchors($query_path);
+    QpHtml::removeTitleBarImage($query_path);
 
     // Some pages have images as subtitles. Turn those into html.
     $header_element = !empty($arguments['header_element']) ? $arguments['header_element'] : 'h2';
-    Html::changeSubTitleImagesForHtml($query_path, $header_element);
+    QpHtml::changeSubTitleImagesForHtml($query_path, $header_element);
 
     // Removing scripts used when linking to outside sources.
-    Html::removeExtLinkJS($query_path);
+    QpHtml::removeExtLinkJS($query_path);
 
     // Fix broken links to PDF anchors.
-    Html::fixPdfLinkAnchors($query_path);
+    QpHtml::fixPdfLinkAnchors($query_path);
   }
 
   /**
@@ -121,7 +120,7 @@ class Html {
     // Put the shell on the html to extract with more certainty later.
     $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
     $query_path = htmlqp($html, NULL, array());
-    Html::removeElements($query_path, $selectors);
+    QpHtml::removeElements($query_path, $selectors);
 
     // Grab the html from the shell.
     $processed_html = $query_path->top('.throw-away-parser-shell')->innerHTML();
@@ -221,7 +220,7 @@ class Html {
         $element->wrapInner($new_wrapper);
       }
     }
-    Html::removeWrapperElements($query_path, $selectors);
+    QpHtml::removeWrapperElements($query_path, $selectors);
   }
 
   /**
@@ -259,7 +258,7 @@ class Html {
    * @param QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
-  protected static function removeTitleBarImage($query_path) {
+  public static function removeTitleBarImage($query_path) {
     // Find divs that are immediately followed by img tags.
     $elements = $query_path->find('div > img')->parent();
     foreach ($elements as $element) {
@@ -281,7 +280,7 @@ class Html {
    * @param QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
-  protected static function removeExtLinkJS($query_path) {
+  public static function removeExtLinkJS($query_path) {
     $elements = $query_path->find('a');
 
     // This should replace tags matching
@@ -315,7 +314,7 @@ class Html {
    * @param QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
-  protected static function fixNamedAnchors($query_path) {
+  public static function fixNamedAnchors($query_path) {
     $elements = $query_path->find('a');
     foreach ($elements as $element) {
       $contents = trim($element->innerXHTML());
@@ -389,7 +388,7 @@ class Html {
    *   (optional). The HTML header element with which to replace the <img>.
    *   Defaults to h2.
    */
-  protected static function changeSubTitleImagesForHtml($query_path, $header_element = 'h2') {
+  public static function changeSubTitleImagesForHtml($query_path, $header_element = 'h2') {
     // Find all headline divs with an image inside.
     $elements = $query_path->find('div.headline > img')->parent();
 
@@ -463,7 +462,7 @@ class Html {
     $counter = 0;
     $matches = array();
     do {
-      $match = Html::match($qp, $selector, $needle, $function, $parameter, $counter);
+      $match = QpHtml::match($qp, $selector, $needle, $function, $parameter, $counter);
       if ($match) {
         $matches[] = $match;
         $counter++;
@@ -476,7 +475,7 @@ class Html {
    * Like match, but removes all matching elements.
    */
   public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
-    $matches = Html::matchAll($qp, $selector, $needle, $function, $parameter);
+    $matches = QpHtml::matchAll($qp, $selector, $needle, $function, $parameter);
     foreach ($matches as $match) {
       $match->remove();
     }
@@ -498,7 +497,7 @@ class Html {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchAttribute($qp, $selector, $needle, $attribute) {
-    return Html::match($qp, $selector, $needle, "attr", $attribute);
+    return QpHtml::match($qp, $selector, $needle, "attr", $attribute);
   }
 
   /**
@@ -515,7 +514,7 @@ class Html {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchText($qp, $selector, $needle) {
-    return Html::match($qp, $selector, $needle, "text");
+    return QpHtml::match($qp, $selector, $needle, "text");
   }
 
   /**
@@ -529,7 +528,7 @@ class Html {
    *   The text string for which to search.
    */
   public static function matchTextRemoveElement($qp, $selector, $needle) {
-    $element = Html::match($qp, $selector, $needle, "text");
+    $element = QpHtml::match($qp, $selector, $needle, "text");
     if ($element) {
       $element->remove();
     }
@@ -549,7 +548,7 @@ class Html {
    *   The matched QueryPath element or FALSE.
    */
   public static function matchHtml($qp, $selector, $needle) {
-    return Html::match($qp, $selector, $needle, "html");
+    return QpHtml::match($qp, $selector, $needle, "html");
   }
 
   /**
@@ -563,7 +562,7 @@ class Html {
     foreach ($imgs as $img) {
       $longdesc_uri = $img->attr('longdesc');
       // Longdesc can not be a uri to an image file.  Should be to txt or html.
-      if (Html::isImageUri($longdesc_uri)) {
+      if (QpHtml::isImageUri($longdesc_uri)) {
         $img->removeAttr('longdesc');
       }
     }

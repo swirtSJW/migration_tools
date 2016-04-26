@@ -25,10 +25,10 @@ class ObtainLocation extends ObtainHtml {
 
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = strongcleanup::decodehtmlentitynumeric($text);
+    $text = \MigrationTools\String::decodehtmlentitynumeric($text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = StringCleanUp::superTrim($text);
+    $text = \MigrationTools\String::superTrim($text);
     // Remove multiple spaces.
     $text = preg_replace('!\s+!', ' ', $text);
 

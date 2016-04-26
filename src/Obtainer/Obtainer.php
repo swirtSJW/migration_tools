@@ -60,28 +60,9 @@ abstract class Obtainer {
    */
   public function setMethodStack($method_stack) {
     foreach ($method_stack as $key => $method) {
-      // For legacy support of old format method array.
-      if (!is_numeric($key)) {
-        // The $key is actually the methodname and the $method is the arguments.
-        $method = array(
-          'method_name' => $key,
-          'arguments' => $method,
-        );
-        $method_stack[] = $method;
-        unset($method_stack[$key]);
-      }
-      elseif (!is_array($method)) {
-        // The method is the method_name (really old version).
-        $method = array(
-          'method_name' => $method,
-          'arguments' => array(),
-        );
-        $method_stack[$key] = $method;
-      }
-
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
-        MigrationMessage::makeMessage('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        \MigrationTools\Message::make('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -146,7 +127,7 @@ abstract class Obtainer {
         // stack efficiently. Replace this with an iterator when it is ready.
         $method['method_name'] = $this->getCurrentFindMethod();
 
-        MigrationMessage::makeMessage('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        \MigrationTools\Message::make('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -155,7 +136,7 @@ abstract class Obtainer {
       }
     }
 
-    MigrationMessage::makeMessage('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
+    \MigrationTools\Message::make('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
   }
 
   /**
@@ -170,17 +151,17 @@ abstract class Obtainer {
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = strongcleanup::decodehtmlentitynumeric($string);
+    $string = \MigrationTools\String::decodehtmlentitynumeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
     if (!$is_utf8) {
-      $string = StringCleanUp::fixEncoding($string);
+      $string = \MigrationTools\String::fixEncoding($string);
     }
 
-    $string = StringCleanUp::stripCmsLegacyMarkup($string);
+    $string = \MigrationTools\String::stripCmsLegacyMarkup($string);
     // Remove white space-like things from the ends and decodes html entities.
-    $string = StringCleanUp::superTrim($string);
+    $string = \MigrationTools\String::superTrim($string);
 
     return $string;
   }
