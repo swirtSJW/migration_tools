@@ -37,30 +37,27 @@ class Message {
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
    */
-  public static function make($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+  public static function make($message, $variables = array(), $severity = \WATCHDOG_NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
-    if (isset($trace[1])) {
-      // $trace[1] is the thing that instantiated this message.
-      if (!empty($trace[1]['class'])) {
-        $type = $trace[1]['class'];
-      }
-      elseif (!empty($trace[1]['function'])) {
-        $type = $trace[1]['function'];
-      }
-      else {
-        $type = 'unknown';
-      }
-    }
+    $type = 'unknown';
+    self::determineType($type, $trace);
+
     if ($severity !== FALSE) {
       watchdog($type, $message, $variables, $severity);
     }
     // Check to see if this is run by drush and output is desired.
     if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
+      $type = (!empty($type)) ? "{$type}: " : '';
       $formatted_message = format_string($message, $variables);
-      drush_print($type . ': ' . $formatted_message, $indent);
-      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR) && $severity !== FALSE) {
-        throw new MigrateException("$type: Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
+      // Drush does not print all Watchdog messages to terminal only
+      // WATCHDOG_ERROR and worse.
+      if ($severity > \WATCHDOG_ERROR || $severity === FALSE) {
+        // Watchdog didn't output it, so output it directly.
+        drush_print($type . $formatted_message, $indent);
+      }
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= \WATCHDOG_ERROR) && $severity !== FALSE) {
+        throw new \MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
   }
@@ -70,6 +67,49 @@ class Message {
    */
   public static function makeSeparator() {
     self::make("------------------------------------------------------", array(), FALSE, 0);
+  }
+
+  /**
+   * Determine the type of thing that created the message.
+   *
+   * @param string $type
+   *   The name of the thing that made the message. (by reference)
+   * @param array $trace
+   *   The stack trace as returned by debug_backtrace.
+   */
+  private static function determineType(&$type, $trace) {
+    if (isset($trace[1])) {
+      // $trace[1] is the thing that instantiated this message.
+      if (!empty($trace[1]['class'])) {
+        $type = $trace[1]['class'];
+      }
+      elseif (!empty($trace[1]['function'])) {
+        $type = $trace[1]['function'];
+      }
+    }
+
+    self::reduceTypeNoise($type);
+  }
+
+  /**
+   * Reduce misleading type, and the noise of full namespace output.
+   *
+   * @param string $type
+   *   The type that needs to be de-noised or reduced in length.
+   */
+  private static function reduceTypeNoise(&$type) {
+    // A list of types to blank out, to reduce deceptive noise.
+    $noise_filter = array(
+      'MigrationTools\Message',
+    );
+    $type = ((in_array($type, $noise_filter))) ? '' : $type;
+
+    // A list of types to increase readability and reduce noise.
+    $noise_shorten = array(
+      'MigrationTools\Obtainer' => 'MT',
+      'MigrationTools' => 'MT',
+    );
+    $type = str_replace(array_keys($noise_shorten), array_values($noise_shorten), $type);
   }
 
   /**
