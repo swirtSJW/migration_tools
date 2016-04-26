@@ -24,17 +24,17 @@ class ObtainID extends ObtainHtml {
   public static function cleanString($text) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = \MigrationTools\String::decodehtmlentitynumeric($text);
+    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\String::convertNonASCIItoASCII($text);
+    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
 
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($text, 'UTF-8');
 
     if (!$is_utf8) {
-      $text = \MigrationTools\String::fixEncoding($text);
+      $text = \MigrationTools\StringTools::fixEncoding($text);
     }
 
     // Remove some strings that often accompany id numbers.
@@ -53,7 +53,7 @@ class ObtainID extends ObtainHtml {
     $text = preg_replace('/\s{2,}/u', ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\String::superTrim($text);
+    $text = \MigrationTools\StringTools::superTrim($text);
 
     return $text;
   }

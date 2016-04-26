@@ -27,10 +27,10 @@ class ObtainCity extends ObtainHtml {
 
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\String::decodehtmlentitynumeric($string);
+    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\String::superTrim($string);
+    $string = \MigrationTools\StringTools::superTrim($string);
     // Remove multiple spaces.
     $string = preg_replace('!\s+!', ' ', $string);
 

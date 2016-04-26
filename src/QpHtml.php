@@ -236,7 +236,7 @@ class QpHtml {
     foreach ($selectors as $selector) {
       $elements = $query_path->find($selector);
       foreach ($elements as $element) {
-        $contents = String::superTrim($element->innerXHTML());
+        $contents = StringTools::superTrim($element->innerXHTML());
         $empty_values = array(
           '&nbsp;',
           '',

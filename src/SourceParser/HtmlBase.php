@@ -50,10 +50,10 @@ abstract class HtmlBase {
     $this->fileId = $file_id;
     $this->row = $row;
 
-    $html = \MigrationTools\String::fixEncoding($html);
-    $html = \MigrationTools\String::stripWindowsCRChars($html);
-    $html = \MigrationTools\String::fixWindowSpecificChars($html);
-    $html = \MigrationTools\String::removePhp($html);
+    $html = \MigrationTools\StringTools::fixEncoding($html);
+    $html = \MigrationTools\StringTools::stripWindowsCRChars($html);
+    $html = \MigrationTools\StringTools::fixWindowSpecificChars($html);
+    $html = \MigrationTools\StringTools::removePhp($html);
     $this->html = $html;
     $this->initQueryPath();
 

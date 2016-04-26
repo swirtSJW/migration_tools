@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * Helper function to clean up strings.
+ * Helper function to clean up strings wihtout using QueryPath.
  */
 
 namespace MigrationTools;
 
-class String {
+class StringTools {
   /**
    * Deal with encodings.
    *
@@ -19,7 +19,7 @@ class String {
   public static function fixEncoding($string = '') {
 
     // Fix and replace bizarre characters pre-encoding.
-    $string = String::convertFatalCharstoASCII($string);
+    $string = StringTools::convertFatalCharstoASCII($string);
 
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
@@ -55,7 +55,7 @@ class String {
     }
 
     // Fix and replace bizarre characters to get those caused by encoding.
-    $string = String::convertFatalCharstoASCII($string);
+    $string = StringTools::convertFatalCharstoASCII($string);
 
     // @TODO Here would be the spot to run a diff comparing before and after
     // encoding and then watchdog the offending character that results in �.
@@ -101,7 +101,7 @@ class String {
    */
   public static function convertFatalCharstoASCII($string = '') {
 
-    foreach (String::fatalCharsMap() as $weird => $normal) {
+    foreach (StringTools::fatalCharsMap() as $weird => $normal) {
       $string = str_replace($weird, $normal, $string);
     }
 
@@ -188,7 +188,7 @@ class String {
    */
   public static function convertNonASCIItoASCII($string = '') {
 
-    foreach (String::funkyCharsMap() as $weird => $normal) {
+    foreach (StringTools::funkyCharsMap() as $weird => $normal) {
       $string = str_replace($weird, $normal, $string);
     }
 
@@ -206,7 +206,7 @@ class String {
    */
   public static function stripFunkyChars($string = '') {
 
-    foreach (String::funkyCharsMap() as $weird => $normal) {
+    foreach (StringTools::funkyCharsMap() as $weird => $normal) {
       $string = str_replace($weird, '', $string);
     }
 
@@ -390,8 +390,8 @@ class String {
    */
   public static function decodeHtmlEntityNumeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
     $string = html_entity_decode($string, $quote_style, $charset);
-    $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', 'migration_tools_hex_chr_utf8_callback', $string);
-    $string = preg_replace_callback('/&#([0-9]+)/', 'migration_tools_chr_utf8_callback', $string);
+    $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', '\MigrationTools\StringTools::migration_tools_hex_chr_utf8_callback', $string);
+    $string = preg_replace_callback('/&#([0-9]+)/', '\MigrationTools\StringTools::migration_tools_chr_utf8_callback', $string);
     return $string;
   }
 
@@ -413,15 +413,15 @@ class String {
   /**
    * Callback helper.
    */
-  public static function migration_tools_hex_chr_utf8_callback($matches = array()) {
-    return migration_tools_chr_utf8(hexdec($matches[1]));
+  public static function convertHexChrToUtf8Callback($matches = array()) {
+    return self::convertChrToUtf8(hexdec($matches[1]));
   }
 
   /**
    * Callback helper.
    */
-  public static function migration_tools_chr_utf8_callback($matches = array()) {
-    return migration_tools_chr_utf8($matches[1]);
+  public static function convertChrToUtf8Callback($matches = array()) {
+    return self::convertChrToUtf8($matches[1]);
   }
 
   /**
@@ -433,7 +433,7 @@ class String {
    * @return string
    *   The char represented by the number.
    */
-  public static function migration_tools_chr_utf8($num) {
+  public static function convertChrToUtf8($num) {
     if ($num < 128) {
       return chr($num);
     }

@@ -111,11 +111,11 @@ class ObtainTitle extends ObtainHtml {
     $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    $text = \MigrationTools\String::decodehtmlentitynumeric($text);
+    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\String::convertNonASCIItoASCII($text);
+    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
     // Remove undesirable chars and strings.
     $remove = array(
       '&raquo;',
@@ -124,7 +124,7 @@ class ObtainTitle extends ObtainHtml {
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\String::superTrim($text);
+    $text = \MigrationTools\StringTools::superTrim($text);
     // Remove multiple spaces.
     $text = preg_replace('!\s+!', ' ', $text);
     // Convert to ucwords If the entire thing is caps. Otherwise leave it alone
@@ -136,7 +136,7 @@ class ObtainTitle extends ObtainHtml {
       // Nearly the entire thing is caps.
       $text = strtolower($text);
     }
-    $text = \MigrationTools\String::makeWordsFirstCapital($text);
+    $text = \MigrationTools\StringTools::makeWordsFirstCapital($text);
 
     return $text;
   }

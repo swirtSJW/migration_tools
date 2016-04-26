@@ -151,17 +151,17 @@ abstract class Obtainer {
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
     module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\String::decodehtmlentitynumeric($string);
+    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
     if (!$is_utf8) {
-      $string = \MigrationTools\String::fixEncoding($string);
+      $string = \MigrationTools\StringTools::fixEncoding($string);
     }
 
-    $string = \MigrationTools\String::stripCmsLegacyMarkup($string);
+    $string = \MigrationTools\StringTools::stripCmsLegacyMarkup($string);
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\String::superTrim($string);
+    $string = \MigrationTools\StringTools::superTrim($string);
 
     return $string;
   }
