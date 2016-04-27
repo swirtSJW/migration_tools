@@ -136,7 +136,14 @@ inside the sources directory) and the abbreviation of the migration.
 _incomplete documentation_
 
 
+### Discovery and Planning
+Various utilities are available to assist in the process of discovering content
+in your migration source, which may be helpful in planning and facilitating
+discussion around your migrations.
 
+migration-tools-html-file-list
+ Scans a specified directory and its subdirectories for html files. This is
+ particularly useful if you a migrating from a site that did not use a CMS.
 
 
 ### Debugging and Iterations

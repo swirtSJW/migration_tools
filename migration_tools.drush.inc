@@ -46,6 +46,21 @@ function migration_tools_drush_command() {
     ),
   );
 
+  $items['migration-tools-html-file-list'] = array(
+    'description' => "List all HTML files in a specified directory.",
+    'arguments' => array(
+      'directory' => 'Path to the directory to analyze.',
+    ),
+    'options' => array(
+      'outfile' => 'Write output to a file',
+      'format' => 'Specify output format (options: csv).',
+    ),
+    'examples' => array(
+      'drush migration-tools-html-file-list ~/old_site/' => 'Lists HTML files found in of ~/old-site and all subdirectories.',
+      'drush migration-tools-html-file-list ~/old_site --outfile --format=csv' => 'Lists HTML files in ~/old-site and all subdirectories in CSV format, saved to a file under the document root.',
+    ),
+  );
+
   $items['mt-generate-menu'] = array(
     'description' => "Generate a file to import a menu by crawling an html menu.",
     'aliases' => array('dgm', 'migration-tools-generate-menu'),
@@ -245,6 +260,66 @@ function drush_migration_tools_mt_migrate_file_folders($organization) {
   drush_print_r(mt_migrate_find_folders_with_files($organization,
     array("pdf", "txt", "rtf", "doc", "docx", "xls", "xlsx", "csv", "mp3",
       "mp4", "wpd", "wp", "qpw", "xml", "ppt", "pptx"), $ignore));
+}
+
+/**
+ * Drush command callback for migration-tools-html-file-list.
+ *
+ */
+function drush_migration_tools_html_file_list($directory) {
+  // Set up options
+  $format = drush_get_option('format', 'txt');
+  $outfile = drush_get_option('outfile');
+  $mask = '/.*\.htm(l)?$/i';
+
+  switch ($format) {
+    case "csv":
+      $delimiter = ", ";
+      $newline = "\n";
+      break;
+
+    default:
+      $delimiter = "\t";
+      $newline = "\n";
+  }
+
+  // Fetch file list
+  $options = array();
+  $files = file_scan_directory($directory, $mask, $options);
+
+  // Generate output
+  $output = "Path" . $delimiter . $newline;
+  foreach ($files as $file) {
+    $output .= $file->uri . $delimiter;
+    $output .= $newline;
+  }
+
+  // Attempt to write results to file if requested, otherwise output to terminal.
+  if ($outfile) {
+    $scanned_directory = trim(basename($directory), ".");
+    $outfile_path = $scanned_directory . "." . $format;
+
+    $handle = fopen($outfile_path, "w");
+
+    if(!$handle) {
+      drush_log("There was an error opening {$outfile_path} for writing, verify the path is writable and try again.", 'error');
+    }
+    else {
+      $written = fwrite($handle, $output);
+
+      if ($written === FALSE) {
+        drush_log("There was an error writing to {$outfile_path}, verify the path is writable and try again.", 'error');
+
+      }
+      else {
+        drush_log("File scan of {$directory} complete, saved results as {$outfile_path}", 'success');
+      }
+    }
+  } 
+  else {
+    // Write to terminal
+    drush_print($output);
+  }
 }
 
 /**
