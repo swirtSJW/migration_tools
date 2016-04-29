@@ -218,65 +218,75 @@ class CheckFor {
    *   A row object as delivered by migrate.
    * @param QueryPath $query_path
    *   The current QueryPath object.
+   * @param array $redirect_texts
+   *   (optional) array of human readable strings that preceed a link to the
+   *   new location of the page ex: "this page has move to"
    *
    * @return mixed
    *   string - full URL of the redirect destination.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function hasHtmlRedirect($row, $query_path) {
-    // Checks for meta location redirects.
-    $meta_location = $query_path->find('meta[http-equiv="location"')->attr("url");
-    if (!empty($meta_location)) {
-      return $meta_location;
-    }
-    // Checks for meta refresh redirects. Does support relative urls.
-    $meta_refresh = $query_path->find('meta[http-equiv="refresh"]')->attr("url");
-    if (!empty($meta_refresh)) {
-      return $meta_refresh;
-    }
-    // Checks for presence of Javascript. <script type="text/javascript">
-    $js = $this->queryPath->find('script[type="text/javascript"]');
-    if (!empty($js)) {
-      // Checks for window location JS redirects. window.location.href
-      $wlh = $js->attr('window.location.href');
-      if (!empty($wlh)) {
-        return $wlh;
-      }
-      // Checks for location JS redirects.
-      $location = $js->attr('location');
-      if (!empty($location)) {
-        return $location;
-      }
-      // Checks for location href JS redirects. location.href
-      $lh = $js->attr('location.href');
-      if (!empty($lh)) {
-        return $lh;
-      }
-      // Checks for location assign JS redirects. location.assign
-      // Checks for location JS redirects.
-      $la = $js->attr('location.assign');
-      if (!empty($la)) {
-        return $la;
-      }
-      // Checks for location replace JS redirects. location.replace
-      // Checks for location JS redirects.
-      $lr = $js->attr('location.replace');
-      if (!empty($lr)) {
-        return $lr;
+  public static function hasHtmlRedirect($row, $query_path, $redirect_texts = array()) {
+    // Hunt for <meta> redirects via refresh and location.
+    // These use only full URLs.
+    $metas = $query_path->find('meta');
+    foreach (is_array($metas) || is_object($metas) ? $metas : array() as $meta) {
+      $attributes = $meta->attr();
+      if (!empty($attributes['http-equiv']) && (($attributes['http-equiv'] === 'refresh') || ($attributes['http-equiv'] === 'location'))) {
+        // It has a meta refresh or meta location specified.
+        // Grab the url from the content attribute.
+        if (!empty($attributes['content'])) {
+          $content_array = preg_split('/url=/i', $attributes['content'], -1, PREG_SPLIT_NO_EMPTY);
+          // The URL is going to be the last item in the array.
+          $url = array_pop($content_array);
+          if (filter_var($url, FILTER_VALIDATE_URL)) {
+            // Seems to be a valid URL.
+            return $url;
+          }
+        }
       }
     }
 
-    // Checks for human readable text redirects.
-    $human = $query_path->find(body);
-    // Checks for 'this page has been moved to'.
-    $has_been = $human->text('This page has been moved to');
-    if (!empty($has_been)) {
-      return $has_been;
+    // Hunt for Javascript redirects.
+    // Checks for presence of Javascript. <script type="text/javascript">
+    $js_scripts = $query_path->top()->find('script');
+    foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : array() as $js_script) {
+      $script_text = $js_script->text();
+      $url = \MigrationTools\Url::extractUrlFromJS($script_text);
+      if ($url) {
+        return $url;
+      }
     }
-    // Checks for 'this page has moved to'.
-    $this_page = $human->text('this page has moved to');
-    if (!empty($this_page)) {
-      return $this_page;
+
+    // Try to account for jQuery redirects like:
+    // onLoad="setTimeout(location.href='http://www.newpage.com', '0')".
+    // So many variations means we can't catch them all.  But try the basics.
+    $body_html = $query_path->top()->find('body')->html();
+    $search = 'onLoad=';
+    $content_array = preg_split("/$search/", $body_html, -1, PREG_SPLIT_NO_EMPTY);
+    // If something was found there will be > 1 element in the array.
+    if (count($content_array) > 1) {
+      // It had an onLoad, now check it for locations.
+      $url = \MigrationTools\Url::extractUrlFromJS($content_array[1]);
+      if ($url) {
+        return $url;
+      }
+    }
+
+    // Check for human readable text redirects.
+    foreach (is_array($redirect_texts) ? $redirect_texts : array() as $i => $redirect_text) {
+      // Array of starts and ends to try locating.
+      $wrappers = array();
+      // Provide two elements: the begining and end wrappers.
+      $wrappers[] = array('"', '"');
+      $wrappers[] = array("'", "'");
+      foreach ($wrappers as $wrapper) {
+        $body_html = $query_path->top()->find('body')->innerHtml();
+        $url = \MigrationTools\Url::peelUrl($body_html, $redirect_text, $wrapper[0], $wrapper[1]);
+        if ($url) {
+          return $url;
+        }
+      }
     }
   }
 }

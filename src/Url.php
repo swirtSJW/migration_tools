@@ -557,10 +557,10 @@ class Url {
    *
    * @param string $redirect_url
    *   A full destination URI.
-   * 
+   *
    * @return bool
    *   TRUE - http response is valid, either 2xx or 3xx.
-   *   FALSE - https repose is invalid, either 1xx, 4xx, or 5xx
+   *   FALSE - https response is invalid, either 1xx, 4xx, or 5xx
    */
   public static function urlExists($redirect_url) {
     $handle = curl_init($redirect_url);
@@ -581,5 +581,87 @@ class Url {
         return FALSE;
       }
     }
+  }
+
+
+  /**
+   * Pull a URL destination from a Javascript script.
+   *
+   * @param string $string
+   *   $string of the script contents.
+   *
+   * @return mixed
+   *   string - the validated URL if found.
+   *   bool - FALSE if no valid URL was found.
+   */
+  public static function extractUrlFromJS($string) {
+    // Array of items to search for.
+    $searches = array(
+      'location.replace',
+      'location.href',
+      'location.assign',
+      'location.replace',
+      "'location'",
+      'location',
+      "'href'",
+    );
+
+    // Array of starts and ends to try locating.
+    $wrappers = array();
+    // Provide two elements: the begining and end wrappers.
+    $wrappers[] = array('"', '"');
+    $wrappers[] = array("'", "'");
+
+    foreach ($searches as $search) {
+      foreach ($wrappers as $wrapper) {
+        $url = self::peelUrl($string, $search, $wrapper[0], $wrapper[1]);
+        if (!empty($url)) {
+          return $url;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Searches $haystack for a prelude string then returns the next url found.
+   *
+   * @param string $haystack
+   *   The html string to search through.
+   * @param string $prelude_string
+   *   The text that appears before the url for a redirect.
+   * @param string $wrapper_start
+   *   The first part that the url is wrapped in: " ' [ (.
+   * @param string $wrapper_end
+   *   The last part that the url is wrapped in: " ' } ).
+   *
+   * @return mixed
+   *   string - The valid URL found.
+   *   bool - FALSE if no valid URL is found.
+   */
+  public static function peelUrl($haystack, $prelude_string, $wrapper_start, $wrapper_end) {
+    $wrapped = preg_split("/{$prelude_string}/i", $haystack, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+    // If something was found there will be > 1 element in the array.
+    if (count($wrapped) > 1) {
+      $found = $wrapped[1];
+      $start_location = stripos($found, $wrapper_start);
+      // Lets set a limit to how far this will search from the $prelude_string.
+      // Anything more than 75 characters ahead is risky.
+      $start_location = ($start_location < 75) ? $start_location : FALSE;
+      // Account for the length of the start wrapper.
+      $start_location = ($start_location !== FALSE) ? $start_location + strlen($wrapper_start) : FALSE;
+      // Offset the search for the end, so the start does not get found x2.
+      $end_location = ($start_location !== FALSE) ? stripos($found, $wrapper_end, $start_location) : FALSE;
+      // Need both a start and end to grab the middle.
+      if (($start_location !== FALSE) && ($end_location !== FALSE) && ($end_location > $start_location)) {
+        $url = substr($found, $start_location, $end_location - $start_location);
+        $url = \MigrationTools\StringTools::superTrim($url);
+        // Make sure we have a valid URL.
+        if (!empty($url) && filter_var($url, FILTER_VALIDATE_URL)) {
+          return $url;
+        }
+      }
+    }
+    return FALSE;
   }
 }

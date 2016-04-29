@@ -231,16 +231,25 @@ abstract class HtmlBase {
         // QueryPath is need as part of this migration but is not a full
         // dependency for this module.  It can be included as the Drupal
         // querypath module or as a library.
-        if (function_exists('htmlqp')) {
-          $this->queryPath = htmlqp($this->html, NULL, $qp_options);
+        if (function_exists('qp')) {
+          try {
+            // The QueryPAth qp is less destructive than htmlqp so try it first.
+            $this->queryPath = qp($this->html, NULL, $qp_options);
+          }
+          catch (\Exception $e) {
+            // QueryPath qp is less tolerant of badly formed html so it must
+            // have failed.
+            // Use htmlqp which is more detructive but will fix bad html.
+            \MigrationTools\Message::make('Failed to instantiate QueryPath using qp, attempting qphtml, Exception: @error_message', array('@error_message' => $e->getMessage()), FALSE);
+            $this->queryPath = htmlqp($this->html, NULL, $qp_options);
+          }
         }
         else {
           $message = "QueryPath is required for html source parsing.  Please install the querypath module or add the library.";
           throw new \MigrateException($message);
         }
-
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         \MigrationTools\Message::make('Failed to instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), \WATCHDOG_ERROR);
       }
       // Sometimes queryPath fails.  So one last check.

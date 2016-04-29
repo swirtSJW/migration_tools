@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Completed detection of html and javascript redirects.
 * Connect Obtainer classes and add Obtainer\Job
 * Add SourceParser classes using Obtainer
 * Add Migration\Base class.
@@ -12,7 +13,7 @@ migration_tools 7.x-2.x  ** - ** - ****
 * Renaming and moving of classes to support autoloading and namespacing.
 * Stub for redirect detection.
 * Destination URI validation.
-* Add migration-tools-html-file-list drush utility command. 
+* Add migration-tools-html-file-list drush utility command.
 
 migration_tools 7.x-1.x  April 14, 2016
 -----------------------------------------------
