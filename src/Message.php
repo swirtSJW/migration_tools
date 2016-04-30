@@ -44,6 +44,7 @@ class Message {
     self::determineType($type, $trace);
 
     if ($severity !== FALSE) {
+      $type = (!empty($type)) ? $type : 'Migration';
       watchdog($type, $message, $variables, $severity);
     }
     // Check to see if this is run by drush and output is desired.
@@ -67,6 +68,30 @@ class Message {
    */
   public static function makeSeparator() {
     self::make("------------------------------------------------------", array(), FALSE, 0);
+  }
+
+  /**
+   * Message specific to skipping a migration row.
+   *
+   * @param string $reason
+   *   A short explanation of why it is being skipped.
+   * @param string $row_id
+   *   The id of the row being skipped.
+   * @param int $watchdog_level
+   *   The watchdog level to declare.
+   *
+   * @return bool
+   *   FALSE.
+   */
+  public static function makeSkip($reason, $row_id, $watchdog_level = \WATCHDOG_INFO) {
+    // Reason is included directly in the message because it needs translation.
+    $message = "SKIPPED->{$reason}: @row_id";
+    $variables = array(
+      '@row_id' => $row_id,
+    );
+    self::make($message, $variables, $watchdog_level, 1);
+
+    return FALSE;
   }
 
   /**

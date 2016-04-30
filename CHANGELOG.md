@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add Message::makeSkip().
 * Completed detection of html and javascript redirects.
 * Connect Obtainer classes and add Obtainer\Job
 * Add SourceParser classes using Obtainer
