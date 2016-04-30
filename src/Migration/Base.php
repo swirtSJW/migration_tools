@@ -13,6 +13,19 @@ namespace MigrationTools\Migration;
  * @package migration_tools
  */
 abstract class Base extends \Migration {
+  /**
+   * The base path used to coral all the redirects from the legacy server.
+   *
+   * This is the path that the source server will redirect requests to.
+   * Example:
+   * Request for www.legacy.com/abc/this-page.html?p=2
+   * Gets redirected by legacy to
+   * www.new.com/{$redirectBase}/abc/this-page.html?p=2
+   * Drupal then redirects this request to
+   * www.new.com/actual-path/abc/page-title-pattern
+   * @var string
+   */
+  public $redirectCoral;
 
   /**
    * @var string $sourceParserClass
@@ -127,20 +140,4 @@ abstract class Base extends \Migration {
       }
     }
   }
-
-  /**
-   * Create a new SourceParser to handle HTML content.
-   */
-  protected function initializeSourceParser($row) {
-    $source_parser = new $this->sourceParserClass($row->url_path, $row->filedata);
-
-    $obtainers_info = $this->getArgument("obtainers_info");
-    if (isset($obtainers_info) && is_array($obtainers_info)) {
-      foreach ($obtainers_info as $oi) {
-        $source_parser->addObtainerJob($oi);
-      }
-    }
-    $this->sourceParser = $source_parser;
-  }
-
 }

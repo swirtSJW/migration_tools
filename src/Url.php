@@ -215,7 +215,7 @@ class Url {
         $redirect = redirect_load_by_source($source_path);
         if (!$redirect) {
           // The redirect does not exists so create it.
-          $redirect = new stdClass();
+          $redirect = new \stdClass();
           redirect_object_prepare($redirect);
           $redirect->source = $source_path;
           $redirect->source_options = $source_options;
@@ -334,7 +334,7 @@ class Url {
         // Create redirect.
         $redirect = redirect_load_by_source($source);
         if (!$redirect) {
-          $redirect = new stdClass();
+          $redirect = new \stdClass();
           redirect_object_prepare($redirect);
           $redirect->source = $source;
           $redirect->redirect = "file/{$item['fid']}/download";
@@ -552,32 +552,170 @@ class Url {
     return $url;
   }
 
+
+  /**
+   * Retrieves redirects from the html of the page if it the destination exists.
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   * @param QueryPath $query_path
+   *   The current QueryPath object.
+   * @param array $redirect_texts
+   *   (optional) array of human readable strings that preceed a link to the
+   *   new location of the page ex: "this page has move to"
+   *
+   * @return mixed
+   *   string - full URL of the validated redirect destination.
+   *   string 'skip' if there is a redirect but it's broken.
+   *   FALSE - no detectable redirects exist in the page.
+   */
+  public static function hasValidHtmlRedirect($row, $query_path, $redirect_texts = array()) {
+    $destination = self::getRedirectFromHtml($row, $query_path, $redirect_texts);
+    if ($destination) {
+      // This page is being redirected via the page.
+      // Is the destination still good?
+      $real_destination = self::urlExists($destination);
+      if ($real_destination) {
+        // The destination is good. Message and return.
+        $message = "Found redirect in html -> !destination";
+        $variables = array('!destination' => $real_destination);
+        \MigrationTools\Message::make($message, $variables, FALSE, 2);
+
+        return $destination;
+      }
+      else {
+        // The destination is not functioning. Message and bail with 'skip'.
+        $message = "Found broken redirect in html-> !destination";
+        $variables = array('!destination' => $destination);
+        \MigrationTools\Message::make($message, $variables, \WATCHDOG_ERROR, 2);
+
+        return 'skip';
+      }
+    }
+    else {
+      // No redirect destination found.
+      return FALSE;
+    }
+  }
+
+
+  /**
+   * Retrieves redirects from the html of the page (meta, javascrip, text).
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   * @param QueryPath $query_path
+   *   The current QueryPath object.
+   * @param array $redirect_texts
+   *   (optional) array of human readable strings that preceed a link to the
+   *   new location of the page ex: "this page has move to"
+   *
+   * @return mixed
+   *   string - full URL of the redirect destination.
+   *   FALSE - no detectable redirects exist in the page.
+   */
+  public static function getRedirectFromHtml($row, $query_path, $redirect_texts = array()) {
+    // Hunt for <meta> redirects via refresh and location.
+    // These use only full URLs.
+    $metas = $query_path->find('meta');
+    foreach (is_array($metas) || is_object($metas) ? $metas : array() as $meta) {
+      $attributes = $meta->attr();
+      if (!empty($attributes['http-equiv']) && (($attributes['http-equiv'] === 'refresh') || ($attributes['http-equiv'] === 'location'))) {
+        // It has a meta refresh or meta location specified.
+        // Grab the url from the content attribute.
+        if (!empty($attributes['content'])) {
+          $content_array = preg_split('/url=/i', $attributes['content'], -1, PREG_SPLIT_NO_EMPTY);
+          // The URL is going to be the last item in the array.
+          $url = array_pop($content_array);
+          if (filter_var($url, FILTER_VALIDATE_URL)) {
+            // Seems to be a valid URL.
+            return $url;
+          }
+        }
+      }
+    }
+
+    // Hunt for Javascript redirects.
+    // Checks for presence of Javascript. <script type="text/javascript">
+    $js_scripts = $query_path->top()->find('script');
+    foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : array() as $js_script) {
+      $script_text = $js_script->text();
+      $url = \MigrationTools\Url::extractUrlFromJS($script_text);
+      if ($url) {
+        return $url;
+      }
+    }
+
+    // Try to account for jQuery redirects like:
+    // onLoad="setTimeout(location.href='http://www.newpage.com', '0')".
+    // So many variations means we can't catch them all.  But try the basics.
+    $body_html = $query_path->top()->find('body')->html();
+    $search = 'onLoad=';
+    $content_array = preg_split("/$search/", $body_html, -1, PREG_SPLIT_NO_EMPTY);
+    // If something was found there will be > 1 element in the array.
+    if (count($content_array) > 1) {
+      // It had an onLoad, now check it for locations.
+      $url = \MigrationTools\Url::extractUrlFromJS($content_array[1]);
+      if ($url) {
+        return $url;
+      }
+    }
+
+    // Check for human readable text redirects.
+    foreach (is_array($redirect_texts) ? $redirect_texts : array() as $i => $redirect_text) {
+      // Array of starts and ends to try locating.
+      $wrappers = array();
+      // Provide two elements: the begining and end wrappers.
+      $wrappers[] = array('"', '"');
+      $wrappers[] = array("'", "'");
+      foreach ($wrappers as $wrapper) {
+        $body_html = $query_path->top()->find('body')->innerHtml();
+        $url = \MigrationTools\Url::peelUrl($body_html, $redirect_text, $wrapper[0], $wrapper[1]);
+        if ($url) {
+          return $url;
+        }
+      }
+    }
+  }
+
   /**
    * Checks if a URL actually resolves to a 'page' on the internet.
    *
-   * @param string $redirect_url
+   * @param string $url
    *   A full destination URI.
+   * @param bool $follow_redirects
+   *   TRUE (default) if you want it to track multiple redirects to the end.
+   *   FALSE if you want to only evaluate the first page request.
    *
-   * @return bool
-   *   TRUE - http response is valid, either 2xx or 3xx.
-   *   FALSE - https response is invalid, either 1xx, 4xx, or 5xx
+   * @return mixed
+   *   string url - http response is valid (2xx or 3xx) and has a destination.
+   *   bool FALSE - https response is invalid, either 1xx, 4xx, or 5xx
    */
-  public static function urlExists($redirect_url) {
-    $handle = curl_init($redirect_url);
+  public static function urlExists($url, $follow_redirects = TRUE) {
+    $handle = curl_init();
+    curl_setopt($handle, CURLOPT_URL, $url);
     curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($handle, CURLOPT_FOLLOWLOCATION, $follow_redirects);
+    curl_setopt($handle, CURLOPT_HEADER, 0);
     // Get the HTML or whatever is linked in $redirect_url.
     $response = curl_exec($handle);
-    // Get status.
+
+    // Get status code.
     $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+    $last_location = curl_getinfo($handle, CURLINFO_EFFECTIVE_URL);
+
+    $url = ($follow_redirects) ? $last_location : $url;
+
     // Check that http code exists.
     if ($http_code) {
       // Determines first digit of http code.
       $first_digit = substr($http_code, 0, 1);
       // Filters for 2 or 3 as first digit.
       if ($first_digit == 2 || $first_digit == 3) {
-        return TRUE;
+        return $url;
       }
       else {
+        // Invalid url.
         return FALSE;
       }
     }
