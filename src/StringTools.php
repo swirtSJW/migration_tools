@@ -390,8 +390,8 @@ class StringTools {
    */
   public static function decodeHtmlEntityNumeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8") {
     $string = html_entity_decode($string, $quote_style, $charset);
-    $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', '\MigrationTools\StringTools::migration_tools_hex_chr_utf8_callback', $string);
-    $string = preg_replace_callback('/&#([0-9]+)/', '\MigrationTools\StringTools::migration_tools_chr_utf8_callback', $string);
+    $string = preg_replace_callback('/&#x([0-9a-fA-F]+)/', '\MigrationTools\StringTools::convertHexChrToUtf8Callback', $string);
+    $string = preg_replace_callback('/&#([0-9]+)/', '\MigrationTools\StringTools::convertChrToUtf8Callback', $string);
     return $string;
   }
 

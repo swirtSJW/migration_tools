@@ -66,7 +66,7 @@ class Taxonomy {
     if (!taxonomy_get_term_by_name($term, $vocab_name)) {
       Message::make('Creating new topic term "@term" in vocabulary: @vocabulary.', array('@term' => $term, '@vocabulary' => $vocab_name));
       $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
-      $term_obj = new stdClass();
+      $term_obj = new \stdClass();
       $term_obj->name = $term;
       $term_obj->vid = $vocab->vid;
       taxonomy_term_save($term_obj);

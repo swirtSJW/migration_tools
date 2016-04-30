@@ -334,7 +334,6 @@ class QpHtml {
    *
    * @param QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param string $file_id
    *   The full file path of the of the current file, used to determine
    *   location of relative links.
@@ -346,8 +345,9 @@ class QpHtml {
       'img' => array('src', 'longdesc'),
       'a' => array('href'),
     );
-
-    $elements = $query_path->find(implode(', ', array_keys($attributes)));
+    $tags = array_keys($attributes);
+    $elements = $query_path->find($tags[0], $tags[1]);
+    hudt_squeal("MADE IT HERE");
     foreach ($elements as $element) {
       $tag_attributes = $attributes[$element->tag()];
       foreach ($tag_attributes as $attribute) {
