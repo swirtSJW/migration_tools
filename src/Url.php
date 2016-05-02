@@ -552,6 +552,40 @@ class Url {
     return $url;
   }
 
+  /**
+   * Retrieves server or html redirect of the page if it the destination exists.
+   *
+   * @param object $row
+   *   A row object as delivered by migrate.
+   * @param QueryPath $query_path
+   *   The current QueryPath object.
+   * @param array $redirect_texts
+   *   (optional) array of human readable strings that preceed a link to the
+   *   new location of the page ex: "this page has move to"
+   *
+   * @return mixed
+   *   string - full URL of the validated redirect destination.
+   *   string 'skip' if there is a redirect but it's broken.
+   *   FALSE - no detectable redirects exist in the page.
+   */
+  public static function hasValidRedirect($row, $query_path, $redirect_texts = array()) {
+    if (empty($row->urlLegacy)) {
+      throw new \MigrateException('$row->urlLegacy must be defined to look for a redirect.');
+    }
+    else {
+      // Look for server side redirect.
+      $server_side = self::hasServerSideRedirects($row->urlLegacy);
+      if ($server_side) {
+        // A server side redirect was found.
+        return $server_side;
+      }
+      else {
+        // Look for html redirect.
+        return self::hasValidHtmlRedirect($row, $query_path, $redirect_texts);
+      }
+    }
+  }
+
 
   /**
    * Retrieves redirects from the html of the page if it the destination exists.
@@ -598,6 +632,28 @@ class Url {
     }
   }
 
+
+  /**
+   * Check for server side redirects.
+   *
+   * @param string $url
+   *   The full url to a live page.
+   *
+   * @return mixed
+   *   string Url of the final desitnation if there was a redirect.
+   *   bool FALSE if there was no redirect.
+   */
+  public static function hasServerSideRedirects($url) {
+    $final_url = self::urlExists($url, TRUE);
+    if ($final_url && ($url === $final_url)) {
+      // The initial and final urls are the same, so no redirects.
+      return FALSE;
+    }
+    else {
+      // The $final_url is different, so it must have been redirected.
+      return $final_url;
+    }
+  }
 
   /**
    * Retrieves redirects from the html of the page (meta, javascrip, text).

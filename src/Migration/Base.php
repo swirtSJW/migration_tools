@@ -55,6 +55,8 @@ abstract class Base extends \Migration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+
+    $row->urlLegacy = $this->hostLegacy . $row->fileId;
   }
 
   /**
