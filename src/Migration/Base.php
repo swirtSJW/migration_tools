@@ -14,7 +14,7 @@ namespace MigrationTools\Migration;
  */
 abstract class Base extends \Migration {
   /**
-   * The base path used to coral all the redirects from the legacy server.
+   * The base path used to corral all the redirects from the legacy server.
    *
    * This is the path that the source server will redirect requests to.
    * Example:
@@ -25,7 +25,7 @@ abstract class Base extends \Migration {
    * www.new.com/actual-path/abc/page-title-pattern
    * @var string
    */
-  public $redirectCoral;
+  public $redirectCorral;
 
   /**
    * @var string $sourceParserClass
