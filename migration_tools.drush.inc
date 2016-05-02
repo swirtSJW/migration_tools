@@ -265,9 +265,11 @@ function drush_migration_tools_mt_migrate_file_folders($organization) {
 /**
  * Drush command callback for migration-tools-html-file-list.
  *
+ * @param string $directory
+ *   Absolute or relative path to directory to scan for files.
  */
 function drush_migration_tools_html_file_list($directory) {
-  // Set up options
+  // Set up options.
   $format = drush_get_option('format', 'txt');
   $outfile = drush_get_option('outfile');
   $mask = '/.*\.htm(l)?$/i';
@@ -283,25 +285,41 @@ function drush_migration_tools_html_file_list($directory) {
       $newline = "\n";
   }
 
-  // Fetch file list
+  // Fetch file list.
   $options = array();
+  // Does directory exist?
+  if (!file_exists($directory) && !is_dir($directory)) {
+    drush_log("The directory {$directory} does not exist, are you using the correct path?", 'error');
+  }
   $files = file_scan_directory($directory, $mask, $options);
 
-  // Generate output
-  $output = "Path" . $delimiter . $newline;
+  // Generate output.
+  // Start with the header row.
+  $output = "File{$delimiter}Migrate{$delimiter}Notes{$newline}";
+  $files_processed = 0;
+  $remove = array('/var/www', '../');
   foreach ($files as $file) {
-    $output .= $file->uri . $delimiter;
+    $file_id = str_ireplace($remove, '', $file->uri);
+    $output .= $file_id . $delimiter;
     $output .= $newline;
+    $files_processed++;
   }
 
-  // Attempt to write results to file if requested, otherwise output to terminal.
-  if ($outfile) {
+  if ($files_processed > 0) {
+    drush_log("The directory scan of {$directory} found {$files_processed} files.", 'success');
+  }
+  else {
+    drush_log("The directoryscan of {$directory} found no files.", 'error');
+  }
+
+  // Write results to file if requested, otherwise output to terminal.
+  if ($outfile && $files_processed) {
     $scanned_directory = trim(basename($directory), ".");
     $outfile_path = $scanned_directory . "." . $format;
 
     $handle = fopen($outfile_path, "w");
 
-    if(!$handle) {
+    if (!$handle) {
       drush_log("There was an error opening {$outfile_path} for writing, verify the path is writable and try again.", 'error');
     }
     else {
@@ -315,9 +333,9 @@ function drush_migration_tools_html_file_list($directory) {
         drush_log("File scan of {$directory} complete, saved results as {$outfile_path}", 'success');
       }
     }
-  } 
+  }
   else {
-    // Write to terminal
+    // Write to terminal.
     drush_print($output);
   }
 }
