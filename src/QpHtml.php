@@ -347,7 +347,6 @@ class QpHtml {
     );
     $tags = array_keys($attributes);
     $elements = $query_path->find($tags[0], $tags[1]);
-    hudt_squeal("MADE IT HERE");
     foreach ($elements as $element) {
       $tag_attributes = $attributes[$element->tag()];
       foreach ($tag_attributes as $attribute) {
