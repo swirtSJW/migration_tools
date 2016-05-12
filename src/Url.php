@@ -803,6 +803,65 @@ class Url {
   }
 
   /**
+   * Searches for files of the same name and any type .
+   *
+   * A search for 'xyz.htm' or just 'xyz' will return xyz.htm, xyz.pdf,
+   * xyz.html, xyz.doc... if they exist in the directory.
+   *
+   * @param string $file_name
+   *   A filename with or without the extension.
+   *   Ex: 'xyz'  or 'xyz.html'.
+   * @param string $directory
+   *   The directory path relative to the migration source.
+   *   Ex: /oldsite/section
+   * @param bool $recurse
+   *   Declaring whether to scan recursively into the directory (default: FALSE)
+   *   CAUTION: Setting this to TRUE creates the risk of a race condition if
+   *   a file with the same name and extension is in multiple locations. The
+   *   last one scanned wins.
+   *
+   * @return array
+   *   An array keyed by file extension containing name, filename and uri.
+   *   Ex: array (
+   *    'pdf' => array(
+   *               'name' => 'xyz',
+   *               'filename'=> 'xyz.pdf',
+   *               'uri'=> '/oldsite/section/xyz.pdf',
+   *               'legacy_uri'=> 'migration-source/oldsite/section/xyz.pdf',
+   *               'extension'=> 'pdf',
+   *             ),
+   *   )
+   */
+  public static function getAllSimilarlyNamedFiles($file_name, $directory, $recurse = FALSE) {
+    $processed_files = array();
+    if (!empty ($file_name)) {
+      $file_name = pathinfo($file_name, PATHINFO_FILENAME);
+      $regex = '/^' . $file_name . '\..{3,4}$/i';
+
+      // @todo Rework this as $this->baseDir is not available to static methods.
+      $migration_source_directory = variable_get('migration_tools_source_directory_base', '');
+      $dir = $migration_source_directory . $directory;
+      $options = array(
+        'key' => 'filename',
+        'recurse' => $recurse,
+      );
+      $files = file_scan_directory($dir, $regex, $options);
+      foreach ($files as $file => $fileinfo) {
+        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $processed_files[$extension] = array(
+          'name' => $fileinfo->name,
+          'filename' => $fileinfo->filename,
+          'uri' => $fileinfo->uri,
+          'legacy_uri' => str_replace($migration_source_directory . '/', '', $fileinfo->uri),
+          'extension' => $extension,
+        );
+      }
+    }
+
+    return $processed_files;
+  }
+
+  /**
    * Retrieves redirects from the html of the page (meta, javascrip, text).
    *
    * @param object $row
