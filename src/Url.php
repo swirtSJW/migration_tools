@@ -209,13 +209,13 @@ class Url {
   /**
    * Convert a relative URI from a page to an absolute URL.
    *
-   * @param string $rel
-   *   Relative url or partial uri. Ex:
+   * @param string $href
+   *   Full URL, relative URI or partial URI. Ex:
    *   ../subsection/index.html,
    *   /section/subsection/index.html,
    *   https://www.some-external-site.com/abc/def.html.
    *   https://www.this-site.com/section/subsection/index.html.
-   * @param string $legacy_url
+   * @param string $base_url
    *   The location where $rel existed in html. Ex:
    *   https://www.oldsite.com/section/page.html
    *
@@ -226,36 +226,64 @@ class Url {
    *   https://www.some-external-site.com/abc/def.html.
    *   https://www.this-site.com/section/subsection/index.html.
    */
-  public static function convertRelativeToAbsoluteUrl($rel, $legacy_url) {
+  public static function convertRelativeToAbsoluteUrl($href, $base_url) {
 
-    if (parse_url($rel, PHP_URL_SCHEME) != '') {
-      // $rel is alreayd a full URL.  Done.
-      return $rel;
+    if (parse_url($href, PHP_URL_SCHEME) != '') {
+      // $href is already a full URL.  Done.
+      return $href;
+    }
+    else {
+      // Could be a faulty URL.
+      $href = self::fixSchemelessInternalUrl($href);
     }
 
-    // Parse base URL and convert to local variables:
-    // $scheme, $host, $path.
-    // @todo Rework this parse_url will not create elements if they don't exist.
-    extract(parse_url($legacy_url));
-
-    // Remove non-directory element from path.
-    $path = preg_replace('#/[^/]*$#', '', $path);
-
-    // Destroy path if relative url points to root.
-    if ($rel[0] == '/') {
-      $path = '';
+    $parsed_base_url = parse_url($base_url);
+    $parsed_href = parse_url($href);
+    // Destroy base_url path if relative href is root relative.
+    if ($parsed_href['path'] !== ltrim($parsed_href['path'], '/')) {
+      $parsed_base_url['path'] = '';
     }
 
-    // Dirty absolute URL.
-    $abs = "$host$path/$rel";
+    // Make the Frankenpath.
+    $path = $parsed_base_url['path'];
+    // Cut off the file.
+    $path = pathinfo($path, PATHINFO_DIRNAME);
+    // Join it to relative path.
+    $path = "{$path}/{$href}";
 
-    // Replace '//' or '/./' or '/foo/../' with '/'.
+    // Replace '//' or '/./' or '/foo/../' with '/' recursively.
     $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
-    for ($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {
+    for ($n = 1; $n > 0; $path = preg_replace($re, '/', $path, -1, $n)) {
     }
+
+    // The $path at this point should not contain '../' or it would indicate an
+    // unattainable path.
+    if (stripos($path, '../') !== FALSE) {
+      // We have an unattainable path like:
+      // 'https://oldsite.com/../blah/index.html'
+      $message = 'Unable to make absolute URL of path: "@path" on page: @page.';
+      $variables = array(
+        '@path' => $path,
+        '@page' => $base_url,
+      );
+      Message::make($message, $variables, WATCHDOG_ERROR, 2);
+    }
+
+    // Make sure the query and fragement exist even if they are empty.
+    $parsed_href['query'] = (!empty($parsed_href['query'])) ? $parsed_href['query'] : '';
+    $parsed_href['fragment'] = (!empty($parsed_href['fragment'])) ? $parsed_href['fragment'] : '';
+
+    // Build the absolute URL.
+    $absolute = array(
+      'scheme' => $parsed_base_url['scheme'],
+      'host' => $parsed_base_url['host'],
+      'path' => $path,
+      'query' => $parsed_href['query'],
+      'fragment' => $parsed_href['fragment'],
+    );
 
     // Absolute URL is ready.
-    return $scheme . '://' . $abs;
+    return self::reassembleURL($absolute);
   }
 
   /**
