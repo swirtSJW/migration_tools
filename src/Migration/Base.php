@@ -23,9 +23,11 @@ abstract class Base extends \Migration {
    * www.new.com/{$redirectBase}/abc/this-page.html?p=2
    * Drupal then redirects this request to
    * www.new.com/actual-path/abc/page-title-pattern
+   *
    * @var string
    */
-  public $redirectCorral;
+  public $pathingRedirectCorral;
+
 
   /**
    * @var string $sourceParserClass
@@ -52,12 +54,52 @@ abstract class Base extends \Migration {
    * {@inheritdoc}
    */
   public function prepareRow($row) {
+    // This method is called and builds each row/item of the migration.
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
 
+    // Establish some row propteries.
+    $row->pathingRedirectSources = array();
     $row->urlLegacy = $this->hostLegacy . $row->fileId;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function prepare(\stdClass $entity, \stdClass $row) {
+    // This method is called right before the entity is saved.
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function complete($entity, \stdClass $row) {
+    // This method is called after the entity has been saved.
+
+    // Build any redirects.
+    $destination = $this->buildDestinationUrl($entity, $row);
+    if (!empty($row->pathingRedirectSources) && !empty($destination)) {
+      \MigrationTools\Url::createRedirectsMultiple($this->pathingRedirectSources, $this->destination);
+    }
+  }
+
+
+  /**
+   * Called from complete(), builds and returns destination Url for an entity.
+   *
+   * @param object $entity
+   *   The entity that was just saved.
+   *
+   * @param object $row
+   *   The row that was just migrated.
+   *
+   * @return string
+   *   Example node/123, user/123, taxonomy/term/123.
+   */
+  abstract public function buildDestinationUrl($entity, $row);
+
 
   /**
    * Add multiple field mappings at once.
