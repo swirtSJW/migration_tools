@@ -77,20 +77,6 @@ abstract class FileSourceMigration extends MTBaseMigration {
     return $absolute_paths;
   }
 
-  /**
-   * Generates a legacy file path based on a row's file id.
-   *
-   * @param object $row
-   *   The row being imported.
-   */
-  public function generateLegacyPath($row) {
-    // $row->url_path can be used as an identifer, whereas $row->legacy_path
-    // may have multiple values.
-    $row->url_path = substr($row->fileId, 1);
-    $row->legacy_path = $row->url_path;
-
-    $this->handleIndexRedirect($row);
-  }
 
   /**
    * Handles generation of redirects for index.php or index.html pages.

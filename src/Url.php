@@ -1,10 +1,32 @@
 <?php
 /**
  * @file
- * Functions for handling urls.
+ * Functions for handling urls, redirects and aliases.
  */
 
 namespace MigrationTools;
+
+/**
+ * In migrations it is easy to get lost in all the pathing related
+ * information.  This list should help designate what is what in a migration.
+ * Notice that they are all namespaced to ->pathing____ to make it easy to find
+ * them and to avoid collisions with migration source data.
+ *
+ * $migration->pathingLegacyDirectory  [oldsite]
+ * $migration->pathingLegacyHost [https://www.oldsite.com]
+ * $migration->pathingRedirectCorral [redirect-oldsite]
+ * $migration->pathingSectionSwap
+ *   [array(‘oldsite/section’ => ‘swapped-section-a’)]
+ * $migration->pathingSourceLocalBasePath [/var/www/migration-source]
+ *
+ * $row->fileId [/oldsite/section/blah/index.html]
+ * $row->pathingCorralledUri [redirect-oldsite/section/blah/index.html]
+ * $row->pathingLegacyUrl [https://www.oldsite.com/section/blah/index.html]
+ * $row->pathingNewUriAlias [swapped-section-a/blah/title-based-thing]
+ * $row->pathingNewUriRaw [node/123]
+ * $row->pathingRedirectSources [Array of source CorralledUri's for creating
+ * redirects in complete().
+ */
 
 class Url {
 
@@ -33,26 +55,31 @@ class Url {
   /**
    * Take a legacy uri, and map it to an alias.
    *
-   * @param string $legacy_uri
-   *   A legacy uri gets redirected to a node.
+   * @param string $coralled_legacy_uri
+   *   The coralled URI from the legacy site ideally coming from
+   *   $row->pathingCorralledUri
+   *   ex: redirect-oldsite/section/blah/index.html
    *
    * @return string
-   *   The alias matching the legacy uri, or an empty sting.
+   *   The Drupal alias redirected from the legacy URI, or an empty sting.
+   *   ex: swapped-section-a/blah/title-based-thing
    */
-  public static function convertLegacyToAlias($legacy_uri) {
-    // Most common drupal paths have no ending / so start with that.
-    $legacy_uri_no_end = rtrim($legacy_uri, '/');
+  public static function convertLegacyUriToAlias($coralled_legacy_uri) {
+    // Most common drupal paths have no start or ending / so start with that.
+    $legacy_uri_no_end = trim($coralled_legacy_uri, '/');
     $redirect = redirect_load_by_source($legacy_uri_no_end);
-    if (empty($redirect) && ($legacy_uri != $legacy_uri_no_end)) {
+    if (empty($redirect) && ($coralled_legacy_uri != $legacy_uri_no_end)) {
       // There is no redirect found, lets try looking for one with the path/.
-      $redirect = redirect_load_by_source($legacy_uri);
+      $redirect = redirect_load_by_source($coralled_legacy_uri);
     }
     if ($redirect) {
-      $nid = str_replace("node/", "", $redirect->redirect);
-      $node = node_load($nid);
-
-      if ((!empty($node)) && (!empty($node->path)) && (!empty($node->path['alias']))) {
-        return $node->path['alias'];
+      $nid = str_replace('node/', '', $redirect->redirect);
+      // Make sure we are left with a numeric id.
+      if (is_int($nid) || ctype_digit($nid)) {
+        $node = node_load($nid);
+        if ((!empty($node)) && (!empty($node->path)) && (!empty($node->path['alias']))) {
+          return $node->path['alias'];
+        }
       }
 
       // Check for language other than und, because the aliases are
@@ -72,70 +99,144 @@ class Url {
         }
       }
     }
-    $message = "legacy uri @legacy_uri does not have a node associated with it";
-    Message::make($message, array('@legacy_uri' => $legacy_uri), WATCHDOG_NOTICE, 1);
+    $message = "Legacy uri @legacy_uri does not have a node associated with it";
+    Message::make($message, array('@legacy_uri' => $coralled_legacy_uri), WATCHDOG_NOTICE, 1);
     // Without legacy path yet migrated in, leave the link to source url
     // so that the redirects can handle it when that content is migrate/created.
     $base = variable_get('migration_tools_base_domain', '');
     if (!empty($base)) {
-      return "{$base}/{$legacy_uri}";
+      return "{$base}/{$coralled_legacy_uri}";
     }
     else {
       throw new Exception("The base domain is needed, but has not been set. Visit /admin/config/migration_tools");
     }
-
   }
 
+
   /**
-   * Generates a legacy file path based on a row's original path.
+   * Generates a drupal-centric URI based in the redirect corral.
    *
    * @param object $row
-   *   The row being imported.
+   *   The row being migrated.
+   * @param string $pathing_legacy_directory
+   *   The directory housing the migration source.
+   *   ex: If var/www/migration-source/oldsite, then 'oldsite' is the directory.
+   * @param string $pathing_redirect_corral
+   *   The fake directory used for corralling the redirects.
+   *   ex: 'redirect-oldsite'.
+   *
+   * @var string $row->pathingCorralledUri
+   *   Created by reference.
+   *   ex: redirect-oldsite/section/blah/index.html
    */
-  public static function generateLegacyPath($row) {
-    // $row->url_path can be used as an identifer, whereas $row->legacy_path
-    // may have multiple values.
+  public static function generateCorralledUri($row, $pathing_legacy_directory, $pathing_redirect_corral) {
+    $uri = ltrim($row->fileId, '/');
+    // Swap the pathing_legacy_directory for the pathing_redirect_corral
+    $uri = str_replace($pathing_legacy_directory, $pathing_redirect_corral, $uri);
+    $row->pathingCorralledUri = $uri;
+  }
 
-    // @TODO Need to alter connection to old path but it won't come from fileid.
-    $row->url_path = substr($row->fileId, 1);
-    $row->legacy_path = $row->url_path;
+  /**
+   * Generates a legacy website-centric URL for the source row.
+   *
+   * @param object $row
+   *   The row being migrated.
+   * @param string $pathing_legacy_directory
+   *   The directory housing the migration source.
+   *   ex: If var/www/migration-source/oldsite, then 'oldsite' is the directory.
+   * @param string $pathing_legacy_host
+   *   The scheme and host of the original content.
+   *   ex: 'https://www.oldsite.com'.
+   *
+   * @var string $row->pathingLegacyUrl
+   *   Created by reference.  The location where the legacy page exists.
+   *   ex: https://www.oldsite.com/section/blah/index.html
+   */
+  public static function generateLegacyUrl($row, $pathing_legacy_directory, $pathing_legacy_host) {
+    $uri = ltrim($row->fileId, '/');
+    // Swap the pathing_legacy_directory for the $pathing_legacy_host.
+    $url = str_replace($pathing_legacy_directory, $pathing_legacy_host, $uri);
+    $row->pathingLegacyUrl = $url;
   }
 
 
   /**
-   * Convert a relative url to absolute.
+   * Generates a drupal-centric Alias for the source row.
    *
-   * @param string $rel
-   *   Relative url.
-   * @param string $base
-   *   Base url.
-   * @param string $subpath
-   *   An optional sub-path to check for when translating relative URIs that are
-   *   not root based.
+   * @param object $row
+   *   The row being migrated.
+   * @param string $pathing_section_swap
+   *   An array of sections to replace
+   *   ex: array('oldsite/section' => 'new-section')
+   * @param string $title
+   *   The title of the node or any other string that should be used as the
+   *   last element in the alias.
+   *   ex: '2015 A banner year for corn crop'.
+   *
+   * @throws \MigrateException
+   *   If pathauto is not available to process the title string.
    *
    * @return string
-   *   The relative url transformed to absolute.
+   *   A drupal ready alias based on its old location mapped to its new location
+   *   and ending with the title string.
+   *   ex: new-section/2015-banner-year-corn-crop
+   *
+   * @var string $row->pathingLegacyUrl
+   *   Created by reference.  The location where the legacy page exists.
+   *   ex: new-section/2015-banner-year-corn-crop
    */
-  public static function convertRelativeToAbsoluteUrl($rel, $base, $subpath = '') {
-    // Return if already absolute URL.
+  public static function generateNewUriAlias($row, $pathing_section_swap, $title) {
+    $directories = pathinfo($row->fileId, PATHINFO_DIRNAME);
+    $directories = ltrim($directories, '/');
+    // Swap the pathing_legacy_directory for the pathing_redirect_corral
+    $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
+    // Attempt to process the title.
+    if (module_load_include('inc', 'pathauto')) {
+      $path_title = pathauto_cleanstring($title);
+      $row->pathingNewUriAlias = "{$directories}/{$path_title}";
+      $row->pathingNewUriAlias = pathauto_clean_alias($row->pathingNewUriAlias);
+      // It is set by reference, but return it in case assignment is desired.
+      return $row->pathingNewUriAlias;
+    }
+    else {
+      // Fail migration because the title can not be processed.
+      $message = t('The module @module was not available to process the title.', array('@module' => 'pathauto'));
+      throw new \MigrateException();
+    }
+  }
+
+
+  /**
+   * Convert a relative URI from a page to an absolute URL.
+   *
+   * @param string $rel
+   *   Relative url or partial uri. Ex:
+   *   ../subsection/index.html,
+   *   /section/subsection/index.html,
+   *   https://www.some-external-site.com/abc/def.html.
+   *   https://www.this-site.com/section/subsection/index.html.
+   * @param string $legacy_url
+   *   The location where $rel existed in html. Ex:
+   *   https://www.oldsite.com/section/page.html
+   *
+   * @return string
+   *   The relative url transformed to absolute. Ex:
+   *   https://www.oldsite.com/section/subsection/index.html,
+   *   https://www.oldsite.com/section/subsection/index.html,
+   *   https://www.some-external-site.com/abc/def.html.
+   *   https://www.this-site.com/section/subsection/index.html.
+   */
+  public static function convertRelativeToAbsoluteUrl($rel, $legacy_url) {
+
     if (parse_url($rel, PHP_URL_SCHEME) != '') {
+      // $rel is alreayd a full URL.  Done.
       return $rel;
-    }
-
-    // Check for presence of subpath in $rel to see if a subpath is missing.
-    if ((!empty($subpath)) && (!stristr($rel, $subpath))) {
-      // The subpath is not present, so add it.
-      $rel = $subpath . '/' . $rel;
-    }
-
-    // Queries and anchors.
-    if ($rel[0] == '#' || $rel[0] == '?') {
-      return $base . $rel;
     }
 
     // Parse base URL and convert to local variables:
     // $scheme, $host, $path.
-    extract(parse_url($base));
+    // @todo Rework this parse_url will not create elements if they don't exist.
+    extract(parse_url($legacy_url));
 
     // Remove non-directory element from path.
     $path = preg_replace('#/[^/]*$#', '', $path);
@@ -162,17 +263,20 @@ class Url {
    *
    * @param string $source_path
    *   The path or url of the legacy source. MUST be INTERNAL to this site.
+   *   Ex: redirect-oldsite/section/blah/index.html,
+   *   https://www.this-site.com/somepage.htm
+   *   http://external-site.com/somepate.htm [only if external-site.com is in
+   *   the allowed hosts array].
    * @param string $destination
-   *   The destination of the redirect examples:
-   *     * path-a/path-b/the-node-title
-   *     * http://www.somesite.com
-   * @param object $destination_node
-   *   (required if the redirect is a node) Node object of the destination node.
+   *   The destination of the redirect Ex:
+   *   node/123
+   *   swapped-section-a/blah/title-based-thing
+   *   http://www.some-other-site.com
    * @param array $allowed_hosts
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirect($source_path, $destination, $destination_node = '', $allowed_hosts = array()) {
+  public static function createRedirect($source_path, $destination, $allowed_hosts = array()) {
     $alias = $destination;
 
     // We can not create a redirect for a URL that is not part of the domain
@@ -204,11 +308,6 @@ class Url {
         $source_options['query'] = $query;
       }
 
-      if (!empty($destination_node)) {
-        if (!empty($destination_node->nid)) {
-          $destination = 'node/' . $destination_node->nid;
-        }
-      }
       // Check to see if the source and destination or alias are the same.
       if (($source_path !== $destination) && ($source_path !== $alias)) {
         // The source and destination are different, so make the redirect.
@@ -256,19 +355,32 @@ class Url {
     }
   }
 
+
   /**
-   * Adds multiple redirects to the same destination.
+   * Creates multiple redirects to the same destination.
    *
    * This is typically called within the migration's complete().
    *
    * @param array $redirects
-   *   An internal paths to build redirects FROM (ex: array('path/blah', 'foo'))
+   *   The paths or URIs of the legacy source. MUST be INTERNAL to this site.
+   *   Ex: redirect-oldsite/section/blah/index.html,
+   *   https://www.this-site.com/somepage.htm
+   *   http://external-site.com/somepate.htm [only if external-site.com is in
+   *   the allowed hosts array].
    * @param string $destination
-   *   The destination of where the redirect should go TO (ex: 'node/123')
+   *   The destination of the redirect Ex:
+   *   node/123
+   *   swapped-section-a/blah/title-based-thing
+   *   http://www.some-other-site.com
+   * @param array $allowed_hosts
+   *   If passed, this will limit redirect creation to only urls that have a
+   *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirectsMultiple(array $redirects, $destination) {
+  public static function createRedirectsMultiple(array $redirects, $destination, $allowed_hosts = array()) {
     foreach ($redirects as $redirect) {
-      self::createRedirect($redirect, $destination);
+      if (!empty($redirect)) {
+        self::createRedirect($redirect, $destination, $allowed_hosts);
+      }
     }
   }
 
@@ -435,7 +547,7 @@ class Url {
     else {
       // There is no site host defined.
       $message = "The base domain is needed, but has not been set. Visit /admin/config/migration_tools \n";
-      throw new MigrateException($message);
+      throw new \MigrateException($message);
     }
   }
 
@@ -469,11 +581,13 @@ class Url {
    * Examines an url to see if it is internal to this site.
    *
    * @param string $url
-   *   A url.
+   *   A URL. Ex:
+   *   https://www.newsite.com/somepage,
+   *   https://www.oldsite.com/
    *
    * @param array $allowed_hosts
    *   Optional:  A flat array of allowed domains. Uses base url admin setting.
-   *   ex:array('www.site.com', 'site.com').
+   *   ex:array('www.newsite.com', 'newsite.com').
    *
    * @return bool
    *   TRUE if the host is within the site.
@@ -501,10 +615,13 @@ class Url {
    * Normalize the path to make sure paths are consistent.
    *
    * @param string $uri
-   *   A uri.
+   *   A URI. Ex:
+   *   'somepath/path/',
+   *   'somepath/path'.
    *
    * @return string
-   *   The cleaned uri. with path ending in / if not a file.
+   *   The normalized URI. with path ending in / if not a file.
+   *   Ex: 'somepath/path/'.
    */
   public static function normalizePathEnding($uri) {
     $uri = trim($uri);
@@ -569,12 +686,12 @@ class Url {
    *   FALSE - no detectable redirects exist in the page.
    */
   public static function hasValidRedirect($row, $query_path, $redirect_texts = array()) {
-    if (empty($row->urlLegacy)) {
-      throw new \MigrateException('$row->urlLegacy must be defined to look for a redirect.');
+    if (empty($row->pathingLegacyUrl)) {
+      throw new \MigrateException('$row->pathingLegacyUrl must be defined to look for a redirect.');
     }
     else {
       // Look for server side redirect.
-      $server_side = self::hasServerSideRedirects($row->urlLegacy);
+      $server_side = self::hasServerSideRedirects($row->pathingLegacyUrl);
       if ($server_side) {
         // A server side redirect was found.
         return $server_side;
@@ -637,7 +754,9 @@ class Url {
    * Check for server side redirects.
    *
    * @param string $url
-   *   The full url to a live page.
+   *   The full URL to a live page.
+   *   Ex: https://www.oldsite.com/section/blah/index.html,
+   *   https://www.oldsite.com/section/blah/.
    *
    * @return mixed
    *   string Url of the final desitnation if there was a redirect.
@@ -738,13 +857,15 @@ class Url {
    * Checks if a URL actually resolves to a 'page' on the internet.
    *
    * @param string $url
-   *   A full destination URI.
+   *   A full destination URL.
+   *   Ex: https://www.oldsite.com/section/blah/index.html
    * @param bool $follow_redirects
    *   TRUE (default) if you want it to track multiple redirects to the end.
    *   FALSE if you want to only evaluate the first page request.
    *
    * @return mixed
-   *   string url - http response is valid (2xx or 3xx) and has a destination.
+   *   string URL - http response is valid (2xx or 3xx) and has a destination.
+   *     Ex: https://www.oldsite.com/section/blah/index.html
    *   bool FALSE - https response is invalid, either 1xx, 4xx, or 5xx
    */
   public static function urlExists($url, $follow_redirects = TRUE) {

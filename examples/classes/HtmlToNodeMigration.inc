@@ -95,11 +95,6 @@ abstract class HtmlToNodeMigration extends FileSourceMigration {
       return FALSE;
     }
 
-    // Sets $row->legacy_path and $row->url_path.
-    if (empty($row->legacy_path) || empty($row->url_path)) {
-      $this->generateLegacyPath($row);
-    }
-
     // Check whether a redirect to this page already exists, if so, do not
     // migrate the "duplicate" content.
     if ($this->isDuplicateByRedirect($row)) {
