@@ -12,17 +12,17 @@ function migration_tools_drush_command() {
 
   $items['migration-tools-migrate-images'] = array(
     'description' => "Migrate all image files from a source directory to the public files directory.",
-    'aliases' => array('mtmi'),
+    'aliases' => array('mtmi', 'mt-migrate-images'),
     'arguments' => array(
-      'organization' => 'The organization to migrate',
+      'section' => 'The section to migrate',
     ),
   );
 
-  $items['migration-tools-html-folders'] = array(
-    'description' => "Find all folders that contain html files.",
-    'aliases' => array('mtscan'),
+  $items['migration-tools-list-html-directories'] = array(
+    'description' => "List all directories that contain htm(l) files.",
+    'aliases' => array('mtlhd', 'mt-list-html-directories'),
     'arguments' => array(
-      'organization' => 'The organization to migrate',
+      'section' => 'The section (directory) to scan for the list.',
     ),
     'options' => array(
       'ignore' => 'Comma delimited list of strings in folder to ignore',
@@ -35,21 +35,22 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['migration-tools-file-folders'] = array(
-    'description' => "Find all folders that contain binary/not-image files.",
-    'aliases' => array('dmff'),
+  $items['migration-tools-list-file-directories'] = array(
+    'description' => "List all directories that contain binary non-image files.",
+    'aliases' => array('mtlfd', 'mt-list-file-directories'),
     'arguments' => array(
-      'organization' => 'The organization to migrate',
+      'section' => 'The section (directory) to scan for the list.',
     ),
     'options' => array(
       'ignore' => 'Comma delimited list of strings in folder to ignore',
     ),
   );
 
-  $items['migration-tools-html-file-list'] = array(
-    'description' => "List all HTML files in a specified directory.",
+  $items['migration-tools-list-html-files'] = array(
+    'description' => "List all HTM(L) files in a specified directory.",
+    'aliases' => array('mtlhf', 'mt-list-html-files'),
     'arguments' => array(
-      'directory' => 'Path to the directory to analyze.',
+      'section' => 'The section (directory) to scan for the list.',
     ),
     'options' => array(
       'outfile' => 'Write output to a file',
@@ -61,24 +62,24 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['mt-generate-menu'] = array(
+  $items['migration-tools-generate-menu-import-file'] = array(
     'description' => "Generate a file to import a menu by crawling an html menu.",
-    'aliases' => array('dgm', 'migration-tools-generate-menu'),
+    'aliases' => array('mtgmif', 'mt-generate-menu-import-file'),
     'arguments' => array(
-      'organization' => 'The abbreviation of the organization to migrate (ex. oarm, ola, etc.)',
+      'section' => 'The abbreviation of the section to migrate (ex. oarm, ola, etc.)',
     ),
     'options' => array(
-      'menu-location-uri' => "If the menu is in www.somesite.gov/foo/bar/index.html then this option should be set to 'foo/bar/index.html'. If no option is given the default will be www.somesite.gov/<organization>",
-      'local-base-uri' => "When pages are migrated into drupal they will usually be at <organization>/page-title-alias, if for some reason, <organization> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
+      'menu-location-uri' => "If the menu is in www.somesite.gov/foo/bar/index.html then this option should be set to 'foo/bar/index.html'. If no option is given the default will be www.somesite.gov/<section>",
+      'local-base-uri' => "When pages are migrated into drupal they will usually be at <section>/page-title-alias, if for some reason, <section> is not the base path of all the pages relevant to the menu that is being generated this option can be used to override that.",
       'css-selector' => "The generation algorithm starts evaluating a menu hierarchy at the outer most ul of the menu.If that ul is not at the default css-selector 'div.leftnav>ul', then you can use this option to point the algorithm to another ul.",
       'engine' => "Optional. Sets the engine used for generation. Defaults to district.",
       'recurse' => "Optional. Enables recursion for loading the pages in the initial menu, to look for more links. Defaults to FALSE.",
     ),
   );
 
-  $items['mt-menu-import-file-from-seed'] = array(
+  $items['migration-tools-generate-menu-import-file-from-seed'] = array(
     'description' => "Generate a file to import a menu from a simple csv seed file that contains depth, title, destination",
-    'aliases' => array('dgmiffs', 'migration-tools-menu-import-file-from-seed'),
+    'aliases' => array('mtgmiffs', 'mt-generate-menu-import-file-from-seed'),
     'arguments' => array(
       'seed-file-name' => 'The filename of the csv file. ex: menu-og-1659.csv',
     ),
@@ -89,48 +90,49 @@ function migration_tools_drush_command() {
     ),
   );
 
-  $items['mt-import-group-menu'] = array(
+  $items['migration-tools-import-group-menu'] = array(
     'description' => "Imports a menu for a specific organic group.",
-    'aliases' => array('digm'),
+    'aliases' => array('mtigm', 'mt-import-group-menu'),
     'arguments' => array(
-      'file' => 'Required. menu text file name. Assumed that file exists in sites/all/module/custom/migration_tools/sources',
-      'organization' => 'The organization to migrate',
+      'file' => '(Required) Menu text file name. Assumes that file exists in sites/all/module/custom/[local_migrate]/sources',
+      'group' => 'The Organic Group menu to import.',
     ),
     'examples' => array(
-      'drush digm oip-menu.txt oip' => 'Import menu for organic group with group abbreviation oip',
+      'drush mtigm abc-menu.txt abc' => 'Import menu for organic group with group abbreviation abc',
     ),
   );
 
   $items['migration-tools-fix-legacy-links'] = array(
     'description' => "Fix links utilizing anchors in a migration group.",
-    'aliases' => array('dmfll'),
+    'aliases' => array('mtfll', 'migration-tools-fix-legacy-links'),
     'arguments' => array(
       'migration' => 'The name of a specific migration.',
     ),
     'options' => array(
       'group' => "A migration group.",
-      'idlist' => "A comma separeted list of nids.",
+      'idlist' => "A comma separated list of nids.",
       'extradebug' => "Show more debugging information.",
     ),
     'examples' => array(
-      'drush dmfll EoirPage' => 'Fix links with anchors in nodes from the given migration',
+      'drush dmfll AbcPage' => 'Fix links with anchors in nodes from the AbcPage migration.',
     ),
   );
 
-  $items['mt-generate-migration-class'] = array(
-    'description' => "Generates a MT migration class.",
-    'aliases' => array('dgm'),
-    'arguments' => array(
-      'config' => 'A yml file referencing the organization configuration to be used.',
-    ),
-    'options' => array(
-      'type' => '(optional) The type of migration to generate. Valid values are district, organization. Defaults to organization.',
-    ),
-    'examples' => array(
-      'drush dgm atr.yml' => 'Generate a standard migration class using atr.yml for configuration.',
-      'drush dgm ak.yml --type=district' => 'Generate a district migration class using ak.yml for configuration.',
-    ),
-  );
+  // @todo Get this working. Currently not working.
+  // $items['mt-generate-migration-class'] = array(
+  //   'description' => "Generates a MigrationTools migration class.",
+  //   'aliases' => array('dgm'),
+  //   'arguments' => array(
+  //     'config' => 'A yml file referencing the section configuration to be used.',
+  //   ),
+  //   'options' => array(
+  //     'type' => '(optional) The type of migration to generate. Valid values are district, section. Defaults to section.',
+  //   ),
+  //   'examples' => array(
+  //     'drush dgm atr.yml' => 'Generate a standard migration class using atr.yml for configuration.',
+  //     'drush dgm ak.yml --type=district' => 'Generate a district migration class using ak.yml for configuration.',
+  //   ),
+  // );
 
   return $items;
 }
@@ -138,7 +140,7 @@ function migration_tools_drush_command() {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_migrate_fix_legacy_links($migration = NULL) {
+function drush_migration_tools_fix_legacy_links($migration = NULL) {
   $fixer = new MigrationNodesLegacyLinksFixer();
 
   $nid_list = drush_get_option('idlist');
@@ -175,7 +177,7 @@ function drush_migration_tools_mt_migrate_fix_legacy_links($migration = NULL) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_migrate_images($organization) {
+function drush_migration_tools_migrate_images($section) {
   // Let's get our source directory, and our output directory.
   $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
@@ -189,7 +191,7 @@ function drush_migration_tools_mt_migrate_images($organization) {
     throw new Exception("We couldn't get the absolute path for public://");
   }
 
-  migration_tools_move_images($source_directory, $organization, $output_directory);
+  migration_tools_move_images($source_directory, $section, $output_directory);
 }
 
 /**
@@ -198,7 +200,7 @@ function drush_migration_tools_mt_migrate_images($organization) {
  * @param string $groups
  *   A string of group abbreviations, separated by commas.
  */
-function drush_migration_tools_mt_generate_migrate_commands($groups) {
+function drush_migration_tools_generate_migrate_commands($groups) {
   drush_print("");
   drush_print('drush migrate-register');
   drush_print("");
@@ -236,7 +238,7 @@ function drush_migration_tools_mt_generate_migrate_commands($groups) {
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_migrate_html_folders($organization) {
+function drush_migration_tools_list_html_directories($section) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
 
@@ -248,16 +250,16 @@ function drush_migration_tools_mt_migrate_html_folders($organization) {
     $extensions = explode(",", $extensions);
   }
 
-  drush_print_r(mt_migrate_find_folders_with_files($organization, $extensions, $ignore));
+  drush_print_r(mt_migrate_find_folders_with_files($section, $extensions, $ignore));
 }
 
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_migrate_file_folders($organization) {
+function drush_migration_tools_list_file_directories($section) {
   $ignore = drush_get_option('ignore');
   $ignore = explode(",", $ignore);
-  drush_print_r(mt_migrate_find_folders_with_files($organization,
+  drush_print_r(mt_migrate_find_folders_with_files($section,
     array("pdf", "txt", "rtf", "doc", "docx", "xls", "xlsx", "csv", "mp3",
       "mp4", "wpd", "wp", "qpw", "xml", "ppt", "pptx"), $ignore));
 }
@@ -343,7 +345,7 @@ function drush_migration_tools_html_file_list($directory) {
 /**
  * Find all the folders inside of org migraton souce that match the extensions.
  *
- * @param string $organization
+ * @param string $section
  *   The org abbreviations for the org we want to process.
  * @param array $exts
  *   The extension of the type of files that we want to find.
@@ -358,19 +360,19 @@ function drush_migration_tools_html_file_list($directory) {
  * @throws Exception
  *   If migrate_html_base_dir variable is not set.
  */
-function mt_migrate_find_folders_with_files($organization, $exts, $ignore = array()) {
+function mt_migrate_find_folders_with_files($section, $exts, $ignore = array()) {
   $source_directory = variable_get("migration_tools_base_dir");
   if (!$source_directory) {
     throw new Exception("the migration_tools_base_dir variable has not been defined");
   }
-  $organization_dir = $source_directory . "/{$organization}";
+  $section_dir = $source_directory . "/{$section}";
 
   $file_types = $exts;
 
   $files = array();
 
   foreach ($file_types as $ft) {
-    $output = shell_exec("find {$organization_dir} -type f -name '*.{$ft}'");
+    $output = shell_exec("find {$section_dir} -type f -name '*.{$ft}'");
     $files = array_merge($files, explode("\n", $output));
   }
 
@@ -473,7 +475,7 @@ function migration_tools_move_images($parent_input_directory, $directory, $paren
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_generate_menu($organization) {
+function drush_migration_tools_generate_menu_import_file($section) {
   $css_selector = drush_get_option('css-selector');
   $local_base_uri = drush_get_option('local-base-uri');
   $menu_location_uri = drush_get_option('menu-location-uri');
@@ -485,7 +487,7 @@ function drush_migration_tools_mt_generate_menu($organization) {
     'ust' => 'MenuGeneratorEngineUst',
   );
 
-  $parameters = new MenuGenerationParametersHtmlCrawl($organization);
+  $parameters = new MenuGenerationParametersHtmlCrawl($section);
 
   if ($local_base_uri) {
     $parameters->setUriLocalBase($local_base_uri);
@@ -500,7 +502,7 @@ function drush_migration_tools_mt_generate_menu($organization) {
     $parameters->initialMenuLocation = $local_base_uri;
   }
   else {
-    $parameters->initialMenuLocation = $organization;
+    $parameters->initialMenuLocation = $section;
   }
 
   $engine_class = $engines[$engine_option];
@@ -520,7 +522,7 @@ function drush_migration_tools_mt_generate_menu($organization) {
  * @param string $seed_csv_filename
  *   The filename of the seed file to be processed.
  */
-function drush_migration_tools_mt_menu_import_file_from_seed($seed_csv_filename) {
+function drush_migration_tools_generate_menu_import_file_from_seed($seed_csv_filename) {
   $csv_path = drush_get_option('csv-path');
   $import_file_path = drush_get_option('import-file-path');
   $fallback_page = drush_get_option('fallback-page', '<nolink>');
@@ -538,15 +540,15 @@ function drush_migration_tools_mt_menu_import_file_from_seed($seed_csv_filename)
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_generate_menu_district($organization) {
+function drush_migration_tools_mt_generate_menu_district($section) {
   module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-  migration_tools_create_menu_file("usao|" . $organization, TRUE);
+  migration_tools_create_menu_file("usao|" . $section, TRUE);
 }
 
 /**
  * Drush command callback.
  */
-function drush_migration_tools_mt_import_group_menu($file_name, $group_abbrev) {
+function drush_migration_tools_import_group_menu($file_name, $group_abbrev) {
   module_load_include('inc', 'migration_tools', 'includes/migration_tools');
   module_load_include('inc', 'mt_sitewide', 'includes/mt_sitewide.groups');
 
@@ -561,15 +563,15 @@ function drush_migration_tools_mt_import_group_menu($file_name, $group_abbrev) {
  * Drush command callback for mt-generate-migration-class.
  *
  * @param string $config_filename
- *   The filename of the YML file containing the organization configuration.
+ *   The filename of the YML file containing the section configuration.
  */
-function drush_migration_tools_mt_generate_migration_class($config_filename) {
+function drush_migration_tools_generate_migration_class($config_filename) {
   module_load_include('inc', 'migration_tools', 'includes/drush/MtMigrationGenerator');
 
-  // Default type option to 'organization'.
+  // Default type option to 'section'.
   $org_type = drush_get_option('type');
   if (empty($org_type)) {
-    $org_type = 'organization';
+    $org_type = 'section';
   }
 
   try {

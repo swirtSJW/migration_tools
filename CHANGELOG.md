@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Align drush command terms.
 * Improve html redirect destination verification.
 * Add Message::makeSkip().
 * Completed detection of html and javascript redirects.
