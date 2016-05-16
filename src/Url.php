@@ -1382,4 +1382,41 @@ class Url {
 
     return $params;
   }
+
+  /**
+   * Checks if given URL matches a list of candidates for a default document.
+   *
+   * @param string $url
+   *   The URL to be tested.
+   * @param array $candidates
+   *   A list of potential document names that could be indexes.
+   *   Defaults to "default" and "index".
+   *
+   * @return mixed
+   *   string - The base path if a matching document is found.
+   *   bool - FALSE if no matching document is found.
+   */
+  public static function getRedirectIfIndex($url, $candidates = array("default", "index")) {
+    // Filter through parse_url to separate out querystrings and etc.
+    $path = parse_url($url, PHP_URL_PATH);
+
+    // Pull apart components of the file and path that we'll need for comparison.
+    $filename = strtolower(pathinfo($path, PATHINFO_FILENAME));
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    $root_path = pathinfo($path, PATHINFO_DIRNAME);
+
+    // Test parsed URL.
+    if (!empty($filename) && !empty($extension) && in_array($filename, $candidates)) {
+      // Build the new implied route (base directory plus any arguments).
+      $new_url = self::reassembleURL(array(
+        'path' => $root_path,
+        'query' => parse_url($url, PHP_URL_QUERY),
+        'fragment' => parse_url($url, PHP_URL_FRAGMENT),
+      ), FALSE);
+
+      return $new_url;
+    }
+  // Default to returning FALSE if we haven't exited already.
+  return FALSE;
+  }
 }

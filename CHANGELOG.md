@@ -19,6 +19,7 @@ migration_tools 7.x-2.x  ** - ** - ****
 * Stub for redirect detection.
 * Destination URI validation.
 * Add migration-tools-html-file-list drush utility command.
+* Add helper method to URL class to check for default (index) files.
 
 migration_tools 7.x-1.x  April 14, 2016
 -----------------------------------------------
