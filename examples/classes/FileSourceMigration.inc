@@ -55,20 +55,13 @@ abstract class FileSourceMigration extends MTBaseMigration {
     $this->source = new MigrateSourceList($list_files, $item_file, $source_fields);
   }
 
-
   /**
    * Handles generation of redirects for index.php or index.html pages.
    */
   public function handleIndexRedirect($row) {
-    // Assume not an index until proven otherwise.
-    $row->isIndex = FALSE;
     // Check to see if $row->fileId == 'index.html' or 'index.php'.
-    if (preg_match('/index\.(htm(l?)|php)/', $row->fileId, $matches)) {
-      $row->isIndex = TRUE;
-      // Determine root path. E.g., oip/index.html would have the root path
-      // /oip.
-      $root_path = ltrim(rtrim(str_replace($matches[0], '', $row->fileId), '/'), '/');
-
+    $root_path = MigratonTools\Url::getRedirectIfIndex($row->fileId));
+    if ($root_path) {
       // Check to see if this alias already exists. E.g., if we are migrating
       // oip/index.html, see if an alias exists for /oip.
       if ($system_path = drupal_lookup_path('source', $root_path)) {
