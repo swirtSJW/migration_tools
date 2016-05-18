@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Improved URL/URI rewriting method for page href, files and img src.
+* Add Message::makeSummary()/
 * Align drush command terms.
 * Improve html redirect destination verification.
 * Add Message::makeSkip().

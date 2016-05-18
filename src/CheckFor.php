@@ -210,4 +210,65 @@ class CheckFor {
     }
     return TRUE;
   }
+
+
+  /**
+   * Identifes if a path is that of a file.
+   *
+   * @param string $path
+   *   A URL, URI, path, or filename to be evaluated.
+   *
+   * @return bool
+   *   TRUE - it's a file.
+   *   FALSE - it's not a file.
+   */
+  public static function isFile($path) {
+    return !self::isPage($path);
+  }
+
+  /**
+   * Identifes if a path is that of a page.
+   *
+   * @param string $path
+   *   A URL, URI, path, or filename to be evaluated.
+   *
+   * @return bool
+   *   TRUE - it's a page.
+   *   FALSE - it's not a page.
+   */
+  public static function isPage($path) {
+    // Grab just the path.
+    $path = parse_url($path, PHP_URL_PATH);
+    // Get the extension.
+    $extention = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    // If the extension is empty, assume htm.  Minimal risk because non-html
+    // files are rarely served up as directory defaults.
+    $extention = (!empty($extention)) ? $extention : 'htm';
+    $considered_pages = array(
+      'htm',
+      'html',
+      'html5',
+      'cfm',
+      'asp',
+      'aspx',
+      'jsp',
+      'jhtml',
+      'mht',
+      'php',
+      'php5',
+      'phtml',
+      'shtml',
+      'wml',
+      'xhtml',
+    );
+
+    if (in_array($extention, $considered_pages)) {
+      // It is definitely a page.
+      return TRUE;
+    }
+    else {
+      // It is likely something else.
+      return FALSE;
+    }
+  }
 }

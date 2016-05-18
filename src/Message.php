@@ -95,6 +95,39 @@ class Message {
   }
 
   /**
+   * Generate the import summary.
+   *
+   * @param array $completed
+   *   Array of completed imports.
+   * @param int $total_requested
+   *   The number to be processed.
+   * @param string $operation
+   *   The name of the operation being sumaraized.
+   *   Ex: Rewrite image src
+   *
+   * @return string
+   *   The report of what was completed.
+   */
+  public static function makeSummary($completed, $total_requested, $operation) {
+    $t = get_t();
+    $count = count($completed);
+    $completed_string = print_r($completed, TRUE);
+    $remove = array("Array", "(\n", ")\n");
+    $completed_string = str_replace($remove, '', $completed_string);
+    // Adjust for misaligned second line.
+    $completed_string = str_replace('             [', '     [', $completed_string);
+    $vars = array(
+      '@count' => $count,
+      '!completed' => $completed_string,
+      '@total' => $total_requested,
+      '@operation' => $operation,
+    );
+
+    $message = "Summary: @operation @count/@total.  Completed:\n !completed";
+    self::make($message, $vars, FALSE, 2);
+  }
+
+  /**
    * Determine the type of thing that created the message.
    *
    * @param string $type

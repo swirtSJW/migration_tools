@@ -59,18 +59,28 @@ class Url {
    *   The coralled URI from the legacy site ideally coming from
    *   $row->pathingCorralledUri
    *   ex: redirect-oldsite/section/blah/index.html
+   *   redirect-oldsite/section/blah/index.html?foo=bar
    *
    * @return string
-   *   The Drupal alias redirected from the legacy URI, or an empty sting.
+   *   The Drupal alias redirected from the legacy URI.
    *   ex: swapped-section-a/blah/title-based-thing
    */
-  public static function convertLegacyUriToAlias($coralled_legacy_uri) {
-    // Most common drupal paths have no start or ending / so start with that.
-    $legacy_uri_no_end = trim($coralled_legacy_uri, '/');
-    $redirect = redirect_load_by_source($legacy_uri_no_end);
+  public static function convertLegacyUriToAlias($coralled_legacy_uri, $language = LANGUAGE_NONE) {
+    // Drupal paths never begin with a / so remove it.
+    $coralled_legacy_uri = ltrim($coralled_legacy_uri, '/');
+    // Break out any query.
+    $query = parse_url($coralled_legacy_uri, PHP_URL_QUERY);
+    $query = (!empty($query)) ? self::convertUrlQueryToArray($query) : array();
+    $original_uri = $coralled_legacy_uri;
+    $coralled_legacy_uri = parse_url($coralled_legacy_uri, PHP_URL_PATH);
+
+    // Most common drupal paths have no ending / so start with that.
+    $legacy_uri_no_end = rtrim($coralled_legacy_uri, '/');
+
+    $redirect = redirect_load_by_source($legacy_uri_no_end, $language, $query);
     if (empty($redirect) && ($coralled_legacy_uri != $legacy_uri_no_end)) {
-      // There is no redirect found, lets try looking for one with the path/.
-      $redirect = redirect_load_by_source($coralled_legacy_uri);
+      // There is no redirect found, lets try looking for one with the path /.
+      $redirect = redirect_load_by_source($coralled_legacy_uri, $language, $query);
     }
     if ($redirect) {
       $nid = str_replace('node/', '', $redirect->redirect);
@@ -99,17 +109,9 @@ class Url {
         }
       }
     }
-    $message = "Legacy uri @legacy_uri does not have a node associated with it";
-    Message::make($message, array('@legacy_uri' => $coralled_legacy_uri), WATCHDOG_NOTICE, 1);
-    // Without legacy path yet migrated in, leave the link to source url
-    // so that the redirects can handle it when that content is migrate/created.
-    $base = variable_get('migration_tools_base_domain', '');
-    if (!empty($base)) {
-      return "{$base}/{$coralled_legacy_uri}";
-    }
-    else {
-      throw new Exception("The base domain is needed, but has not been set. Visit /admin/config/migration_tools");
-    }
+
+    // Made it this far with no alias found, return the original.
+    return $original_uri;
   }
 
 
@@ -186,7 +188,7 @@ class Url {
    *   ex: new-section/2015-banner-year-corn-crop
    */
   public static function generateNewUriAlias($row, $pathing_section_swap, $title) {
-    $directories = pathinfo($row->fileId, PATHINFO_DIRNAME);
+    $directories = self::extractPath($row->fileId);
     $directories = ltrim($directories, '/');
     // Swap the pathing_legacy_directory for the pathing_redirect_corral
     $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
@@ -227,9 +229,9 @@ class Url {
    *   https://www.this-site.com/section/subsection/index.html.
    */
   public static function convertRelativeToAbsoluteUrl($href, $base_url) {
-
-    if (parse_url($href, PHP_URL_SCHEME) != '') {
-      // $href is already a full URL.  Done.
+    if ((parse_url($href, PHP_URL_SCHEME) != '') || self::isOnlyFragment($href)) {
+      // $href is already a full URL or is only a fragment (onpage anchor)
+      // No processing needed.
       return $href;
     }
     else {
@@ -245,11 +247,12 @@ class Url {
     }
 
     // Make the Frankenpath.
-    $path = $parsed_base_url['path'];
+    $path = (!empty($parsed_base_url['path'])) ? $parsed_base_url['path'] : '';
     // Cut off the file.
-    $path = pathinfo($path, PATHINFO_DIRNAME);
+    $path = self::extractPath($path);
+
     // Join it to relative path.
-    $path = "{$path}/{$href}";
+    $path = "{$path}/{$parsed_href['path']}";
 
     // Replace '//' or '/./' or '/foo/../' with '/' recursively.
     $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
@@ -579,6 +582,35 @@ class Url {
     }
   }
 
+
+  /**
+   * Given a URL or URI return the path and nothing but the path.
+   *
+   * @param string $href
+   *   A URL or URI looking thing.
+   *   Ex:
+   *   http://www.oldsite.com/section/subsection/index.html
+   *   http://www.oldsite.com/section/subsection/
+   *   section/subsection/
+   *
+   * @return string
+   *   The path not containing any filename or extenstion.
+   */
+  public static function extractPath($href) {
+    // Leading / can confuse parse_url() so get rid of them.
+    $href = ltrim($href, '/');
+    $path = parse_url($href, PHP_URL_PATH);
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    if ($extension) {
+      $path = pathinfo($path, PATHINFO_DIRNAME);
+    }
+    else {
+      $path = pathinfo($path, PATHINFO_DIRNAME) . '/' . pathinfo($path, PATHINFO_BASENAME);
+    }
+
+    return $path;
+  }
+
   /**
    * Examines an url to see if it is within a allowed list of domains.
    *
@@ -674,24 +706,30 @@ class Url {
    */
   public static function reassembleURL($parsed_url, $return_url = TRUE) {
     $url = '';
+
     if ($return_url) {
+      // It is going to need the scheme and host if there is one.
       $default_base = variable_get('migration_tools_base_domain', '');
       $default_scheme = parse_url($default_base, PHP_URL_SCHEME);
       $default_host = parse_url($default_base, PHP_URL_HOST);
-      $url .= (!empty($parsed_url['scheme'])) ? $parsed_url['scheme'] . '://' : $default_scheme . '://';
 
-      if ((empty($default_base)) && (empty($parsed_url['host']))) {
+      $scheme = (!empty($parsed_url['scheme'])) ? $parsed_url['scheme'] : $default_scheme;
+      $scheme = (!empty($scheme)) ? $scheme . '://' : '';
+
+      $host = (!empty($parsed_url['host'])) ? $parsed_url['host'] : $default_host;
+
+      if ((empty($host)) || (empty($scheme))) {
         throw new Exception("The base domain is needed, but has not been set. Visit /admin/config/migration_tools");
       }
       else {
         // Append / after the host to account for it being removed from path.
-        $url .= (!empty($parsed_url['host'])) ? $parsed_url['host'] . '/' : $default_host . '/';
+        $url .= "{$scheme}{$host}/";
       }
 
     }
     // Trim the initial '/' to be Drupal friendly in the event of no host.
     $url .= (!empty($parsed_url['path'])) ? ltrim($parsed_url['path'], '/') : '';
-    $url .= (!empty($parsed_url['query'])) ? '?=' . $parsed_url['query'] : '';
+    $url .= (!empty($parsed_url['query'])) ? '?' . $parsed_url['query'] : '';
     $url .= (!empty($parsed_url['fragment'])) ? '#' . $parsed_url['fragment'] : '';
 
     return $url;
@@ -859,6 +897,41 @@ class Url {
     }
 
     return $processed_files;
+  }
+
+  /**
+   * Check href for  containing an fragment (ex. /blah/index.html#hello).
+   *
+   * @param string $href
+   *   An URL or URI, relative or absolute.
+   *
+   * @return bool
+   *   TRUE - it has a fragment.
+   *   FALSE - has no fragment.
+   */
+  public static function hasFragment($href) {
+    if (substr_count($href, "#") > 0) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check href for only containing a fragment (ex. #hello).
+   *
+   * @param string $href
+   *   An URL or URI, relative or absolute.
+   *
+   * @return bool
+   *   TRUE - it is just a fragment.
+   *   FALSE - it is not just a fragment.
+   */
+  public static function isOnlyFragment($href) {
+    $first_char = substr($href, 0, 1);
+    if ($first_char === "#") {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
@@ -1065,5 +1138,248 @@ class Url {
       }
     }
     return FALSE;
+  }
+
+  /**
+   * Alter image src in page that are relative, absolute or full alter base.
+   *
+   * Relative src will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param \QueryPath $query_path
+   *   A query path object containing the page html.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   array(
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   */
+  public static function rewriteImageHrefsOnPage(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+    // Find all the images on the page.
+    $image_srcs = $qp->top('img[src]');
+    // Initialize summary report information.
+    $image_count = count($image_srcs);
+    $report = array();
+    // Loop through them all looking for src to alter.
+    foreach ($image_srcs as $image) {
+      $href = trim($image->attr('src'));
+      $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+      // Set the new href.
+      $image->attr('src', $new_href);
+
+      if ($href !== $new_href) {
+        // Something was changed so add it to report.
+        $report[] = "$href changed to $new_href";
+      }
+    }
+    // Message the report (no log).
+    Message::makeSummary($report, $image_count, 'Rewrote img src');
+  }
+
+
+  /**
+   * Alter hrefs in page if they point to non-html-page files.
+   *
+   * Relative src will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param \QueryPath $query_path
+   *   A query path object containing the page html.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   array(
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   */
+  public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+    // Find all the hrefs on the page.
+    $image_srcs = $qp->top('a[href], area[href], img[longdesc]');
+    // Initialize summary report information.
+    $image_count = count($image_srcs);
+    $report = array();
+    // Loop through them all looking for href to alter.
+    foreach ($image_srcs as $image) {
+      $href = trim($image->attr('href'));
+      if (Checkfor::isFile($href)) {
+        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+        // Set the new href.
+        $image->attr('href', $new_href);
+
+        if ($href !== $new_href) {
+          // Something was changed so add it to report.
+          $report[] = "$href changed to $new_href";
+        }
+      }
+    }
+    // Message the report (no log).
+    Message::makeSummary($report, $image_count, 'Rewrote binary file hrefs');
+  }
+
+  /**
+   * Alter hrefs in page if they point to html-page files.
+   *
+   * Relative src will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param \QueryPath $query_path
+   *   A query path object containing the page html.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   array(
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   */
+  public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+    // Find all the hrefs on the page.
+    $image_srcs = $qp->top('a[href], area[href], img[longdesc]');
+    // Initialize summary report information.
+    $image_count = count($image_srcs);
+    $report = array();
+    // Loop through them all looking for href to alter.
+    foreach ($image_srcs as $image) {
+      $href = trim($image->attr('href'));
+      if (Checkfor::isPage($href)) {
+        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+        // Set the new href.
+        $image->attr('href', $new_href);
+
+        if ($href !== $new_href) {
+          // Something was changed so add it to report.
+          $report[] = "$href changed to $new_href";
+        }
+      }
+    }
+    // Message the report (no log).
+    Message::makeSummary($report, $image_count, 'Rewrote page hrefs');
+  }
+
+
+  /**
+   * Alter URIs and URLs in page that are relative, absolute or full alter base.
+   *
+   * Relative links will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param string $href
+   *   The href from a link, img src  or img long description.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   Examples:
+   *   array(
+   *     'http://www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'https://www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'https://www.oldsite.com/section' => '/redirect-oldsite/new-section',
+   *     'www.oldsite.com/' => 'www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   *
+   * @return string
+   *   The processed href.
+   */
+  public static function rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative) {
+    // Is this an internal path?
+    $scheme = parse_url($href, PHP_URL_SCHEME);
+    if (empty($scheme)) {
+      // It is internal, set a flag for later use.
+      $internal = TRUE;
+    }
+
+    // Fix relatives Using the $base_for_relative and file_path.
+    $source_file = $base_for_relative . '/' . $file_path;
+    $href = self::convertRelativeToAbsoluteUrl($href, $source_file);
+
+    // If the href matches a $url_base_alters  swap them.
+    foreach ($url_base_alters as $old_base => $new_base) {
+      if (stripos($href, $old_base) !== FALSE) {
+        $href = str_ireplace($old_base, $new_base, $href);
+        // A swap has been made, so no further replacement should be done.
+        break;
+      }
+    }
+
+    if (!empty($internal)) {
+      // This is internal, see if there is a redirect for it.
+      $href = self::convertLegacyUriToAlias($href);
+    }
+
+    return $href;
+  }
+
+
+  /**
+   * Return the url query string as an associative array.
+   *
+   * @param string $query
+   *   The string from the query paramters of an URL.
+   *
+   * @return array
+   *   The query paramters as an associative array.
+   */
+  public static function convertUrlQueryToArray($query) {
+    $query_parts = explode('&', $query);
+    $params = array();
+    foreach ($query_parts as $param) {
+      $item = explode('=', $param);
+      $params[$item[0]] = $item[1];
+    }
+
+    return $params;
   }
 }
