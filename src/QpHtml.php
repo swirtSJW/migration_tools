@@ -337,6 +337,9 @@ class QpHtml {
    * @param string $file_id
    *   The full file path of the of the current file, used to determine
    *   location of relative links.
+   *
+   * @TODO this method needs to be completely reworked or scrapped to use the
+   *   methods in Url.php
    */
   public static function convertRelativeSrcsToAbsolute($query_path, $file_id) {
 

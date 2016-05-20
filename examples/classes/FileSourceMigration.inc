@@ -60,7 +60,7 @@ abstract class FileSourceMigration extends MTBaseMigration {
    */
   public function handleIndexRedirect($row) {
     // Check to see if $row->fileId == 'index.html' or 'index.php'.
-    $root_path = MigratonTools\Url::getRedirectIfIndex($row->fileId));
+    $root_path = MigratonTools\Url::getRedirectIfIndex($row->fileId);
     if ($root_path) {
       // Check to see if this alias already exists. E.g., if we are migrating
       // oip/index.html, see if an alias exists for /oip.

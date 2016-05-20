@@ -30,6 +30,8 @@ abstract class HtmlFileBase extends Base {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+    \MigrationTools\Message::makeSeparator();
+    \MigrationTools\Message::make("Processing: @id", array('@id' => $row->fileId), FALSE, 0);
 
     // Build pathing properties.
     $row->pathing = new \MigrationTools\Url($row->fileId, $this->pathingLegacyDirectory, $this->pathingLegacyHost, $this->pathingRedirectCorral, $this->pathingSectionSwap, $this->pathingSourceLocalBasePath);

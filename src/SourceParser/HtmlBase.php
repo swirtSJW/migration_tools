@@ -233,6 +233,7 @@ abstract class HtmlBase {
         // querypath module or as a library.
         if (function_exists('qp')) {
           try {
+            $this->cleanHtmlBeforeQueryPath();
             // The QueryPAth qp is less destructive than htmlqp so try it first.
             $this->queryPath = qp($this->html, NULL, $qp_options);
           }
@@ -261,11 +262,19 @@ abstract class HtmlBase {
 
 
   /**
-   * Clean and adjust the html in $this->queryPath.
+   * Clean and alter $this->html right before it QueryPath is instantiated.
+   */
+  protected function cleanHtmlBeforeQueryPath() {
+    // Extend this to do any alterations to $this->html needed prior to feeding
+    // it to QueryPath.
+  }
+
+
+  /**
+   * Clean and alter the html within $this->queryPath.
    */
   protected function cleanQueryPathHtml() {
     try {
-      \MigrationTools\QpHtml::convertRelativeSrcsToAbsolute($this->queryPath, $this->fileId);
       \MigrationTools\QpHtml::removeFaultyImgLongdesc($this->queryPath);
       // Empty anchors without name attribute will be stripped by ckEditor.
       \MigrationTools\QpHtml::fixNamedAnchors($this->queryPath);

@@ -20,15 +20,95 @@ namespace MigrationTools;
  * $migration->pathingSourceLocalBasePath [/var/www/migration-source]
  *
  * $row->fileId [/oldsite/section/blah/index.html]
- * $row->pathingCorralledUri [redirect-oldsite/section/blah/index.html]
- * $row->pathingLegacyUrl [https://www.oldsite.com/section/blah/index.html]
- * $row->pathingNewUriAlias [swapped-section-a/blah/title-based-thing]
- * $row->pathingNewUriRaw [node/123]
- * $row->pathingRedirectSources [Array of source CorralledUri's for creating
+ * $row->pathing->corralledUri [redirect-oldsite/section/blah/index.html]
+ * $row->pathing->legacySection [section] or [section/sub-section]
+ * $row->pathing->legacyUrl [https://www.oldsite.com/section/blah/index.html]
+ * $row->pathing->destinationUriAlias [swapped-section-a/blah/title-based-thing]
+ * $row->pathing->destinationUriRaw [node/123]
+ * $row->pathing->redirectSources [Array of source CorralledUri's for creating
  * redirects in complete().
  */
 
 class Url {
+
+  /**
+   * Instantiates a pathing object to reside in a $row at $row->pathing.
+   *
+   * @param string $file_id
+   *   The file ID of the row.
+   *   [/oldsite/section/blah/index.html]
+   * @param string $legacy_migration_source_path
+   *   The legacy directory and optional sub-directories of the source file
+   *   within 'migration-source'.
+   *   [oldsite] or [oldsite/section/]
+   * @param string $legacy_host
+   *   The host of the source content.
+   *   [https://www.oldsite.com]
+   * @param string $redirect_corral
+   *   The base path in Drupal to uses in the redirect source source.
+   *   [redirect-oldsite]
+   * @param array $section_swap
+   *   An array or path sections to swap if the location of the source content
+   *   is going to be different from the location of the migrated content.
+   *   [array(‘oldsite/section’ => ‘new-section’)]
+   * @param string $source_local_base_path
+   *   The environment base path to where the legacy files exist.
+   *   [/var/www/migration-source]
+   */
+  public function __construct($file_id, $legacy_migration_source_path, $legacy_host, $redirect_corral, array $section_swap, $source_local_base_path) {
+    // Establish the incoming properties.
+    $this->fileId = $file_id;
+    $legacy_migration_source_path = ltrim($legacy_migration_source_path, '/');
+    $directories = explode('/', $legacy_migration_source_path);
+    $this->legacyDirectory = array_shift($directories);
+    $this->legacySection = implode('/', $directories);
+    $this->legacyHost = $legacy_host;
+    $this->redirectCorral = $redirect_corral;
+    $this->sectionSwap = self::drupalizeSwapPaths($section_swap);
+    $this->sourceLocalBasePath = $source_local_base_path;
+    $this->redirectSources = array();
+
+    // Build the items we can build at this time.
+    $this->generateCorralledUri();
+    $this->generateLegacyUrl();
+    $this->destinationSection = (!empty($this->sectionSwap[$this->legacySection])) ? $this->sectionSwap[$this->legacySection] : $this->legacySection;
+
+    // Create the placeholders for what will come later.
+    $this->destinationUriAlias = '';
+    $this->destinationUriRaw = '';
+  }
+
+  /**
+   * Alter a path to remove leading and trailing slashes.
+   *
+   * @param string $path
+   *   A URI path.
+   *
+   * @return string
+   *   The drupalized path.
+   */
+  public static function drupalizePath($path) {
+    return trim($path, '/ ');
+  }
+
+  /**
+   * Alter a swapaths to remove leading and trailing slashes.
+   *
+   * @param array $swap_paths
+   *   An array of key => value pairs where both key and values are paths.
+   *
+   * @return array
+   *   The array with leading and trailing slashes trimmed from keys and values.
+   */
+  public static function drupalizeSwapPaths($swap_paths) {
+    $new_paths = array();
+    foreach ($swap_paths as $key => $value) {
+      $key = self::drupalizePath($key);
+      $value = self::drupalizePath($value);
+      $new_paths[$key] = $value;
+    }
+    return $new_paths;
+  }
 
   /**
    * Grabs legacy redirects for this node from D6 and adds $row->redirects.
@@ -57,7 +137,7 @@ class Url {
    *
    * @param string $coralled_legacy_uri
    *   The coralled URI from the legacy site ideally coming from
-   *   $row->pathingCorralledUri
+   *   $row->pathing->corralledUri
    *   ex: redirect-oldsite/section/blah/index.html
    *   redirect-oldsite/section/blah/index.html?foo=bar
    *
@@ -118,31 +198,30 @@ class Url {
   /**
    * Generates a drupal-centric URI based in the redirect corral.
    *
-   * @param object $row
-   *   The row being migrated.
    * @param string $pathing_legacy_directory
-   *   The directory housing the migration source.
+   *   (optional) The directory housing the migration source.
    *   ex: If var/www/migration-source/oldsite, then 'oldsite' is the directory.
    * @param string $pathing_redirect_corral
-   *   The fake directory used for corralling the redirects.
+   *   (optional) The fake directory used for corralling the redirects.
    *   ex: 'redirect-oldsite'.
    *
-   * @var string $row->pathingCorralledUri
-   *   Created by reference.
+   * @var string $this->corralledUri
+   *   Created property.
    *   ex: redirect-oldsite/section/blah/index.html
    */
-  public static function generateCorralledUri($row, $pathing_legacy_directory, $pathing_redirect_corral) {
-    $uri = ltrim($row->fileId, '/');
+  public function generateCorralledUri($pathing_legacy_directory = '', $pathing_redirect_corral = '') {
+    // Allow the parameters to override the property if provided.
+    $pathing_legacy_directory = (!empty($pathing_legacy_directory)) ? $pathing_legacy_directory : $this->legacyDirectory;
+    $pathing_redirect_corral = (!empty($pathing_redirect_corral)) ? $pathing_redirect_corral : $this->redirectCorral;
+    $uri = ltrim($this->fileId, '/');
     // Swap the pathing_legacy_directory for the pathing_redirect_corral
     $uri = str_replace($pathing_legacy_directory, $pathing_redirect_corral, $uri);
-    $row->pathingCorralledUri = $uri;
+    $this->corralledUri = $uri;
   }
 
   /**
    * Generates a legacy website-centric URL for the source row.
    *
-   * @param object $row
-   *   The row being migrated.
    * @param string $pathing_legacy_directory
    *   The directory housing the migration source.
    *   ex: If var/www/migration-source/oldsite, then 'oldsite' is the directory.
@@ -150,23 +229,24 @@ class Url {
    *   The scheme and host of the original content.
    *   ex: 'https://www.oldsite.com'.
    *
-   * @var string $row->pathingLegacyUrl
-   *   Created by reference.  The location where the legacy page exists.
+   * @var string $this->legacyUrl
+   *   Created property.  The location where the legacy page exists.
    *   ex: https://www.oldsite.com/section/blah/index.html
    */
-  public static function generateLegacyUrl($row, $pathing_legacy_directory, $pathing_legacy_host) {
-    $uri = ltrim($row->fileId, '/');
+  public function generateLegacyUrl($pathing_legacy_directory = '', $pathing_legacy_host = '') {
+    // Allow the parameters to override the property if provided.
+    $pathing_legacy_directory = (!empty($pathing_legacy_directory)) ? $pathing_legacy_directory : $this->legacyDirectory;
+    $pathing_legacy_host = (!empty($pathing_legacy_host)) ? $pathing_legacy_host : $this->legacyHost;
+    $uri = ltrim($this->fileId, '/');
     // Swap the pathing_legacy_directory for the $pathing_legacy_host.
     $url = str_replace($pathing_legacy_directory, $pathing_legacy_host, $uri);
-    $row->pathingLegacyUrl = $url;
+    $this->legacyUrl = $url;
   }
 
 
   /**
    * Generates a drupal-centric Alias for the source row.
    *
-   * @param object $row
-   *   The row being migrated.
    * @param string $pathing_section_swap
    *   An array of sections to replace
    *   ex: array('oldsite/section' => 'new-section')
@@ -183,22 +263,25 @@ class Url {
    *   and ending with the title string.
    *   ex: new-section/2015-banner-year-corn-crop
    *
-   * @var string $row->pathingLegacyUrl
-   *   Created by reference.  The location where the legacy page exists.
+   * @var string $this->legacyUrl
+   *   Created property: The location where the legacy page exists.
    *   ex: new-section/2015-banner-year-corn-crop
    */
-  public static function generateNewUriAlias($row, $pathing_section_swap, $title) {
-    $directories = self::extractPath($row->fileId);
+  public function generateDestinationUriAlias($pathing_section_swap, $title) {
+    // Allow the parameter to override the property if provided.
+    $pathing_section_swap = (!empty($pathing_section_swap)) ? $pathing_section_swap : $this->sectionSwap;
+
+    $directories = self::extractPath($this->fileId);
     $directories = ltrim($directories, '/');
     // Swap the pathing_legacy_directory for the pathing_redirect_corral
     $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
     // Attempt to process the title.
     if (module_load_include('inc', 'pathauto')) {
       $path_title = pathauto_cleanstring($title);
-      $row->pathingNewUriAlias = "{$directories}/{$path_title}";
-      $row->pathingNewUriAlias = pathauto_clean_alias($row->pathingNewUriAlias);
-      // It is set by reference, but return it in case assignment is desired.
-      return $row->pathingNewUriAlias;
+      $this->destinationUriAlias = "{$directories}/{$path_title}";
+      $this->destinationUriAlias = pathauto_clean_alias($row->pathing->destinationUriAlias);
+      // The property has been set, but return it in case assignment is desired.
+      return $this->destinationUriAlias;
     }
     else {
       // Fail migration because the title can not be processed.
@@ -357,7 +440,7 @@ class Url {
             '@source' => $source_path,
             '@destination' => $redirect->redirect,
           );
-          Message::make($message, $variables, FALSE, 2);
+          Message::make($message, $variables, FALSE, 1);
         }
         else {
           // The redirect already exists.
@@ -366,7 +449,7 @@ class Url {
             '@legacy' => $source_path,
             '@alias' => $redirect->redirect,
           );
-          Message::make($message, $variables, FALSE, 2);
+          Message::make($message, $variables, FALSE, 1);
         }
       }
       else {
@@ -375,14 +458,14 @@ class Url {
         $variables = array(
           '@source' => $source_path,
         );
-        Message::make($message, $variables, FALSE, 2);
+        Message::make($message, $variables, FALSE, 1);
       }
     }
     else {
       // The is no value for redirect.
       $message = 'The source path is missing. No redirect can be built.';
       $variables = array();
-      Message::make($message, $variables, FALSE, 2);
+      Message::make($message, $variables, FALSE, 1);
     }
   }
 
@@ -752,12 +835,12 @@ class Url {
    *   FALSE - no detectable redirects exist in the page.
    */
   public static function hasValidRedirect($row, $query_path, $redirect_texts = array()) {
-    if (empty($row->pathingLegacyUrl)) {
-      throw new \MigrateException('$row->pathingLegacyUrl must be defined to look for a redirect.');
+    if (empty($row->pathing->legacyUrl)) {
+      throw new \MigrateException('$row->pathing->legacyUrl must be defined to look for a redirect.');
     }
     else {
       // Look for server side redirect.
-      $server_side = self::hasServerSideRedirects($row->pathingLegacyUrl);
+      $server_side = self::hasServerSideRedirects($row->pathing->legacyUrl);
       if ($server_side) {
         // A server side redirect was found.
         return $server_side;
@@ -1400,7 +1483,7 @@ class Url {
     // Filter through parse_url to separate out querystrings and etc.
     $path = parse_url($url, PHP_URL_PATH);
 
-    // Pull apart components of the file and path that we'll need for comparison.
+    // Pull apart components of the file and path that we'll need to compare.
     $filename = strtolower(pathinfo($path, PATHINFO_FILENAME));
     $extension = pathinfo($path, PATHINFO_EXTENSION);
     $root_path = pathinfo($path, PATHINFO_DIRNAME);
@@ -1416,7 +1499,26 @@ class Url {
 
       return $new_url;
     }
-  // Default to returning FALSE if we haven't exited already.
-  return FALSE;
+    // Default to returning FALSE if we haven't exited already.
+    return FALSE;
+  }
+
+  /**
+   * Outputs the sorted contents of ->pathing to terminal for inspection.
+   *
+   * @param string $message
+   *   (optional) A message to prepend to the output.
+   */
+  public function debug($message = '') {
+    // Sort it by property name for ease use.
+    $properties = get_object_vars($this);
+    ksort($properties);
+    $sorted_object = new \stdClass();
+    // Rebuild a new sorted object for output.
+    foreach ($properties as $property_name => $property) {
+      $sorted_object->$property_name = $property;
+    }
+
+    Message::varDumpToDrush($sorted_object, "$message Contents of pathing: ");
   }
 }

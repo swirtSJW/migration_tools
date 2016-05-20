@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add constructor to Url.php to create pathing object and some refactoring to
+  use and support the new pathing object.
 * Add Migration\HtmlFileBase class.
 * Improved URL/URI rewriting method for page href, files and img src.
 * Add Message::makeSummary()/
