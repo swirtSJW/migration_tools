@@ -127,7 +127,7 @@ abstract class Obtainer {
         // stack efficiently. Replace this with an iterator when it is ready.
         $method['method_name'] = $this->getCurrentFindMethod();
 
-        \MigrationTools\Message::make('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        \MigrationTools\Message::make('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -136,7 +136,7 @@ abstract class Obtainer {
       }
     }
 
-    \MigrationTools\Message::make('NO MATCHES FOUND', array(), WATCHDOG_DEBUG);
+    \MigrationTools\Message::make('NO MATCHES FOUND', array(), WATCHDOG_DEBUG, 2);
   }
 
   /**
