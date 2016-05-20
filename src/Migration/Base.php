@@ -58,16 +58,14 @@ abstract class Base extends \Migration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
-
-    // Establish some row propteries.
-    $row->pathingRedirectSources = array();
-    $row->urlLegacy = $this->hostLegacy . $row->fileId;
+    // Set to user id to admin for now.   Override in child class if needed.
+    $row->uid = 1;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function prepare(\stdClass $entity, \stdClass $row) {
+  public function prepare($entity, $row) {
     // This method is called right before the entity is saved.
 
   }
@@ -75,30 +73,10 @@ abstract class Base extends \Migration {
   /**
    * {@inheritdoc}
    */
-  public function complete($entity, \stdClass $row) {
+  public function complete($entity, $row) {
     // This method is called after the entity has been saved.
 
-    // Build any redirects.
-    $destination = $this->buildDestinationUrl($entity, $row);
-    if (!empty($row->pathingRedirectSources) && !empty($destination)) {
-      \MigrationTools\Url::createRedirectsMultiple($this->pathingRedirectSources, $this->destination);
-    }
   }
-
-
-  /**
-   * Called from complete(), builds and returns destination Url for an entity.
-   *
-   * @param object $entity
-   *   The entity that was just saved.
-   *
-   * @param object $row
-   *   The row that was just migrated.
-   *
-   * @return string
-   *   Example node/123, user/123, taxonomy/term/123.
-   */
-  abstract public function buildDestinationUrl($entity, $row);
 
 
   /**

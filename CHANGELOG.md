@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add Migration\HtmlFileBase class.
 * Improved URL/URI rewriting method for page href, files and img src.
 * Add Message::makeSummary()/
 * Align drush command terms.
