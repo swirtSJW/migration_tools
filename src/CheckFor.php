@@ -135,19 +135,21 @@ class CheckFor {
   /**
    * Determine if a given file is within any of an array of paths.
    *
+   * @param string $file_id
+   *   The unique id for the current row. Typically legacy_path or fileid.
    * @param array $paths
-   *   Array of paths to check.
-   * @param object $row
-   *   A row object as delivered by migrate.
+   *   Array of full or partial paths to check. Ex:
+   *   full - 'oldsite/section/bad-directory/'
+   *   partial - 'bad-directory'
    *
    * @return bool
    *   -TRUE if the file is one of the paths.
    *   -FALSE if the file is not within one of the paths.
    */
-  public static function isInPath(array $paths, $row) {
+  public static function isInPath($file_id, array $paths) {
     foreach ($paths as $path) {
       // Is the file in one of the paths?
-      if (stripos($row->fileId, $path) !== FALSE) {
+      if (stripos($file_id, $path) !== FALSE) {
         // The file is in the path.
         return TRUE;
       }
@@ -161,7 +163,6 @@ class CheckFor {
    *
    * @param string $file_id
    *   The unique id for the current row. Typically legacy_path or fileid.
-   *
    * @param array $files_to_skip
    *   Array of values to skip and not migrate.
    *
@@ -169,10 +170,10 @@ class CheckFor {
    *   -TRUE if the row should be skipped.
    *   -FALSE if the row should not be skipped.
    */
-  public static function isSkipFile($file_id, $files_to_skip) {
+  public static function isSkipFile($file_id, array $files_to_skip) {
     if (in_array($file_id, $files_to_skip)) {
       // This page should be skipped.
-      $message = '- @fileid  -> Skipped: intentionally.';
+      $message = '- @fileid  -> Skipped: in list of files to skip.';
       watchdog('migration_tools', $message, array('@fileid' => $file_id), WATCHDOG_WARNING);
 
       return TRUE;

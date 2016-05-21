@@ -13,6 +13,24 @@ namespace MigrationTools\Migration;
  * @package migration_tools
  */
 abstract class HtmlFileBase extends Base {
+
+  /**
+   *  Array of full or partial paths to skip.
+   *
+   * @var array
+   *   Ex:
+   *   full - 'oldsite/section/bad-directory/'
+   *   partial - 'bad-directory'
+   */
+  public $skipDirectories = array();
+
+  /**
+   * Array of specific fileIds to skip.
+   *
+   * @var array
+   *   Ex: '/oldsite/section/subsection/skip-this.html'
+   */
+  public $skipFiles = array();
   /**
    * {@inheritdoc}
    */
@@ -32,6 +50,18 @@ abstract class HtmlFileBase extends Base {
     }
     \MigrationTools\Message::makeSeparator();
     \MigrationTools\Message::make("Processing: @id", array('@id' => $row->fileId), FALSE, 0);
+
+    if (\MigrationTools\CheckFor::isInPath($row->fileId, $this->skipDirectories)) {
+      // This content is within a directory to be skipped.
+      $message = '- @fileid  -> Skipped: within a skipped directory.';
+      watchdog('migration_tools', $message, array('@fileid' => $row->fileId), WATCHDOG_WARNING);
+      return FALSE;
+    }
+
+    if (\MigrationTools\CheckFor::isSkipFile($row->fileId, $this->skipFiles)) {
+      // This file is within a directory to be skipped.
+      return FALSE;
+    }
 
     // Build pathing properties.
     $row->pathing = new \MigrationTools\Url($row->fileId, $this->pathingLegacyDirectory, $this->pathingLegacyHost, $this->pathingRedirectCorral, $this->pathingSectionSwap, $this->pathingSourceLocalBasePath);
