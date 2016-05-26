@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add OrganicGroups class for tools to handle OG issues.
 * Adjust params on CheckFor isInPath isSkipFile to make them consistent in
   param order of needle, haystack.
 * Add constructor to Url.php to create pathing object and some refactoring to
