@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Improvements to ObtainDate.
 * Add OrganicGroups class for tools to handle OG issues.
 * Adjust params on CheckFor isInPath isSkipFile to make them consistent in
   param order of needle, haystack.

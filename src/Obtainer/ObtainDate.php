@@ -17,41 +17,25 @@ class ObtainDate extends ObtainHtml {
 
 
   /**
-   * Finder method to find the first .newsRight.
-   *
-   * @return string
-   *   The string that was found
-   */
-  protected function pluckClassNewsRightLast() {
-    $element = $this->queryPath->top('.newsRight')->last();
-    $this->setElementToRemove($element);
-
-    return $element->text();
-  }
-
-
-  /**
    * Finder method to find dates by its accompanying text.
    *
+   * @param mixed $selectors
+   *   string - single selector to find.
+   *   array - an array of selectors to look for.
+   *
+   * @param mixed $search_strings
+   *   string - single string to search for.
+   *   array - array of strings to search for.
+   *   The search string(s) would be adjacent to the date.
+   *
    * @return string
    *   The string that was found
    */
-  protected function pluckProbableDate() {
-    // Selectors to run through.
-    $selectors = array(
-      '.BottomLeftContent',
-      '#dateline',
-      'p',
-      '.newsLeft',
-      '.newsRight',
-    );
-    // Text strings to search for.
-    $search_strings = array(
-      "FOR IMMEDIATE RELEASE",
-      "NEWS RELEASE SUMMARY",
-      "FOR IMMEDIATE  RELEASE",
-      "IMMEDIATE RELEASE",
-    );
+  protected function pluckDateFromSelectorWithSearchStrings($selectors, $search_strings) {
+    // If single strings are given, convert to arrays.
+    $selectors = (array) $selectors;
+    $search_strings = (array) $search_strings;
+
     // Loop through the selectors.
     foreach ($selectors as $selector) {
       // Loop through the search strings.
@@ -69,7 +53,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            \MigrationTools\Message::make("pluckProbableDate| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), WATCHDOG_DEBUG);
+            \MigrationTools\Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), FALSE, 2);
 
             return $text;
           }
@@ -81,16 +65,76 @@ class ObtainDate extends ObtainHtml {
   }
 
   /**
-   * Method for returning the table cell at row 1, column 1.
+   * Finder method to find dates within text within selector moving start->end.
+   *
+   * @param string $selector
+   *   A selector to search within.
    *
    * @return string
-   *   The string found.
+   *   The date string that was found
    */
-  protected function pluckTableRow1Col1() {
-    $table = $this->queryPath->find("table");
-    $text = $this->pluckFromTable($table, 1, 1);
+  protected function findAndFilterForwardDate($selector) {
+    $elements = $this->queryPath->find($selector);
 
-    return $text;
+    foreach ($elements as $element) {
+      $date_formats = array(
+        // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
+        "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
+      );
+      foreach ($date_formats as $date_format) {
+        $matches = array();
+        $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
+        if ($hit) {
+          foreach ($matches[0] as $key => $match) {
+            $text = $this->cleanString($match);
+            $valid = $this->validateString($text);
+
+            if ($valid) {
+              \MigrationTools\Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+
+              return $text;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Plucker method to pluck dates within text within selector going start->end.
+   *
+   * @param string $selector
+   *   A selector to search within.
+   *
+   * @return string
+   *   The date string that was found
+   */
+  protected function pluckAndFilterForwardDate($selector) {
+    $elements = $this->queryPath->find($selector);
+
+    foreach ($elements as $element) {
+      $date_formats = array(
+        // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
+        "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
+      );
+      foreach ($date_formats as $date_format) {
+        $matches = array();
+        $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
+        if ($hit) {
+          foreach ($matches[0] as $key => $match) {
+            $text = $this->cleanString($match);
+            $valid = $this->validateString($text);
+
+            if ($valid) {
+              $this->setElementToRemove($element);
+              \MigrationTools\Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+
+              return $text;
+            }
+          }
+        }
+      }
+    }
   }
 
   /**

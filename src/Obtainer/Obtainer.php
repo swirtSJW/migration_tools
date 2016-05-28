@@ -117,6 +117,8 @@ abstract class Obtainer {
     foreach ($this->methodStack as $key => $method) {
       // Run the method. It is expected that the method will return a string.
       $this->setCurrentFindMethod($method['method_name']);
+      // Reset QueryPath pointer to top of document.
+      $this->queryPath->top();
       $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
       $found_string = $this->cleanString($found_string);
       if ($this->validateString($found_string)) {
