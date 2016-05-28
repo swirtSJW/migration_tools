@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add CheckFor isSkipAndRedirect to allow for skipping and redirecting.
 * Improvements to ObtainDate.
 * Add OrganicGroups class for tools to handle OG issues.
 * Adjust params on CheckFor isInPath isSkipFile to make them consistent in

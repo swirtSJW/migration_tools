@@ -126,7 +126,7 @@ class CheckFor {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_WARNING, 1);
+      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_INFO, 1);
       return TRUE;
     }
     return FALSE;
@@ -174,9 +174,35 @@ class CheckFor {
     if (in_array($file_id, $files_to_skip)) {
       // This page should be skipped.
       $message = '- @fileid  -> Skipped: in list of files to skip.';
-      watchdog('migration_tools', $message, array('@fileid' => $file_id), WATCHDOG_WARNING);
+      Message::make($message, array('@fileid' => $file_id), WATCHDOG_INFO, 1);
 
       return TRUE;
+    }
+
+    // This page should not be skipped.
+    return FALSE;
+  }
+
+
+  /**
+   * Determine if a given file should be excluded and redirected to elsewhere.
+   *
+   * @param string $file_id
+   *   The unique id for the current row. Typically legacy_path or fileid.
+   * @param array $files_to_skip_and_redirect
+   *   Array of values to skip and redirect in the format of:
+   *   array('file id' => 'destination')
+   *
+   * @return mixed
+   *   string - Destination of the redirect if the row should be skipped.
+   *   bool - FALSE if the row should not be skipped.
+   */
+  public static function isSkipAndRedirectFile($file_id, array $files_to_skip_and_redirect) {
+    if (!empty($files_to_skip_and_redirect[$file_id])) {
+      // This page should be skipped and redirected to destination.
+      $destination = $files_to_skip_and_redirect[$file_id];
+
+      return $destination;
     }
 
     // This page should not be skipped.

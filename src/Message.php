@@ -37,7 +37,7 @@ class Message {
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
    */
-  public static function make($message, $variables = array(), $severity = \WATCHDOG_NOTICE, $indent = 1) {
+  public static function make($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     $type = 'unknown';
@@ -53,11 +53,11 @@ class Message {
       $formatted_message = format_string($message, $variables);
       // Drush does not print all Watchdog messages to terminal only
       // WATCHDOG_ERROR and worse.
-      if ($severity > \WATCHDOG_ERROR || $severity === FALSE) {
+      if ($severity > WATCHDOG_ERROR || $severity === FALSE) {
         // Watchdog didn't output it, so output it directly.
         drush_print($type . $formatted_message, $indent);
       }
-      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= \WATCHDOG_ERROR) && $severity !== FALSE) {
+      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR) && $severity !== FALSE) {
         throw new \MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
