@@ -1,5 +1,9 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+
+migration_tools 7.x-2.1  May 27, 2016
+-----------------------------------------------
 * Add stub class for Source\Url for when the source is live URLs.
 * Minor improvements to Meta Redirect detection.
 * Add redirect detection and handling to Migration\HtmlFileBase.
