@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Minor improvements to Meta Redirect detection.
 * Add redirect detection and handling to Migration\HtmlFileBase.
   Relocated some handling between Base and HtmlFileBase.
 * Add CheckFor isSkipAndRedirect to allow for skipping and redirecting.

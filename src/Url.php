@@ -27,6 +27,7 @@ namespace MigrationTools;
  * $row->pathing->destinationUriRaw [node/123]
  * $row->pathing->redirectSources [Array of source CorralledUri's for creating
  * redirects in complete().
+ * $this->pathing->redirectDestination [any valid url, drupal path, drupal uri.]
  */
 
 class Url {
@@ -73,9 +74,10 @@ class Url {
     $this->generateLegacyUrl();
     $this->destinationSection = (!empty($this->sectionSwap[$this->legacySection])) ? $this->sectionSwap[$this->legacySection] : $this->legacySection;
 
-    // Create the placeholders for what will come later.
+    // Create the placeholders for what might come later.
     $this->destinationUriAlias = '';
     $this->destinationUriRaw = '';
+    $this->redirectDestination = '';
   }
 
   /**
@@ -1035,16 +1037,17 @@ class Url {
   public static function getRedirectFromHtml($row, $query_path, $redirect_texts = array()) {
     // Hunt for <meta> redirects via refresh and location.
     // These use only full URLs.
-    $metas = $query_path->find('meta');
+    $metas = $query_path->top()->find('meta');
     foreach (is_array($metas) || is_object($metas) ? $metas : array() as $meta) {
       $attributes = $meta->attr();
-      if (!empty($attributes['http-equiv']) && (($attributes['http-equiv'] === 'refresh') || ($attributes['http-equiv'] === 'location'))) {
+      $http_equiv = (!empty($attributes['http-equiv'])) ? strtolower($attributes['http-equiv']) : FALSE;
+      if (($http_equiv === 'refresh') || ($http_equiv === 'location')) {
         // It has a meta refresh or meta location specified.
         // Grab the url from the content attribute.
         if (!empty($attributes['content'])) {
           $content_array = preg_split('/url=/i', $attributes['content'], -1, PREG_SPLIT_NO_EMPTY);
           // The URL is going to be the last item in the array.
-          $url = array_pop($content_array);
+          $url = trim(array_pop($content_array));
           if (filter_var($url, FILTER_VALIDATE_URL)) {
             // Seems to be a valid URL.
             return $url;
