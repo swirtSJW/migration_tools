@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add redirect detection and handling to Migration\HtmlFileBase.
+  Relocated some handling between Base and HtmlFileBase.
 * Add CheckFor isSkipAndRedirect to allow for skipping and redirecting.
 * Improvements to ObtainDate.
 * Add OrganicGroups class for tools to handle OG issues.

@@ -38,6 +38,12 @@ abstract class HtmlFileBase extends Base {
     parent::__construct($arguments);
     $this->mergeArguments($arguments);
 
+    // Add any arguments that are specific to this migration.
+    $arguments = array(
+      'source_type' => 'file',
+      'default_files' => array('index', 'default'),
+    );
+    $this->mergeArguments($arguments);
   }
 
   /**
@@ -54,7 +60,7 @@ abstract class HtmlFileBase extends Base {
     if (\MigrationTools\CheckFor::isInPath($row->fileId, $this->skipDirectories)) {
       // This content is within a directory to be skipped.
       $message = '- @fileid  -> Skipped: within a skipped directory.';
-      watchdog('migration_tools', $message, array('@fileid' => $row->fileId), WATCHDOG_WARNING);
+      \MigrationTools\Message::make($message, array('@fileid' => $row->fileId), WATCHDOG_INFO, 1);
       return FALSE;
     }
 
@@ -65,6 +71,44 @@ abstract class HtmlFileBase extends Base {
 
     // Build pathing properties.
     $row->pathing = new \MigrationTools\Url($row->fileId, $this->pathingLegacyDirectory, $this->pathingLegacyHost, $this->pathingRedirectCorral, $this->pathingSectionSwap, $this->pathingSourceLocalBasePath);
+
+    // Check whether a redirect to this page already exists, if so, do not
+    // migrate the "duplicate" content. Whatever migrated it first wins.
+    if (\MigrationTools\CheckFor::isDuplicateByRedirect($row->pathing->corralledUri)) {
+      // This record already exists so bail on the migration.
+      return FALSE;
+    }
+
+    // Set the page location as one redirect source.
+    $row->pathing->redirectSources[] = $row->pathing->corralledUri;
+
+    // Set the directory as one source if the file is a default file.
+    $default_filenames = $this->getArgument('default_files');
+    $row->pathing->redirectSources[] = \MigrationTools\Url::getRedirectIfIndex($row->pathing->corralledUri, $default_filenames);
+
+    // Set destination if this file explicitly redirected to some place else.
+    $row->pathing->redirectDestination = \MigrationTools\CheckFor::isSkipAndRedirectFile($row->fileId, $this->skipFilesAndRedirect);
+
+    if (empty($row->pathing->redirectDestination)) {
+      // There is no defined redirect yet from outsite the page, so it is time
+      // to instantiate the querypath source parser.
+      $source_parser = $this->getArgument('source_parser');
+
+      $row->sourceParser = new $source_parser($row->fileId, $row->filedata, $row);
+    }
+    else {
+      // There is a redirect destination for this page so build it.
+      \MigrationTools\Url::createRedirectsMultiple($row->pathing->redirectSources, $row->pathing->redirectDestination);
+      $message = 'Migration:' . $this->getArgument('machine_name') . '- @fileid  -> Skipped and Redirected to: @destination';
+      $variables = array(
+        '@fileid' => $row->fileId,
+        '@destination' => $row->pathing->redirectDestination,
+      );
+
+      \MigrationTools\Message::make($message, $variables, WATCHDOG_INFO, 1);
+
+      return FALSE;
+    }
   }
 
 

@@ -47,7 +47,10 @@ abstract class Base extends \Migration {
   public function __construct($arguments) {
     parent::__construct($arguments);
     $this->mergeArguments($arguments);
-
+    $arguments = array(
+      'uid' => 1,
+    );
+    $this->mergeArguments($arguments);
   }
 
   /**
@@ -58,8 +61,7 @@ abstract class Base extends \Migration {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
-    // Set to user id to admin for now.   Override in child class if needed.
-    $row->uid = 1;
+
   }
 
   /**
@@ -83,14 +85,20 @@ abstract class Base extends \Migration {
    * Add multiple field mappings at once.
    *
    * @param array $mappings
-   *   An array of field mappings in the form of source_key => dest_key.
+   *   An array of field mappings in the form of dest_key => source_key.
    *
    * @param bool $warn_on_override
    *   Set to FALSE to prevent warnings when there's an existing mapping.
    */
   public function addFieldMappings(array $mappings, $warn_on_override = TRUE) {
-    foreach ($mappings as $source => $destination) {
-      $this->addFieldMapping($source, $destination, $warn_on_override);
+    foreach ($mappings as $destination => $source) {
+      if (is_numeric($destination)) {
+        // The item is keyless, so it is just a destination.
+        $this->addFieldMapping($source, $source, $warn_on_override);
+      }
+      else {
+        $this->addFieldMapping($destination, $source, $warn_on_override);
+      }
     }
   }
 
@@ -102,27 +110,22 @@ abstract class Base extends \Migration {
   protected $arguments = array();
 
   /**
-   * Basic getter for $arguments.
+   * Merges the existing arguments array into new arguments.
    *
-   * @return array
-   *   Whatever has been stored in $this->arguments.
-   */
-  public function getArguments() {
-    return $this->arguments;
-  }
-
-  /**
-   * Merges an array into the existing arguments array.
+   * The first class child class to define an argument wins.
    *
    * @param array $new_args
    *   Keyed array matching the format of the arguments array, to be merged.
    *
    * @return array
-   *   Array of the complete arguments array with the new elements.
+   *   Arguments array with any new elements if that weren't previously defined.
    */
   protected function mergeArguments($new_args = '') {
     if (!empty($new_args) && is_array($new_args)) {
-      $this->arguments = array_merge($this->arguments, $new_args);
+      // Since the migration classes merge the arguments Child classes before
+      // parent class, the first one to define an argument wins.
+      $this->arguments = array_merge($new_args, $this->arguments);
+      ksort($this->arguments);
     }
   }
 

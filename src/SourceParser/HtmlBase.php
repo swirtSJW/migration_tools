@@ -234,14 +234,14 @@ abstract class HtmlBase {
         if (function_exists('qp')) {
           try {
             $this->cleanHtmlBeforeQueryPath();
-            // The QueryPAth qp is less destructive than htmlqp so try it first.
+            // The QueryPath qp is less destructive than htmlqp so try it first.
             $this->queryPath = qp($this->html, NULL, $qp_options);
           }
           catch (\Exception $e) {
             // QueryPath qp is less tolerant of badly formed html so it must
             // have failed.
             // Use htmlqp which is more detructive but will fix bad html.
-            \MigrationTools\Message::make('Failed to instantiate QueryPath using qp, attempting qphtml, Exception: @error_message', array('@error_message' => $e->getMessage()), FALSE);
+            \MigrationTools\Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with !file, Exception: @error_message', array('@error_message' => $e->getMessage(), '!file' => $this->fileId), FALSE);
             $this->queryPath = htmlqp($this->html, NULL, $qp_options);
           }
         }
