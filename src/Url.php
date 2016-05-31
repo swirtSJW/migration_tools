@@ -1257,9 +1257,9 @@ class Url {
    */
   public static function rewriteImageHrefsOnPage(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     // Find all the images on the page.
-    $image_srcs = $qp->top('img[src]');
+    $image_srcs = $query_path->top('img[src]');
     // Initialize summary report information.
-    $image_count = count($image_srcs);
+    $image_count = $image_srcs->size();
     $report = array();
     // Loop through them all looking for src to alter.
     foreach ($image_srcs as $image) {
@@ -1309,9 +1309,9 @@ class Url {
    */
   public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     // Find all the hrefs on the page.
-    $image_srcs = $qp->top('a[href], area[href], img[longdesc]');
+    $image_srcs = $query_path->top('a[href], area[href], img[longdesc]');
     // Initialize summary report information.
-    $image_count = count($image_srcs);
+    $filelink_count = $image_srcs->size();
     $report = array();
     // Loop through them all looking for href to alter.
     foreach ($image_srcs as $image) {
@@ -1328,7 +1328,7 @@ class Url {
       }
     }
     // Message the report (no log).
-    Message::makeSummary($report, $image_count, 'Rewrote binary file hrefs');
+    Message::makeSummary($report, $filelink_count, 'Rewrote binary file hrefs');
   }
 
   /**
@@ -1362,9 +1362,9 @@ class Url {
    */
   public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     // Find all the hrefs on the page.
-    $image_srcs = $qp->top('a[href], area[href], img[longdesc]');
+    $image_srcs = $query_path->top('a[href], area[href], img[longdesc]');
     // Initialize summary report information.
-    $image_count = count($image_srcs);
+    $pagelink_count = $image_srcs->size();
     $report = array();
     // Loop through them all looking for href to alter.
     foreach ($image_srcs as $image) {
@@ -1381,7 +1381,7 @@ class Url {
       }
     }
     // Message the report (no log).
-    Message::makeSummary($report, $image_count, 'Rewrote page hrefs');
+    Message::makeSummary($report, $pagelink_count, 'Rewrote page hrefs');
   }
 
 

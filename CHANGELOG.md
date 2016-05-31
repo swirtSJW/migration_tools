@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Fix misnamed variable in link re-writing methods.
 * Add QpHtml::removeComment()
 * Move some basic cleaning calls into SourceParser\HtmlBase.
 
