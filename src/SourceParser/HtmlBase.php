@@ -19,6 +19,9 @@ abstract class HtmlBase {
   protected $html;
   public $row;
   public $queryPath;
+  public $htmlElementsToRemove = array();
+  public $htmlElementsToUnWrap = array();
+  public $htmlElementsToReWrap = array();
 
   /**
    * A source parser class should set a useful set of obtainer jobs.
@@ -278,6 +281,20 @@ abstract class HtmlBase {
       \MigrationTools\QpHtml::removeFaultyImgLongdesc($this->queryPath);
       // Empty anchors without name attribute will be stripped by ckEditor.
       \MigrationTools\QpHtml::fixNamedAnchors($this->queryPath);
+
+      \MigrationTools\QpHtml::removeElements($this->queryPath, $this->htmlElementsToRemove);
+
+      \MigrationTools\QpHtml::removeWrapperElements($this->queryPath, $this->htmlElementsToUnWrap);
+
+      foreach ($this->htmlElementsToReWrap as $element => $new_wrapper) {
+        // Make sure the array key is not just an array index.
+        if (is_string($element)  && !is_numeric($element)) {
+          \MigrationTools\QpHtml::rewrapElements($this->queryPath, array($element), $new_wrapper);
+        }
+      }
+
+      \MigrationTools\QpHtml::removeComments($this->queryPath);
+
     }
     catch (Exception $e) {
       \MigrationTools\Message::make('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), \WATCHDOG_ERROR);

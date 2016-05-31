@@ -20,12 +20,12 @@ class QpHtml {
    * @param array $arguments
    *   (optional). An array of arbitrary arguments to be used by HtmlCleanUp
    *   methods. Defaults to empty array.
+   *
+   * @TODO This is overly specific to a set of jobs and needs to be made more
+   *   generic.
    */
   public static function stripOrFixLegacyElements($query_path, $arguments = array()) {
-    // Strip comments.
-    foreach ($query_path->top()->xpath('//comment()')->get() as $comment) {
-      $comment->parentNode->removeChild($comment);
-    }
+    self::removeComments($query_path);
 
     // Remove elements and their children.
     QpHtml::removeElements($query_path, array(
@@ -101,7 +101,7 @@ class QpHtml {
    */
   public static function removeElements($query_path, array $selectors) {
     foreach ($selectors as $selector) {
-      $query_path->find($selector)->remove();
+      $query_path->top()->find($selector)->remove();
     }
   }
 
@@ -125,6 +125,20 @@ class QpHtml {
     // Grab the html from the shell.
     $processed_html = $query_path->top('.throw-away-parser-shell')->innerHTML();
     return $processed_html;
+  }
+
+
+  /**
+   * Removes all html comments from querypath document.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   */
+  public static function removeComments($query_path) {
+    // Strip comments.
+    foreach ($query_path->top()->xpath('//comment()')->get() as $comment) {
+      $comment->parentNode->removeChild($comment);
+    }
   }
 
   /**
@@ -191,7 +205,7 @@ class QpHtml {
    */
   public static function removeWrapperElements($query_path, array $selectors) {
     foreach ($selectors as $selector) {
-      $children = $query_path->find($selector)->children();
+      $children = $query_path->top()->find($selector)->children();
       $children->unwrap();
     }
   }
@@ -215,7 +229,7 @@ class QpHtml {
   public static function rewrapElements($query_path, array $selectors, $new_wrapper) {
     // There is something to wrap it in, so begin the hunt.
     foreach ($selectors as $selector) {
-      $elements = $query_path->find($selector);
+      $elements = $query_path->top()->find($selector);
       foreach ($elements as $element) {
         $element->wrapInner($new_wrapper);
       }
@@ -234,7 +248,7 @@ class QpHtml {
    */
   public static function removeEmptyElements($query_path, array $selectors) {
     foreach ($selectors as $selector) {
-      $elements = $query_path->find($selector);
+      $elements = $query_path->top()->find($selector);
       foreach ($elements as $element) {
         $contents = StringTools::superTrim($element->innerXHTML());
         $empty_values = array(
