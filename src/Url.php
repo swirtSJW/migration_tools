@@ -275,13 +275,21 @@ class Url {
 
     $directories = self::extractPath($this->fileId);
     $directories = ltrim($directories, '/');
-    // Swap the pathing_legacy_directory for the pathing_redirect_corral
+    // Swap any sections as requested.
     $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
+
+    // Remove the legacy directory if it is still present.
+    $directories = explode('/', $directories);
+    if ($directories[0] === $this->legacyDirectory) {
+      array_shift($directories);
+    }
+    $directories = implode('/', $directories);
+
     // Attempt to process the title.
     if (module_load_include('inc', 'pathauto')) {
       $path_title = pathauto_cleanstring($title);
       $this->destinationUriAlias = "{$directories}/{$path_title}";
-      $this->destinationUriAlias = pathauto_clean_alias($row->pathing->destinationUriAlias);
+      $this->destinationUriAlias = pathauto_clean_alias($this->destinationUriAlias);
       // The property has been set, but return it in case assignment is desired.
       return $this->destinationUriAlias;
     }

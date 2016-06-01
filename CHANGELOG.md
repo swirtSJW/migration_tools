@@ -1,6 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
-
+* Fix bug in Url::generateDestinationUriAlias().
 
 
 migration_tools 7.x-2.2  May 31, 2016
@@ -26,7 +26,7 @@ migration_tools 7.x-2.1  May 27, 2016
   use and support the new pathing object.
 * Add Migration\HtmlFileBase class.
 * Improved URL/URI rewriting method for page href, files and img src.
-* Add Message::makeSummary()/
+* Add Message::makeSummary()
 * Align drush command terms.
 * Improve html redirect destination verification.
 * Add Message::makeSkip().
