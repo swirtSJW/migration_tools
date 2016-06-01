@@ -1317,17 +1317,17 @@ class Url {
    */
   public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     // Find all the hrefs on the page.
-    $image_srcs = $query_path->top('a[href], area[href], img[longdesc]');
+    $binary_file_links = $query_path->top('a[href], area[href], img[longdesc]');
     // Initialize summary report information.
-    $filelink_count = $image_srcs->size();
+    $filelink_count = $binary_file_links->size();
     $report = array();
     // Loop through them all looking for href to alter.
-    foreach ($image_srcs as $image) {
-      $href = trim($image->attr('href'));
+    foreach ($binary_file_links as $link) {
+      $href = trim($link->attr('href'));
       if (Checkfor::isFile($href)) {
         $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
         // Set the new href.
-        $image->attr('href', $new_href);
+        $link->attr('href', $new_href);
 
         if ($href !== $new_href) {
           // Something was changed so add it to report.
@@ -1370,17 +1370,17 @@ class Url {
    */
   public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     // Find all the hrefs on the page.
-    $image_srcs = $query_path->top('a[href], area[href], img[longdesc]');
+    $links_to_pages = $query_path->top('a[href], area[href], img[longdesc]');
     // Initialize summary report information.
-    $pagelink_count = $image_srcs->size();
+    $pagelink_count = $links_to_pages->size();
     $report = array();
     // Loop through them all looking for href to alter.
-    foreach ($image_srcs as $image) {
-      $href = trim($image->attr('href'));
+    foreach ($links_to_pages as $link) {
+      $href = trim($link->attr('href'));
       if (Checkfor::isPage($href)) {
         $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
         // Set the new href.
-        $image->attr('href', $new_href);
+        $link->attr('href', $new_href);
 
         if ($href !== $new_href) {
           // Something was changed so add it to report.
@@ -1443,8 +1443,6 @@ class Url {
     foreach ($url_base_alters as $old_base => $new_base) {
       if (stripos($href, $old_base) !== FALSE) {
         $href = str_ireplace($old_base, $new_base, $href);
-        // A swap has been made, so no further replacement should be done.
-        break;
       }
     }
 
