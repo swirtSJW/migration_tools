@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add alias reporting.
 * Fix bug in Url::generateDestinationUriAlias().
 
 

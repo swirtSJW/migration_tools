@@ -125,18 +125,7 @@ abstract class HtmlFileBase extends Base {
     }
     \MigrationTools\Message::make("Path: @path", array('@path' => $row->pathing->destinationUriRaw), FALSE, 1);
 
-    // Report on the pathing.
-    if (!empty($entity->path)) {
-      if (empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
-        \MigrationTools\Message::make("Alias (custom): @alias", array('@alias' => $entity->path['alias']), FALSE, 1);
-      }
-      elseif (!empty($entity->path['pathauto']) && !empty($entity->path['alias'])) {
-        \MigrationTools\Message::make("Alias (pathauto): @alias", array('@alias' => $entity->path['alias']), FALSE, 1);
-      }
-      else {
-        \MigrationTools\Message::make("Alias: none created", array(), FALSE, 1);
-      }
-    }
+    \MigrationTools\Report::entityAlias($entity);
   }
 
   /**
