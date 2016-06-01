@@ -94,7 +94,7 @@ abstract class HtmlFileBase extends Base {
       // to instantiate the querypath source parser.
       $source_parser = $this->getArgument('source_parser');
 
-      $row->sourceParser = new $source_parser($row->fileId, $row->filedata, $row);
+      $this->sourceParser = new $source_parser($row->fileId, $row->filedata, $row);
     }
     else {
       // There is a redirect destination for this page so build it.

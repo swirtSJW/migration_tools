@@ -28,7 +28,7 @@ class Job {
    *   The name of the Obtainer class to run.
    * @param bool $after_clean
    *   (optional) Flag to indicate if this job should run after the QueryPath
-   *   html has ben cleaned. Default: FALSE.
+   *   html has been cleaned. Default: FALSE.
    */
   public function __construct($row_property, $obtainer_class_name, $after_clean = FALSE) {
     $this->rowProperty = $row_property;

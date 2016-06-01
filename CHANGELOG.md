@@ -1,5 +1,11 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+
+
+migration_tools 7.x-2.2  May 31, 2016
+-----------------------------------------------
+* Move instance of SourceParser from $row to migration $this.
 * Fix misnamed variable in link re-writing methods.
 * Add QpHtml::removeComment()
 * Move some basic cleaning calls into SourceParser\HtmlBase.
