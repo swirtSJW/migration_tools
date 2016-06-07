@@ -75,7 +75,6 @@ class ObtainDate extends ObtainHtml {
    */
   protected function findAndFilterForwardDate($selector) {
     $elements = $this->queryPath->find($selector);
-
     foreach ($elements as $element) {
       $date_formats = array(
         // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
@@ -124,7 +123,6 @@ class ObtainDate extends ObtainHtml {
           foreach ($matches[0] as $key => $match) {
             $text = $this->cleanString($match);
             $valid = $this->validateString($text);
-
             if ($valid) {
               $this->setElementToRemove($element);
               \MigrationTools\Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
@@ -318,7 +316,7 @@ class ObtainDate extends ObtainHtml {
       case empty($string):
       case is_object($string):
       case is_array($string):
-      case (strlen($string) < 7):
+      case (strlen($string) < 6):
         // If we can't form a date out of it, it must not be a date.
       case !strtotime($string):
         return FALSE;
