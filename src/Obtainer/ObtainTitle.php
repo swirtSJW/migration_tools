@@ -119,14 +119,18 @@ class ObtainTitle extends ObtainHtml {
     // Remove undesirable chars and strings.
     $remove = array(
       '&raquo;',
+      '&nbsp;',
       '»',
+      // Weird space character.'
+      ' ',
     );
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = \MigrationTools\StringTools::superTrim($text);
     // Remove multiple spaces.
-    $text = preg_replace('!\s+!', ' ', $text);
+    $text = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $text);
+
     // Convert to ucwords If the entire thing is caps. Otherwise leave it alone
     // for preservation of acronyms.
     // Caveat: will obliterate acronyms if the entire title is caps.
