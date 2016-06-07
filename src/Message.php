@@ -111,19 +111,32 @@ class Message {
   public static function makeSummary($completed, $total_requested, $operation) {
     $t = get_t();
     $count = count($completed);
-    $completed_string = print_r($completed, TRUE);
-    $remove = array("Array", "(\n", ")\n");
-    $completed_string = str_replace($remove, '', $completed_string);
-    // Adjust for misaligned second line.
-    $completed_string = str_replace('             [', '     [', $completed_string);
-    $vars = array(
-      '@count' => $count,
-      '!completed' => $completed_string,
-      '@total' => $total_requested,
-      '@operation' => $operation,
-    );
+    $long = variable_get('migration_tools_drush_debug', FALSE);
+    if ((int) $long >= 2) {
+      // Long output requested.
+      $completed_string = print_r($completed, TRUE);
+      $remove = array("Array", "(\n", ")\n");
+      $completed_string = str_replace($remove, '', $completed_string);
+      // Adjust for misaligned second line.
+      $completed_string = str_replace('             [', '     [', $completed_string);
+      $vars = array(
+        '@count' => $count,
+        '!completed' => $completed_string,
+        '@total' => $total_requested,
+        '@operation' => $operation,
+      );
+      $message = "Summary: @operation @count/@total.  Completed:\n !completed";
+    }
+    else {
+      // Default short output.
+      $vars = array(
+        '@count' => $count,
+        '@total' => $total_requested,
+        '@operation' => $operation,
+      );
+      $message = "Summary: @operation @count/@total.";
+    }
 
-    $message = "Summary: @operation @count/@total.  Completed:\n !completed";
     self::make($message, $vars, FALSE, 2);
   }
 

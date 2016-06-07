@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add more verbose output using: drush vset migration_tools_drush_debug 2
 * Add alias reporting.
 * Fix bug in Url::generateDestinationUriAlias().
 

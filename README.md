@@ -155,6 +155,7 @@ variable: migration_tools_drush_debug
   Enables output to be seen in the terminal on a file by file basis to see
   what elements are being found by the obtainers and migrated. Default is FALSE.
   Enable debug output: drush vset migration_tools_drush_debug TRUE
+  More verbose output: drush vset migration_tools_drush_debug 2
 
 migration_tools_drush_stop_on_error
   When migration_tools_drush_debug is TRUE and a warning is thrown by the
