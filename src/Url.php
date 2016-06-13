@@ -1316,27 +1316,154 @@ class Url {
    *   redirect-oldsite/section - if the links should be made internal.
    */
   public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
-    // Find all the hrefs on the page.
-    $binary_file_links = $query_path->top('a[href], area[href], img[longdesc]');
-    // Initialize summary report information.
-    $filelink_count = $binary_file_links->size();
+    $attributes = array(
+      'href' => 'a[href], area[href]',
+      'longdesc' => 'img[longdesc]',
+    );
+    $filelink_count = 0;
     $report = array();
-    // Loop through them all looking for href to alter.
-    foreach ($binary_file_links as $link) {
-      $href = trim($link->attr('href'));
-      if (Checkfor::isFile($href)) {
-        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
-        // Set the new href.
-        $link->attr('href', $new_href);
+    foreach ($attributes as $attribute => $selector) {
+      // Find all the $selector on the page.
+      $binary_file_links = $query_path->top($selector);
+      $filelink_count += $binary_file_links->size();
+      // Loop through them all looking for href to alter.
+      foreach ($binary_file_links as $link) {
+        $href = trim($link->attr($attribute));
+        if (Checkfor::isFile($href)) {
+          $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+          // Set the new href.
+          $link->attr($attribute, $new_href);
 
-        if ($href !== $new_href) {
-          // Something was changed so add it to report.
-          $report[] = "$href changed to $new_href";
+          if ($href !== $new_href) {
+            // Something was changed so add it to report.
+            $report[] = "$attribute: $href changed to $new_href";
+          }
         }
       }
     }
     // Message the report (no log).
     Message::makeSummary($report, $filelink_count, 'Rewrote binary file hrefs');
+  }
+
+  /**
+   * Alter relative script source paths in page if they point to js and swf.
+   *
+   * Relative src will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param \QueryPath $query_path
+   *   A query path object containing the page html.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   array(
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   */
+  public static function rewriteScriptSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+    $attributes = array(
+      'src' => 'script[src], embed[src]',
+      'value' => 'param[value]',
+    );
+    $script_path_count = 0;
+    $report = array();
+    self::rewriteFlashSourcePaths($query_path, $url_base_alters, $file_path, $base_for_relative);
+    foreach ($attributes as $attribute => $selector) {
+      // Find all the selector on the page.
+      $links_to_pages = $query_path->top($selector);
+      // Initialize summary report information.
+      $script_path_count += $links_to_pages->size();
+      // Loop through them all looking for src or value path to alter.
+      foreach ($links_to_pages as $link) {
+        $href = trim($link->attr($attribute));
+        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+        // Set the new href.
+        $link->attr($attribute, $new_href);
+
+        if ($href !== $new_href) {
+          // Something was changed so add it to report.
+          $report[] = "$attribute: $href changed to $new_href";
+        }
+      }
+    }
+    // Message the report (no log).
+    Message::makeSummary($report, $script_path_count, 'Rewrote script src');
+  }
+
+
+  /**
+   * Alter relative Flash source paths in page scripts.
+   *
+   * Relative src will be made either absolute or root relative depending on
+   * the value of $base_for_relative.  If root relative is used, then attempts
+   * will be made to lookup the redirect and detect the final destination.
+   *
+   * @param \QueryPath $query_path
+   *   A query path object containing the page html.
+   * @param array $url_base_alters
+   *   An array of url bases to alter in the form of old-link => new-link
+   *   array(
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/section' => 'https://www.newsite.com/new-section',
+   *     'www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
+   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
+   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *   )
+   *   NOTE: Order matters.  First one to match, wins.
+   * @param string $file_path
+   *   A file path for the location of the source file.
+   *   Ex: /oldsite/section/blah/index.html
+   * @param string $base_for_relative
+   *   The base directory or host+base directory to prepend to relative hrefs.
+   *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
+   *   server.
+   *   redirect-oldsite/section - if the links should be made internal.
+   */
+  public static function rewriteFlashSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+    $scripts = $query_path->top('script[type="text/javascript"]');
+    foreach ($scripts as $script) {
+      $needles = array(
+        "'src','",
+        "'movie','",
+      );
+      $script_content = $script->text();
+      foreach ($needles as $needle) {
+        $start_loc = stripos($script_content, $needle);
+        if ($start_loc !== FALSE) {
+          $length_needle = strlen($needle);
+          // Shift to the end of the needle.
+          $start_loc = $start_loc + $length_needle;
+          $end_loc = stripos($script_content, "'", $start_loc);
+          $target_length = $end_loc - $start_loc;
+          $old_path = substr($script_content, $start_loc, $target_length);
+          if (!empty($old_path)) {
+            // Process the path.
+            $new_path = self::rewritePageHref($old_path, $url_base_alters, $file_path, $base_for_relative);
+            // Replace.
+            $script_content = str_replace("'$old_path'", "'$new_path'", $script_content);
+            if ($old_path !== $new_path) {
+              // The path changed, so put it back.
+              $script->text($script_content);
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -1369,22 +1496,29 @@ class Url {
    *   redirect-oldsite/section - if the links should be made internal.
    */
   public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
-    // Find all the hrefs on the page.
-    $links_to_pages = $query_path->top('a[href], area[href], img[longdesc]');
-    // Initialize summary report information.
-    $pagelink_count = $links_to_pages->size();
+    $attributes = array(
+      'href' => 'a[href], area[href]',
+      'longdesc' => 'img[longdesc]',
+    );
+    $pagelink_count = 0;
     $report = array();
-    // Loop through them all looking for href to alter.
-    foreach ($links_to_pages as $link) {
-      $href = trim($link->attr('href'));
-      if (Checkfor::isPage($href)) {
-        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
-        // Set the new href.
-        $link->attr('href', $new_href);
+    foreach ($attributes as $attribute => $selector) {
+      // Find all the hrefs on the page.
+      $links_to_pages = $query_path->top($selector);
+      // Initialize summary report information.
+      $pagelink_count += $links_to_pages->size();
+      // Loop through them all looking for href to alter.
+      foreach ($links_to_pages as $link) {
+        $href = trim($link->attr('href'));
+        if (Checkfor::isPage($href)) {
+          $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+          // Set the new href.
+          $link->attr($attribute, $new_href);
 
-        if ($href !== $new_href) {
-          // Something was changed so add it to report.
-          $report[] = "$href changed to $new_href";
+          if ($href !== $new_href) {
+            // Something was changed so add it to report.
+            $report[] = "$attribute: $href changed to $new_href";
+          }
         }
       }
     }

@@ -1,5 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Fixed bug where longdescription paths were not getting checked.
+* Add javascript src rewriting and flash attribute rewriting.
 * Adjust ObtainTitle to better remove whitespaces in title.
 * Bugfix ObtainDate where a short date is wrongly rejected.
 * Add more verbose output using: drush vset migration_tools_drush_debug 2
