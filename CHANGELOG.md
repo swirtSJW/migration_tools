@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Issue #2749377: Rewiting an empty href results in bad link
 * Fixed bug where longdescription paths were not getting checked.
 * Add javascript src rewriting and flash attribute rewriting.
 * Adjust ObtainTitle to better remove whitespaces in title.
