@@ -1562,29 +1562,30 @@ class Url {
    *   The processed href.
    */
   public static function rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative) {
-    // Is this an internal path?
-    $scheme = parse_url($href, PHP_URL_SCHEME);
-    if (empty($scheme)) {
-      // It is internal, set a flag for later use.
-      $internal = TRUE;
-    }
+    if (!empty($href)) {
+      // Is this an internal path?
+      $scheme = parse_url($href, PHP_URL_SCHEME);
+      if (empty($scheme)) {
+        // It is internal, set a flag for later use.
+        $internal = TRUE;
+      }
 
-    // Fix relatives Using the $base_for_relative and file_path.
-    $source_file = $base_for_relative . '/' . $file_path;
-    $href = self::convertRelativeToAbsoluteUrl($href, $source_file);
+      // Fix relatives Using the $base_for_relative and file_path.
+      $source_file = $base_for_relative . '/' . $file_path;
+      $href = self::convertRelativeToAbsoluteUrl($href, $source_file);
 
-    // If the href matches a $url_base_alters  swap them.
-    foreach ($url_base_alters as $old_base => $new_base) {
-      if (stripos($href, $old_base) !== FALSE) {
-        $href = str_ireplace($old_base, $new_base, $href);
+      // If the href matches a $url_base_alters  swap them.
+      foreach ($url_base_alters as $old_base => $new_base) {
+        if (stripos($href, $old_base) !== FALSE) {
+          $href = str_ireplace($old_base, $new_base, $href);
+        }
+      }
+
+      if (!empty($internal)) {
+        // This is internal, see if there is a redirect for it.
+        $href = self::convertLegacyUriToAlias($href);
       }
     }
-
-    if (!empty($internal)) {
-      // This is internal, see if there is a redirect for it.
-      $href = self::convertLegacyUriToAlias($href);
-    }
-
     return $href;
   }
 
