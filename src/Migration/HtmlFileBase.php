@@ -54,6 +54,12 @@ abstract class HtmlFileBase extends Base {
     if (parent::prepareRow($row) === FALSE) {
       return FALSE;
     }
+
+    $row->fileUri = $this->pathingSourceLocalBasePath . $row->fileId;
+    $row->fileUpdated = (file_exists($row->fileUri)) ? filemtime($row->fileUri) : NULL;
+    $row->fileDate = (!empty($row->fileUpdated)) ? date('m/d/Y', $row->fileUpdated) : NULL;
+    $row->fileTime = (!empty($row->fileUpdated)) ? date('H:i', $row->fileUpdated) : NULL;
+
     \MigrationTools\Message::makeSeparator();
     \MigrationTools\Message::make("Processing: @id", array('@id' => $row->fileId), FALSE, 0);
 
