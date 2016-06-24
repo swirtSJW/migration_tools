@@ -3,6 +3,7 @@
 CONTENTS OF THIS FILE
  * Introduction
  * Features
+ * Drush Commands
  * Requirements
  * Installation
  * Configuration
@@ -37,28 +38,19 @@ the tools can be utilized.
     structure.  Use of Obtainers requires QueryPath library either through
     the QueryPath module, or installed separately as a library from
     https://github.com/technosophos/querypath
-  * Menu Generators: Methods and drush commands for either building a menu by
-    crawling html structure on a legacy site, or by processing a CSV list of
-    menu headings and old urls from the legacy site.
-  * Drush: goodies related to migration.
   * Examples:  Migration classes meant to demonstrate the use of Migration Tools
-    for a migration.
-  * Migration Generator:  Yes, it builds migration classes.
+    for a migration that you can copy and modify in your custom migration module.
 
-## Installation
+## Drush Commands
 
-* Enable this module
+### mt-generate-redirects-list [filename]
+    Point it at a file of URLs (one per line) and it will scan each URL for
+    server-side and html based redirects. If it finds a redirect it will add it
+    to the row in the file and save the file.  The file must reside in your
+    custom_migration_module/redirect_source/[filename]
 
-## Configuration
-* Set $conf['migration_tools_base_dir'] correctly for your local machine.  This
-is the location for your migration source files. (parallel to docroot)
 
-## Requirements
-_incomplete documentation_
-
-## Drush Goodies
-
-### Copying unmanaged images:
+### Copying unmanaged images
 
 _incomplete documentation_
 
@@ -68,29 +60,6 @@ There is a drush command that will move the images to public:// from
 $conf['migration_tools_base_dir'] for any given organization:
 
 drush mt-migrate-images <section>
-
-
-
-### Migration Generation  (THIS IS NOT WORKING CURRENTLY)
-
-Since we have so much infrastructure developed around our html to node
-migrations, it made sense to automate some of the process. The
-`mt-generate-migration-class` drush command will automatically generate a
-migration class for you. See `drush mt-generate-migration-class --help` for
-command specification.
-
-The command accepts the following arguments:
- * config: the name of a yml file containing subdirectory specific config. These
-   must be stored in scripts directory
-    _incomplete documentation_
-
-The command accepts the following options:
-  * type: (optional) _incomplete documentation_
-    This dictate which twig template will be used to
-    generate the migration.
-
-Example commands:
-> drush dgm atr.yml
 
 
 ### Generating and Importing Menus
@@ -134,14 +103,15 @@ Various utilities are available to assist in the process of discovering content
 in your migration source, which may be helpful in planning and facilitating
 discussion around your migrations.
 
-drush mt-list-html-files directory_name
+* drush mt-list-html-files [directory_name]
  Scans a specified directory and its subdirectories and lists all htm(l) files.
- Particularly useful if you a migrating from a site that did not use a CMS.
+ Particularly useful if you a migrating from a site that did not use a CMS and
+ need to generate a list of pages for content audit/weeding.
 
-drush mt-list-html-directories directory_name
+* drush mt-list-html-directories [directory_name]
  Scans a directory and lists all directories containing htm(l) files.
 
-drush mt-list-html-directories directory_name
+* drush mt-list-file-directories [directory_name]
  Scans a directory and lists all directories containing binary files that are
  not image files. (doc, pdf, ppt...)
 
@@ -151,18 +121,32 @@ There are two settings through drupal variables that can aid in building and
 debugging a migration.  The default for each is FALSE but can be overidden in
 your settings.local.php
 
-variable: migration_tools_drush_debug
+* variable: migration_tools_drush_debug
   Enables output to be seen in the terminal on a file by file basis to see
   what elements are being found by the obtainers and migrated. Default is FALSE.
   Enable debug output: drush vset migration_tools_drush_debug TRUE
   More verbose output: drush vset migration_tools_drush_debug 2
 
-migration_tools_drush_stop_on_error
+* migration_tools_drush_stop_on_error
   When migration_tools_drush_debug is TRUE and a warning is thrown by the
   messsaging system that is of the level WATCHDOG_ERROR, WATCHDOG_CRITICAL,
   WATCHDOG_ALERT, WATCHDOG_EMERGENCY.
   Default is FALSE.
   Enable stop on error: drush vset migration_tools_drush_stop_on_error TRUE
+
+
+## Installation
+
+* Enable this module
+
+## Configuration
+* Set $conf['migration_tools_base_dir'] correctly for your local machine.  This
+is the location for your migration source files. (parallel to docroot)
+
+## Requirements
+_incomplete documentation_
+
+
 
 ##Migration Development
 

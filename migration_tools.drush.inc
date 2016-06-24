@@ -102,6 +102,17 @@ function migration_tools_drush_command() {
     ),
   );
 
+  $items['migration-tools-generate-redirects-list'] = array(
+    'description' => "Converts a list of urls into a list of redirects to import.",
+    'aliases' => array('mtgrl', 'mt-generate-redirects-list'),
+    'arguments' => array(
+      'file' => '(Required) Menu text file name. Assumes that file exists in sites/all/module/custom/[local_migrate]/redirect-source',
+    ),
+    'examples' => array(
+      'drush mtgrl abc-redirects-export.txt' => 'List of URLs (one per line) to look at for redirects',
+    ),
+  );
+
   $items['migration-tools-fix-legacy-links'] = array(
     'description' => "Fix links utilizing anchors in a migration group.",
     'aliases' => array('mtfll', 'migration-tools-fix-legacy-links'),
@@ -582,6 +593,121 @@ function drush_migration_tools_generate_migration_class($config_filename) {
     drush_print('Migration generation failed with error: ' . $e->getMessage());
   }
 
+}
+
+
+/**
+ * Drush validate callback for mt-generate-redirects-list.
+ *
+ * @param string $filename
+ *   The filename of the file to read an alter.
+ */
+function drush_migration_tools_generate_redirects_list_validate($filename) {
+  if (empty($filename)) {
+    drush_set_error('Migration Tools', dt("The first parameter of filename can not be empty. Please provide a filename like: !filename", array('!filename' => 'abc-redirect-export.txt')));
+  }
+
+  // Make sure it has a place to look.
+  $module = variable_get('migration_tools_custom_migration_module', '');
+  if (empty($module)) {
+    drush_set_error('Migration Tools', dt("This command needs the name of the custom migration module to be defined.  Please define it in the Drupal admin.", array()));
+  }
+}
+
+/**
+ * Drush command callback for mt-generate-redirects-list.
+ *
+ * @param string $filename
+ *   The filename of the file to read an alter.
+ */
+function drush_migration_tools_generate_redirects_list($filename) {
+  // Does the file exist?
+  $custom_migration_module = variable_get('migration_tools_custom_migration_module', '');
+  $custom_migration_module_directory = drupal_get_path('module', $custom_migration_module);
+  if (!empty($custom_migration_module_directory)) {
+    $file_uri = "{$custom_migration_module_directory}/redirect_source/{$filename}";
+    $file_contents = file($file_uri, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $new_redirects = 0;
+    $non_redirects = 0;
+    $updated_redirects = 0;
+    $unchanged_redirects = 0;
+    $page = '';
+    $total = count($file_contents);
+    natcasesort($file_contents);
+    foreach ((is_array($file_contents)) ? $file_contents : array() as $key => $file_row) {
+      // Process each line.
+      $row = explode(',', $file_row);
+      $from = trim($row[0]);
+      $to_original = (!empty($row[1])) ? trim($row[1]) : '';
+      // Look for a scheme, the lack of a scheme means it can not be scanned.
+      $scheme = parse_url($from, PHP_URL_SCHEME);
+      if (!empty($scheme)) {
+        $to_new = \MigrationTools\Url::hasServerSideRedirects($from);
+        if (empty($to_new)) {
+          // No ss redirects so process the html for meta and js redirects.
+          $html = file_get_contents($from);
+          $row = new stdClass();
+          $sourceparser = new \MigrationTools\SourceParser\Node('url', $html, $row);
+          $to_new = \MigrationTools\Url::hasValidHtmlRedirect($row, $sourceparser->queryPath);
+          $to_new = ($to_new === 'skip') ? '' : $to_new;
+        }
+      }
+
+      if (empty($scheme)) {
+        // This line is not valid, leave it as is.
+        $page .= "{$file_row}\n";
+        $unchanged_redirects++;
+      }
+      elseif (empty($to_original) && !empty($to_new)) {
+        // There is no existing redirect but there is a new one.
+        $new_redirects++;
+        $page .= "{$from}, {$to_new}\n";
+      }
+      elseif (empty($to_original) && empty($to_new)) {
+        // There is no redirect.
+        $non_redirects++;
+        $page .= "{$from}, \n";
+      }
+      elseif ($to_original === $to_new) {
+        // The redirect is the same as it was.
+        $unchanged_redirects++;
+        $page .= "{$from}, {$to_original}\n";
+      }
+      else {
+        // The redirect was updated.
+        $updated_redirects++;
+        $page .= "{$from}, {$to_new}\n";
+      }
+      drush_print("Processed $key: $from");
+    }
+
+    $handle = fopen($file_uri, "w");
+
+    if (!$handle) {
+      drush_log("There was an error opening {$file_uri} for writing, verify the path is writable and try again.", 'error');
+    }
+    else {
+      $written = fwrite($handle, $page);
+
+      if ($written === FALSE) {
+        drush_log("There was an error writing to {$file_uri}, verify the path is writable and try again.", 'error');
+
+      }
+      else {
+        drush_log("File scan of {$directory} complete, saved results in {$file_uri}", 'success');
+      }
+    }
+  }
+  else {
+    // Write to terminal.
+    drush_print($page);
+  }
+
+  // Generate report.
+  drush_print_r("Found new: {$new_redirects}/{$total}");
+  drush_print_r("Found none: {$non_redirects}/{$total}");
+  drush_print_r("Updated: {$updated_redirects}/{$total}");
+  drush_print_r("Unchanged: {$unchanged_redirects}/{$total}");
 }
 
 /**
