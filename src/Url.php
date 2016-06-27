@@ -1164,6 +1164,18 @@ class Url {
    *   bool - FALSE if no valid URL was found.
    */
   public static function extractUrlFromJS($string) {
+    // Look for imposters.
+    $imposters = array(
+      'location.protocol',
+      'location.host',
+    );
+    foreach ($imposters as $imposter) {
+      $is_imposter = stripos($string, $imposter);
+      if ($is_imposter !== FALSE) {
+        // It is an imposter, so bail.
+        return FALSE;
+      }
+    }
     // Array of items to search for.
     $searches = array(
       'location.replace',

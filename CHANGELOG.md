@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Fix false positives on scanning for JS redirects.
 * Issue #2755321: Create a set of source tools to handle migrating from an array of URLs.
 * Add drush command mt-generate-redirects-list [filename] to read a list of urls
   and turn it into a list of redirects for any that were detected in html or
