@@ -1,8 +1,10 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Issue #2755321: Create a set of source tools to handle migrating from an array of URLs.
 * Add drush command mt-generate-redirects-list [filename] to read a list of urls
   and turn it into a list of redirects for any that were detected in html or
   server-side.
+* Issue #2753779: Add file data to row properties
 * Issue #2749377: Rewiting an empty href results in bad link
 * Fixed bug where longdescription paths were not getting checked.
 * Add javascript src rewriting and flash attribute rewriting.
