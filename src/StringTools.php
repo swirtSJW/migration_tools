@@ -356,6 +356,21 @@ class StringTools {
   }
 
   /**
+   * Remove duplicate br and leave only one.
+   *
+   * @param string $html
+   *   The html to reduce.
+   *
+   * @return string
+   *   The reduced html
+   */
+  public static function reduceDuplicateBr($html) {
+    $html = preg_replace('#<br\s*/?>(?:\s*<br\s*/?>)+#i', '<br />', $html);
+    
+    return $html;
+  }
+
+  /**
    * Removes all php from the markup.
    *
    * @param string $html

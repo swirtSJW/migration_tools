@@ -4,8 +4,12 @@
  * @file
  * Class ObtainHtml
  *
- * Contains a collection of stackable finders that can be arranged
- * as needed to obtain a body or other long html content.
+ * Contains a collection of stackable searchers that can be arranged
+ * as needed to obtain html content.
+ *
+ * A finder finds the item but does not remove if from the QueryPath DOM.
+ * A plucker finds the item and removes it from the QueryPath DOM if it
+ * validates.
  */
 
 namespace MigrationTools\Obtainer;
@@ -15,33 +19,35 @@ namespace MigrationTools\Obtainer;
  */
 class ObtainHtml extends Obtainer {
 
-  /**
-   * Pluck the text in a specific row and column in a specific table.
+    /**
+   * Finder for nth  selector on the page.
    *
-   * @param int $table_num
-   *   The value of n where the table is the nth table on the page. E.g., 2 for
-   *   the second table on a page.
-   * @param int $row
-   *   The row number.
-   * @param int $col
-   *   The column number
+   * @param string $selector
+   *   The selector to find.
+   * @param int $n
+   *   (optional) The depth to find.  Default: first item n=1.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
    *
    * @return string
-   *   The found text.
+   *   The text found.
    */
-  protected function pluckTableContents($table_num, $row, $col) {
-    $tables = $this->queryPath->find("table");
-    $current_table = 1;
-    foreach ($tables as $table) {
-      if ($current_table == $table_num) {
-        $text = $this->pluckFromTable($table, $row, $col);
-        $this->setCurrentFindMethod("pluckTableContents($table_num, $row, $col)");
-        return $text;
+  protected function findSelector($selector, $n = 1, $method = 'text') {
+    $text = '';
+    $n = ($n > 0) ? $n - 1 : 0;
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        if ($i == $n) {
+          $text = $element->$method();
+          $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
+          break;
+        }
       }
-      $current_table++;
     }
-  }
 
+    return $text;
+  }
 
   /**
    * Plucker for nth  selector on the page.
@@ -291,9 +297,36 @@ class ObtainHtml extends Obtainer {
     return $text;
   }
 
+    /**
+   * Pluck the text in a specific row and column in a specific table.
+   *
+   * @param int $table_num
+   *   The value of n where the table is the nth table on the page. E.g., 2 for
+   *   the second table on a page.
+   * @param int $row
+   *   The row number.
+   * @param int $col
+   *   The column number
+   *
+   * @return string
+   *   The found text.
+   */
+  protected function pluckTableCellContents($table_num, $row, $col, $method = 'text') {
+    $tables = $this->queryPath->find("table");
+    $current_table = 1;
+    foreach ($tables as $table) {
+      if ($current_table == $table_num) {
+        $string = $this->extractFromTable($table, $row, $col, $method);
+        $this->setCurrentFindMethod("pluckTableContents($table_num, $row, $col)");
+        return $string;
+      }
+      $current_table++;
+    }
+  }
+
 
   /**
-   * Pluck td text from a table, and lines it up to be removed.
+   * extract td contents from a table, and lines it up to be removed.
    *
    * @param object $table
    *   A query path object with a table as the root.
@@ -301,11 +334,13 @@ class ObtainHtml extends Obtainer {
    *   Which tr do you want. Starting the count from 1.
    * @param int $td_target
    *   Which td do you want. Starting the count from 1.
+   * @param string $method
+   *   What to return QP->text() or QP->html().
    *
    * @return string
    *   The text inside of the wanted tr and td.
    */
-  protected function pluckFromTable($table, $tr_target, $td_target) {
+  protected function extractFromTable($table, $tr_target, $td_target, $method = 'text') {
     $trcount = 1;
     $tdcount = 1;
 
@@ -314,7 +349,7 @@ class ObtainHtml extends Obtainer {
         foreach ($tr->find("td") as $td) {
           if ($tdcount == $td_target) {
             $this->setElementToRemove($td);
-            return $td->text();
+            return $td->$method();
           }
           $tdcount++;
         }
@@ -325,38 +360,6 @@ class ObtainHtml extends Obtainer {
     return "";
   }
 
-  /**
-   * Pluck td from a table.
-   *
-   * @param object $table
-   *   A query path object with a table as the root.
-   * @param int $tr_target
-   *   Which tr do you want. Starting the count from 1.
-   * @param int $td_target
-   *   Which td do you want. Starting the count from 1.
-   *
-   * @return string
-   *   The text inside of the wanted tr and td.
-   */
-  protected function pluckTableCell($table, $tr_target, $td_target) {
-    $trcount = 1;
-    $tdcount = 1;
-
-    foreach ($table->find("tr") as $tr) {
-      if ($trcount == $tr_target) {
-        foreach ($tr->find("td") as $td) {
-          if ($tdcount == $td_target) {
-            $this->setElementToRemove($td);
-            return $td;
-          }
-          $tdcount++;
-        }
-      }
-      $trcount++;
-    }
-
-    return "";
-  }
 
   /**
    * Splits text on variations of the br tag.

@@ -1,5 +1,11 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Add findSelector to ObtainHtml.
+* Add reduceDuplicateBr() to StringTools.
+* Removed duplicate internal Table cell plucker.
+* Renamed pluckTableContents to pluckTableCellContents to make it more explicit.
+* Renamed internal method pluckTableCell to extractTableCell so to keep it
+  as an internal method not a plucker.
 * Fix false positives on scanning for JS redirects.
 * Issue #2755321: Create a set of source tools to handle migrating from an array of URLs.
 * Add drush command mt-generate-redirects-list [filename] to read a list of urls
