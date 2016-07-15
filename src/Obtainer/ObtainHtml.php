@@ -309,7 +309,7 @@ class ObtainHtml extends Obtainer {
           }
           if ($separator_index <= count($arr)) {
             $text = $arr[$separator_index];
-            $this->setCurrentFindMethod("findSelectorNSeparator($selector, " . ++$n . "$separator, " . ++$separator_index . ", $method )");
+            $this->setCurrentFindMethod("findSelectorNSeparator($selector, " . ++$n . ", $separator, " . ++$separator_index . ", $method )");
           }
           break;
         }
