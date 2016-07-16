@@ -270,6 +270,55 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Find the nth value of the content separated by $separator.
+   *
+   * This is useful for selecting the last item in a breadcrumb.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param int $n
+   *   The depth to find.  Default: first item n=1
+   * @param string $separator
+   *   The text to search for to separate the content string.
+   * @param int $separator_index
+   *   (optional) The index of item to return. A $separator_index of 1 selects
+   *   the first item. A $separator_index of -1 selects the last item.
+   *   Default: -1.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findSelectorNSeparator($selector, $n, $separator, $separator_index = -1, $method = 'text') {
+    $text = '';
+    if (!empty($selector) && !empty($separator)) {
+      $n = ($n > 0) ? $n - 1 : 0;
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+        if ($i == $n) {
+          $string = $element->$method();
+          $arr = explode($separator, $string);
+          // We need to deal with $selector_index = -1
+          if ($separator_index <= 0) {
+            $separator_index = count($arr) - 1;
+          }
+          // We want to standardize $selector_index so it starts at 1
+          else {
+            $separator_index --;
+          }
+          if ($separator_index <= count($arr)) {
+            $text = $arr[$separator_index];
+            $this->setCurrentFindMethod("findSelectorNSeparator($selector, " . ++$n . ", $separator, " . ++$separator_index . ", $method )");
+          }
+          break;
+        }
+      }
+    }
+    return $text;
+  }
+
+  /**
    * Plucker for nth xpath on the page.
    *
    * @param string $xpath
