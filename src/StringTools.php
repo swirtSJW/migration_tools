@@ -366,7 +366,7 @@ class StringTools {
    */
   public static function reduceDuplicateBr($html) {
     $html = preg_replace('#<br\s*/?>(?:\s*<br\s*/?>)+#i', '<br />', $html);
-    
+
     return $html;
   }
 

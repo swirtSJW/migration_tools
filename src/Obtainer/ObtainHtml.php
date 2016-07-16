@@ -19,7 +19,7 @@ namespace MigrationTools\Obtainer;
  */
 class ObtainHtml extends Obtainer {
 
-    /**
+  /**
    * Finder for nth  selector on the page.
    *
    * @param string $selector
@@ -151,7 +151,14 @@ class ObtainHtml extends Obtainer {
    */
   protected function pluckAnySelectorUntilValidDrillUp($selector, $limit = NULL) {
     $elements = $this->queryPath->find($selector);
-    $element_count = $elements->count();
+    // QP either offers count or size depending on version.
+    if (method_exists($elements, 'count')) {
+      $element_count = $elements->count();
+    }
+    else {
+      $element_count = $elements->size();
+    }
+
     $limit = ($limit === NULL) ? $element_count : $limit;
     $limit = ($element_count > $limit) ? $limit : $element_count;
 
@@ -277,7 +284,7 @@ class ObtainHtml extends Obtainer {
    * @param string $selector
    *   The selector to find.
    * @param int $n
-   *   The depth to find.  Default: first item n=1
+   *   The depth to find.  Default: first item n=1.
    * @param string $separator
    *   The text to search for to separate the content string.
    * @param int $separator_index
@@ -299,13 +306,13 @@ class ObtainHtml extends Obtainer {
         if ($i == $n) {
           $string = $element->$method();
           $arr = explode($separator, $string);
-          // We need to deal with $selector_index = -1
+          // Deal with $selector_index = -1.
           if ($separator_index <= 0) {
             $separator_index = count($arr) - 1;
           }
-          // We want to standardize $selector_index so it starts at 1
+          // Standardize $selector_index so it starts at 1.
           else {
-            $separator_index --;
+            $separator_index--;
           }
           if ($separator_index <= count($arr)) {
             $text = $arr[$separator_index];
@@ -346,7 +353,7 @@ class ObtainHtml extends Obtainer {
     return $text;
   }
 
-    /**
+  /**
    * Pluck the text in a specific row and column in a specific table.
    *
    * @param int $table_num
@@ -375,7 +382,7 @@ class ObtainHtml extends Obtainer {
 
 
   /**
-   * extract td contents from a table, and lines it up to be removed.
+   * Extract td contents from a table, and lines it up to be removed.
    *
    * @param object $table
    *   A query path object with a table as the root.

@@ -1,5 +1,12 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+
+
+migration_tools 7.x-2.3  July 15, 2016
+-----------------------------------------------
+* Fix Error if using QueryPath version that does not support size()/count().
+* Add findSelectorNSeparator to ObtainHtml.
 * Add findSelector to ObtainHtml.
 * Add reduceDuplicateBr() to StringTools.
 * Removed duplicate internal Table cell plucker.
