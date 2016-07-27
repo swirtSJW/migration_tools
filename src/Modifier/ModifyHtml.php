@@ -137,5 +137,25 @@ class ModifyHtml extends Modifier {
     return 0;
   }
 
-
+  /**
+   * Remove style attribute from selector.
+   *
+   * @param object $selector
+   *   The selector to find.
+   *
+   * @return int
+   *   Count of style attributes removed.
+   */
+  protected function removeStyleAttr($selector) {
+    $count = 0;
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+      foreach ((is_object($elements)) ? $elements : array() as $element) {
+        $element->removeAttr('style');
+        $count++;
+      }
+    }
+    
+    return $count;
+  }
 }
