@@ -22,6 +22,7 @@ abstract class HtmlBase {
   public $htmlElementsToRemove = array();
   public $htmlElementsToUnWrap = array();
   public $htmlElementsToReWrap = array();
+  public $modifier;
 
   /**
    * A source parser class should set a useful set of obtainer jobs.
@@ -61,6 +62,10 @@ abstract class HtmlBase {
     $this->initQueryPath();
 
     $this->setDefaultObtainerJobs();
+
+    // Instantiate this here but could be instantiated with an extended modifier
+    // from in another sourceparser.
+    $this->modifier = new \MigrationTools\Modifier\ModifyHtml($this->queryPath);
   }
 
   /**
@@ -294,6 +299,8 @@ abstract class HtmlBase {
       }
 
       \MigrationTools\QpHtml::removeComments($this->queryPath);
+
+      $this->modifier->run();
 
     }
     catch (Exception $e) {

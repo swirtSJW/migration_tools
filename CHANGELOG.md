@@ -1,6 +1,7 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
-
+* Issue #2772389 Add Modifier class to stack up html modifiers to run in cleanQueryPathHtml()
+  in the SourceParser.
 
 
 migration_tools 7.x-2.3  July 15, 2016
