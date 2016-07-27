@@ -65,6 +65,28 @@ class ModifyHtml extends Modifier {
     return $this->changeClassName($classname);
   }
 
+  /**
+   * Remove all tables that are empty or contain only whitespace.
+   *
+   * @return int
+   *   Count of items removed.
+   */
+  protected function removeEmptyTables() {
+    $count = 0;
+    $tables = $this->queryPath->find('table');
+    foreach ((is_object($tables)) ? $tables : array() as $table) {
+      $table_contents = $table->text();
+      // Remove whitespace in order to evaluate if it is empty.
+      $table_contents = \MigrationTools\StringTools::superTrim($table_contents);
+
+      if (empty($table_contents)) {
+        $table->remove();
+        $count++;
+      }
+    }
+
+    return $count;
+  }
 
   /**
    * Remover for all matching selector on the page.

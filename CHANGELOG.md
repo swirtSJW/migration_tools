@@ -1,5 +1,10 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+
+migration_tools 7.x-2.4  July 27, 2016
+-----------------------------------------------
+* Issue #2770953: Add function to remove empty tables.
 * Issue #2772389 Add Modifier class to stack up html modifiers to run in cleanQueryPathHtml()
   in the SourceParser.
 
