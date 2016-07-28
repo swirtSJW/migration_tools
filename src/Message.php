@@ -114,11 +114,7 @@ class Message {
     $long = variable_get('migration_tools_drush_debug', FALSE);
     if ((int) $long >= 2) {
       // Long output requested.
-      $completed_string = print_r($completed, TRUE);
-      $remove = array("Array", "(\n", ")\n");
-      $completed_string = str_replace($remove, '', $completed_string);
-      // Adjust for misaligned second line.
-      $completed_string = str_replace('             [', '     [', $completed_string);
+      $completed_string = self::improveArrayOutput($completed);
       $vars = array(
         '@count' => $count,
         '!completed' => $completed_string,
@@ -138,6 +134,26 @@ class Message {
     }
 
     self::make($message, $vars, FALSE, 2);
+  }
+
+
+  /**
+   * Stringify and clean up the output of an array for messaging.
+   *
+   * @param array $array_items
+   *   The array to be stringified and cleaned.
+   *
+   * @return string
+   *   The stringified array.
+   */
+  public static function improveArrayOutput($array_items) {
+    $string = print_r($array_items, TRUE);
+    $remove = array("Array", "(\n", ")\n");
+    $string = str_replace($remove, '', $string);
+    // Adjust for misaligned second line.
+    $string = str_replace('             [', '     [', $string);
+
+    return $string;
   }
 
   /**

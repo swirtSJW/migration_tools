@@ -160,10 +160,15 @@ abstract class HtmlBase {
         \MigrationTools\Message::make("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
 
         $text = $job->run($this->queryPath);
-        $length = strlen($text);
+        $length = (is_array($text)) ? count($text) : strlen($text);
+
         if (!$length) {
           // Nothing was obtained.
           \MigrationTools\Message::make('@property NOT found', array('@property' => $property), \WATCHDOG_DEBUG, 2);
+        }
+        elseif (is_array($text)) {
+          // This must have come from ObtainArray().
+          \MigrationTools\Message::make('@property found --> !array', array('@property' => $property, '!array' => \MigrationTools\Message::improveArrayOutput($text)), \WATCHDOG_DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.

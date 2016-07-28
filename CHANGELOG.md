@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Issue #2773835: Add ObtainArray support to Obtainers
 
 
 migration_tools 7.x-2.4  July 27, 2016

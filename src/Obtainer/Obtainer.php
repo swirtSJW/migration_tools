@@ -128,8 +128,9 @@ abstract class Obtainer {
         // configuration actually worked so the developer can tune the methods
         // stack efficiently. Replace this with an iterator when it is ready.
         $method['method_name'] = $this->getCurrentFindMethod();
+        $type = (is_array($found_string)) ? 'array' : 'string';
 
-        \MigrationTools\Message::make('@method found a string.', array('@method' => $method['method_name']), WATCHDOG_DEBUG, 2);
+        \MigrationTools\Message::make('@method found a @type.', array('@method' => $method['method_name'], '@type' => $type), WATCHDOG_DEBUG, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
