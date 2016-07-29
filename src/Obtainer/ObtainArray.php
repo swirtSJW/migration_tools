@@ -84,7 +84,7 @@ class ObtainArray extends ObtainHtml {
    *   The array of elements found.
    */
   protected function arrayFindSelector($selector, $method = 'text') {
-    return $this->arrayPluckLinks($selector, $method, FALSE);
+    return $this->arrayPluckSelector($selector, $method, FALSE);
   }
 
   /**
