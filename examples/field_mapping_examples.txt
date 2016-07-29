@@ -1,0 +1,39 @@
+// Body and format.
+$this->addFieldMapping('field_pr_body', 'body');
+$this->addFieldMapping('field_pr_body:format')->defaultValue('wysiwyg');
+
+// Taxonomy reference field.
+$this->addFieldMapping('field_component', 'field_component')
+  ->defaultValue(array($component_tid));
+$this->addFieldMapping('field_component:source_type')->defaultValue('tid');
+
+
+// Geofield / Location field.
+$this->addFieldMapping('field_location', 'country')->defaultValue('US');
+$this->addFieldMapping('field_location:locality', 'city');
+$this->addFieldMapping('field_location:administrative_area', 'state');
+
+--------------------------------------------------------------------------------
+// Attached files.
+$this->addFieldMapping('field_attachment', 'attachment_filename');
+$this->addFieldMapping('field_attachment:source_type')
+  ->defaultValue('filename');
+$this->addFieldMapping('field_attachment:file_class')
+  ->defaultValue('MigrateFileUri');
+$this->addFieldMapping('field_attachment:destination_dir', 'destination_dir');
+$this->addFieldMapping('field_attachment:source_dir', 'source_dir');
+$this->addFieldMapping('field_attachment:file_replace')
+  ->defaultValue(FILE_EXISTS_REUSE);
+
+// If attaching files, you want to make sure they are removed on rollback.
+/**
+   * {@inheritdoc}
+   */
+  public function prepareRollback($entity_id) {
+    $entities = entity_load('node', $entity_id);
+    $entity = reset($entities);
+
+    $this->rollbackAttachmentRedirect($entity, 'field_attachment');
+  }
+
+--------------------------------------------------------------------------------
