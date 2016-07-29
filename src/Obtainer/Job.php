@@ -96,6 +96,9 @@ class Job {
    * @param array $arguments
    *   (optional) An array of arguments to be passed to the $method. Defaults
    *   to an empty array.
+   *
+   * @return Job
+   *   Returns $this to allow chaining.
    */
   public function addSearch($method_name, $arguments = array()) {
     // @todo Maybe we should validate the method names here?
@@ -103,6 +106,8 @@ class Job {
       'method_name' => $method_name,
       'arguments' => $arguments,
     );
+
+    return $this;
   }
 
   /**

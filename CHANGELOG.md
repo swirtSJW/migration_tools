@@ -1,5 +1,6 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+* Issue #2774963: Make addSearch return the $this so that they can be chained.
 * Issue #2773835: Add ObtainArray support to Obtainers
 
 
