@@ -1,5 +1,11 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+
+
+migration_tools 7.x-2.5  July 29, 2016
+-----------------------------------------------
+* Issue #2775087: Add migration examples
 * Issue #2775065: Remove outdated examples.
 * Issue #2775033: Update SourceParser Examples.
 * Issue #2775031: Make addModifier return $this so that they can be chained
