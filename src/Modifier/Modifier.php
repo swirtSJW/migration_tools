@@ -36,6 +36,9 @@ abstract class Modifier {
    * @param array $arguments
    *   (optional) An array of arguments to be passed to the $method. Defaults
    *   to an empty array.
+   *
+   * @return Modifier
+   *   Returns $this to allow chaining.
    */
   public function addModifier($method_name, $arguments = array()) {
     // @todo Maybe we should validate the method names here?
@@ -43,6 +46,8 @@ abstract class Modifier {
       'method_name' => $method_name,
       'arguments' => $arguments,
     );
+
+    return $this;
   }
 
 
