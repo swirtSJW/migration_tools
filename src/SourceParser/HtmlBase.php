@@ -268,7 +268,7 @@ abstract class HtmlBase {
       }
       // Sometimes queryPath fails.  So one last check.
       if (!is_object($this->queryPath)) {
-        throw new Exception("{$this->fileId} failed to initialize QueryPath");
+        throw new \MigrateException("{$this->fileId} failed to initialize QueryPath");
       }
     }
   }
