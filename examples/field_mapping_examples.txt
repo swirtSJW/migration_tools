@@ -25,15 +25,6 @@ $this->addFieldMapping('field_attachment:source_dir', 'source_dir');
 $this->addFieldMapping('field_attachment:file_replace')
   ->defaultValue(FILE_EXISTS_REUSE);
 
-// Map title and alt tags. In prepareRow you will want to enforce a 512 char
-// limit on alt and title to avoid a db error if one is too long.
-$this->addFieldMapping('field_image:alt', 'image_alt');
-$this->addFieldMapping('field_image:title', 'image_title');
-
-// For file storage you might want to use something like this in prepareRow()
-// to handle the destination
-$row->destination_dir = "public:///${group}/";
-
 // If attaching files, you want to make sure they are removed on rollback.
 /**
    * {@inheritdoc}

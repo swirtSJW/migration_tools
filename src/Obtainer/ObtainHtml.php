@@ -418,6 +418,34 @@ class ObtainHtml extends Obtainer {
 
 
   /**
+   * Pluck something based on sibling relationship.
+   *
+   * Example use: Plucking text based on a proximate lable.
+   * e.g. Data Value: 123
+   *
+   * @param string $selector
+   *   The css selector of the item to search for (the parent item)
+   * @param string $needle
+   *   The text to search for
+   * @param int $delta
+   *   The index of the sibling (nth-child)
+   *
+   * @return string
+   *   Matching text
+   */
+  protected function pluckFindStringGrabSibling($selector, $needle, $delta) {
+    $matched_items = $this->queryPath->find($selector);
+
+    foreach ($matched_items as $item) {
+      $candidateText = $item->get(0, TRUE)->textContent;
+
+      if (strpos($candidateText, $needle) !== FALSE) {
+        return $item->children()->get($delta, TRUE)->textContent;
+      }
+    }
+  }
+
+  /**
    * Splits text on variations of the br tag.
    *
    * @param string $html

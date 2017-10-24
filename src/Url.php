@@ -1529,6 +1529,7 @@ class Url {
 
           if ($href !== $new_href) {
             // Something was changed so add it to report.
+            \MigrationTools\Message::make("$attribute: $href changed to $new_href", array(), FALSE);
             $report[] = "$attribute: $href changed to $new_href";
           }
         }

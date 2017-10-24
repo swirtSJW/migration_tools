@@ -54,7 +54,7 @@ the tools can be utilized.
 
 _incomplete documentation_
 
-To recursively copy image files from the current directory to a destination:
+To recursively copy image files from the migration source directory to a Drupal files destination:
 
 There is a drush command that will move the images to public:// from
 $conf['migration_tools_base_dir'] for any given organization:
@@ -144,7 +144,9 @@ your settings.local.php
 is the location for your migration source files. (parallel to docroot)
 
 ## Requirements
-_incomplete documentation_
+ * Migrate
+ * Pathauto
+ * Redirect
 
 
 
@@ -154,44 +156,6 @@ _incomplete documentation_
 
 
 
-
-## Get your information
-In order to create a migration class for an organization you will need the following information (some from taking a peek at the source directories, some from project people)
-
-1. Organization or District
-2. Path to source files (must match legacy site path)
-3. New abbreviation for district or organization
-4. Term Id of vocabulary Component - Quickest way to get this is node/add/press_release then inspect the component field for the term that matches this organization / district.
-5. Location of press releases within the source directory. (sometimes there are multiple, pcik one for now and the others can be added later)
-
-## Build migration yml file (either organization or district)
-In sites/all/modules/custom/mt_migration create a new yml file in scripts/  The yml file should be named according to the abbreviation of the migration.
-
-The contents of the yml file will resemble this
-
-    abbreviation: subdirectory
-    full_name: The name of the group or section
-    directory: subdirectory_name
-    pr_subdirectory: news
-    component_tid: 2071
-
-After saving this file,  the appropriate drush command needs to be run to build the migration classes.  Modify it to use your yml file.
-
-    # This is the command for a district.
-    drush mt-generate-migration-class migrationname.yml
-
-
-This will inspect the content of the source files looking for binary files, content pages and press releases. It will build the migration classes and add the files to mt_migration.info for inclusion.
-
-Register the new files with drupal: `drush cc all`
-
-Register the new migration classes: `drush migrate-register`
-
-Get the status of the migration you just created:
-
-    drush migrate-status --group="some-migration-group"
-
-If all worked correctly it will return a report of files and nodes that need to be migrated.
 
 ## Look through the source files to see if there is garbage to exclude.
 There is no real science here, just poke around and look for things like /old or /original or header.html or footer.html  or test.html.   If they are in a path like /old, they can be removed from the array of source directories in the migration class.
@@ -248,7 +212,7 @@ The first time you run a migration you will want to migrate only a few pages to
 see that the Obtainers are looking in the right spot to get the title and the
 body.  To run just a few you can limit the migration like this:
 
-     drush migrate-import UsaoWdtnPage --limit='2 items'
+     drush migrate-import [PageMigrationName] --limit='2 items'
 
 The debug output in the terminal should show you what the title looks like.
 If the title does not match the title of the original page, create/adjust the
@@ -299,7 +263,7 @@ Overriding them in the source parser looks like this:
 
 Iterate through the migration a few at a time checking them as you go.  You will need to rollback as you iterate.  Continue tuning the Obtainer finder method stack and excluding pages if they should not be migrated.
 
-    drush migrate-rollback OurPageMigration
+    drush migrate-rollback [PageMigrationName]
 
  After you have fine tuned it enough to get several to work fine.  Run the migration without the --limit option.
 
@@ -309,23 +273,11 @@ When satisfied with the migration, copy the command and report and put it in as 
 
 **Iterating specific pages** (rather than migrating and rollback the entire migration) can be done by targeting that page file id.
 
-    drush migrate-import OurPageMigration --idlist="/musto_index.html"
+    drush migrate-import [PageMigrationName] --idlist="/musto_index.html"
     # And
-    drush migrate-rollback OurPageMigration --idlist="/musto_index.html"
+    drush migrate-rollback [PageMigrationName] --idlist="/musto_index.html"
 
 
-## Migrating Press Releases
-These are similar to migrating pages, except that there are more elements to try
-and obtain from the page.  Press releases often have
-
-* date  (release dates)
-* id numbers
-* subtitles
-
-As a result, additional work is often needed to tune the finder method stacks
-for each Obtainer to obtain the elements if they exist.
-
-   drush migrate-import OurPressReleases
 
 ## Migrate Menu
 When you have all the content migrated on your machine, run one of these commands to build the menu.
@@ -333,7 +285,6 @@ When you have all the content migrated on your machine, run one of these command
 
     drush mt-generate-menu-import-file subdirectory --menu-location-uri='subdirectory/index.htm' --local-base-uri='subdirectory' --css-selector='ul#navbar' --recurse='FALSE'
 
-The first argument is the abbreviation of organization or district.
 The options:
 * menu-location-uri is the original path to the page where the menu exists.
 * local-base-uri is the new location of the menu.
@@ -419,3 +370,8 @@ improve the experience:
 --------------
 
 * Steve Wirt (swirt) - https://drupal.org/user/138230
+
+This repo is present on https://www.drupal.org/project/migration_tools as well
+as https://github.com/swirtSJW/migration_tools
+
+Other Documentation http://web-dev.wirt.us/modules/migration-tools
