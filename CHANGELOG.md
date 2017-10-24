@@ -3,6 +3,16 @@ migration_tools 7.x-2.x  ** - ** - ****
 
 
 
+migration_tools 7.x-2.7  October 24, 2017
+-----------------------------------------------
+* Issue #2918411: Installing newest version of markdown causes fatal error.
+
+migration_tools 7.x-2.6  October 24, 2017
+-----------------------------------------------
+* Issue 2918274: Class 'MigrationTools\SourceParser\Exception' not found
+* Minor documentation and logging clean-up.
+
+
 migration_tools 7.x-2.5  July 29, 2016
 -----------------------------------------------
 * Issue #2775087: Add migration examples
