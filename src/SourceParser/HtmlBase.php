@@ -58,6 +58,12 @@ abstract class HtmlBase {
     $html = \MigrationTools\StringTools::stripWindowsCRChars($html);
     $html = \MigrationTools\StringTools::fixWindowSpecificChars($html);
     $html = \MigrationTools\StringTools::removePhp($html);
+
+    // Have to repair these in order  from innermost to outermost tags.
+    $html = \MigrationTools\StringTools::fixBodyTag($html);
+    $html = \MigrationTools\StringTools::fixHeadTag($html);
+    $html = \MigrationTools\StringTools::fixHtmlTag($html);
+
     $this->html = $html;
     $this->initQueryPath();
 

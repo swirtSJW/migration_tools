@@ -1,7 +1,9 @@
 migration_tools 7.x-2.x  ** - ** - ****
 -----------------------------------------------
 
-
+migration_tools 7.x-2.8  November 2, 2017
+-----------------------------------------------
+* Issue #2920601: Fix Html Source Parser introduces character encoding issues.
 
 migration_tools 7.x-2.7  October 24, 2017
 -----------------------------------------------

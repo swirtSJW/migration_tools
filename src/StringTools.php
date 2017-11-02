@@ -463,4 +463,76 @@ class StringTools {
     }
     return '';
   }
+
+
+  /**
+   * Adds an html tag if none is present. Necessary for proper use of QueryPath.
+   *
+   * @param string $html
+   *   Html to fix.
+   *
+   * @return string
+   *   The adjusted html.
+   */
+  public static function fixHtmlTag($html) {
+    // Check for <html tag.
+    $open = (stripos($html, '<html') === FALSE) ? '<html>' : '';
+    $close = (stripos($html, '</html') === FALSE) ? '</html>' : '';
+    $html = "{$open}{$html}{$close}";
+
+    if (stripos($html, '<html') === FALSE) {
+      // There is no starting tag so add it.
+      $html = "<html>{$html}";
+    }
+    // Check for </html> tag.
+    if (stripos($html, '</html') === FALSE) {
+      // There is no closing tag so add it.
+      $html = "{$html}</html>";
+    }
+
+    return $html;
+  }
+
+  /**
+   * Adds head tag if none is present. Necessary for proper use of QueryPath.
+   *
+   * @param string $html
+   *   Html to fix.
+   *
+   * @return string
+   *   The adjusted html.
+   */
+  public static function fixHeadTag($html) {
+    // Head can only be added if there is no existing <html> tag.
+    if (stripos($html, '<html') === FALSE) {
+      // Check for <head tag.
+      $open = (stripos($html, '<head') === FALSE) ? '<head>' : '';
+      $meta = ((stripos($html, '<meta http-equiv="Content-Type"') === FALSE) && !empty($open)) ? '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' : '';
+      $close = ((stripos($html, '</head') === FALSE) && !empty($open)) ? '</head>' : '';
+      $html = "{$open}{$meta}{$close}{$html}";
+    }
+
+    return $html;
+  }
+
+  /**
+   * Adds body tag if none is present. Necessary for proper use of QueryPath.
+   *
+   * @param string $html
+   *   Html to fix.
+   *
+   * @return string
+   *   The adjusted html.
+   */
+  public static function fixBodyTag($html) {
+    // Body can only be added if there is no existing head or html tags.
+    if ((stripos($html, '<head') === FALSE) && (stripos($html, '<html') === FALSE)) {
+      // Check for <body tag.
+      $open = (stripos($html, '<body') === FALSE) ? '<body>' : '';
+      $close = (stripos($html, '</body') === FALSE) ? '</body>' : '';
+      $html = "{$open}{$html}{$close}";
+    }
+
+    return $html;
+  }
 }
