@@ -12,7 +12,9 @@
  * validates.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
 
 /**
  * Obtains HTML using and stack of finder methods.
@@ -220,7 +222,7 @@ class ObtainHtml extends Obtainer {
     $text = '';
     if (!empty($selector)) {
       $breadcrumb = $this->queryPath->find($selector);
-      $text = $breadcrumb->find(a)->last()->text();
+      $text = $breadcrumb->find('a')->last()->text();
       // This element makes up a bigger whole, so it is not set to be removed.
       $this->setCurrentFindMethod("findBreadcrumbLastAnchor($selector)");
     }
@@ -242,7 +244,7 @@ class ObtainHtml extends Obtainer {
       $breadcrumb = $this->queryPath->find($selector);
       // Clone the breadcrumb so the next operations are non-destructive.
       $clone = clone $breadcrumb;
-      $clone->find(a)->remove();
+      $clone->find('a')->remove();
       $text = $clone->first()->text();
       // This element makes up a bigger whole, so it is not set to be removed.
       $this->setCurrentFindMethod("findBreadcrumbLastNonAnchor($selector)");
@@ -257,7 +259,7 @@ class ObtainHtml extends Obtainer {
    *   The selector to find.
    * @param string $attribute
    *   The attribute to find on the selector. Example: alt, title, etc.
-   * @param string $depth
+   * @param int $depth
    *   (optional) The depth to find.
    *
    * @return string
@@ -274,6 +276,7 @@ class ObtainHtml extends Obtainer {
         }
       }
     }
+    return NULL;
   }
 
   /**
@@ -363,6 +366,8 @@ class ObtainHtml extends Obtainer {
    *   The row number.
    * @param int $col
    *   The column number
+   * @param string $method
+   *   Method to use, text or html.
    *
    * @return string
    *   The found text.
@@ -378,6 +383,7 @@ class ObtainHtml extends Obtainer {
       }
       $current_table++;
     }
+    return NULL;
   }
 
 
@@ -437,12 +443,13 @@ class ObtainHtml extends Obtainer {
     $matched_items = $this->queryPath->find($selector);
 
     foreach ($matched_items as $item) {
-      $candidateText = $item->get(0, TRUE)->textContent;
+      $candidate_text = $item->get(0, TRUE)->textContent;
 
-      if (strpos($candidateText, $needle) !== FALSE) {
+      if (strpos($candidate_text, $needle) !== FALSE) {
         return $item->children()->get($delta, TRUE)->textContent;
       }
     }
+    return NULL;
   }
 
   /**
@@ -543,7 +550,7 @@ class ObtainHtml extends Obtainer {
     $processed_text = $this->cleanString($trimmed);
     // Evaluate string.
     $valid = $this->validateString($processed_text);
-    $length = drupal_strlen($processed_text);
+    $length = StringTools::strlen($processed_text);
     if ($valid && ($max_length == 0 || $max_length >= $length)) {
       // It was valid so strip out each line.
       foreach ($texts as $line_num => $line) {
@@ -574,7 +581,7 @@ class ObtainHtml extends Obtainer {
    */
   public static function truncateThisWithoutHTML($text = '', $length = 255, $min_word_length = 2) {
     $text = strip_tags($text);
-    $trunc_text = truncate_utf8($text, $length, TRUE, FALSE, $min_word_length);
+    $trunc_text = StringTools::truncate($text, $length, TRUE, FALSE, $min_word_length);
     // Check to see if any truncation is made.
     if (strcmp($text, $trunc_text) != 0) {
       // There was truncation, so process it differently.
@@ -600,6 +607,7 @@ class ObtainHtml extends Obtainer {
   protected function extractAndPutBack($string, $qp_element) {
     // Clean string.
     $processed_text = $this->cleanString($string);
+    // @todo Method validateStrong not found.
     $valid = $this->validateStrong($processed_text);
     if ($valid) {
       // The string checks out, remove the original string from the element.

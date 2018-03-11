@@ -4,7 +4,10 @@
  * Helper function to clean up strings wihtout using QueryPath.
  */
 
-namespace MigrationTools;
+namespace Drupal\migration_tools;
+
+use Drupal\Component\Utility\Unicode;
+use Drupal\migration_tools\Obtainer\ObtainTitle;
 
 class StringTools {
   /**
@@ -534,5 +537,34 @@ class StringTools {
     }
 
     return $html;
+  }
+
+  /**
+   * Use Drupal Unicode strlen check if exists.
+   *
+   * @param string $text
+   *   The string to run the operation on.
+   *
+   * @return int
+   *   The length of the string.
+   */
+  public static function strlen($text) {
+    // @todo This is Drupal-specific code, should find alternative.
+    if (class_exists("\\Drupal\\Component\\Utility\\Unicode")) {
+      return \Drupal\Component\Utility\Unicode::strlen($text);
+    }
+    else {
+      return strlen($text);
+    }
+  }
+
+  /**
+   * Wrapper for Drupal Unicode::truncate.
+   *
+   * {@inheritdoc}
+   */
+  public static function truncate($string, $max_length, $wordsafe = FALSE, $add_ellipsis = FALSE, $min_wordsafe_length = 1) {
+    // @todo This is Drupal-specific code, should find alternative.
+    return Unicode::truncate($string, $max_length, $wordsafe, $add_ellipsis, $min_wordsafe_length);
   }
 }

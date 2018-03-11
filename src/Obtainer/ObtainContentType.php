@@ -4,7 +4,7 @@
  * ObtainContentType.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 class ObtainContentType extends Obtainer {
   // Finders for content type are unique to other finders.  They MUST return

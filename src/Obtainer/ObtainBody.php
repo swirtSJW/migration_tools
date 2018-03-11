@@ -8,7 +8,7 @@
  * as needed to obtain a body or other long html content.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * Class ObtainBody

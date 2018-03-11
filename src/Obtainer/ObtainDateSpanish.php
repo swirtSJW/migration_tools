@@ -4,7 +4,7 @@
  * ObtainTitlePressRelease.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 class ObtainDateSpanish extends ObtainDate {
 

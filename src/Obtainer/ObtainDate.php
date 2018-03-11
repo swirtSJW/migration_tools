@@ -8,7 +8,10 @@
  * as needed to obtain a date content.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
+use Drupal\migration_tools\Message;
 
 /**
  * {@inheritdoc}
@@ -41,6 +44,7 @@ class ObtainDate extends ObtainHtml {
       // Loop through the search strings.
       foreach ($search_strings as $search_string) {
         // Search for the string.
+        // @todo Find HtmlCleanUp Class.
         $element = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
 
         if (!empty($element)) {
@@ -53,7 +57,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            \MigrationTools\Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), FALSE, 2);
+            Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), FALSE, 2);
 
             return $text;
           }
@@ -89,7 +93,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
 
             if ($valid) {
-              \MigrationTools\Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
 
               return $text;
             }
@@ -125,7 +129,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
             if ($valid) {
               $this->setElementToRemove($element);
-              \MigrationTools\Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
 
               return $text;
             }
@@ -147,18 +151,17 @@ class ObtainDate extends ObtainHtml {
   public static function cleanString($text) {
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
+    $text = StringTools::convertNonASCIItoASCII($text);
 
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($text, 'UTF-8');
 
     if (!$is_utf8) {
-      $text = \MigrationTools\StringTools::fixEncoding($text);
+      $text = StringTools::fixEncoding($text);
     }
 
     // Remove some strings that often accompany dates.
@@ -218,7 +221,7 @@ class ObtainDate extends ObtainHtml {
     }
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
 
     return $text;
   }

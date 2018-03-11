@@ -8,7 +8,9 @@
  * as needed to obtain a country.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
 
 /**
  * {@inheritdoc}
@@ -22,15 +24,14 @@ class ObtainCountry extends ObtainHtml {
    */
   public static function cleanString($string) {
     $string = strip_tags($string);
-    // Coutnries can not have html entities.
+    // Countries can not have html entities.
     $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
+    $string = StringTools::decodehtmlentitynumeric($string);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\StringTools::superTrim($string);
+    $string = StringTools::superTrim($string);
     // Remove multiple spaces.
     $string = preg_replace('!\s+!', ' ', $string);
 

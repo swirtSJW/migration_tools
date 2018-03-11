@@ -8,7 +8,10 @@
  * as needed to obtain a title/heading and possible subtitle/subheading.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\StringTools;
 
 /**
  * {@inheritdoc}
@@ -25,13 +28,13 @@ class ObtainTitle extends ObtainHtml {
   /**
    * Truncates and sets the discarded if there is a remainder.
    */
-  protected function truncateString($string) {
-    $split = $this->truncateThisWithoutHTML($string, 255, 2);
+  public static function truncateString($string) {
+    $split = self::truncateThisWithoutHTML($string, 255, 2);
 
     // If something got trimmed off, message it.
     if (!empty($split['remaining'])) {
       $message = "The title was shortened and lost: @remainder";
-      \MigrationTools\Message::make($message, array('@remainder' => $split['remaining']), WATCHDOG_ERROR, 2);
+      Message::make($message, array('@remainder' => $split['remaining']), Message::ERROR, 2);
     }
 
     return $split['truncated'];
@@ -111,11 +114,11 @@ class ObtainTitle extends ObtainHtml {
     $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
+    $text = StringTools::convertNonASCIItoASCII($text);
     // Remove undesirable chars and strings.
     $remove = array(
       '&raquo;',
@@ -127,7 +130,7 @@ class ObtainTitle extends ObtainHtml {
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
     // Remove multiple spaces.
     $text = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $text);
 
@@ -140,7 +143,7 @@ class ObtainTitle extends ObtainHtml {
       // Nearly the entire thing is caps.
       $text = strtolower($text);
     }
-    $text = \MigrationTools\StringTools::makeWordsFirstCapital($text);
+    $text = StringTools::makeWordsFirstCapital($text);
 
     return $text;
   }

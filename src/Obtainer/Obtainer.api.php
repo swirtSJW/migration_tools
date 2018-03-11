@@ -5,7 +5,7 @@
  * Contains example Obtainer class.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * Obtainer for title property for /atr pages.

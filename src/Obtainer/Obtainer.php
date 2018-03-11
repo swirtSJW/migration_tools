@@ -9,7 +9,11 @@
  * looking for, at which point it returns the string.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use QueryPath;
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\StringTools;
 
 abstract class Obtainer {
 
@@ -27,7 +31,7 @@ abstract class Obtainer {
 
 
   /**
-   * @var QueryPath
+   * @var QueryPath $queryPath
    *   QueryPath object passed in at instantiation.
    */
   protected $queryPath;
@@ -62,7 +66,7 @@ abstract class Obtainer {
     foreach ($method_stack as $key => $method) {
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
-        \MigrationTools\Message::make('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        Message::make('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), Message::DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -130,7 +134,7 @@ abstract class Obtainer {
         $method['method_name'] = $this->getCurrentFindMethod();
         $type = (is_array($found_string)) ? 'array' : 'string';
 
-        \MigrationTools\Message::make('@method found a @type.', array('@method' => $method['method_name'], '@type' => $type), WATCHDOG_DEBUG, 2);
+        Message::make('@method found a @type.', array('@method' => $method['method_name'], '@type' => $type), Message::ERROR, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -139,7 +143,7 @@ abstract class Obtainer {
       }
     }
 
-    \MigrationTools\Message::make('NO MATCHES FOUND', array(), WATCHDOG_DEBUG, 2);
+    Message::make('NO MATCHES FOUND', array(), Message::DEBUG, 2);
   }
 
   /**
@@ -153,18 +157,17 @@ abstract class Obtainer {
    */
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
+    $string = StringTools::decodehtmlentitynumeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
     if (!$is_utf8) {
-      $string = \MigrationTools\StringTools::fixEncoding($string);
+      $string = StringTools::fixEncoding($string);
     }
 
-    $string = \MigrationTools\StringTools::stripCmsLegacyMarkup($string);
+    $string = StringTools::stripCmsLegacyMarkup($string);
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\StringTools::superTrim($string);
+    $string = StringTools::superTrim($string);
 
     return $string;
   }

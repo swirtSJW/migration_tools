@@ -8,7 +8,9 @@
  * as needed to obtain a location suitable for geoLocating.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
 
 /**
  * {@inheritdoc}
@@ -24,11 +26,10 @@ class ObtainLocation extends ObtainHtml {
     $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
     // Remove multiple spaces.
     $text = preg_replace('!\s+!', ' ', $text);
 

@@ -5,7 +5,7 @@
  * Defines Obtainer\Job class.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * Information about which property we are dealing with.
@@ -44,9 +44,9 @@ class Job {
       // This passed in with a full correct namespace.
       $this->obtainerClassName = $obtainer_class_name;
     }
-    elseif (class_exists("\\MigrationTools\\Obtainer\\{$obtainer_class_name}")) {
+    elseif (class_exists("\\Drupal\\migration_tools\\Obtainer\\{$obtainer_class_name}")) {
       // This is in the obtainer namespace.
-      $this->obtainerClassName = "\\MigrationTools\\Obtainer\\{$obtainer_class_name}";
+      $this->obtainerClassName = "\\Drupal\\migration_tools\\Obtainer\\{$obtainer_class_name}";
     }
     elseif (class_exists("\\{$obtainer_class_name}")) {
       // This was in its own namespace.
@@ -82,7 +82,7 @@ class Job {
    */
   public function getClassShortName() {
     $name = $this->getClass();
-    $name = str_replace('\MigrationTools\Obtainer\\', '', $name);
+    $name = str_replace('\Drupal\migration_tools\Obtainer\\', '', $name);
 
     return $name;
   }

@@ -8,7 +8,7 @@
  * multiples and returns arrays rather than strings.
  */
 
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * {@inheritdoc}
@@ -33,7 +33,7 @@ class ObtainArray extends ObtainHtml {
     $found = (empty($found)) ? array() : $found;
     // Make sure it is an array, just in case someone uses a string finder.
     $found = (is_array($found)) ? $found : array($found);
-    $found = array_map('\MigrationTools\StringTools::superTrim', $found);
+    $found = array_map('\Drupal\migration_tools\StringTools::superTrim', $found);
 
     return $found;
   }
