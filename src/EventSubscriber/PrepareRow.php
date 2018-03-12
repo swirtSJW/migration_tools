@@ -2,8 +2,12 @@
 
 namespace Drupal\migration_tools\EventSubscriber;
 
+use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate_plus\Event\MigrateEvents;
 use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Obtainer\Job;
+use Drupal\migration_tools\SourceParser\Node;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -35,7 +39,72 @@ class PrepareRow implements EventSubscriberInterface {
    * @throws \Drupal\migrate\MigrateSkipRowException
    */
   public function onMigratePrepareRow(MigratePrepareRowEvent $event) {
-    $migration = $event->getMigration();
     $row = $event->getRow();
+
+    $field_containing_url = $row->getSourceProperty('field_containing_url');
+    $field_containing_html = $row->getSourceProperty('field_containing_html');
+
+    // If field_containing_url is set, then we know it should do job processing.
+    // @todo Needs better logic to determine when to run the parsing.
+    if (!empty($field_containing_url)) {
+      $url = $row->getSourceProperty($field_containing_url);
+
+      if (!empty($field_containing_html)) {
+        $html = $row->getSourceProperty($field_containing_html);
+      }
+      else {
+        $html = file_get_contents($url);
+        if ($html === FALSE) {
+          // There was an error.
+          $message = 'Was unable to load !url';
+          $variables = array('!url' => $url);
+          Message::make($message, $variables, Message::ERROR);
+          throw new MigrateSkipRowException();
+        }
+      }
+
+      $url_pieces = parse_url($url);
+      $path = ltrim($url_pieces['path'], '/');
+
+      // @todo Using Node parser by default. Should be decided by config.
+      $source_parser = new Node($path, $html, $row);
+
+      // Set HTML Element manipulations from config.
+      $html_elements_to_remove = $row->getSourceProperty('html_elements_to_remove') ? $row->getSourceProperty('html_elements_to_remove') : [];
+      $source_parser->setHtmlElementsToRemove($html_elements_to_remove);
+
+      $html_elements_to_unwrap = $row->getSourceProperty('html_elements_to_unwrap') ? $row->getSourceProperty('html_elements_to_unwrap') : [];
+      $source_parser->setHtmlElementsToUnWrap($html_elements_to_unwrap);
+
+      $html_elements_to_rewrap = $row->getSourceProperty('html_elements_to_rewrap') ? $row->getSourceProperty('html_elements_to_rewrap') : [];
+      $source_parser->setHtmlElementsToReWrap($html_elements_to_rewrap);
+
+      // Construct Jobs.
+      $config_fields = $row->getSourceProperty('fields');
+      if ($config_fields) {
+        foreach ($config_fields as $config_field) {
+          $config_jobs = $config_field['jobs'];
+          if ($config_jobs) {
+            $job = new Job($config_field['name'], $config_field['obtainer']);
+            foreach ($config_jobs as $config_job) {
+              $job->{$config_job['job']}($config_job['method'], $config_job['arguments']);
+              $source_parser->addObtainerJob($job);
+            }
+          }
+        }
+      }
+
+      // Add Modifiers.
+      $modifiers = $row->getSourceProperty('modifiers');
+      if ($modifiers) {
+        foreach ($modifiers as $modifier) {
+          $arguments = $modifier['arguments'] ? $modifier['arguments'] : [];
+          $source_parser->getModifier()
+            ->addModifier($modifier['method'], $arguments);
+        }
+      }
+
+      $source_parser->parse();
+    }
   }
 }
