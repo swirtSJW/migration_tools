@@ -9,6 +9,7 @@ namespace Drupal\migration_tools\SourceParser;
 
 use Drupal\migrate\MigrateException;
 use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Modifier\Modifier;
 use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\QpHtml;
@@ -24,12 +25,14 @@ abstract class HtmlBase {
   public $obtainerJobs = array();
   public $fileId;
   protected $html;
+
+  /** @var \Drupal\migrate\Row $row */
   public $row;
   public $queryPath;
-  public $htmlElementsToRemove = array();
-  public $htmlElementsToUnWrap = array();
-  public $htmlElementsToReWrap = array();
-  public $modifier;
+  protected $htmlElementsToRemove = [];
+  protected $htmlElementsToUnWrap = [];
+  protected $htmlElementsToReWrap = [];
+  protected $modifier;
 
   /**
    * A source parser class should set a useful set of obtainer jobs.
@@ -54,10 +57,10 @@ abstract class HtmlBase {
    *   The file id, e.g. careers/legal/pm7205.html
    * @param string $html
    *   The full HTML data as loaded from the file.
-   * @param object $row
-   *   Migrate row to be altered by reference.
+   * @param \Drupal\migrate\Row $row
+   *   Migrate row to be altered.
    */
-  public function __construct($file_id, $html, &$row) {
+  public function __construct($file_id, $html, $row) {
     $this->fileId = $file_id;
     $this->row = $row;
 
@@ -79,6 +82,86 @@ abstract class HtmlBase {
     // Instantiate this here but could be instantiated with an extended modifier
     // from in another sourceparser.
     $this->modifier = new ModifyHtml($this->queryPath);
+  }
+
+  /**
+   * Get HTML elements to remove.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToRemove() {
+    return $this->htmlElementsToRemove;
+  }
+
+  /**
+   * Set HTML elements to remove.
+   *
+   * @param array $html_elements
+   *   Array of elements
+   */
+  public function setHtmlElementsToRemove(array $html_elements) {
+    $this->htmlElementsToRemove = $html_elements;
+  }
+
+  /**
+   * Get HTML elements to unwrap.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToUnWrap() {
+    return $this->htmlElementsToUnWrap;
+  }
+
+  /**
+   * Set HTML elements to unwrap.
+   *
+   * @param array $html_elements
+   *   Array of elements
+   */
+  public function setHtmlElementsToUnWrap(array $html_elements) {
+    $this->htmlElementsToUnWrap = $html_elements;
+  }
+
+  /**
+   * Get HTML elements to rewrap.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToReWrap() {
+    return $this->htmlElementsToReWrap;
+  }
+
+  /**
+   * Set HTML elements to rewrap.
+   *
+   * @param array $html_elements
+   *   Array of elements
+   */
+  public function setHtmlElementsToReWrap(array $html_elements) {
+    $this->htmlElementsToReWrap = $html_elements;
+  }
+
+  /**
+   * Get Modifier.
+   *
+   * @return \Drupal\migration_tools\Modifier\Modifier
+   *   Modifier
+   */
+  public function getModifier() {
+    return $this->modifier;
+  }
+
+  /**
+   * Set Modifier.
+   *
+   * @param \Drupal\migration_tools\Modifier\Modifier $modifier
+   *   Modifier
+   */
+  public function setModifier(Modifier $modifier) {
+    $this->modifier = $modifier;
   }
 
   /**
