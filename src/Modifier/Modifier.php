@@ -5,7 +5,9 @@
  * Defines Modifier\Modifier class.
  */
 
-namespace MigrationTools\Modifier;
+namespace Drupal\migration_tools\Modifier;
+
+use Drupal\migration_tools\Message;
 
 /**
  * Information about which property we are dealing with.
@@ -59,7 +61,7 @@ abstract class Modifier {
     $total_requested = count($this->modifiers);
     foreach ($this->modifiers as $key => $modifier) {
       if (!method_exists($this, $modifier['method_name'])) {
-        \MigrationTools\Message::make('The modifier method @method does not exist and was skipped.', array('@method' => $modifier['method_name']), WATCHDOG_DEBUG);
+        Message::make('The modifier method @method does not exist and was skipped.', array('@method' => $modifier['method_name']), Message::DEBUG);
       }
       // The modifier exists, so run it.
       // Reset QueryPath pointer to top of document.
@@ -72,6 +74,6 @@ abstract class Modifier {
         $alter_log[] = "x{$count} {$modifier['method_name']}({$args}) ";
       }
     }
-    \MigrationTools\Message::makeSummary($alter_log, $total_requested, 'Modifiers applied successfully:');
+    Message::makeSummary($alter_log, $total_requested, 'Modifiers applied successfully:');
   }
 }

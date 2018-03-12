@@ -5,7 +5,9 @@
  * Defines Modifier\ModifyHtml class.
  */
 
-namespace MigrationTools\Modifier;
+namespace Drupal\migration_tools\Modifier;
+
+use Drupal\migration_tools\StringTools;
 
 /**
  * The ModifyHtml defining removers, and changers.
@@ -77,7 +79,7 @@ class ModifyHtml extends Modifier {
     foreach ((is_object($tables)) ? $tables : array() as $table) {
       $table_contents = $table->text();
       // Remove whitespace in order to evaluate if it is empty.
-      $table_contents = \MigrationTools\StringTools::superTrim($table_contents);
+      $table_contents = StringTools::superTrim($table_contents);
 
       if (empty($table_contents)) {
         $table->remove();
@@ -155,7 +157,7 @@ class ModifyHtml extends Modifier {
         $count++;
       }
     }
-    
+
     return $count;
   }
 }
