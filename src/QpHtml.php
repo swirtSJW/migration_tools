@@ -4,7 +4,9 @@
  * Helper function to clean up HTML using QueryPath.
  */
 
-namespace MigrationTools;
+namespace Drupal\migration_tools;
+
+use QueryPath;
 
 class QpHtml {
 
@@ -18,7 +20,7 @@ class QpHtml {
    *   The QueryPath object with HTML markup.
    *
    * @param array $arguments
-   *   (optional). An array of arbitrary arguments to be used by HtmlCleanUp
+   *   (optional). An array of arbitrary arguments to be used by QpHtml
    *   methods. Defaults to empty array.
    *
    * @TODO This is overly specific to a set of jobs and needs to be made more
@@ -452,6 +454,8 @@ class QpHtml {
    *   a specific attribute value, 'html', 'txt'.
    * @param string $parameter
    *   A parameter to be passed into the defined $function.
+   * @param int $index
+   *   Match $index occurrence, zero-based.
    *
    * @return mixed
    *   The matched QueryPath element or FALSE.
@@ -473,6 +477,21 @@ class QpHtml {
 
   /**
    * Like match, but returns all matching elements.
+   *
+   * @param QueryPath $qp
+   *   A QueryPath object.
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $function
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   A parameter to be passed into the defined $function.
+   *
+   * @return mixed
+   *   The matched QueryPath element or FALSE.
    */
   public static function matchAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $counter = 0;
@@ -489,6 +508,18 @@ class QpHtml {
 
   /**
    * Like match, but removes all matching elements.
+   *
+   * @param QueryPath $qp
+   *   A QueryPath object.
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $function
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   A parameter to be passed into the defined $function.
    */
   public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $matches = QpHtml::matchAll($qp, $selector, $needle, $function, $parameter);
@@ -594,6 +625,48 @@ class QpHtml {
     $tables = $query_path->find('table');
     foreach ($tables as $table) {
       $table->addClass('no-background');
+    }
+  }
+
+  /**
+   * Examines an uri and evaluates if it is an image.
+   *
+   * @param string $uri
+   *   A uri.
+   *
+   * @return bool
+   *   TRUE if this is an image uri, FALSE if it is not.
+   */
+  public static function isImageUri($uri) {
+    if (preg_match('/.*\.(jpg|gif|png|jpeg)$/i', $uri) !== 0) {
+      // Is an image uri.
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Fixes anchor links to PDFs so that they work in IE.
+   *
+   * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
+   *
+   * @param QueryPath $query_path
+   *   The QueryPath object with HTML markup.
+   *
+   * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+   */
+  public static function fixPdfLinkAnchors($query_path) {
+    $anchors = $query_path->find('a');
+    foreach ($anchors as $anchor) {
+      $url = $anchor->attr('href');
+      $contains_pdf_anchor = preg_match('/\.pdf#(p|_PAGE)([0-9]+)/i', $url, $matches);
+      if ($contains_pdf_anchor) {
+        $old_anchor = $matches[1];
+        $page_num = $matches[3];
+        $new_anchor = 'page=' . $page_num;
+        $new_url = str_replace($old_anchor, $new_anchor, $url);
+        $anchor->attr('href', $new_url);
+      }
     }
   }
 }

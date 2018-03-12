@@ -10,6 +10,7 @@
 
 namespace Drupal\migration_tools\Obtainer;
 
+use Drupal\migration_tools\QpHtml;
 use Drupal\migration_tools\StringTools;
 use Drupal\migration_tools\Message;
 
@@ -44,8 +45,7 @@ class ObtainDate extends ObtainHtml {
       // Loop through the search strings.
       foreach ($search_strings as $search_string) {
         // Search for the string.
-        // @todo Find HtmlCleanUp Class.
-        $element = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
+        $element = QpHtml::matchText($this->queryPath, $selector, $search_string);
 
         if (!empty($element)) {
           $text = $element->text();

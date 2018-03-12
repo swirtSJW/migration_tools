@@ -607,8 +607,7 @@ class ObtainHtml extends Obtainer {
   protected function extractAndPutBack($string, $qp_element) {
     // Clean string.
     $processed_text = $this->cleanString($string);
-    // @todo Method validateStrong not found.
-    $valid = $this->validateStrong($processed_text);
+    $valid = $this->validateString($processed_text);
     if ($valid) {
       // The string checks out, remove the original string from the element.
       $full_source = $qp_element->html();
