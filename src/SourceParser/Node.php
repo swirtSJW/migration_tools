@@ -29,12 +29,12 @@ class Node extends HtmlBase {
    */
   protected function validateParse() {
     // An empty title should throw an error.
-    if (empty($this->row->title)) {
+    if (empty($this->row->getSourceProperty('title'))) {
       Message::make("The title for @fileid is empty.", array("@fileid" => $this->fileId), Message::ALERT);
     }
 
     // A body is not required, but should be cause for alarm.
-    if (empty($this->row->body)) {
+    if (empty($this->row->getSourceProperty('body'))) {
       Message::make("The body for @fileid is empty.", array("@fileid" => $this->fileId), Message::ALERT);
     }
   }
@@ -52,6 +52,7 @@ class Node extends HtmlBase {
     $this->addObtainerJob($title);
 
     $body = new Job('body', 'ObtainBody', TRUE);
+    $body->addSearch('findTopBodyHtml');
     $this->addObtainerJob($body);
   }
 }
