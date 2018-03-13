@@ -53,14 +53,21 @@ class PrepareRow implements EventSubscriberInterface {
         $html = $row->getSourceProperty($field_containing_html);
       }
       else {
-        $html = file_get_contents($url);
-        if ($html === FALSE) {
-          // There was an error.
+        // @todo Improve URL fetching.
+        $handle = curl_init($url);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+
+        $html = curl_exec($handle);
+        $http_response_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        curl_close($handle);
+
+        if (!in_array($http_response_code, [200, 301])) {
           $message = 'Was unable to load !url';
           $variables = array('!url' => $url);
           Message::make($message, $variables, Message::ERROR);
           throw new MigrateSkipRowException();
         }
+
       }
 
       $url_pieces = parse_url($url);
