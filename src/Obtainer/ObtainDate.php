@@ -211,7 +211,7 @@ class ObtainDate extends ObtainHtml {
     // Remove multiple spaces.
     $text = preg_replace('/\s{2,}/u', ' ', $text);
     // Remove any text following the 4 digit year.
-    $years = range(1995, 2015);
+    $years = range(1995, 2050);
     foreach ($years as $year) {
       $pos = strpos($text, (string) $year);
       if ($pos !== FALSE) {
