@@ -5,7 +5,7 @@
  * Contains static methods for checking on elements of a migration document.
  */
 
-namespace MigrationTools;
+namespace Drupal\migration_tools;
 
 class CheckFor {
 
@@ -51,10 +51,6 @@ class CheckFor {
    *   The row->{element} to examine.
    * @param mixed $value
    *   The actual value to look for. Defaults to finding an element not empty.
-   *
-   * @return bool
-   *   TRUE (and outputs a message) if element is found that matches the value.
-   *   FALSE if the element does not match the value.
    */
   public static function stopOnRowValue($row, $row_element, $value = '') {
     $found = self::hasRowValue($row, $row_element, $value);
@@ -69,8 +65,7 @@ class CheckFor {
       Message::varDumpToDrush($row, 'OUTPUT $row');
       // Output an error level message so it will stop the migration if
       // vset migration_tools_drush_stop_on_error is set to TRUE.
-      Message::make($message, array('@element' => $row_element, '@value' => $value), WATCHDOG_ERROR, 1);
-
+      Message::make($message, array('@element' => $row_element, '@value' => $value), Message::ERROR, 1);
     }
   }
 
@@ -120,13 +115,14 @@ class CheckFor {
    *   Whether this row is a duplicate or not.
    */
   public static function isDuplicateByRedirect($legacy_path) {
+    // @todo Migrate to D8.
     $parsed = redirect_parse_url($legacy_path);
     $source = isset($parsed['path']) ? ltrim($parsed['path'], '/') : '';
     $redirect = redirect_load_by_source($source);
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), WATCHDOG_INFO, 1);
+      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), Message::INFO, 1);
       return TRUE;
     }
     return FALSE;
@@ -174,7 +170,7 @@ class CheckFor {
     if (in_array($file_id, $files_to_skip)) {
       // This page should be skipped.
       $message = '- @fileid  -> Skipped: in list of files to skip.';
-      Message::make($message, array('@fileid' => $file_id), WATCHDOG_INFO, 1);
+      Message::make($message, array('@fileid' => $file_id), Message::INFO, 1);
 
       return TRUE;
     }
@@ -267,10 +263,10 @@ class CheckFor {
     // Grab just the path.
     $path = parse_url($path, PHP_URL_PATH);
     // Get the extension.
-    $extention = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
     // If the extension is empty, assume htm.  Minimal risk because non-html
     // files are rarely served up as directory defaults.
-    $extention = (!empty($extention)) ? $extention : 'htm';
+    $extension = (!empty($extension)) ? $extension : 'htm';
     $considered_pages = array(
       'htm',
       'html',
@@ -289,7 +285,7 @@ class CheckFor {
       'xhtml',
     );
 
-    if (in_array($extention, $considered_pages)) {
+    if (in_array($extension, $considered_pages)) {
       // It is definitely a page.
       return TRUE;
     }

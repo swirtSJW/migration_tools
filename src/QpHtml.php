@@ -89,7 +89,7 @@ class QpHtml {
     QpHtml::removeExtLinkJS($query_path);
 
     // Fix broken links to PDF anchors.
-    QpHtml::fixPdfLinkAnchors($query_path);
+    Url::fixPdfLinkAnchors($query_path);
   }
 
   /**
@@ -609,7 +609,7 @@ class QpHtml {
     foreach ($imgs as $img) {
       $longdesc_uri = $img->attr('longdesc');
       // Longdesc can not be a uri to an image file.  Should be to txt or html.
-      if (QpHtml::isImageUri($longdesc_uri)) {
+      if (Url::isImageUri($longdesc_uri)) {
         $img->removeAttr('longdesc');
       }
     }
@@ -643,30 +643,5 @@ class QpHtml {
       return TRUE;
     }
     return FALSE;
-  }
-
-  /**
-   * Fixes anchor links to PDFs so that they work in IE.
-   *
-   * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
-   *
-   * @param QueryPath $query_path
-   *   The QueryPath object with HTML markup.
-   *
-   * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
-   */
-  public static function fixPdfLinkAnchors($query_path) {
-    $anchors = $query_path->find('a');
-    foreach ($anchors as $anchor) {
-      $url = $anchor->attr('href');
-      $contains_pdf_anchor = preg_match('/\.pdf#(p|_PAGE)([0-9]+)/i', $url, $matches);
-      if ($contains_pdf_anchor) {
-        $old_anchor = $matches[1];
-        $page_num = $matches[3];
-        $new_anchor = 'page=' . $page_num;
-        $new_url = str_replace($old_anchor, $new_anchor, $url);
-        $anchor->attr('href', $new_url);
-      }
-    }
   }
 }

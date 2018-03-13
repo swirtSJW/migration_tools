@@ -4,7 +4,10 @@
  * Functions for handling urls, redirects and aliases.
  */
 
-namespace MigrationTools;
+namespace Drupal\migration_tools;
+
+use Drupal\migrate\MigrateException;
+use QueryPath;
 
 /**
  * In migrations it is easy to get lost in all the pathing related
@@ -125,6 +128,7 @@ class Url {
    *   Database source connection from migration.
    */
   public static function collectD6RedirectsToThisNode($row, $db_reference_name, $source_connection) {
+    // @todo D8 Refactor
     // Gather existing redirects from legacy.
     $row->redirects = \Database::getConnection($db_reference_name, $source_connection)
       ->select('path_redirect', 'r')
@@ -148,6 +152,7 @@ class Url {
    *   ex: swapped-section-a/blah/title-based-thing
    */
   public static function convertLegacyUriToAlias($coralled_legacy_uri, $language = LANGUAGE_NONE) {
+    // @todo D8 Refactor
     // Drupal paths never begin with a / so remove it.
     $coralled_legacy_uri = ltrim($coralled_legacy_uri, '/');
     // Break out any query.
@@ -257,7 +262,7 @@ class Url {
    *   last element in the alias.
    *   ex: '2015 A banner year for corn crop'.
    *
-   * @throws \MigrateException
+   * @throws MigrateException
    *   If pathauto is not available to process the title string.
    *
    * @return string
@@ -270,6 +275,8 @@ class Url {
    *   ex: new-section/2015-banner-year-corn-crop
    */
   public function generateDestinationUriAlias($pathing_section_swap, $title) {
+    // @todo D8 Refactor
+
     // Allow the parameter to override the property if provided.
     $pathing_section_swap = (!empty($pathing_section_swap)) ? $pathing_section_swap : $this->sectionSwap;
 
@@ -296,7 +303,7 @@ class Url {
     else {
       // Fail migration because the title can not be processed.
       $message = t('The module @module was not available to process the title.', array('@module' => 'pathauto'));
-      throw new \MigrateException();
+      throw new MigrateException();
     }
   }
 
@@ -362,7 +369,7 @@ class Url {
         '@path' => $path,
         '@page' => $base_url,
       );
-      Message::make($message, $variables, WATCHDOG_ERROR, 2);
+      Message::make($message, $variables, Message::ERROR, 2);
     }
 
     // Make sure the query and fragement exist even if they are empty.
@@ -401,6 +408,8 @@ class Url {
    *   domain present in the array. Others will be rejected.
    */
   public static function createRedirect($source_path, $destination, $allowed_hosts = array()) {
+    // @todo D8 Refactor
+
     $alias = $destination;
 
     // We can not create a redirect for a URL that is not part of the domain
@@ -520,7 +529,9 @@ class Url {
    * @param string $language
    *   Optional. Defaults to LANGUAGE_NONE.
    */
-  public static function rollbackAttachmentRedirect($entity, $field_name, $language = LANGUAGE_NONE) {
+  public static function rollbackAttachmentRedirect($entity, $field_name, $language = '') {
+    // @todo D8 Refactor
+
     $field = $entity->$field_name;
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
@@ -551,6 +562,7 @@ class Url {
    *   Optional. Defaults to LANGUAGE_NONE.
    */
   public static function createAttachmentRedirect($entity, $source_urls, $field_name, $language = LANGUAGE_NONE) {
+    // @todo D8 Refactor
     if (empty($source_urls)) {
       // Nothing to be done here.
       $json_entity = json_encode($entity);
@@ -663,7 +675,7 @@ class Url {
    */
   public static function getSiteHost() {
     // Obtain the designated url of the site.
-    $base_url = variable_get('migration_tools_base_domain', '');
+    $base_url = \Drupal::config('migration_tools.settings')->get('base_domain');
     $site_host = parse_url($base_url, PHP_URL_HOST);
     if (!empty($site_host)) {
       return $site_host;
@@ -671,7 +683,7 @@ class Url {
     else {
       // There is no site host defined.
       $message = "The base domain is needed, but has not been set. Visit /admin/config/migration_tools \n";
-      throw new \MigrateException($message);
+      throw new MigrateException($message);
     }
   }
 
@@ -796,13 +808,16 @@ class Url {
    *
    * @return string
    *   URL or URI.
+   *
+   * @throws \Exception
    */
   public static function reassembleURL($parsed_url, $return_url = TRUE) {
     $url = '';
 
     if ($return_url) {
       // It is going to need the scheme and host if there is one.
-      $default_base = variable_get('migration_tools_base_domain', '');
+      $default_base = \Drupal::config('migration_tools.settings')->get('base_domain');
+
       $default_scheme = parse_url($default_base, PHP_URL_SCHEME);
       $default_host = parse_url($default_base, PHP_URL_HOST);
 
@@ -812,7 +827,7 @@ class Url {
       $host = (!empty($parsed_url['host'])) ? $parsed_url['host'] : $default_host;
 
       if ((empty($host)) || (empty($scheme))) {
-        throw new Exception("The base domain is needed, but has not been set. Visit /admin/config/migration_tools");
+        throw new \Exception("The base domain is needed, but has not been set. Visit /admin/config/migration_tools");
       }
       else {
         // Append / after the host to account for it being removed from path.
@@ -889,7 +904,7 @@ class Url {
         // The destination is good. Message and return.
         $message = "Found redirect in html -> !destination";
         $variables = array('!destination' => $real_destination);
-        \MigrationTools\Message::make($message, $variables, FALSE, 2);
+        Message::make($message, $variables, FALSE, 2);
 
         return $destination;
       }
@@ -897,7 +912,7 @@ class Url {
         // The destination is not functioning. Message and bail with 'skip'.
         $message = "Found broken redirect in html-> !destination";
         $variables = array('!destination' => $destination);
-        \MigrationTools\Message::make($message, $variables, \WATCHDOG_ERROR, 2);
+        Message::make($message, $variables, Message::ERROR, 2);
 
         return 'skip';
       }
@@ -970,7 +985,8 @@ class Url {
       $regex = '/^' . $file_name . '\..{3,4}$/i';
 
       // @todo Rework this as $this->baseDir is not available to static methods.
-      $migration_source_directory = variable_get('migration_tools_source_directory_base', '');
+      $migration_source_directory = \Drupal::config('migration_tools.settings')->get('source_directory_base');
+
       $dir = $migration_source_directory . $directory;
       $options = array(
         'key' => 'filename',
@@ -1069,7 +1085,7 @@ class Url {
     $js_scripts = $query_path->top()->find('script');
     foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : array() as $js_script) {
       $script_text = $js_script->text();
-      $url = \MigrationTools\Url::extractUrlFromJS($script_text);
+      $url = self::extractUrlFromJS($script_text);
       if ($url) {
         return $url;
       }
@@ -1084,7 +1100,7 @@ class Url {
     // If something was found there will be > 1 element in the array.
     if (count($content_array) > 1) {
       // It had an onLoad, now check it for locations.
-      $url = \MigrationTools\Url::extractUrlFromJS($content_array[1]);
+      $url = self::extractUrlFromJS($content_array[1]);
       if ($url) {
         return $url;
       }
@@ -1099,7 +1115,7 @@ class Url {
       $wrappers[] = array("'", "'");
       foreach ($wrappers as $wrapper) {
         $body_html = $query_path->top()->find('body')->innerHtml();
-        $url = \MigrationTools\Url::peelUrl($body_html, $redirect_text, $wrapper[0], $wrapper[1]);
+        $url = self::peelUrl($body_html, $redirect_text, $wrapper[0], $wrapper[1]);
         if ($url) {
           return $url;
         }
@@ -1236,7 +1252,7 @@ class Url {
       // Need both a start and end to grab the middle.
       if (($start_location !== FALSE) && ($end_location !== FALSE) && ($end_location > $start_location)) {
         $url = substr($found, $start_location, $end_location - $start_location);
-        $url = \MigrationTools\StringTools::superTrim($url);
+        $url = StringTools::superTrim($url);
         // Make sure we have a valid URL.
         if (!empty($url) && filter_var($url, FILTER_VALIDATE_URL)) {
           return $url;
@@ -1529,7 +1545,7 @@ class Url {
 
           if ($href !== $new_href) {
             // Something was changed so add it to report.
-            \MigrationTools\Message::make("$attribute: $href changed to $new_href", array(), FALSE);
+            Message::make("$attribute: $href changed to $new_href", array(), FALSE);
             $report[] = "$attribute: $href changed to $new_href";
           }
         }
