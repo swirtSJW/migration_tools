@@ -283,7 +283,7 @@ abstract class HtmlBase {
         }
         elseif (is_array($text)) {
           // This must have come from ObtainArray().
-          Message::make('@property found --> !array', array('@property' => $property, '!array' => Message::improveArrayOutput($text)), Message::DEBUG, 2);
+          Message::make('@property found --> @array', array('@property' => $property, '@array' => Message::improveArrayOutput($text)), Message::DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
@@ -369,7 +369,7 @@ abstract class HtmlBase {
             // QueryPath qp is less tolerant of badly formed html so it must
             // have failed.
             // Use htmlqp which is more detructive but will fix bad html.
-            Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with !file, Exception: @error_message', array('@error_message' => $e->getMessage(), '!file' => $this->fileId), FALSE);
+            Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with @file, Exception: @error_message', array('@error_message' => $e->getMessage(), '@file' => $this->fileId), FALSE);
             $this->queryPath = htmlqp($this->html, NULL, $qp_options);
           }
         }
