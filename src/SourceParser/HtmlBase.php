@@ -197,7 +197,7 @@ abstract class HtmlBase {
       foreach ($this->obtainerJobs as $job) {
         $property = $job->getProperty();
         if (!$job->afterClean && ($property !== 'body')) {
-          $this->row->{$property} = $this->getProperty($property);
+          $this->row->setSourceProperty($property, $this->getProperty($property));
         }
       }
       // Clean the html for any obtainerJobs that require clean html.
@@ -207,12 +207,12 @@ abstract class HtmlBase {
       foreach ($this->obtainerJobs as $job) {
         $property = $job->getProperty();
         if ($job->afterClean && ($property !== 'body')) {
-          $this->row->{$property} = $this->getProperty($property);
+          $this->row->setSourceProperty($property, $this->getProperty($property));
         }
       }
       // Now that everything else has been run.  Grab what's left for the body.
       if (!empty($this->obtainerJobs['body'])) {
-        $this->row->body = $this->getProperty('body');
+        $this->row->setSourceProperty('body', $this->getProperty('body'));
       }
 
       $this->validateParse();
