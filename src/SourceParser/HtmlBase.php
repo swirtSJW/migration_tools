@@ -198,8 +198,8 @@ abstract class HtmlBase {
           $this->row->setSourceProperty($property, $this->getProperty($property));
         }
       }
-      // Clean the html for any obtainerJobs that require clean html.
-      $this->cleanQueryPathHtml();
+      // Run modifiers.
+      $this->modifier->run();
 
       // Run any jobs that do require cleaning.
       foreach ($this->obtainerJobs as $job) {
@@ -393,36 +393,6 @@ abstract class HtmlBase {
   protected function cleanHtmlBeforeQueryPath() {
     // Extend this to do any alterations to $this->html needed prior to feeding
     // it to QueryPath.
-  }
-
-  /**
-   * Clean and alter the html within $this->queryPath.
-   */
-  protected function cleanQueryPathHtml() {
-    try {
-      QpHtml::removeFaultyImgLongdesc($this->queryPath);
-      // Empty anchors without name attribute will be stripped by ckEditor.
-      QpHtml::fixNamedAnchors($this->queryPath);
-
-      QpHtml::removeElements($this->queryPath, $this->htmlElementsToRemove);
-
-      QpHtml::removeWrapperElements($this->queryPath, $this->htmlElementsToUnWrap);
-
-      foreach ($this->htmlElementsToReWrap as $element => $new_wrapper) {
-        // Make sure the array key is not just an array index.
-        if (is_string($element)  && !is_numeric($element)) {
-          QpHtml::rewrapElements($this->queryPath, [$element], $new_wrapper);
-        }
-      }
-
-      QpHtml::removeComments($this->queryPath);
-
-      $this->modifier->run();
-
-    }
-    catch (\Exception $e) {
-      Message::make('@file_id Failed to clean the html, Exception: @error_message', ['@file_id' => $this->fileId, '@error_message' => $e->getMessage()], Message::ERROR);
-    }
   }
 
 }

@@ -12,7 +12,7 @@ class QpHtml {
   /**
    * Removes legacy elements from HTML that are no longer needed. DEPRICATED.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param array $arguments
    *   (optional). An array of arbitrary arguments to be used by QpHtml
@@ -93,7 +93,7 @@ class QpHtml {
   /**
    * Removes elements matching CSS selectors.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors to remove.
@@ -129,7 +129,7 @@ class QpHtml {
   /**
    * Removes all html comments from querypath document.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeComments($query_path) {
@@ -142,7 +142,7 @@ class QpHtml {
   /**
    * Get the first element matching the CSS selector from html.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param string $selector
    *   A css selector.
@@ -169,7 +169,7 @@ class QpHtml {
    * Extraction means that we return the match, but we also return the
    * original html without the element that matched the search.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param string $selector
    *   A CSS selector to extract.
@@ -193,7 +193,7 @@ class QpHtml {
   /**
    * Removes a wrapping element, leaving child elements intact.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
@@ -208,7 +208,7 @@ class QpHtml {
   /**
    * Rewraps an element, leaving child elements intact.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
@@ -232,7 +232,7 @@ class QpHtml {
   /**
    * Removes empty elements matching selectors.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors to remove.
@@ -260,7 +260,7 @@ class QpHtml {
    * It appears that they are the only elements with this style applied.
    * Nonetheless, if more than one match, remove only the first.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeTitleBarImage($query_path) {
@@ -282,7 +282,7 @@ class QpHtml {
   /**
    * Removes legacy usage of javascript:exitWinOpen() for external links.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeExtLinkJS($query_path) {
@@ -315,7 +315,7 @@ class QpHtml {
   /**
    * Empty anchors without name attribute will be stripped by ckEditor.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function fixNamedAnchors($query_path) {
@@ -336,7 +336,7 @@ class QpHtml {
   /**
    * Makes relative sources values on <a> and <img> tags absolute.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param string $file_id
    *   The full file path of the of the current file, used to determine
@@ -387,7 +387,7 @@ class QpHtml {
   /**
    * Change sub-header images to HTML headers. Defaults to <h2>.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   The QueryPath object with HTML markup.
    * @param string $header_element
    *   (optional). The HTML header element with which to replace the <img>.
@@ -587,7 +587,7 @@ class QpHtml {
   /**
    * Examine all img longdesc attr in qp and remove any that point to images.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   A QueryPath object.
    */
   public static function removeFaultyImgLongdesc($query_path) {
@@ -604,7 +604,7 @@ class QpHtml {
   /**
    * Removes the background from tables in markup by adding class.
    *
-   * @param \QueryPath $query_path
+   * @param object $query_path
    *   A QueryPath object.
    */
   public static function removeTableBackgrounds($query_path) {

@@ -33,7 +33,7 @@ abstract class Obtainer {
   /**
    * QueryPath object passed in at instantiation.
    *
-   * @var \QueryPath
+   * @var object
    */
   protected $queryPath;
 
