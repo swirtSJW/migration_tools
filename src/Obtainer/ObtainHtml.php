@@ -39,7 +39,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $text = $element->$method();
           $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
@@ -69,7 +69,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->$method();
@@ -201,7 +201,7 @@ class ObtainHtml extends Obtainer {
     $elements = $this->queryPath->find($selector);
     $this->setElementToRemove($elements);
     $this->setCurrentFindMethod("pluckAndConcatAnySelector($selector)");
-    $to_concat = array();
+    $to_concat = [];
     foreach ($elements as $key => $em) {
       $to_concat[] = $em->text();
     }
@@ -268,7 +268,7 @@ class ObtainHtml extends Obtainer {
   protected function findSelectorAttribute($selector, $attribute, $depth = 1) {
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         $i++;
         if ($i == $depth) {
           $this->setCurrentFindMethod("findSelectorAttribute($selector, $attribute, " . $i . ')');
@@ -305,7 +305,7 @@ class ObtainHtml extends Obtainer {
     if (!empty($selector) && !empty($separator)) {
       $n = ($n > 0) ? $n - 1 : 0;
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $string = $element->$method();
           $arr = explode($separator, $string);
@@ -344,7 +344,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($xpath)) {
       $elements = $this->queryPath->xpath($xpath);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->text();
@@ -465,11 +465,11 @@ class ObtainHtml extends Obtainer {
 
     // Normalize variations of the br tag.
     // @codingStandardsIgnoreStart
-    $search = array(
+    $search = [
       '<br>',
       '<br />',
       '<br/>',
-    );
+    ];
     $html = str_ireplace($search, '<br>', $html);
     $lines = explode('<br>', $html);
     // @codingStandardsIgnoreEnd
@@ -488,10 +488,10 @@ class ObtainHtml extends Obtainer {
    *   Array containing the results of splitting on \n.
    */
   public static function splitOnNewline($text) {
-    $search = array(
+    $search = [
       "\r\n",
       "\r",
-    );
+    ];
     $text = str_ireplace($search, "\n", $text);
     $lines = explode("\n", $text);
 
@@ -588,10 +588,10 @@ class ObtainHtml extends Obtainer {
       // Grab the remaining text by removing $trunc_test.
       $remaining_text = str_replace($trunc_text, '', $text);
     }
-    $return = array(
+    $return = [
       'truncated' => $trunc_text,
       'remaining' => (!empty($remaining_text)) ? $remaining_text : '',
-    );
+    ];
 
     return $return;
   }

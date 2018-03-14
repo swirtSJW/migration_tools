@@ -70,7 +70,7 @@ class Url {
     $this->redirectCorral = $redirect_corral;
     $this->sectionSwap = self::drupalizeSwapPaths($section_swap);
     $this->sourceLocalBasePath = $source_local_base_path;
-    $this->redirectSources = array();
+    $this->redirectSources = [];
 
     // Build the items we can build at this time.
     $this->generateCorralledUri();
@@ -106,7 +106,7 @@ class Url {
    *   The array with leading and trailing slashes trimmed from keys and values.
    */
   public static function drupalizeSwapPaths($swap_paths) {
-    $new_paths = array();
+    $new_paths = [];
     foreach ($swap_paths as $key => $value) {
       $key = self::drupalizePath($key);
       $value = self::drupalizePath($value);
@@ -132,7 +132,7 @@ class Url {
     // Gather existing redirects from legacy.
     $row->redirects = \Database::getConnection($db_reference_name, $source_connection)
       ->select('path_redirect', 'r')
-      ->fields('r', array('source'))
+      ->fields('r', ['source'])
       ->condition('redirect', "node/$row->nid")
       ->execute()
       ->fetchCol();
@@ -157,7 +157,7 @@ class Url {
     $coralled_legacy_uri = ltrim($coralled_legacy_uri, '/');
     // Break out any query.
     $query = parse_url($coralled_legacy_uri, PHP_URL_QUERY);
-    $query = (!empty($query)) ? self::convertUrlQueryToArray($query) : array();
+    $query = (!empty($query)) ? self::convertUrlQueryToArray($query) : [];
     $original_uri = $coralled_legacy_uri;
     $coralled_legacy_uri = parse_url($coralled_legacy_uri, PHP_URL_PATH);
 
@@ -302,7 +302,7 @@ class Url {
     }
     else {
       // Fail migration because the title can not be processed.
-      $message = t('The module @module was not available to process the title.', array('@module' => 'pathauto'));
+      $message = t('The module @module was not available to process the title.', ['@module' => 'pathauto']);
       throw new MigrateException();
     }
   }
@@ -355,7 +355,7 @@ class Url {
     $path = "{$path}/{$parsed_href['path']}";
 
     // Replace '//' or '/./' or '/foo/../' with '/' recursively.
-    $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+    $re = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
     for ($n = 1; $n > 0; $path = preg_replace($re, '/', $path, -1, $n)) {
     }
 
@@ -365,10 +365,10 @@ class Url {
       // We have an unattainable path like:
       // 'https://oldsite.com/../blah/index.html'
       $message = 'Unable to make absolute URL of path: "@path" on page: @page.';
-      $variables = array(
+      $variables = [
         '@path' => $path,
         '@page' => $base_url,
-      );
+      ];
       Message::make($message, $variables, Message::ERROR, 2);
     }
 
@@ -377,13 +377,13 @@ class Url {
     $parsed_href['fragment'] = (!empty($parsed_href['fragment'])) ? $parsed_href['fragment'] : '';
 
     // Build the absolute URL.
-    $absolute = array(
+    $absolute = [
       'scheme' => $parsed_base_url['scheme'],
       'host' => $parsed_base_url['host'],
       'path' => $path,
       'query' => $parsed_href['query'],
       'fragment' => $parsed_href['fragment'],
-    );
+    ];
 
     // Absolute URL is ready.
     return self::reassembleURL($absolute);
@@ -407,7 +407,7 @@ class Url {
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirect($source_path, $destination, $allowed_hosts = array()) {
+  public static function createRedirect($source_path, $destination, $allowed_hosts = []) {
     // @todo D8 Refactor
 
     $alias = $destination;
@@ -416,9 +416,9 @@ class Url {
     // or subdomain of this site.
     if (!self::isAllowedDomain($source_path, $allowed_hosts)) {
       $message = "A redirect was NOT built for @source_path because it is not an allowed host.";
-      $variables = array(
+      $variables = [
         '@source_path' => $source_path,
-      );
+      ];
       Message::make($message, $variables, FALSE, 2);
       return FALSE;
     }
@@ -430,7 +430,7 @@ class Url {
       $source_path = (!empty($source['path'])) ? $source['path'] : '';
       // A path should not have a preceeding /.
       $source_path = ltrim($source['path'], '/');
-      $source_options = array();
+      $source_options = [];
       // Check for fragments (after #hash ).
       if (!empty($source['fragment'])) {
         $source_options['fragment'] = $source['fragment'];
@@ -455,35 +455,35 @@ class Url {
 
           redirect_save($redirect);
           $message = 'Redirect created: @source ---> @destination';
-          $variables = array(
+          $variables = [
             '@source' => $source_path,
             '@destination' => $redirect->redirect,
-          );
+          ];
           Message::make($message, $variables, FALSE, 1);
         }
         else {
           // The redirect already exists.
           $message = 'The redirect of @legacy already exists pointing to @alias. A new one was not created.';
-          $variables = array(
+          $variables = [
             '@legacy' => $source_path,
             '@alias' => $redirect->redirect,
-          );
+          ];
           Message::make($message, $variables, FALSE, 1);
         }
       }
       else {
         // The source and destination are the same. So no redirect needed.
         $message = 'The redirect of @source have idential source and destination. No redirect created.';
-        $variables = array(
+        $variables = [
           '@source' => $source_path,
-        );
+        ];
         Message::make($message, $variables, FALSE, 1);
       }
     }
     else {
       // The is no value for redirect.
       $message = 'The source path is missing. No redirect can be built.';
-      $variables = array();
+      $variables = [];
       Message::make($message, $variables, FALSE, 1);
     }
   }
@@ -509,7 +509,7 @@ class Url {
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirectsMultiple(array $redirects, $destination, $allowed_hosts = array()) {
+  public static function createRedirectsMultiple(array $redirects, $destination, $allowed_hosts = []) {
     foreach ($redirects as $redirect) {
       if (!empty($redirect)) {
         self::createRedirect($redirect, $destination, $allowed_hosts);
@@ -759,11 +759,11 @@ class Url {
    *   TRUE if there is no host (relative link).
    *   FALSE if the domain is not with this site.
    */
-  public static function isInternalUrl($url, $allowed_hosts = array()) {
+  public static function isInternalUrl($url, $allowed_hosts = []) {
     if (empty($allowed_hosts)) {
       // Use the defined site host.
       $site_host = self::getSiteHost();
-      $allowed_hosts = array($site_host);
+      $allowed_hosts = [$site_host];
     }
 
     if (!empty($allowed_hosts)) {
@@ -859,7 +859,7 @@ class Url {
    *   string 'skip' if there is a redirect but it's broken.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function hasValidRedirect($row, $query_path, $redirect_texts = array()) {
+  public static function hasValidRedirect($row, $query_path, $redirect_texts = []) {
     if (empty($row->pathing->legacyUrl)) {
       throw new \MigrateException('$row->pathing->legacyUrl must be defined to look for a redirect.');
     }
@@ -894,7 +894,7 @@ class Url {
    *   string 'skip' if there is a redirect but it's broken.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function hasValidHtmlRedirect($row, $query_path, $redirect_texts = array()) {
+  public static function hasValidHtmlRedirect($row, $query_path, $redirect_texts = []) {
     $destination = self::getRedirectFromHtml($row, $query_path, $redirect_texts);
     if ($destination) {
       // This page is being redirected via the page.
@@ -903,7 +903,7 @@ class Url {
       if ($real_destination) {
         // The destination is good. Message and return.
         $message = "Found redirect in html -> !destination";
-        $variables = array('!destination' => $real_destination);
+        $variables = ['!destination' => $real_destination];
         Message::make($message, $variables, FALSE, 2);
 
         return $destination;
@@ -911,7 +911,7 @@ class Url {
       else {
         // The destination is not functioning. Message and bail with 'skip'.
         $message = "Found broken redirect in html-> !destination";
-        $variables = array('!destination' => $destination);
+        $variables = ['!destination' => $destination];
         Message::make($message, $variables, Message::ERROR, 2);
 
         return 'skip';
@@ -979,7 +979,7 @@ class Url {
    *   )
    */
   public static function getAllSimilarlyNamedFiles($file_name, $directory, $recurse = FALSE) {
-    $processed_files = array();
+    $processed_files = [];
     if (!empty ($file_name)) {
       $file_name = pathinfo($file_name, PATHINFO_FILENAME);
       $regex = '/^' . $file_name . '\..{3,4}$/i';
@@ -988,20 +988,20 @@ class Url {
       $migration_source_directory = \Drupal::config('migration_tools.settings')->get('source_directory_base');
 
       $dir = $migration_source_directory . $directory;
-      $options = array(
+      $options = [
         'key' => 'filename',
         'recurse' => $recurse,
-      );
+      ];
       $files = file_scan_directory($dir, $regex, $options);
       foreach ($files as $file => $fileinfo) {
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        $processed_files[$extension] = array(
+        $processed_files[$extension] = [
           'name' => $fileinfo->name,
           'filename' => $fileinfo->filename,
           'uri' => $fileinfo->uri,
           'legacy_uri' => str_replace($migration_source_directory . '/', '', $fileinfo->uri),
           'extension' => $extension,
-        );
+        ];
       }
     }
 
@@ -1058,11 +1058,11 @@ class Url {
    *   string - full URL of the redirect destination.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function getRedirectFromHtml($row, $query_path, $redirect_texts = array()) {
+  public static function getRedirectFromHtml($row, $query_path, $redirect_texts = []) {
     // Hunt for <meta> redirects via refresh and location.
     // These use only full URLs.
     $metas = $query_path->top()->find('meta');
-    foreach (is_array($metas) || is_object($metas) ? $metas : array() as $meta) {
+    foreach (is_array($metas) || is_object($metas) ? $metas : [] as $meta) {
       $attributes = $meta->attr();
       $http_equiv = (!empty($attributes['http-equiv'])) ? strtolower($attributes['http-equiv']) : FALSE;
       if (($http_equiv === 'refresh') || ($http_equiv === 'location')) {
@@ -1083,7 +1083,7 @@ class Url {
     // Hunt for Javascript redirects.
     // Checks for presence of Javascript. <script type="text/javascript">
     $js_scripts = $query_path->top()->find('script');
-    foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : array() as $js_script) {
+    foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : [] as $js_script) {
       $script_text = $js_script->text();
       $url = self::extractUrlFromJS($script_text);
       if ($url) {
@@ -1107,12 +1107,12 @@ class Url {
     }
 
     // Check for human readable text redirects.
-    foreach (is_array($redirect_texts) ? $redirect_texts : array() as $i => $redirect_text) {
+    foreach (is_array($redirect_texts) ? $redirect_texts : [] as $i => $redirect_text) {
       // Array of starts and ends to try locating.
-      $wrappers = array();
+      $wrappers = [];
       // Provide two elements: the begining and end wrappers.
-      $wrappers[] = array('"', '"');
-      $wrappers[] = array("'", "'");
+      $wrappers[] = ['"', '"'];
+      $wrappers[] = ["'", "'"];
       foreach ($wrappers as $wrapper) {
         $body_html = $query_path->top()->find('body')->innerHtml();
         $url = self::peelUrl($body_html, $redirect_text, $wrapper[0], $wrapper[1]);
@@ -1181,10 +1181,10 @@ class Url {
    */
   public static function extractUrlFromJS($string) {
     // Look for imposters.
-    $imposters = array(
+    $imposters = [
       'location.protocol',
       'location.host',
-    );
+    ];
     foreach ($imposters as $imposter) {
       $is_imposter = stripos($string, $imposter);
       if ($is_imposter !== FALSE) {
@@ -1193,7 +1193,7 @@ class Url {
       }
     }
     // Array of items to search for.
-    $searches = array(
+    $searches = [
       'location.replace',
       'location.href',
       'location.assign',
@@ -1201,13 +1201,13 @@ class Url {
       "'location'",
       'location',
       "'href'",
-    );
+    ];
 
     // Array of starts and ends to try locating.
-    $wrappers = array();
+    $wrappers = [];
     // Provide two elements: the begining and end wrappers.
-    $wrappers[] = array('"', '"');
-    $wrappers[] = array("'", "'");
+    $wrappers[] = ['"', '"'];
+    $wrappers[] = ["'", "'"];
 
     foreach ($searches as $search) {
       foreach ($wrappers as $wrapper) {
@@ -1296,7 +1296,7 @@ class Url {
     $image_srcs = $query_path->top('img[src]');
     // Initialize summary report information.
     $image_count = $image_srcs->size();
-    $report = array();
+    $report = [];
     // Loop through them all looking for src to alter.
     foreach ($image_srcs as $image) {
       $href = trim($image->attr('src'));
@@ -1344,12 +1344,12 @@ class Url {
    *   redirect-oldsite/section - if the links should be made internal.
    */
   public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
-    $attributes = array(
+    $attributes = [
       'href' => 'a[href], area[href]',
       'longdesc' => 'img[longdesc]',
-    );
+    ];
     $filelink_count = 0;
-    $report = array();
+    $report = [];
     foreach ($attributes as $attribute => $selector) {
       // Find all the $selector on the page.
       $binary_file_links = $query_path->top($selector);
@@ -1403,12 +1403,12 @@ class Url {
    *   redirect-oldsite/section - if the links should be made internal.
    */
   public static function rewriteScriptSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
-    $attributes = array(
+    $attributes = [
       'src' => 'script[src], embed[src]',
       'value' => 'param[value]',
-    );
+    ];
     $script_path_count = 0;
-    $report = array();
+    $report = [];
     self::rewriteFlashSourcePaths($query_path, $url_base_alters, $file_path, $base_for_relative);
     foreach ($attributes as $attribute => $selector) {
       // Find all the selector on the page.
@@ -1465,10 +1465,10 @@ class Url {
   public static function rewriteFlashSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
     $scripts = $query_path->top('script[type="text/javascript"]');
     foreach ($scripts as $script) {
-      $needles = array(
+      $needles = [
         "'src','",
         "'movie','",
-      );
+      ];
       $script_content = $script->text();
       foreach ($needles as $needle) {
         $start_loc = stripos($script_content, $needle);
@@ -1524,12 +1524,12 @@ class Url {
    *   redirect-oldsite/section - if the links should be made internal.
    */
   public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
-    $attributes = array(
+    $attributes = [
       'href' => 'a[href], area[href]',
       'longdesc' => 'img[longdesc]',
-    );
+    ];
     $pagelink_count = 0;
-    $report = array();
+    $report = [];
     foreach ($attributes as $attribute => $selector) {
       // Find all the hrefs on the page.
       $links_to_pages = $query_path->top($selector);
@@ -1545,7 +1545,7 @@ class Url {
 
           if ($href !== $new_href) {
             // Something was changed so add it to report.
-            Message::make("$attribute: $href changed to $new_href", array(), FALSE);
+            Message::make("$attribute: $href changed to $new_href", [], FALSE);
             $report[] = "$attribute: $href changed to $new_href";
           }
         }
@@ -1630,7 +1630,7 @@ class Url {
    */
   public static function convertUrlQueryToArray($query) {
     $query_parts = explode('&', $query);
-    $params = array();
+    $params = [];
     foreach ($query_parts as $param) {
       $item = explode('=', $param);
       $params[$item[0]] = $item[1];
@@ -1652,7 +1652,7 @@ class Url {
    *   string - The base path if a matching document is found.
    *   bool - FALSE if no matching document is found.
    */
-  public static function getRedirectIfIndex($url, $candidates = array("default", "index")) {
+  public static function getRedirectIfIndex($url, $candidates = ["default", "index"]) {
     // Filter through parse_url to separate out querystrings and etc.
     $path = parse_url($url, PHP_URL_PATH);
 
@@ -1664,11 +1664,11 @@ class Url {
     // Test parsed URL.
     if (!empty($filename) && !empty($extension) && in_array($filename, $candidates)) {
       // Build the new implied route (base directory plus any arguments).
-      $new_url = self::reassembleURL(array(
+      $new_url = self::reassembleURL([
         'path' => $root_path,
         'query' => parse_url($url, PHP_URL_QUERY),
         'fragment' => parse_url($url, PHP_URL_FRAGMENT),
-      ), FALSE);
+      ], FALSE);
 
       return $new_url;
     }

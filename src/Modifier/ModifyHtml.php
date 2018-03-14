@@ -39,7 +39,7 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($original_classname)) {
       $elements = $this->queryPath->find(".{$original_classname}");
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         if (empty($new_classname)) {
           $element->removeAttr('class');
         }
@@ -76,7 +76,7 @@ class ModifyHtml extends Modifier {
   protected function removeEmptyTables() {
     $count = 0;
     $tables = $this->queryPath->find('table');
-    foreach ((is_object($tables)) ? $tables : array() as $table) {
+    foreach ((is_object($tables)) ? $tables : [] as $table) {
       $table_contents = $table->text();
       // Remove whitespace in order to evaluate if it is empty.
       $table_contents = StringTools::superTrim($table_contents);
@@ -103,7 +103,7 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $element->remove();
         $count++;
       }
@@ -127,7 +127,7 @@ class ModifyHtml extends Modifier {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $element->remove();
 
@@ -152,7 +152,7 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $element->removeAttr('style');
         $count++;
       }

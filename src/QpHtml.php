@@ -26,11 +26,11 @@ class QpHtml {
    * @TODO This is overly specific to a set of jobs and needs to be made more
    *   generic.
    */
-  public static function stripOrFixLegacyElements($query_path, $arguments = array()) {
+  public static function stripOrFixLegacyElements($query_path, $arguments = []) {
     self::removeComments($query_path);
 
     // Remove elements and their children.
-    QpHtml::removeElements($query_path, array(
+    QpHtml::removeElements($query_path, [
       'a[name="sitemap"]',
       'a[name="maincontent"]',
       'img[src="/gif/sealmt.gif"]',
@@ -49,7 +49,7 @@ class QpHtml {
       'a[href="#top"]',
       'style',
       'script',
-    ));
+    ]);
 
     // Remove external icon images.
     $matches = QpHtml::matchAll($query_path, "a > span > img", "externalicon.gif", "attr", 'src');
@@ -58,7 +58,7 @@ class QpHtml {
     }
 
     // Remove extraneous html wrapping elements, leaving children intact.
-    QpHtml::removeWrapperElements($query_path, array(
+    QpHtml::removeWrapperElements($query_path, [
       'body > blockquote',
       '.bdywrpr',
       '.gridwrpr',
@@ -66,17 +66,17 @@ class QpHtml {
       '.leftcol-subpage-content',
       '.bodytextbox',
       'body > div',
-    ));
+    ]);
 
     // Remove style attribute from elements.
     $query_path->find('.narrow-bar')->removeAttr('style');
 
     // Remove matching elements containing only &nbsp; or nothing.
-    QpHtml::removeEmptyElements($query_path, array(
+    QpHtml::removeEmptyElements($query_path, [
       'div',
       'span',
       'p',
-    ));
+    ]);
 
     // Remove black title bar with eagle image (if present).
     QpHtml::removeTitleBarImage($query_path);
@@ -121,7 +121,7 @@ class QpHtml {
   public static function removeElementsFromHtml($html, array $selectors) {
     // Put the shell on the html to extract with more certainty later.
     $html = '<div class="throw-away-parser-shell">' . $html . '</div>';
-    $query_path = htmlqp($html, NULL, array());
+    $query_path = htmlqp($html, NULL, []);
     QpHtml::removeElements($query_path, $selectors);
 
     // Grab the html from the shell.
@@ -253,10 +253,10 @@ class QpHtml {
       $elements = $query_path->top()->find($selector);
       foreach ($elements as $element) {
         $contents = StringTools::superTrim($element->innerXHTML());
-        $empty_values = array(
+        $empty_values = [
           '&nbsp;',
           '',
-        );
+        ];
         if (in_array($contents, $empty_values)) {
           $element->remove();
         }
@@ -360,10 +360,10 @@ class QpHtml {
   public static function convertRelativeSrcsToAbsolute($query_path, $file_id) {
 
     // A list of attributes to convert, keyed by HTML tag (NOT selector).
-    $attributes = array(
-      'img' => array('src', 'longdesc'),
-      'a' => array('href'),
-    );
+    $attributes = [
+      'img' => ['src', 'longdesc'],
+      'a' => ['href'],
+    ];
     $tags = array_keys($attributes);
     $elements = $query_path->find($tags[0], $tags[1]);
     foreach ($elements as $element) {
@@ -495,7 +495,7 @@ class QpHtml {
    */
   public static function matchAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $counter = 0;
-    $matches = array();
+    $matches = [];
     do {
       $match = QpHtml::match($qp, $selector, $needle, $function, $parameter, $counter);
       if ($match) {

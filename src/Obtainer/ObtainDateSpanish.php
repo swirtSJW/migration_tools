@@ -51,7 +51,7 @@ class ObtainDateSpanish extends ObtainDate {
     $year = preg_replace('/[^0-9]/', '', trim($date_array[1]));
     unset($date_array[1]);
     // Convert spanish months to numeric.
-    $months = array(
+    $months = [
       'enero' => '01',
       'febrero' => '02',
       'marzo' => '03',
@@ -64,10 +64,10 @@ class ObtainDateSpanish extends ObtainDate {
       'octubre' => '10',
       'noviembre' => '11',
       'diciembre' => '12',
-    );
+    ];
     $month = '';
     // With any items that remain, see if we have a month.
-    foreach (is_array($date_array) ? $date_array : array() as $value) {
+    foreach (is_array($date_array) ? $date_array : [] as $value) {
       // If the spanish month name is present in the array, use the number.
       if (!empty($months[$value])) {
         $month = $months[$value];

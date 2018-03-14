@@ -39,15 +39,15 @@ class ObtainID extends ObtainHtml {
     }
 
     // Remove some strings that often accompany id numbers.
-    $remove = array(
+    $remove = [
       'id:',
       'ID',
-    );
+    ];
     // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
-    $remove = array(
+    $remove = [
       "\n",
-    );
+    ];
     // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
     // Remove multiple spaces.

@@ -53,7 +53,7 @@ class Message {
    *
    * @throws MigrateException
    */
-  public static function make($message, $variables = array(), $severity = self::NOTICE, $indent = 1) {
+  public static function make($message, $variables = [], $severity = self::NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     $type = 'unknown';
@@ -89,7 +89,7 @@ class Message {
    * Outputs a visual separator using the message system.
    */
   public static function makeSeparator() {
-    self::make("------------------------------------------------------", array(), FALSE, 0);
+    self::make("------------------------------------------------------", [], FALSE, 0);
   }
 
   /**
@@ -108,9 +108,9 @@ class Message {
   public static function makeSkip($reason, $row_id, $watchdog_level = self::INFO) {
     // Reason is included directly in the message because it needs translation.
     $message = "SKIPPED->{$reason}: @row_id";
-    $variables = array(
+    $variables = [
       '@row_id' => $row_id,
-    );
+    ];
     self::make($message, $variables, $watchdog_level, 1);
 
     return FALSE;
@@ -133,21 +133,21 @@ class Message {
     if ((int) $long >= 2) {
       // Long output requested.
       $completed_string = self::improveArrayOutput($completed);
-      $vars = array(
+      $vars = [
         '@count' => $count,
         '!completed' => $completed_string,
         '@total' => $total_requested,
         '@operation' => $operation,
-      );
+      ];
       $message = "Summary: @operation @count/@total.  Completed:\n !completed";
     }
     else {
       // Default short output.
-      $vars = array(
+      $vars = [
         '@count' => $count,
         '@total' => $total_requested,
         '@operation' => $operation,
-      );
+      ];
       $message = "Summary: @operation @count/@total.";
     }
 
@@ -174,7 +174,7 @@ class Message {
       }
     }
     $string = print_r($array_items, TRUE);
-    $remove = array("Array", "(\n", ")\n");
+    $remove = ["Array", "(\n", ")\n"];
     $string = str_replace($remove, '', $string);
     // Adjust for misaligned second line.
     $string = str_replace('             [', '     [', $string);
@@ -212,16 +212,16 @@ class Message {
    */
   private static function reduceTypeNoise(&$type) {
     // A list of types to blank out, to reduce deceptive noise.
-    $noise_filter = array(
+    $noise_filter = [
       'Drupal\migration_tools\Message',
-    );
+    ];
     $type = ((in_array($type, $noise_filter))) ? '' : $type;
 
     // A list of types to increase readability and reduce noise.
-    $noise_shorten = array(
+    $noise_shorten = [
       'Drupal\migration_tools\Obtainer' => 'MT',
       'Drupal\migration_tools' => 'MT',
-    );
+    ];
     $type = str_replace(array_keys($noise_shorten), array_values($noise_shorten), $type);
   }
 

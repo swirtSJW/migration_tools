@@ -57,7 +57,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), FALSE, 2);
+            Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", ['@selector' => $selector, '@search_string' => $search_string], FALSE, 2);
 
             return $text;
           }
@@ -80,12 +80,12 @@ class ObtainDate extends ObtainHtml {
   protected function findAndFilterForwardDate($selector) {
     $elements = $this->queryPath->find($selector);
     foreach ($elements as $element) {
-      $date_formats = array(
+      $date_formats = [
         // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
         "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
-      );
+      ];
       foreach ($date_formats as $date_format) {
-        $matches = array();
+        $matches = [];
         $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
         if ($hit) {
           foreach ($matches[0] as $key => $match) {
@@ -93,7 +93,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
 
             if ($valid) {
-              Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", ['@selector' => $selector, '@key' => $key], FALSE, 2);
 
               return $text;
             }
@@ -101,6 +101,7 @@ class ObtainDate extends ObtainHtml {
         }
       }
     }
+    return '';
   }
 
   /**
@@ -116,12 +117,12 @@ class ObtainDate extends ObtainHtml {
     $elements = $this->queryPath->find($selector);
 
     foreach ($elements as $element) {
-      $date_formats = array(
+      $date_formats = [
         // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
         "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
-      );
+      ];
       foreach ($date_formats as $date_format) {
-        $matches = array();
+        $matches = [];
         $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
         if ($hit) {
           foreach ($matches[0] as $key => $match) {
@@ -129,7 +130,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
             if ($valid) {
               $this->setElementToRemove($element);
-              Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", ['@selector' => $selector, '@key' => $key], FALSE, 2);
 
               return $text;
             }
@@ -137,6 +138,7 @@ class ObtainDate extends ObtainHtml {
         }
       }
     }
+    return '';
   }
 
   /**
@@ -165,7 +167,7 @@ class ObtainDate extends ObtainHtml {
     }
 
     // Remove some strings that often accompany dates.
-    $remove = array(
+    $remove = [
       'FOR',
       'IMMEDIATE',
       'RELEASE',
@@ -188,24 +190,24 @@ class ObtainDate extends ObtainHtml {
       'thurday',
       'wendsday',
       'firday',
-    );
+    ];
     // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
 
-    $remove = array(
+    $remove = [
       '.',
       ',',
       "\n",
-    );
+    ];
     // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
 
     // Fix mispellings and abbreviations.
-    $replace = array(
+    $replace = [
       'septmber' => 'september',
       'arpil' => 'april',
       'febraury' => 'february',
-    );
+    ];
     $text = str_ireplace(array_keys($replace), array_values($replace), $text);
 
     // Remove multiple spaces.
@@ -233,7 +235,7 @@ class ObtainDate extends ObtainHtml {
    *   One entry for each month name.
    */
   public static function returnMonthNames() {
-    return array(
+    return [
       'January',
       'February',
       'March',
@@ -246,7 +248,7 @@ class ObtainDate extends ObtainHtml {
       'October',
       'November',
       'December',
-    );
+    ];
   }
 
   /**

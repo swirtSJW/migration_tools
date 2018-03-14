@@ -38,12 +38,12 @@ class ObtainLink extends ObtainHtml {
    *   The array of elements found containing element, href, link_text, base_uri
    */
   protected function pluckLinks($selector, $pluck = TRUE) {
-    $found = array();
+    $found = [];
     if (!empty($selector)) {
       $element_with_links = $this->queryPath->find($selector);
       // Get HREF links.
       $elements = $element_with_links->find('a');
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         if ($element->hasAttr('href')) {
           $href = $element->attr('href');
           $link_text = trim($element->get(0)->textContent);
@@ -121,9 +121,9 @@ class ObtainLink extends ObtainHtml {
    *   The cleaned array.
    */
   public static function cleanString($found) {
-    $found = (empty($found)) ? array() : $found;
+    $found = (empty($found)) ? [] : $found;
     // Make sure it is an array, just in case someone uses a string finder.
-    $found = (is_array($found)) ? $found : array($found);
+    $found = (is_array($found)) ? $found : [$found];
 
     return $found;
   }

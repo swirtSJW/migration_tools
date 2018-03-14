@@ -34,7 +34,7 @@ class ObtainTitle extends ObtainHtml {
     // If something got trimmed off, message it.
     if (!empty($split['remaining'])) {
       $message = "The title was shortened and lost: @remainder";
-      Message::make($message, array('@remainder' => $split['remaining']), Message::ERROR, 2);
+      Message::make($message, ['@remainder' => $split['remaining']], Message::ERROR, 2);
     }
 
     return $split['truncated'];
@@ -69,11 +69,11 @@ class ObtainTitle extends ObtainHtml {
     // Remove the text 'banner'.
     $title = str_ireplace('banner', '', $title);
     // Check to see if alt is just placeholder to discard.
-    $placeholder_texts = array(
+    $placeholder_texts = [
       'placeholder',
       'place-holder',
       'place_holder',
-    );
+    ];
     foreach ($placeholder_texts as $needle) {
       if (stristr($title, $needle)) {
         // Just placeholder text, so ignore this text.
@@ -106,7 +106,7 @@ class ObtainTitle extends ObtainHtml {
   public static function cleanString($text) {
     // Breaks need to be converted to spaces to avoid lines running together.
     // @codingStandardsIgnoreStart
-    $break_tags = array('<br>', '<br/>', '<br />', '</br>');
+    $break_tags = ['<br>', '<br/>', '<br />', '</br>'];
     // @codingStandardsIgnoreEnd
     $text = str_ireplace($break_tags, ' ', $text);
     $text = strip_tags($text);
@@ -120,19 +120,19 @@ class ObtainTitle extends ObtainHtml {
     // clean aliases.
     $text = StringTools::convertNonASCIItoASCII($text);
     // Remove undesirable chars and strings.
-    $remove = array(
+    $remove = [
       '&raquo;',
       '&nbsp;',
       '»',
       // Weird space character.'
       ' ',
-    );
+    ];
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
     $text = StringTools::superTrim($text);
     // Remove multiple spaces.
-    $text = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $text);
+    $text = preg_replace(['/\s{2,}/', '/[\t\n]/'], ' ', $text);
 
     // Convert to ucwords If the entire thing is caps. Otherwise leave it alone
     // for preservation of acronyms.

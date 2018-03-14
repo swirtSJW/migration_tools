@@ -15,7 +15,7 @@ use Drupal\migration_tools\Message;
  * Including the class and methods to be called within that modifier.
  */
 abstract class Modifier {
-  public $modifiers = array();
+  public $modifiers = [];
   public $queryPath;
 
   /**
@@ -42,12 +42,12 @@ abstract class Modifier {
    * @return Modifier
    *   Returns $this to allow chaining.
    */
-  public function addModifier($method_name, $arguments = array()) {
+  public function addModifier($method_name, $arguments = []) {
     // @todo Maybe we should validate the method names here?
-    $this->modifiers[] = array(
+    $this->modifiers[] = [
       'method_name' => $method_name,
       'arguments' => $arguments,
-    );
+    ];
 
     return $this;
   }
@@ -57,17 +57,17 @@ abstract class Modifier {
    * Runs the modifiers and reports which were successful.
    */
   public function run() {
-    $alter_log = array();
+    $alter_log = [];
     $total_requested = count($this->modifiers);
     foreach ($this->modifiers as $key => $modifier) {
       if (!method_exists($this, $modifier['method_name'])) {
-        Message::make('The modifier method @method does not exist and was skipped.', array('@method' => $modifier['method_name']), Message::DEBUG);
+        Message::make('The modifier method @method does not exist and was skipped.', ['@method' => $modifier['method_name']], Message::DEBUG);
       }
       // The modifier exists, so run it.
       // Reset QueryPath pointer to top of document.
       $this->queryPath->top();
 
-      $count = call_user_func_array(array($this, $modifier['method_name']), $modifier['arguments']);
+      $count = call_user_func_array([$this, $modifier['method_name']], $modifier['arguments']);
       // Record only what worked.
       if ($count) {
         $args = implode(', ', $modifier['arguments']);

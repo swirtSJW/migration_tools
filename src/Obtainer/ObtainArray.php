@@ -30,9 +30,9 @@ class ObtainArray extends ObtainHtml {
    *   The cleaned array.
    */
   public static function cleanString($found) {
-    $found = (empty($found)) ? array() : $found;
+    $found = (empty($found)) ? [] : $found;
     // Make sure it is an array, just in case someone uses a string finder.
-    $found = (is_array($found)) ? $found : array($found);
+    $found = (is_array($found)) ? $found : [$found];
     $found = array_map('\Drupal\migration_tools\StringTools::superTrim', $found);
 
     return $found;
@@ -101,10 +101,10 @@ class ObtainArray extends ObtainHtml {
    *   The array of elements found.
    */
   protected function arrayPluckSelector($selector, $method = 'text', $pluck = TRUE) {
-    $found = array();
+    $found = [];
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $found[] = $element->$method();
         $this->setCurrentFindMethod("arrayPluckSelector($selector" . ')');
       }

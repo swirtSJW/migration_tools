@@ -26,7 +26,7 @@ class StringTools {
 
     // If the content is not UTF8, attempt to convert it.  If encoding can't be
     // detected, then it can't be converted.
-    $type_detect = array(
+    $type_detect = [
       'JIS',
       'EUC-JP',
       'sjis-win',
@@ -49,7 +49,7 @@ class StringTools {
       'Windows-1251',
       'Windows-1252',
       'Windows-1254',
-    );
+    ];
     $encoding = mb_detect_encoding($string, $type_detect, TRUE);
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
@@ -74,7 +74,7 @@ class StringTools {
    *   An array with the mappings.
    */
   public static function fatalCharsMap() {
-    $convert_table = array(
+    $convert_table = [
       '°' => '&deg;',
       '¡' => '&iexcl;', '&#xa1;' => '&iexcl;',
       '¿' => '&iquest;', '&#xbf;' => '&iquest;',
@@ -86,7 +86,7 @@ class StringTools {
       'ü' => '&uuml;', '&#xfc;' => '&uuml;', 'Ü' => '&Uuml;', '&#xdc;' => '&Uuml;',
       'ñ' => '&ntilde;', '&#xf1;' => '&ntilde;',  'Ñ' => '&Ntilde;', '&#xd1;' => '&Ntilde;', '&#xF1;' => '&ntilde;',
       '\BB' => '&raquo;', '\A0' => '&nbsp;', '\92' => "'", '</br>' => '<br/>',
-    );
+    ];
 
     return $convert_table;
   }
@@ -118,7 +118,7 @@ class StringTools {
    *   An array with the mappings.
    */
   public static function funkyCharsMap() {
-    $convert_table = array(
+    $convert_table = [
       '©' => 'c', '®' => 'r', 'À' => 'a', 'Ã' => 'a',
       'Á' => 'a', 'Â' => 'a', 'Ä' => 'a', 'Å' => 'a', 'Æ' => 'ae','Ç' => 'c',
       'È' => 'e', 'É' => 'e', 'Ë' => 'e', 'Ì' => 'i', 'Í' => 'i', 'Î' => 'i',
@@ -173,7 +173,7 @@ class StringTools {
       'ן' => 'n', 'נ' => 'n', 'ס' => 's', 'ע' => 'e', 'ף' => 'p', 'פ' => 'p',
       'ץ' => 'C', 'צ' => 'c', 'ק' => 'q', 'ר' => 'r', 'ש' => 'w', 'ת' => 't',
       '™' => 'tm', '°' => 'degree',
-    );
+    ];
 
     return $convert_table;
   }
@@ -286,11 +286,11 @@ class StringTools {
    */
   public static function fixWindowSpecificChars($string) {
     // Unicode hex codes for chars only supported in windows.
-    $incorrect = array(91, 92, 93, 94, 96, 97, 'A0', 'BB', 'D8');
+    $incorrect = [91, 92, 93, 94, 96, 97, 'A0', 'BB', 'D8'];
 
     // Bad chars reference: http://www.w3schools.com/charsets/ref_html_ansi.asp
     // Good chars reference: http://www.utexas.edu/learn/html/spchar.html
-    $map = array(
+    $map = [
       145 => 8216,
       146 => 8217,
       147 => 8220,
@@ -300,7 +300,7 @@ class StringTools {
       160 => 160,
       187 => 187,
       216 => 216,
-    );
+    ];
 
     // Create unicode chars to match.
     foreach ($incorrect as $hex) {
@@ -336,13 +336,13 @@ class StringTools {
         }
 
         // Check to see if it should be normalized.
-        $normalize = array(
+        $normalize = [
           'U.s.' => 'U.S.',
           'u.s.' => 'U.S.',
           'U.s.a.' => 'U.S.A.',
           'Usa' => 'USA',
           'Lecc' => 'LECC',
-        );
+        ];
         foreach ($normalize as $bad => $good) {
           // Replace it with the good version if it is bad.
           $word = ($word == $bad) ? $good : $word;
@@ -431,14 +431,14 @@ class StringTools {
   /**
    * Callback helper.
    */
-  public static function convertHexChrToUtf8Callback($matches = array()) {
+  public static function convertHexChrToUtf8Callback($matches = []) {
     return self::convertChrToUtf8(hexdec($matches[1]));
   }
 
   /**
    * Callback helper.
    */
-  public static function convertChrToUtf8Callback($matches = array()) {
+  public static function convertChrToUtf8Callback($matches = []) {
     return self::convertChrToUtf8($matches[1]);
   }
 

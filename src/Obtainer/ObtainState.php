@@ -24,7 +24,7 @@ class ObtainState extends ObtainHtml {
    *   An array of all 50 states.
    */
   static public function getStates() {
-    return array(
+    return [
       'Alabama' => 'AL',
       'Alaska' => 'AK',
       'Arizona' => 'AZ',
@@ -75,7 +75,7 @@ class ObtainState extends ObtainHtml {
       'West Virginia' => 'WV',
       'Wisconsin' => 'WI',
       'Wyoming' => 'WY',
-    );
+    ];
   }
 
 

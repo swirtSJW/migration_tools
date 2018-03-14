@@ -40,7 +40,7 @@ abstract class Obtainer {
    * @var array
    *   Array of find methods to call, in order. Passed in at instantiation.
    */
-  private $methodStack = array();
+  private $methodStack = [];
 
   /**
    * Constructor for the Obtainer.
@@ -51,7 +51,7 @@ abstract class Obtainer {
    * @param array $method_stack
    *   (optional). Array of find methods to run through.
    */
-  public function __construct($query_path, $method_stack = array()) {
+  public function __construct($query_path, $method_stack = []) {
     $this->queryPath = $query_path;
     $this->setMethodStack($method_stack);
   }
@@ -66,7 +66,7 @@ abstract class Obtainer {
     foreach ($method_stack as $key => $method) {
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
-        Message::make('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), Message::DEBUG);
+        Message::make('The target method @method does not exist and was skipped.', ['@method' => $method['method_name']], Message::DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -123,7 +123,7 @@ abstract class Obtainer {
       $this->setCurrentFindMethod($method['method_name']);
       // Reset QueryPath pointer to top of document.
       $this->queryPath->top();
-      $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
+      $found_string  = call_user_func_array([$this, $method['method_name']], $method['arguments']);
       $found_string = $this->cleanString($found_string);
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
@@ -134,7 +134,7 @@ abstract class Obtainer {
         $method['method_name'] = $this->getCurrentFindMethod();
         $type = (is_array($found_string)) ? 'array' : 'string';
 
-        Message::make('@method found a @type.', array('@method' => $method['method_name'], '@type' => $type), Message::ERROR, 2);
+        Message::make('@method found a @type.', ['@method' => $method['method_name'], '@type' => $type], Message::ERROR, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -143,7 +143,8 @@ abstract class Obtainer {
       }
     }
 
-    Message::make('NO MATCHES FOUND', array(), Message::DEBUG, 2);
+    Message::make('NO MATCHES FOUND', [], Message::DEBUG, 2);
+    return NULL;
   }
 
   /**

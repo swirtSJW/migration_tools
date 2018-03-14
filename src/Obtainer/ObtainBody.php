@@ -39,9 +39,9 @@ class ObtainBody extends ObtainHtml {
    */
   public static function cleanString($string) {
     $string = parent::cleanString($string);
-    $remove = array(
+    $remove = [
       "\t",
-    );
+    ];
     // Replace these with spaces.
     $string = str_ireplace($remove, '', $string);
     return $string;

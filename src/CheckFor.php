@@ -30,13 +30,13 @@ class CheckFor {
         // Special case where we are just looking for an element that is !empty.
         $return = TRUE;
         $message = "This row->@element contains a value.";
-        Message::make($message, array('@element' => $row_element), FALSE, 1);
+        Message::make($message, ['@element' => $row_element], FALSE, 1);
       }
       elseif (!empty($value) && !empty($row->{$row_element}) && $row->{$row_element} == $value) {
         // The row element has just what we are looking for.
         $return = TRUE;
         $message = "This row->@element contains the value @value.";
-        Message::make($message, array('@element' => $row_element, '@value' => $value), FALSE, 1);
+        Message::make($message, ['@element' => $row_element, '@value' => $value], FALSE, 1);
       }
     }
     return $return;
@@ -65,7 +65,7 @@ class CheckFor {
       Message::varDumpToDrush($row, 'OUTPUT $row');
       // Output an error level message so it will stop the migration if
       // vset migration_tools_drush_stop_on_error is set to TRUE.
-      Message::make($message, array('@element' => $row_element, '@value' => $value), Message::ERROR, 1);
+      Message::make($message, ['@element' => $row_element, '@value' => $value], Message::ERROR, 1);
     }
   }
 
@@ -122,7 +122,7 @@ class CheckFor {
 
     if ($redirect) {
       $message = "- @source  -> Skipped: Already redirected to '@redirect'.";
-      Message::make($message, array('@source' => $source, '@redirect' => $redirect->redirect), Message::INFO, 1);
+      Message::make($message, ['@source' => $source, '@redirect' => $redirect->redirect], Message::INFO, 1);
       return TRUE;
     }
     return FALSE;
@@ -170,7 +170,7 @@ class CheckFor {
     if (in_array($file_id, $files_to_skip)) {
       // This page should be skipped.
       $message = '- @fileid  -> Skipped: in list of files to skip.';
-      Message::make($message, array('@fileid' => $file_id), Message::INFO, 1);
+      Message::make($message, ['@fileid' => $file_id], Message::INFO, 1);
 
       return TRUE;
     }
@@ -223,11 +223,11 @@ class CheckFor {
     if (property_exists($row, 'content_type') && ($row->content_type != $desired_type)) {
       // This page does not match to $target_type.
       $message = "- @fileid -- Is type '@content_type_obtained' NOT '@desired_type'";
-      $vars = array(
+      $vars = [
         '@desired_type' => $desired_type,
         '@content_type_obtained' => $row->content_type,
         '@fileid' => $row->fileId,
-      );
+      ];
 
       return FALSE;
     }
@@ -267,7 +267,7 @@ class CheckFor {
     // If the extension is empty, assume htm.  Minimal risk because non-html
     // files are rarely served up as directory defaults.
     $extension = (!empty($extension)) ? $extension : 'htm';
-    $considered_pages = array(
+    $considered_pages = [
       'htm',
       'html',
       'html5',
@@ -283,7 +283,7 @@ class CheckFor {
       'shtml',
       'wml',
       'xhtml',
-    );
+    ];
 
     if (in_array($extension, $considered_pages)) {
       // It is definitely a page.

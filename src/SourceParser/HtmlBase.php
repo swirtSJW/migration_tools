@@ -22,7 +22,7 @@ use Drupal\migration_tools\StringTools;
  */
 abstract class HtmlBase {
 
-  public $obtainerJobs = array();
+  public $obtainerJobs = [];
   public $fileId;
   protected $html;
 
@@ -263,7 +263,7 @@ abstract class HtmlBase {
     $job = (empty($this->obtainerJobs[$property])) ? '' : $this->obtainerJobs[$property];
 
     if (empty($job)) {
-      $message = t("@class does not have a Job defined for the  property: @property", array('@property' => $property, '@class' => 'SourceParser\HtmlBase'));
+      $message = t("@class does not have a Job defined for the  property: @property", ['@property' => $property, '@class' => 'SourceParser\HtmlBase']);
       throw new \Exception($message);
     }
 
@@ -272,40 +272,40 @@ abstract class HtmlBase {
       $searches = $job->getSearches();
       if (!empty($searches)) {
         // There are methods to run, so run them.
-        Message::make("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
+        Message::make("Obtaining @key via @obtainer_class", ['@key' => $property, '@obtainer_class' => $class]);
 
         $text = $job->run($this->queryPath);
         $length = (is_array($text)) ? count($text) : strlen($text);
 
         if (!$length) {
           // Nothing was obtained.
-          Message::make('@property NOT found', array('@property' => $property), Message::DEBUG, 2);
+          Message::make('@property NOT found', ['@property' => $property], Message::DEBUG, 2);
         }
         elseif (is_array($text)) {
-          // This must have come from ObtainArray().
-          Message::make('@property found --> @array', array('@property' => $property, '@array' => Message::improveArrayOutput($text)), Message::DEBUG, 2);
+          // This must have come from Obtain[].
+          Message::make('@property found --> @array', ['@property' => $property, '@array' => Message::improveArrayOutput($text)], Message::DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
-          Message::make('@property found --> @text', array('@property' => $property, '@text' => $text), Message::DEBUG, 2);
+          Message::make('@property found --> @text', ['@property' => $property, '@text' => $text], Message::DEBUG, 2);
         }
         else {
           // It's too long to be helpful in output so just show the length.
-          Message::make('@property found --> Length: @length', array('@property' => $property, '@length' => $length), Message::DEBUG, 2);
+          Message::make('@property found --> Length: @length', ['@property' => $property, '@length' => $length], Message::DEBUG, 2);
         }
       }
       else {
         // There were no methods to run so message.
-        Message::make("There were no searches to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
+        Message::make("There were no searches to run for @key via @obtainer_class so it was not executed", ['@key' => $property, '@obtainer_class' => $class]);
       }
 
     }
     catch (\Exception $e) {
-      Message::make("@file_id Failed to set @key, Exception: @error_message", array(
+      Message::make("@file_id Failed to set @key, Exception: @error_message", [
         '@file_id' => $this->fileId,
         '@key' => $property,
         '@error_message' => $e->getMessage(),
-      ), Message::DEBUG);
+      ], Message::DEBUG);
     }
 
     return $text;
@@ -321,7 +321,7 @@ abstract class HtmlBase {
     }
     else {
       // Initialize the QueryPath.
-      $type_detect = array(
+      $type_detect = [
         'UTF-8',
         'ASCII',
         'ISO-8859-1',
@@ -341,18 +341,18 @@ abstract class HtmlBase {
         'Windows-1251',
         'Windows-1252',
         'Windows-1254',
-      );
+      ];
       $convert_from = mb_detect_encoding($this->html, $type_detect);
       if ($convert_from != 'UTF-8') {
         // This was not UTF-8 so report the anomaly.
         $message = "Converted from: @convert_from";
-        Message::make($message, array('@convert_from' => $convert_from), Message::INFO, 1);
+        Message::make($message, ['@convert_from' => $convert_from], Message::INFO, 1);
       }
 
-      $qp_options = array(
+      $qp_options = [
         'convert_to_encoding' => 'UTF-8',
         'convert_from_encoding' => $convert_from,
-      );
+      ];
 
       // Create query path object.
       try {
@@ -369,7 +369,7 @@ abstract class HtmlBase {
             // QueryPath qp is less tolerant of badly formed html so it must
             // have failed.
             // Use htmlqp which is more detructive but will fix bad html.
-            Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with @file, Exception: @error_message', array('@error_message' => $e->getMessage(), '@file' => $this->fileId), FALSE);
+            Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with @file, Exception: @error_message', ['@error_message' => $e->getMessage(), '@file' => $this->fileId], FALSE);
             $this->queryPath = htmlqp($this->html, NULL, $qp_options);
           }
         }
@@ -379,7 +379,7 @@ abstract class HtmlBase {
         }
       }
       catch (\Exception $e) {
-        Message::make('Failed to instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), Message::ERROR);
+        Message::make('Failed to instantiate QueryPath for HTML, Exception: @error_message', ['@error_message' => $e->getMessage()], Message::ERROR);
       }
       // Sometimes queryPath fails.  So one last check.
       if (!is_object($this->queryPath)) {
@@ -414,7 +414,7 @@ abstract class HtmlBase {
       foreach ($this->htmlElementsToReWrap as $element => $new_wrapper) {
         // Make sure the array key is not just an array index.
         if (is_string($element)  && !is_numeric($element)) {
-          QpHtml::rewrapElements($this->queryPath, array($element), $new_wrapper);
+          QpHtml::rewrapElements($this->queryPath, [$element], $new_wrapper);
         }
       }
 
@@ -424,7 +424,7 @@ abstract class HtmlBase {
 
     }
     catch (\Exception $e) {
-      Message::make('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), Message::ERROR);
+      Message::make('@file_id Failed to clean the html, Exception: @error_message', ['@file_id' => $this->fileId, '@error_message' => $e->getMessage()], Message::ERROR);
     }
   }
 }

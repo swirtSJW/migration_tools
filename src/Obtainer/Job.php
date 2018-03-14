@@ -16,7 +16,7 @@ class Job {
   public $afterClean;
   private $obtainerClassName;
   private $rowProperty;
-  public $searches = array();
+  public $searches = [];
 
   /**
    * Constructor.
@@ -54,7 +54,7 @@ class Job {
     }
     else {
       // The class does not exist.
-      $message = t("The class @class does not exist.", array('@class' => $obtainer_class_name));
+      $message = t("The class @class does not exist.", ['@class' => $obtainer_class_name]);
       throw new \Exception($message);
     }
   }
@@ -100,12 +100,12 @@ class Job {
    * @return Job
    *   Returns $this to allow chaining.
    */
-  public function addSearch($method_name, $arguments = array()) {
+  public function addSearch($method_name, $arguments = []) {
     // @todo Maybe we should validate the method names here?
-    $this->searches[] = array(
+    $this->searches[] = [
       'method_name' => $method_name,
       'arguments' => $arguments,
-    );
+    ];
 
     return $this;
   }
