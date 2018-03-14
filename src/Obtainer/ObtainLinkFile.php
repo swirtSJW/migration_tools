@@ -6,7 +6,7 @@ namespace Drupal\migration_tools\Obtainer;
  * Class ObtainLinks
  *
  * Contains logic for parsing for file links in HTML.
-
+ */
 class ObtainLinkFile extends ObtainLink {
 
   /**
