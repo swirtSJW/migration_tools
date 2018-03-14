@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainState
- *
- * Contains logic for cleaning and validation a state.
- * as needed to obtain a state.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\StringTools;
@@ -23,7 +15,7 @@ class ObtainState extends ObtainHtml {
    * @return array
    *   An array of all 50 states.
    */
-  static public function getStates() {
+  public static function getStates() {
     return [
       'Alabama' => 'AL',
       'Alaska' => 'AK',
@@ -77,9 +69,6 @@ class ObtainState extends ObtainHtml {
       'Wyoming' => 'WY',
     ];
   }
-
-
-  // ***************** Helpers ***********************************************.
 
   /**
    * {@inheritdoc}

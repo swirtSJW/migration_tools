@@ -56,9 +56,9 @@ class PostRowSave implements EventSubscriberInterface {
    * @throws \Drupal\migrate\MigrateSkipRowException
    */
   public function onMigratePostRowSave(MigratePostRowSaveEvent $event) {
-    $migration = $event->getMigration();
-    $row = $event->getRow();
-    $nids = $event->getDestinationIdValues();
+    // $migration = $event->getMigration();
+    // $row = $event->getRow();
+    // $nids = $event->getDestinationIdValues();
   }
 
 }

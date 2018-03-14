@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainArray
- *
- * Contains logic for cleaning, validation and custom finders for gathering
- * multiples and returns arrays rather than strings.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 /**
@@ -15,15 +7,13 @@ namespace Drupal\migration_tools\Obtainer;
  */
 class ObtainArray extends ObtainHtml {
 
-  // ***************** Helpers ***********************************************.
-
   /**
    * Cleans array and returns it prior to validation.
    *
    * This method is misleadingly named since it is processing an array, but
    * must override the string based cleanString.
    *
-   * @param array $found
+   * @param mixed $found
    *   Text to clean and return.
    *
    * @return array
@@ -38,14 +28,13 @@ class ObtainArray extends ObtainHtml {
     return $found;
   }
 
-
   /**
    * Evaluates $found array and if it checks out, returns TRUE.
    *
    * This method is misleadingly named since it is processing an array, but
    * must override the string based validateString.
    *
-   * @param array $found
+   * @param mixed $found
    *   The array to validate.
    *
    * @return bool
@@ -54,7 +43,6 @@ class ObtainArray extends ObtainHtml {
   protected function validateString($found) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($found):
@@ -115,4 +103,5 @@ class ObtainArray extends ObtainHtml {
 
     return $found;
   }
+
 }

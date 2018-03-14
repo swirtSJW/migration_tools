@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Defines Modifier\ModifyHtml class.
- */
-
 namespace Drupal\migration_tools\Modifier;
 
 use Drupal\migration_tools\StringTools;
@@ -57,7 +52,7 @@ class ModifyHtml extends Modifier {
   /**
    * Remove a class from a class from all elements.
    *
-   * @param string  $classname
+   * @param string $classname
    *   The classname to remove.
    *
    * @return int
@@ -160,4 +155,5 @@ class ModifyHtml extends Modifier {
 
     return $count;
   }
+
 }

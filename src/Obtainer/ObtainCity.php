@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainCity
- *
- * Contains logic for cleaning and validation a city.
- * as needed to obtain a city.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\StringTools;
@@ -16,8 +8,6 @@ use Drupal\migration_tools\StringTools;
  * {@inheritdoc}
  */
 class ObtainCity extends ObtainHtml {
-
-  // ***************** Helpers ***********************************************.
 
   /**
    * {@inheritdoc}
@@ -50,7 +40,6 @@ class ObtainCity extends ObtainHtml {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case !parent::validateString($string):

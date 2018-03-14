@@ -4,5 +4,5 @@ description: 'Tools to help process difficult migrations.'
 core: 8.x
 package: 'Migration'
 dependencies:
-  - migrate_plus
-  - migrate
+  - drupal:migrate_plus
+  - drupal:migrate

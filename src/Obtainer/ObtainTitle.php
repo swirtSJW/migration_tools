@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainTitle
- *
- * Contains a collection of stackable finders that can be arranged
- * as needed to obtain a title/heading and possible subtitle/subheading.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\Message;
@@ -40,9 +32,9 @@ class ObtainTitle extends ObtainHtml {
     return $split['truncated'];
   }
 
-
   /**
    * Finder method to find the content sub-banner alt.
+   *
    * @return string
    *   The text found.
    */
@@ -52,6 +44,7 @@ class ObtainTitle extends ObtainHtml {
 
   /**
    * Finder method to find the content sub-banner title.
+   *
    * @return string
    *   The text found.
    */
@@ -61,6 +54,7 @@ class ObtainTitle extends ObtainHtml {
 
   /**
    * Grab method to find the content sub-banner attribute.
+   *
    * @return string
    *   The text found.
    */
@@ -88,7 +82,6 @@ class ObtainTitle extends ObtainHtml {
    * Get subbanner image.
    */
   protected function findSubBannerString($attribute = 'alt') {
-    $subbanner = NULL;
     $images = $this->queryPath->find('img');
     foreach ($images as $image) {
       $src = $image->attr('src');
@@ -98,7 +91,6 @@ class ObtainTitle extends ObtainHtml {
     }
     return '';
   }
-
 
   /**
    * {@inheritdoc}
@@ -124,7 +116,7 @@ class ObtainTitle extends ObtainHtml {
       '&raquo;',
       '&nbsp;',
       '»',
-      // Weird space character.'
+      // Weird space character.'.
       ' ',
     ];
     $text = str_ireplace($remove, ' ', $text);
@@ -147,4 +139,5 @@ class ObtainTitle extends ObtainHtml {
 
     return $text;
   }
+
 }

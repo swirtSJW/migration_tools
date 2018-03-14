@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainLocation
- *
- * Contains a collection of stackable finders and plucker that can be arranged
- * as needed to obtain a location suitable for geoLocating.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\StringTools;
@@ -48,7 +40,6 @@ class ObtainLocation extends ObtainHtml {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case !parent::validateString($string):
@@ -58,11 +49,11 @@ class ObtainLocation extends ObtainHtml {
       case (strlen($string) > 300):
         // @TODO The most accurate validation would be to pass it to the
         // geocoder, but that could result in a huge number hits to the service.
-
         return FALSE;
 
       default:
         return TRUE;
     }
   }
+
 }

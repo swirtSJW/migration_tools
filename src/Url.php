@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Functions for handling urls, redirects and aliases.
- */
 
 namespace Drupal\migration_tools;
 
@@ -10,6 +6,8 @@ use Drupal\migrate\MigrateException;
 use QueryPath;
 
 /**
+ * Class Url.
+ *
  * In migrations it is easy to get lost in all the pathing related
  * information.  This list should help designate what is what in a migration.
  * Notice that they are all namespaced to ->pathing____ to make it easy to find
@@ -32,7 +30,6 @@ use QueryPath;
  * redirects in complete().
  * $this->pathing->redirectDestination [any valid url, drupal path, drupal uri.]
  */
-
 class Url {
 
   /**
@@ -40,24 +37,24 @@ class Url {
    *
    * @param string $file_id
    *   The file ID of the row.
-   *   [/oldsite/section/blah/index.html]
+   *   [/oldsite/section/blah/index.html].
    * @param string $legacy_migration_source_path
    *   The legacy directory and optional sub-directories of the source file
    *   within 'migration-source'.
-   *   [oldsite] or [oldsite/section/]
+   *   [oldsite] or [oldsite/section/].
    * @param string $legacy_host
    *   The host of the source content.
-   *   [https://www.oldsite.com]
+   *   [https://www.oldsite.com].
    * @param string $redirect_corral
    *   The base path in Drupal to uses in the redirect source source.
-   *   [redirect-oldsite]
+   *   [redirect-oldsite].
    * @param array $section_swap
    *   An array or path sections to swap if the location of the source content
    *   is going to be different from the location of the migrated content.
-   *   [array(‘oldsite/section’ => ‘new-section’)]
+   *   [array(‘oldsite/section’ => ‘new-section’)].
    * @param string $source_local_base_path
    *   The environment base path to where the legacy files exist.
-   *   [/var/www/migration-source]
+   *   [/var/www/migration-source].
    */
   public function __construct($file_id, $legacy_migration_source_path, $legacy_host, $redirect_corral, array $section_swap, $source_local_base_path) {
     // Establish the incoming properties.
@@ -105,7 +102,7 @@ class Url {
    * @return array
    *   The array with leading and trailing slashes trimmed from keys and values.
    */
-  public static function drupalizeSwapPaths($swap_paths) {
+  public static function drupalizeSwapPaths(array $swap_paths) {
     $new_paths = [];
     foreach ($swap_paths as $key => $value) {
       $key = self::drupalizePath($key);
@@ -145,7 +142,9 @@ class Url {
    *   The coralled URI from the legacy site ideally coming from
    *   $row->pathing->corralledUri
    *   ex: redirect-oldsite/section/blah/index.html
-   *   redirect-oldsite/section/blah/index.html?foo=bar
+   *   redirect-oldsite/section/blah/index.html?foo=bar.
+   * @param string $language
+   *   Language.
    *
    * @return string
    *   The Drupal alias redirected from the legacy URI.
@@ -201,7 +200,6 @@ class Url {
     return $original_uri;
   }
 
-
   /**
    * Generates a drupal-centric URI based in the redirect corral.
    *
@@ -221,7 +219,7 @@ class Url {
     $pathing_legacy_directory = (!empty($pathing_legacy_directory)) ? $pathing_legacy_directory : $this->legacyDirectory;
     $pathing_redirect_corral = (!empty($pathing_redirect_corral)) ? $pathing_redirect_corral : $this->redirectCorral;
     $uri = ltrim($this->fileId, '/');
-    // Swap the pathing_legacy_directory for the pathing_redirect_corral
+    // Swap the pathing_legacy_directory for the pathing_redirect_corral.
     $uri = str_replace($pathing_legacy_directory, $pathing_redirect_corral, $uri);
     $this->corralledUri = $uri;
   }
@@ -250,7 +248,6 @@ class Url {
     $this->legacyUrl = $url;
   }
 
-
   /**
    * Generates a drupal-centric Alias for the source row.
    *
@@ -276,7 +273,6 @@ class Url {
    */
   public function generateDestinationUriAlias($pathing_section_swap, $title) {
     // @todo D8 Refactor
-
     // Allow the parameter to override the property if provided.
     $pathing_section_swap = (!empty($pathing_section_swap)) ? $pathing_section_swap : $this->sectionSwap;
 
@@ -302,11 +298,10 @@ class Url {
     }
     else {
       // Fail migration because the title can not be processed.
-      $message = t('The module @module was not available to process the title.', ['@module' => 'pathauto']);
+      Message::make('The module @module was not available to process the title.', ['@module' => 'pathauto'], Message::ERROR);
       throw new MigrateException();
     }
   }
-
 
   /**
    * Convert a relative URI from a page to an absolute URL.
@@ -319,7 +314,7 @@ class Url {
    *   https://www.this-site.com/section/subsection/index.html.
    * @param string $base_url
    *   The location where $rel existed in html. Ex:
-   *   https://www.oldsite.com/section/page.html
+   *   https://www.oldsite.com/section/page.html.
    *
    * @return string
    *   The relative url transformed to absolute. Ex:
@@ -402,14 +397,16 @@ class Url {
    *   The destination of the redirect Ex:
    *   node/123
    *   swapped-section-a/blah/title-based-thing
-   *   http://www.some-other-site.com
+   *   http://www.some-other-site.com.
    * @param array $allowed_hosts
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
+   *
+   * @return bool
+   *   FALSE if error.
    */
-  public static function createRedirect($source_path, $destination, $allowed_hosts = []) {
+  public static function createRedirect($source_path, $destination, array $allowed_hosts = []) {
     // @todo D8 Refactor
-
     $alias = $destination;
 
     // We can not create a redirect for a URL that is not part of the domain
@@ -486,8 +483,8 @@ class Url {
       $variables = [];
       Message::make($message, $variables, FALSE, 1);
     }
+    return TRUE;
   }
-
 
   /**
    * Creates multiple redirects to the same destination.
@@ -504,12 +501,12 @@ class Url {
    *   The destination of the redirect Ex:
    *   node/123
    *   swapped-section-a/blah/title-based-thing
-   *   http://www.some-other-site.com
+   *   http://www.some-other-site.com.
    * @param array $allowed_hosts
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirectsMultiple(array $redirects, $destination, $allowed_hosts = []) {
+  public static function createRedirectsMultiple(array $redirects, $destination, array $allowed_hosts = []) {
     foreach ($redirects as $redirect) {
       if (!empty($redirect)) {
         self::createRedirect($redirect, $destination, $allowed_hosts);
@@ -522,16 +519,13 @@ class Url {
    *
    * @param object $entity
    *   The fully loaded entity.
-   *
    * @param string $field_name
    *   The machine name of the attachment field.
-   *
    * @param string $language
    *   Optional. Defaults to LANGUAGE_NONE.
    */
   public static function rollbackAttachmentRedirect($entity, $field_name, $language = '') {
     // @todo D8 Refactor
-
     $field = $entity->$field_name;
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
@@ -549,19 +543,16 @@ class Url {
    *
    * @param object $entity
    *   The fully loaded entity.
-   *
    * @param array $source_urls
    *   A flat array of source urls that should redirect to the attachments
    *   on this entity. $source_urls[0] will redirect to the first attachment,
    *   $entity->$field_name[$language][0], and so on.
-   *
    * @param string $field_name
    *   The machine name of the attachment field.
-   *
    * @param string $language
    *   Optional. Defaults to LANGUAGE_NONE.
    */
-  public static function createAttachmentRedirect($entity, $source_urls, $field_name, $language = LANGUAGE_NONE) {
+  public static function createAttachmentRedirect($entity, array $source_urls, $field_name, $language = LANGUAGE_NONE) {
     // @todo D8 Refactor
     if (empty($source_urls)) {
       // Nothing to be done here.
@@ -576,7 +567,7 @@ class Url {
         // $file = file_load($item['fid']);
         // $url = file_create_url($file->uri);
         // $parsed_url = parse_url($url);
-        // $destination = ltrim($parsed_url['path'], '/');
+        // $destination = ltrim($parsed_url['path'], '/');.
         $source = $source_urls[$delta];
 
         // Create redirect.
@@ -614,12 +605,12 @@ class Url {
    *
    * Specifically replaces anchors like #_PAGE2 and #p2 with #page=2.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    *
    * @see http://www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
    */
-  public static function fixPdfLinkAnchors($query_path) {
+  public static function fixPdfLinkAnchors(QueryPath $query_path) {
     $anchors = $query_path->find('a');
     foreach ($anchors as $anchor) {
       $url = $anchor->attr('href');
@@ -687,7 +678,6 @@ class Url {
     }
   }
 
-
   /**
    * Given a URL or URI return the path and nothing but the path.
    *
@@ -696,7 +686,7 @@ class Url {
    *   Ex:
    *   http://www.oldsite.com/section/subsection/index.html
    *   http://www.oldsite.com/section/subsection/
-   *   section/subsection/
+   *   section/subsection/.
    *
    * @return string
    *   The path not containing any filename or extenstion.
@@ -729,7 +719,7 @@ class Url {
    *   TRUE if the array of allowed is empty (nothing to compare against)
    *   FALSE if the domain is not with the array of allowed.
    */
-  public static function isAllowedDomain($url, $allowed_hosts) {
+  public static function isAllowedDomain($url, array $allowed_hosts) {
     $url = self::fixSchemelessInternalUrl($url);
     $host = parse_url($url, PHP_URL_HOST);
     // Treat it as allowed until evaluated otherwise.
@@ -741,15 +731,13 @@ class Url {
     return $allowed;
   }
 
-
   /**
    * Examines an url to see if it is internal to this site.
    *
    * @param string $url
    *   A URL. Ex:
    *   https://www.newsite.com/somepage,
-   *   https://www.oldsite.com/
-   *
+   *   https://www.oldsite.com/.
    * @param array $allowed_hosts
    *   Optional:  A flat array of allowed domains. Uses base url admin setting.
    *   ex:array('www.newsite.com', 'newsite.com').
@@ -758,8 +746,10 @@ class Url {
    *   TRUE if the host is within the site.
    *   TRUE if there is no host (relative link).
    *   FALSE if the domain is not with this site.
+   *
+   * @throws \Drupal\migrate\MigrateException
    */
-  public static function isInternalUrl($url, $allowed_hosts = []) {
+  public static function isInternalUrl($url, array $allowed_hosts = []) {
     if (empty($allowed_hosts)) {
       // Use the defined site host.
       $site_host = self::getSiteHost();
@@ -811,7 +801,7 @@ class Url {
    *
    * @throws \Exception
    */
-  public static function reassembleURL($parsed_url, $return_url = TRUE) {
+  public static function reassembleURL(array $parsed_url, $return_url = TRUE) {
     $url = '';
 
     if ($return_url) {
@@ -848,20 +838,22 @@ class Url {
    *
    * @param object $row
    *   A row object as delivered by migrate.
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (optional) array of human readable strings that preceed a link to the
-   *   new location of the page ex: "this page has move to"
+   *   (Optional) array of human readable strings that preceed a link to the
+   *   New location of the page ex: "this page has move to".
    *
    * @return mixed
    *   string - full URL of the validated redirect destination.
    *   string 'skip' if there is a redirect but it's broken.
    *   FALSE - no detectable redirects exist in the page.
+   *
+   * @throws \Drupal\migrate\MigrateException
    */
-  public static function hasValidRedirect($row, $query_path, $redirect_texts = []) {
+  public static function hasValidRedirect($row, QueryPath $query_path, array $redirect_texts = []) {
     if (empty($row->pathing->legacyUrl)) {
-      throw new \MigrateException('$row->pathing->legacyUrl must be defined to look for a redirect.');
+      throw new MigrateException('$row->pathing->legacyUrl must be defined to look for a redirect.');
     }
     else {
       // Look for server side redirect.
@@ -877,24 +869,23 @@ class Url {
     }
   }
 
-
   /**
    * Retrieves redirects from the html of the page if it the destination exists.
    *
    * @param object $row
    *   A row object as delivered by migrate.
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (optional) array of human readable strings that preceed a link to the
-   *   new location of the page ex: "this page has move to"
+   *   (Optional) array of human readable strings that preceed a link to the
+   *   New location of the page ex: "this page has move to".
    *
    * @return mixed
    *   string - full URL of the validated redirect destination.
    *   string 'skip' if there is a redirect but it's broken.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function hasValidHtmlRedirect($row, $query_path, $redirect_texts = []) {
+  public static function hasValidHtmlRedirect($row, QueryPath $query_path, array $redirect_texts = []) {
     $destination = self::getRedirectFromHtml($row, $query_path, $redirect_texts);
     if ($destination) {
       // This page is being redirected via the page.
@@ -922,7 +913,6 @@ class Url {
       return FALSE;
     }
   }
-
 
   /**
    * Check for server side redirects.
@@ -959,7 +949,7 @@ class Url {
    *   Ex: 'xyz'  or 'xyz.html'.
    * @param string $directory
    *   The directory path relative to the migration source.
-   *   Ex: /oldsite/section
+   *   Ex: /oldsite/section.
    * @param bool $recurse
    *   Declaring whether to scan recursively into the directory (default: FALSE)
    *   CAUTION: Setting this to TRUE creates the risk of a race condition if
@@ -980,7 +970,7 @@ class Url {
    */
   public static function getAllSimilarlyNamedFiles($file_name, $directory, $recurse = FALSE) {
     $processed_files = [];
-    if (!empty ($file_name)) {
+    if (!empty($file_name)) {
       $file_name = pathinfo($file_name, PATHINFO_FILENAME);
       $regex = '/^' . $file_name . '\..{3,4}$/i';
 
@@ -1048,17 +1038,17 @@ class Url {
    *
    * @param object $row
    *   A row object as delivered by migrate.
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (optional) array of human readable strings that preceed a link to the
-   *   new location of the page ex: "this page has move to"
+   *   (Optional) array of human readable strings that preceed a link to the
+   *   New location of the page ex: "this page has move to".
    *
    * @return mixed
    *   string - full URL of the redirect destination.
    *   FALSE - no detectable redirects exist in the page.
    */
-  public static function getRedirectFromHtml($row, $query_path, $redirect_texts = []) {
+  public static function getRedirectFromHtml($row, QueryPath $query_path, array $redirect_texts = []) {
     // Hunt for <meta> redirects via refresh and location.
     // These use only full URLs.
     $metas = $query_path->top()->find('meta');
@@ -1081,7 +1071,7 @@ class Url {
     }
 
     // Hunt for Javascript redirects.
-    // Checks for presence of Javascript. <script type="text/javascript">
+    // Checks for presence of Javascript. <script type="text/javascript">.
     $js_scripts = $query_path->top()->find('script');
     foreach (is_array($js_scripts) || is_object($js_scripts) ? $js_scripts : [] as $js_script) {
       $script_text = $js_script->text();
@@ -1128,7 +1118,7 @@ class Url {
    *
    * @param string $url
    *   A full destination URL.
-   *   Ex: https://www.oldsite.com/section/blah/index.html
+   *   Ex: https://www.oldsite.com/section/blah/index.html.
    * @param bool $follow_redirects
    *   TRUE (default) if you want it to track multiple redirects to the end.
    *   FALSE if you want to only evaluate the first page request.
@@ -1168,12 +1158,11 @@ class Url {
     }
   }
 
-
   /**
    * Pull a URL destination from a Javascript script.
    *
    * @param string $string
-   *   $string of the script contents.
+   *   String of the script contents.
    *
    * @return mixed
    *   string - the validated URL if found.
@@ -1284,14 +1273,14 @@ class Url {
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
    */
-  public static function rewriteImageHrefsOnPage(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteImageHrefsOnPage(QueryPath $query_path, array $url_base_alters, $file_path, $base_for_relative) {
     // Find all the images on the page.
     $image_srcs = $query_path->top('img[src]');
     // Initialize summary report information.
@@ -1312,7 +1301,6 @@ class Url {
     // Message the report (no log).
     Message::makeSummary($report, $image_count, 'Rewrote img src');
   }
-
 
   /**
    * Alter hrefs in page if they point to non-html-page files.
@@ -1336,14 +1324,14 @@ class Url {
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
    */
-  public static function rewriteAnchorHrefsToBinaryFiles(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteAnchorHrefsToBinaryFiles(QueryPath $query_path, array $url_base_alters, $file_path, $base_for_relative) {
     $attributes = [
       'href' => 'a[href], area[href]',
       'longdesc' => 'img[longdesc]',
@@ -1395,14 +1383,14 @@ class Url {
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
    */
-  public static function rewriteScriptSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteScriptSourcePaths(QueryPath $query_path, array $url_base_alters, $file_path, $base_for_relative) {
     $attributes = [
       'src' => 'script[src], embed[src]',
       'value' => 'param[value]',
@@ -1432,7 +1420,6 @@ class Url {
     Message::makeSummary($report, $script_path_count, 'Rewrote script src');
   }
 
-
   /**
    * Alter relative Flash source paths in page scripts.
    *
@@ -1455,14 +1442,14 @@ class Url {
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
    */
-  public static function rewriteFlashSourcePaths(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteFlashSourcePaths(QueryPath $query_path, array $url_base_alters, $file_path, $base_for_relative) {
     $scripts = $query_path->top('script[type="text/javascript"]');
     foreach ($scripts as $script) {
       $needles = [
@@ -1516,14 +1503,14 @@ class Url {
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
    */
-  public static function rewriteAnchorHrefsToPages(\QueryPath $query_path, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteAnchorHrefsToPages(QueryPath $query_path, array $url_base_alters, $file_path, $base_for_relative) {
     $attributes = [
       'href' => 'a[href], area[href]',
       'longdesc' => 'img[longdesc]',
@@ -1555,7 +1542,6 @@ class Url {
     Message::makeSummary($report, $pagelink_count, 'Rewrote page hrefs');
   }
 
-
   /**
    * Alter URIs and URLs in page that are relative, absolute or full alter base.
    *
@@ -1569,18 +1555,18 @@ class Url {
    *   An array of url bases to alter in the form of old-link => new-link
    *   Examples:
    *   array(
-   *     'http://www.oldsite.com/section' => 'https://www.newsite.com/new-section',
-   *     'https://www.oldsite.com/section' => 'https://www.newsite.com/new-section',
-   *     'https://www.oldsite.com/section' => '/redirect-oldsite/new-section',
-   *     'www.oldsite.com/' => 'www.newsite.com',
-   *     'https://www.oldsite.com/' => 'https://www.newsite.com',
-   *     'https:/subdomain.oldsite.com' => 'https://www.othersite.com/secure',
-   *     'http:/subdomain.oldsite.com' => 'https://www.othersite.com/public',
+   *     'http://www.old.com/section' => 'https://www.new.com/new-section',
+   *     'https://www.old.com/section' => 'https://www.new.com/new-section',
+   *     'https://www.old.com/section' => '/redirect-old/new-section',
+   *     'www.old.com/' => 'www.new.com',
+   *     'https://www.old.com/' => 'https://www.new.com',
+   *     'https:/subdomain.old.com' => 'https://www.other.com/secure',
+   *     'http:/subdomain.old.com' => 'https://www.other.com/public',
    *   )
    *   NOTE: Order matters.  First one to match, wins.
    * @param string $file_path
    *   A file path for the location of the source file.
-   *   Ex: /oldsite/section/blah/index.html
+   *   Ex: /oldsite/section/blah/index.html.
    * @param string $base_for_relative
    *   The base directory or host+base directory to prepend to relative hrefs.
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
@@ -1590,7 +1576,7 @@ class Url {
    * @return string
    *   The processed href.
    */
-  public static function rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewritePageHref($href, array $url_base_alters, $file_path, $base_for_relative) {
     if (!empty($href)) {
       // Is this an internal path?
       $scheme = parse_url($href, PHP_URL_SCHEME);
@@ -1617,7 +1603,6 @@ class Url {
     }
     return $href;
   }
-
 
   /**
    * Return the url query string as an associative array.
@@ -1652,7 +1637,7 @@ class Url {
    *   string - The base path if a matching document is found.
    *   bool - FALSE if no matching document is found.
    */
-  public static function getRedirectIfIndex($url, $candidates = ["default", "index"]) {
+  public static function getRedirectIfIndex($url, array $candidates = ["default", "index"]) {
     // Filter through parse_url to separate out querystrings and etc.
     $path = parse_url($url, PHP_URL_PATH);
 
@@ -1694,4 +1679,5 @@ class Url {
 
     Message::varDumpToDrush($sorted_object, "$message Contents of pathing: ");
   }
+
 }

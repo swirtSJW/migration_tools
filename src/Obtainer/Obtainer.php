@@ -1,44 +1,42 @@
 <?php
 
-/**
- * @file
- * Class Obtainer
- *
- * The Obtainer serves to find a target string within DOM markup. It will
- * iterate over a stack of finder methods until it finds the string that it is
- * looking for, at which point it returns the string.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use QueryPath;
 use Drupal\migration_tools\Message;
 use Drupal\migration_tools\StringTools;
 
+/**
+ * Obtainer Abstract Class.
+ */
 abstract class Obtainer {
 
   /**
+   * The QueryPath element to be tested.
+   *
    * @var object
-   *   The QueryPath element to be tested.
    */
   private $element;
 
   /**
-   * @var currentFindMethod
-   *   The find method that is currently being run.
+   * The find method that is currently being run.
+   *
+   * @var string
    */
   protected $currentFindMethod;
 
 
   /**
-   * @var QueryPath $queryPath
-   *   QueryPath object passed in at instantiation.
+   * QueryPath object passed in at instantiation.
+   *
+   * @var \QueryPath
    */
   protected $queryPath;
 
   /**
+   * Array of find methods to call, in order. Passed in at instantiation.
+   *
    * @var array
-   *   Array of find methods to call, in order. Passed in at instantiation.
    */
   private $methodStack = [];
 
@@ -47,11 +45,10 @@ abstract class Obtainer {
    *
    * @param object $query_path
    *   The query path object to use as the source of possible content.
-   *
    * @param array $method_stack
    *   (optional). Array of find methods to run through.
    */
-  public function __construct($query_path, $method_stack = []) {
+  public function __construct($query_path, array $method_stack = []) {
     $this->queryPath = $query_path;
     $this->setMethodStack($method_stack);
   }
@@ -62,7 +59,7 @@ abstract class Obtainer {
    * @param array $method_stack
    *   The stack of methods to be run.
    */
-  public function setMethodStack($method_stack) {
+  public function setMethodStack(array $method_stack) {
     foreach ($method_stack as $key => $method) {
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
@@ -123,7 +120,7 @@ abstract class Obtainer {
       $this->setCurrentFindMethod($method['method_name']);
       // Reset QueryPath pointer to top of document.
       $this->queryPath->top();
-      $found_string  = call_user_func_array([$this, $method['method_name']], $method['arguments']);
+      $found_string = call_user_func_array([$this, $method['method_name']], $method['arguments']);
       $found_string = $this->cleanString($found_string);
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
@@ -144,7 +141,7 @@ abstract class Obtainer {
     }
 
     Message::make('NO MATCHES FOUND', [], Message::DEBUG, 2);
-    return NULL;
+    return '';
   }
 
   /**
@@ -185,7 +182,6 @@ abstract class Obtainer {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($string):
@@ -210,4 +206,5 @@ abstract class Obtainer {
   protected function processString($string) {
     return $string;
   }
+
 }

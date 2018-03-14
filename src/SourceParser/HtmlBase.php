@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Defines SourceParser\Base class, that parses static HTML files via queryPath.
- */
-
 namespace Drupal\migration_tools\SourceParser;
 
 use Drupal\migrate\MigrateException;
@@ -14,6 +9,7 @@ use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\QpHtml;
 use Drupal\migration_tools\StringTools;
+use Drupal\migrate\Row;
 
 /**
  * Class SourceParser\Base.
@@ -54,13 +50,13 @@ abstract class HtmlBase {
    * Constructor.
    *
    * @param string $file_id
-   *   The file id, e.g. careers/legal/pm7205.html
+   *   The file id, e.g. careers/legal/pm7205.html.
    * @param string $html
    *   The full HTML data as loaded from the file.
    * @param \Drupal\migrate\Row $row
    *   Migrate row to be altered.
    */
-  public function __construct($file_id, $html, $row) {
+  public function __construct($file_id, $html, Row $row) {
     $this->fileId = $file_id;
     $this->row = $row;
 
@@ -98,7 +94,7 @@ abstract class HtmlBase {
    * Set HTML elements to remove.
    *
    * @param array $html_elements
-   *   Array of elements
+   *   Array of elements.
    */
   public function setHtmlElementsToRemove(array $html_elements) {
     $this->htmlElementsToRemove = $html_elements;
@@ -118,7 +114,7 @@ abstract class HtmlBase {
    * Set HTML elements to unwrap.
    *
    * @param array $html_elements
-   *   Array of elements
+   *   Array of elements.
    */
   public function setHtmlElementsToUnWrap(array $html_elements) {
     $this->htmlElementsToUnWrap = $html_elements;
@@ -138,7 +134,7 @@ abstract class HtmlBase {
    * Set HTML elements to rewrap.
    *
    * @param array $html_elements
-   *   Array of elements
+   *   Array of elements.
    */
   public function setHtmlElementsToReWrap(array $html_elements) {
     $this->htmlElementsToReWrap = $html_elements;
@@ -158,7 +154,7 @@ abstract class HtmlBase {
    * Set Modifier.
    *
    * @param \Drupal\migration_tools\Modifier\Modifier $modifier
-   *   Modifier
+   *   Modifier.
    */
   public function setModifier(Modifier $modifier) {
     $this->modifier = $modifier;
@@ -167,8 +163,8 @@ abstract class HtmlBase {
   /**
    * Add obtainer job for this source parser to run.
    *
-   * @param Job $job
-   *   Job to add
+   * @param \Drupal\migration_tools\Obtainer\Job $job
+   *   Job to add.
    */
   public function addObtainerJob(Job $job) {
     $this->obtainerJobs[$job->getProperty()] = $job;
@@ -223,7 +219,7 @@ abstract class HtmlBase {
    * Get information/properties from html by running the obtainers.
    *
    * @param string $property
-   *   Property to get
+   *   Property to get.
    */
   protected function getProperty($property) {
     if (!isset($this->{$property})) {
@@ -239,7 +235,7 @@ abstract class HtmlBase {
    * Set a property.
    *
    * @param string $property
-   *   Property to set
+   *   Property to set.
    */
   protected function setProperty($property) {
     // Make sure our QueryPath object has been initialized.
@@ -252,10 +248,11 @@ abstract class HtmlBase {
    * Use the obtainers mechanism to extract text from the html.
    *
    * @param string $property
-   *   Property to get
+   *   Property to get.
    *
    * @return string
    *   Property text.
+   *
    * @throws \Exception
    */
   protected function obtainProperty($property) {
@@ -388,7 +385,6 @@ abstract class HtmlBase {
     }
   }
 
-
   /**
    * Clean and alter $this->html right before it QueryPath is instantiated.
    */
@@ -396,7 +392,6 @@ abstract class HtmlBase {
     // Extend this to do any alterations to $this->html needed prior to feeding
     // it to QueryPath.
   }
-
 
   /**
    * Clean and alter the html within $this->queryPath.
@@ -427,4 +422,5 @@ abstract class HtmlBase {
       Message::make('@file_id Failed to clean the html, Exception: @error_message', ['@file_id' => $this->fileId, '@error_message' => $e->getMessage()], Message::ERROR);
     }
   }
+
 }

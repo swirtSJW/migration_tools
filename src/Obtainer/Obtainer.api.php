@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains example Obtainer class.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 /**
@@ -14,6 +9,7 @@ namespace Drupal\migration_tools\Obtainer;
  * @subpackage atr
  */
 class ObtainExample extends ObtainHtml {
+
   /**
    * {@inheritdoc}
    */
@@ -44,4 +40,5 @@ class ObtainExample extends ObtainHtml {
 
     return $element->text();
   }
+
 }

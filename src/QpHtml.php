@@ -1,32 +1,30 @@
 <?php
-/**
- * @file
- * Helper function to clean up HTML using QueryPath.
- */
 
 namespace Drupal\migration_tools;
 
 use QueryPath;
 
+/**
+ * {@inheritdoc}
+ */
 class QpHtml {
 
   /**
    * Removes legacy elements from HTML that are no longer needed. DEPRICATED.
    *
-   * @TODO This method is way too specific to a given site.  I am leaving it
-   * here to remind me of some generic methods I need to make.
-   *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param array $arguments
    *   (optional). An array of arbitrary arguments to be used by QpHtml
    *   methods. Defaults to empty array.
    *
-   * @TODO This is overly specific to a set of jobs and needs to be made more
+   * @todo This method is way too specific to a given site.  I am leaving it
+   * here to remind me of some generic methods I need to make.
+   *
+   * @todo This is overly specific to a set of jobs and needs to be made more
    *   generic.
    */
-  public static function stripOrFixLegacyElements($query_path, $arguments = []) {
+  public static function stripOrFixLegacyElements($query_path, array $arguments = []) {
     self::removeComments($query_path);
 
     // Remove elements and their children.
@@ -40,7 +38,7 @@ class QpHtml {
       'div.footer',
       // This is deleting the content from the Louisiana pr example.
       // @todo can we target it better?
-      // 'div.clear',
+      // 'div.clear',.
       'div.lastupdate',
       'div.thick-bar',
       'div.rightcolumn',
@@ -95,9 +93,8 @@ class QpHtml {
   /**
    * Removes elements matching CSS selectors.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param array $selectors
    *   An array of selectors to remove.
    */
@@ -129,11 +126,10 @@ class QpHtml {
     return $processed_html;
   }
 
-
   /**
    * Removes all html comments from querypath document.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeComments($query_path) {
@@ -146,9 +142,8 @@ class QpHtml {
   /**
    * Get the first element matching the CSS selector from html.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param string $selector
    *   A css selector.
    *
@@ -174,9 +169,8 @@ class QpHtml {
    * Extraction means that we return the match, but we also return the
    * original html without the element that matched the search.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param string $selector
    *   A CSS selector to extract.
    *
@@ -196,11 +190,10 @@ class QpHtml {
     return $text;
   }
 
-
   /**
    * Removes a wrapping element, leaving child elements intact.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
@@ -212,21 +205,18 @@ class QpHtml {
     }
   }
 
-
   /**
    * Rewraps an element, leaving child elements intact.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
-   *
    * @param string $new_wrapper
    *   A string of the leading wrapping element.
    *   - <h2 />
    *   - <h2 id="title" />
-   *   - <div class="friends" />
+   *   - <div class="friends" />.
    */
   public static function rewrapElements($query_path, array $selectors, $new_wrapper) {
     // There is something to wrap it in, so begin the hunt.
@@ -242,9 +232,8 @@ class QpHtml {
   /**
    * Removes empty elements matching selectors.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param array $selectors
    *   An array of selectors to remove.
    */
@@ -271,7 +260,7 @@ class QpHtml {
    * It appears that they are the only elements with this style applied.
    * Nonetheless, if more than one match, remove only the first.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeTitleBarImage($query_path) {
@@ -293,7 +282,7 @@ class QpHtml {
   /**
    * Removes legacy usage of javascript:exitWinOpen() for external links.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function removeExtLinkJS($query_path) {
@@ -323,11 +312,10 @@ class QpHtml {
     }
   }
 
-
   /**
    * Empty anchors without name attribute will be stripped by ckEditor.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    */
   public static function fixNamedAnchors($query_path) {
@@ -348,7 +336,7 @@ class QpHtml {
   /**
    * Makes relative sources values on <a> and <img> tags absolute.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
    * @param string $file_id
    *   The full file path of the of the current file, used to determine
@@ -399,9 +387,8 @@ class QpHtml {
   /**
    * Change sub-header images to HTML headers. Defaults to <h2>.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   The QueryPath object with HTML markup.
-   *
    * @param string $header_element
    *   (optional). The HTML header element with which to replace the <img>.
    *   Defaults to h2.
@@ -439,11 +426,10 @@ class QpHtml {
     }
   }
 
-
   /**
    * General matching function.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -460,7 +446,7 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function match($qp, $selector, $needle, $function, $parameter = NULL, $index = 0) {
+  public static function match(QueryPath $qp, $selector, $needle, $function, $parameter = NULL, $index = 0) {
     $elements = $qp->find($selector);
     $counter = 0;
     foreach ($elements as $key => $elem) {
@@ -478,7 +464,7 @@ class QpHtml {
   /**
    * Like match, but returns all matching elements.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -493,7 +479,7 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchAll($qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function matchAll(QueryPath $qp, $selector, $needle, $function, $parameter = NULL) {
     $counter = 0;
     $matches = [];
     do {
@@ -509,7 +495,7 @@ class QpHtml {
   /**
    * Like match, but removes all matching elements.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -521,7 +507,7 @@ class QpHtml {
    * @param string $parameter
    *   A parameter to be passed into the defined $function.
    */
-  public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function matchRemoveAll(QueryPath $qp, $selector, $needle, $function, $parameter = NULL) {
     $matches = QpHtml::matchAll($qp, $selector, $needle, $function, $parameter);
     foreach ($matches as $match) {
       $match->remove();
@@ -531,7 +517,7 @@ class QpHtml {
   /**
    * Return an element if the text in the attribute matches a search needle.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -543,14 +529,14 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchAttribute($qp, $selector, $needle, $attribute) {
+  public static function matchAttribute(QueryPath $qp, $selector, $needle, $attribute) {
     return QpHtml::match($qp, $selector, $needle, "attr", $attribute);
   }
 
   /**
    * Return an element if the text that it contains matches a search needle.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -560,21 +546,21 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchText($qp, $selector, $needle) {
+  public static function matchText(QueryPath $qp, $selector, $needle) {
     return QpHtml::match($qp, $selector, $needle, "text");
   }
 
   /**
    * Remove an element if the text that it contains matches a search needle.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
    * @param string $needle
    *   The text string for which to search.
    */
-  public static function matchTextRemoveElement($qp, $selector, $needle) {
+  public static function matchTextRemoveElement(QueryPath $qp, $selector, $needle) {
     $element = QpHtml::match($qp, $selector, $needle, "text");
     if ($element) {
       $element->remove();
@@ -584,7 +570,7 @@ class QpHtml {
   /**
    * Return an element if the HMTL that it contains matches a search needle.
    *
-   * @param QueryPath $qp
+   * @param \QueryPath $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -594,14 +580,14 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchHtml($qp, $selector, $needle) {
+  public static function matchHtml(QueryPath $qp, $selector, $needle) {
     return QpHtml::match($qp, $selector, $needle, "html");
   }
 
   /**
    * Examine all img longdesc attr in qp and remove any that point to images.
    *
-   * @param object $query_path
+   * @param \QueryPath $query_path
    *   A QueryPath object.
    */
   public static function removeFaultyImgLongdesc($query_path) {
@@ -618,7 +604,7 @@ class QpHtml {
   /**
    * Removes the background from tables in markup by adding class.
    *
-   * @param QueryPath $query_path
+   * @param \QueryPath $query_path
    *   A QueryPath object.
    */
   public static function removeTableBackgrounds($query_path) {
@@ -644,4 +630,5 @@ class QpHtml {
     }
     return FALSE;
   }
+
 }

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Defines Modifier\Modifier class.
- */
-
 namespace Drupal\migration_tools\Modifier;
 
 use Drupal\migration_tools\Message;
@@ -28,13 +23,11 @@ abstract class Modifier {
     $this->queryPath = $query_path;
   }
 
-
   /**
    * Add a new method to be called during modifier processing.
    *
    * @param string $method_name
    *   The name of the method to call.
-   *
    * @param array $arguments
    *   (optional) An array of arguments to be passed to the $method. Defaults
    *   to an empty array.
@@ -42,7 +35,7 @@ abstract class Modifier {
    * @return Modifier
    *   Returns $this to allow chaining.
    */
-  public function addModifier($method_name, $arguments = []) {
+  public function addModifier($method_name, array $arguments = []) {
     // @todo Maybe we should validate the method names here?
     $this->modifiers[] = [
       'method_name' => $method_name,
@@ -51,7 +44,6 @@ abstract class Modifier {
 
     return $this;
   }
-
 
   /**
    * Runs the modifiers and reports which were successful.
@@ -76,4 +68,5 @@ abstract class Modifier {
     }
     Message::makeSummary($alter_log, $total_requested, 'Modifiers applied successfully:');
   }
+
 }

@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainDate
- *
- * Contains a collection of stackable finders that can be arranged
- * as needed to obtain a date content.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\QpHtml;
@@ -19,17 +11,15 @@ use Drupal\migration_tools\Message;
  */
 class ObtainDate extends ObtainHtml {
 
-
   /**
    * Finder method to find dates by its accompanying text.
    *
    * @param mixed $selectors
-   *   string - single selector to find.
-   *   array - an array of selectors to look for.
-   *
+   *   String - single selector to find.
+   *   Array - an array of selectors to look for.
    * @param mixed $search_strings
-   *   string - single string to search for.
-   *   array - array of strings to search for.
+   *   String - single string to search for.
+   *   Array - array of strings to search for.
    *   The search string(s) would be adjacent to the date.
    *
    * @return string

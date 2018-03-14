@@ -3,7 +3,6 @@ name: Migration Tools Example
 description: 'Examples of how to use Migration Tools.'
 package: Examples
 dependencies:
-  - migration_tools
+  - drupal:migration_tools
 
 core: '8.x'
-project: 'migration_tools'

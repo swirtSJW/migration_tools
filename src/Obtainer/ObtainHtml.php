@@ -1,17 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainHtml
- *
- * Contains a collection of stackable searchers that can be arranged
- * as needed to obtain html content.
- *
- * A finder finds the item but does not remove if from the QueryPath DOM.
- * A plucker finds the item and removes it from the QueryPath DOM if it
- * validates.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\StringTools;
@@ -134,7 +122,6 @@ class ObtainHtml extends Obtainer {
     // If it made it this far, nothing was found.
     return '';
   }
-
 
   /**
    * Plucker crawls $selector elements until valid starting at bottom going up.
@@ -365,7 +352,7 @@ class ObtainHtml extends Obtainer {
    * @param int $row
    *   The row number.
    * @param int $col
-   *   The column number
+   *   The column number.
    * @param string $method
    *   Method to use, text or html.
    *
@@ -385,7 +372,6 @@ class ObtainHtml extends Obtainer {
     }
     return NULL;
   }
-
 
   /**
    * Extract td contents from a table, and lines it up to be removed.
@@ -422,7 +408,6 @@ class ObtainHtml extends Obtainer {
     return "";
   }
 
-
   /**
    * Pluck something based on sibling relationship.
    *
@@ -432,7 +417,7 @@ class ObtainHtml extends Obtainer {
    * @param string $selector
    *   The css selector of the item to search for (the parent item)
    * @param string $needle
-   *   The text to search for
+   *   The text to search for.
    * @param int $delta
    *   The index of the sibling (nth-child)
    *
@@ -476,7 +461,6 @@ class ObtainHtml extends Obtainer {
 
     return $lines;
   }
-
 
   /**
    * Splits text on variations of the newline character.
@@ -615,4 +599,5 @@ class ObtainHtml extends Obtainer {
       $qp_element->html($new_source);
     }
   }
+
 }

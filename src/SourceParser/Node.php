@@ -1,21 +1,17 @@
 <?php
 
-/**
- * @file
- * Includes Node class, parses static HTML files via queryPath.
- */
-
 namespace Drupal\migration_tools\SourceParser;
 
 use Drupal\migration_tools\Message;
 use Drupal\migration_tools\Obtainer\Job;
 
 /**
- * Class SourceParser\Node
+ * Class SourceParser\Node.
  *
  * @package migration_tools
  */
 class Node extends HtmlBase {
+
   /**
    * {@inheritdoc}
    */
@@ -39,7 +35,6 @@ class Node extends HtmlBase {
     }
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -55,4 +50,5 @@ class Node extends HtmlBase {
     $body->addSearch('findTopBodyHtml');
     $this->addObtainerJob($body);
   }
+
 }

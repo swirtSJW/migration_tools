@@ -1,12 +1,12 @@
 <?php
 
-/**
- * @file
- * Contains static methods for checking on elements of a migration document.
- */
-
 namespace Drupal\migration_tools;
 
+/**
+ * Class CheckFor.
+ *
+ * @package Drupal\migration_tools
+ */
 class CheckFor {
 
   /**
@@ -136,7 +136,7 @@ class CheckFor {
    * @param array $paths
    *   Array of full or partial paths to check. Ex:
    *   full - 'oldsite/section/bad-directory/'
-   *   partial - 'bad-directory'
+   *   partial - 'bad-directory'.
    *
    * @return bool
    *   -TRUE if the file is one of the paths.
@@ -178,7 +178,6 @@ class CheckFor {
     // This page should not be skipped.
     return FALSE;
   }
-
 
   /**
    * Determine if a given file should be excluded and redirected to elsewhere.
@@ -229,11 +228,12 @@ class CheckFor {
         '@fileid' => $row->fileId,
       ];
 
+      Message::make($message, $vars, Message::ERROR, 1);
+
       return FALSE;
     }
     return TRUE;
   }
-
 
   /**
    * Identifes if a path is that of a file.
@@ -294,4 +294,5 @@ class CheckFor {
       return FALSE;
     }
   }
+
 }

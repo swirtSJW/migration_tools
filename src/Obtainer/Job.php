@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Defines Obtainer\Job class.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 /**
@@ -73,7 +68,6 @@ class Job {
     return $this->obtainerClassName;
   }
 
-
   /**
    * Shortens the name of the Obtainer class for output.
    *
@@ -92,7 +86,6 @@ class Job {
    *
    * @param string $method_name
    *   The name of the method to call.
-   *
    * @param array $arguments
    *   (optional) An array of arguments to be passed to the $method. Defaults
    *   to an empty array.
@@ -100,7 +93,7 @@ class Job {
    * @return Job
    *   Returns $this to allow chaining.
    */
-  public function addSearch($method_name, $arguments = []) {
+  public function addSearch($method_name, array $arguments = []) {
     // @todo Maybe we should validate the method names here?
     $this->searches[] = [
       'method_name' => $method_name,
@@ -117,12 +110,14 @@ class Job {
     return $this->searches;
   }
 
-
   /**
    * Runs the obtainer job.
    *
    * @param object $query_path
    *   The query path object by reference.
+   *
+   * @return string
+   *   Obtain string.
    */
   public function run(&$query_path) {
     $obtainer_class = $this->getClass();
@@ -130,4 +125,5 @@ class Job {
 
     return $obtainer->obtain();
   }
+
 }

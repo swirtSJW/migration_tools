@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Class ObtainID
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 use Drupal\migration_tools\StringTools;
@@ -59,7 +54,6 @@ class ObtainID extends ObtainHtml {
     return $text;
   }
 
-
   /**
    * Evaluates $string and if it checks out, returns TRUE.
    *
@@ -90,4 +84,5 @@ class ObtainID extends ObtainHtml {
         return TRUE;
     }
   }
+
 }

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Helper class to manage watchdog and commandline messaging of migrations.
- */
 
 namespace Drupal\migration_tools;
 
@@ -10,6 +6,11 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\migrate\MigrateException;
 use Drupal\Component\Render\FormattableMarkup;
 
+/**
+ * Class Message.
+ *
+ * @package Drupal\migration_tools
+ */
 class Message {
   // Provide RFC equiv constants so method calls on Message don't require RFC.
   const EMERGENCY = RfcLogLevel::EMERGENCY;
@@ -45,7 +46,6 @@ class Message {
    *   - Message::INFO: Informational messages.
    *   - Message::DEBUG: Debug-level messages.
    *   - FALSE: Outputs the message to drush without calling Watchdog.
-   *
    * @param int $indent
    *   (optional). Sets indentation for drush output. Defaults to 1.
    *
@@ -53,7 +53,7 @@ class Message {
    *
    * @throws MigrateException
    */
-  public static function make($message, $variables = [], $severity = self::NOTICE, $indent = 1) {
+  public static function make($message, array $variables = [], $severity = self::NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     $type = 'unknown';
@@ -125,9 +125,9 @@ class Message {
    *   The number to be processed.
    * @param string $operation
    *   The name of the operation being sumaraized.
-   *   Ex: Rewrite image src
+   *   Ex: Rewrite image src.
    */
-  public static function makeSummary($completed, $total_requested, $operation) {
+  public static function makeSummary(array $completed, $total_requested, $operation) {
     $count = count($completed);
     $long = \Drupal::config('migration_tools.settings')->get('migration_tools_drush_debug');
     if ((int) $long >= 2) {
@@ -154,7 +154,6 @@ class Message {
     self::make($message, $vars, FALSE, 2);
   }
 
-
   /**
    * Stringify and clean up the output of an array for messaging.
    *
@@ -164,7 +163,7 @@ class Message {
    * @return string
    *   The stringified array.
    */
-  public static function improveArrayOutput($array_items) {
+  public static function improveArrayOutput(array $array_items) {
     // Remove any objects from the debug output.
     foreach ($array_items as $key => &$array_item) {
       foreach ($array_item as $sub_key => $sub_array_item) {
@@ -190,7 +189,7 @@ class Message {
    * @param array $trace
    *   The stack trace as returned by debug_backtrace.
    */
-  private static function determineType(&$type, $trace) {
+  private static function determineType(&$type, array $trace) {
     if (isset($trace[1])) {
       // $trace[1] is the thing that instantiated this message.
       if (!empty($trace[1]['class'])) {
@@ -245,4 +244,5 @@ class Message {
       }
     }
   }
+
 }

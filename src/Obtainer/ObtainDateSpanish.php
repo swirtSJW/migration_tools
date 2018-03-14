@@ -1,11 +1,10 @@
 <?php
-/**
- * @file
- * ObtainTitlePressRelease.
- */
 
 namespace Drupal\migration_tools\Obtainer;
 
+/**
+ * {@inheritdoc}
+ */
 class ObtainDateSpanish extends ObtainDate {
 
   /**
@@ -26,7 +25,7 @@ class ObtainDateSpanish extends ObtainDate {
    * Converts es date text of the form w m d y to numerical Y-M-D.
    *
    * @param string $date_string
-   *   Should look like miércoles, 28 de febrero de 2014
+   *   Should look like miércoles, 28 de febrero de 2014.
    *
    * @return string
    *   Date in the form of 2014-02-21
@@ -81,4 +80,5 @@ class ObtainDateSpanish extends ObtainDate {
 
     return $processed_date;
   }
+
 }

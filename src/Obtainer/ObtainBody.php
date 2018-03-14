@@ -1,17 +1,9 @@
 <?php
 
-/**
- * @file
- * Class ObtainBody
- *
- * Contains a collection of stackable finders that can be arranged
- * as needed to obtain a body or other long html content.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 /**
- * Class ObtainBody
+ * Class ObtainBody.
  *
  * Obtains the HTML body.
  */
@@ -46,4 +38,5 @@ class ObtainBody extends ObtainHtml {
     $string = str_ireplace($remove, '', $string);
     return $string;
   }
+
 }

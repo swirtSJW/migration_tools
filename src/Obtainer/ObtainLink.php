@@ -1,18 +1,12 @@
 <?php
 
-/**
- * @file
- * Class ObtainLinks
- *
- * Contains logic for parsing for links in HTML.
- */
-
 namespace Drupal\migration_tools\Obtainer;
 
 /**
  * {@inheritdoc}
  */
 class ObtainLink extends ObtainHtml {
+
   /**
    * Find links in contents of the selector and put each element in an array.
    *
@@ -53,7 +47,7 @@ class ObtainLink extends ObtainHtml {
             'element' => $element,
             'href' => $href,
             'link_text' => $link_text,
-            'base_uri' => $base_uri
+            'base_uri' => $base_uri,
           ];
         }
         $this->setCurrentFindMethod("pluckLinks($selector" . ')');
@@ -70,12 +64,12 @@ class ObtainLink extends ObtainHtml {
    * Validate links array.
    *
    * @param array $links
-   *   Array of links
+   *   Array of links.
    *
    * @return array
    *   Array containing only valid links.
    */
-  protected function validateLinks(&$links) {
+  protected function validateLinks(array &$links) {
     // Just return all the links here, no validation required.
     return $links;
   }
@@ -86,7 +80,7 @@ class ObtainLink extends ObtainHtml {
    * This method is misleadingly named since it is processing an array, but
    * must override the string based validateString.
    *
-   * @param array $found
+   * @param mixed $found
    *   The array to validate.
    *
    * @return bool
@@ -95,7 +89,6 @@ class ObtainLink extends ObtainHtml {
   protected function validateString($found) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($found):
@@ -114,10 +107,10 @@ class ObtainLink extends ObtainHtml {
    * This method is misleadingly named since it is processing an array, but
    * must override the string based cleanString.
    *
-   * @param array $found
+   * @param mixed $found
    *   Text to clean and return.
    *
-   * @return array
+   * @return mixed
    *   The cleaned array.
    */
   public static function cleanString($found) {
@@ -127,4 +120,5 @@ class ObtainLink extends ObtainHtml {
 
     return $found;
   }
+
 }
