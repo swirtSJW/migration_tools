@@ -429,7 +429,7 @@ class QpHtml {
   /**
    * General matching function.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -464,7 +464,7 @@ class QpHtml {
   /**
    * Like match, but returns all matching elements.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -495,7 +495,7 @@ class QpHtml {
   /**
    * Like match, but removes all matching elements.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -517,7 +517,7 @@ class QpHtml {
   /**
    * Return an element if the text in the attribute matches a search needle.
    *
-   * @param object
+   * @param object $qp
    *   QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -536,7 +536,7 @@ class QpHtml {
   /**
    * Return an element if the text that it contains matches a search needle.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -553,7 +553,7 @@ class QpHtml {
   /**
    * Remove an element if the text that it contains matches a search needle.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -570,7 +570,7 @@ class QpHtml {
   /**
    * Return an element if the HMTL that it contains matches a search needle.
    *
-   * @param object
+   * @param object $qp
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.

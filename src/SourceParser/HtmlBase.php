@@ -7,7 +7,6 @@ use Drupal\migration_tools\Message;
 use Drupal\migration_tools\Modifier\Modifier;
 use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
-use Drupal\migration_tools\QpHtml;
 use Drupal\migration_tools\StringTools;
 use Drupal\migrate\Row;
 

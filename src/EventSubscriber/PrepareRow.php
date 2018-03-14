@@ -6,10 +6,8 @@ use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate_plus\Event\MigrateEvents;
 use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
 use Drupal\migration_tools\Message;
-use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\SourceParser\Node;
-use Drupal\migration_tools\Url;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -74,7 +72,6 @@ class PrepareRow implements EventSubscriberInterface {
 
       $url_pieces = parse_url($url);
       $path = ltrim($url_pieces['path'], '/');
-
 
       // @todo Using Node parser by default. Should be decided by config.
       $source_parser = new Node($path, $html, $row);

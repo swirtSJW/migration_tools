@@ -3,7 +3,6 @@
 namespace Drupal\migration_tools;
 
 use Drupal\migrate\MigrateException;
-use QueryPath;
 
 /**
  * Class Url.
@@ -315,6 +314,8 @@ class Url {
    * @param string $base_url
    *   The location where $rel existed in html. Ex:
    *   https://www.oldsite.com/section/page.html.
+   * @param string $destination_base_url
+   *   Destination base URL.
    *
    * @return string
    *   The relative url transformed to absolute. Ex:
@@ -398,6 +399,8 @@ class Url {
    *   node/123
    *   swapped-section-a/blah/title-based-thing
    *   http://www.some-other-site.com.
+   * @param string $destination_base_url
+   *   Destination base URL.
    * @param array $allowed_hosts
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
@@ -405,7 +408,7 @@ class Url {
    * @return bool
    *   FALSE if error.
    */
-  public static function createRedirect($source_path, $destination, array $allowed_hosts = [], $destination_base_url) {
+  public static function createRedirect($source_path, $destination, $destination_base_url, array $allowed_hosts = []) {
     // @todo D8 Refactor
     $alias = $destination;
 
@@ -502,14 +505,16 @@ class Url {
    *   node/123
    *   swapped-section-a/blah/title-based-thing
    *   http://www.some-other-site.com.
+   * @param string $destination_base_url
+   *   Destination base URL.
    * @param array $allowed_hosts
    *   If passed, this will limit redirect creation to only urls that have a
    *   domain present in the array. Others will be rejected.
    */
-  public static function createRedirectsMultiple(array $redirects, $destination, array $allowed_hosts = []) {
+  public static function createRedirectsMultiple(array $redirects, $destination, $destination_base_url, array $allowed_hosts = []) {
     foreach ($redirects as $redirect) {
       if (!empty($redirect)) {
-        self::createRedirect($redirect, $destination, $allowed_hosts);
+        self::createRedirect($redirect, $destination, $destination_base_url, $allowed_hosts);
       }
     }
   }
@@ -635,6 +640,8 @@ class Url {
    *
    * @param string $url
    *   A url.
+   * @param string $destination_base_url
+   *   Destination base URL.
    *
    * @return string
    *   A url or path correctly modified for this site.
@@ -712,6 +719,8 @@ class Url {
    *   A url.
    * @param array $allowed_hosts
    *   A flat array of allowed domains. ex:array('www.site.com', 'site.com').
+   * @param string $destination_base_url
+   *   Destination base URL.
    *
    * @return bool
    *   TRUE if the host is within the array of allowed.
@@ -1279,6 +1288,8 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    */
   public static function rewriteImageHrefsOnPage($query_path, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     // Find all the images on the page.
@@ -1330,6 +1341,8 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    */
   public static function rewriteAnchorHrefsToBinaryFiles($query_path, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     $attributes = [
@@ -1389,6 +1402,8 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    */
   public static function rewriteScriptSourcePaths($query_path, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     $attributes = [
@@ -1509,6 +1524,8 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    */
   public static function rewriteAnchorHrefsToPages($query_path, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     $attributes = [
@@ -1572,11 +1589,13 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    *
    * @return string
    *   The processed href.
    */
-  public static function rewritePageHref($href, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url = '') {
+  public static function rewritePageHref($href, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     if (!empty($href)) {
       // Is this an internal path?
       $scheme = parse_url($href, PHP_URL_SCHEME);

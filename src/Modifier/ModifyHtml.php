@@ -215,7 +215,7 @@ class ModifyHtml extends Modifier {
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    */
-  protected function removeWrapperElements($selectors) {
+  protected function removeWrapperElements(array $selectors) {
     QpHtml::removeWrapperElements($this->queryPath, $selectors);
   }
 
@@ -225,7 +225,7 @@ class ModifyHtml extends Modifier {
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
    */
-  protected function rewrapElements($selectors) {
+  protected function rewrapElements(array $selectors) {
     foreach ($selectors as $element => $new_wrapper) {
       // Make sure the array key is not just an array index.
       if (is_string($element)  && !is_numeric($element)) {
@@ -238,9 +238,9 @@ class ModifyHtml extends Modifier {
    * Convert all Relative HREFs in queryPath to Absolute.
    *
    * @param string $url
-   *   Base URL
+   *   Base URL.
    * @param string $destination_base_url
-   *   Destination Base URL
+   *   Destination Base URL.
    */
   public function convertLinksAbsoluteSimple($url, $destination_base_url) {
     $url_pieces = parse_url($url);

@@ -35,7 +35,6 @@ class ObtainLinkFile extends ObtainLink {
    *   (optional) Array of file extensions to include, defaults to all.
    * @param array $domains_to_include
    *   (optional) Array of domains to include.
-   *
    * @param bool $pluck
    *   If TRUE, will pluck elements.
    *
