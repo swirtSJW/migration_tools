@@ -429,7 +429,7 @@ class QpHtml {
   /**
    * General matching function.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -446,7 +446,7 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function match(QueryPath $qp, $selector, $needle, $function, $parameter = NULL, $index = 0) {
+  public static function match($qp, $selector, $needle, $function, $parameter = NULL, $index = 0) {
     $elements = $qp->find($selector);
     $counter = 0;
     foreach ($elements as $key => $elem) {
@@ -464,7 +464,7 @@ class QpHtml {
   /**
    * Like match, but returns all matching elements.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -479,7 +479,7 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchAll(QueryPath $qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function matchAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $counter = 0;
     $matches = [];
     do {
@@ -495,7 +495,7 @@ class QpHtml {
   /**
    * Like match, but removes all matching elements.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -507,7 +507,7 @@ class QpHtml {
    * @param string $parameter
    *   A parameter to be passed into the defined $function.
    */
-  public static function matchRemoveAll(QueryPath $qp, $selector, $needle, $function, $parameter = NULL) {
+  public static function matchRemoveAll($qp, $selector, $needle, $function, $parameter = NULL) {
     $matches = QpHtml::matchAll($qp, $selector, $needle, $function, $parameter);
     foreach ($matches as $match) {
       $match->remove();
@@ -517,7 +517,7 @@ class QpHtml {
   /**
    * Return an element if the text in the attribute matches a search needle.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   QueryPath object.
    * @param string $selector
    *   The CSS selector for the element to be matched.
@@ -529,14 +529,14 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchAttribute(QueryPath $qp, $selector, $needle, $attribute) {
+  public static function matchAttribute($qp, $selector, $needle, $attribute) {
     return QpHtml::match($qp, $selector, $needle, "attr", $attribute);
   }
 
   /**
    * Return an element if the text that it contains matches a search needle.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -546,21 +546,21 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchText(QueryPath $qp, $selector, $needle) {
+  public static function matchText($qp, $selector, $needle) {
     return QpHtml::match($qp, $selector, $needle, "text");
   }
 
   /**
    * Remove an element if the text that it contains matches a search needle.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
    * @param string $needle
    *   The text string for which to search.
    */
-  public static function matchTextRemoveElement(QueryPath $qp, $selector, $needle) {
+  public static function matchTextRemoveElement($qp, $selector, $needle) {
     $element = QpHtml::match($qp, $selector, $needle, "text");
     if ($element) {
       $element->remove();
@@ -570,7 +570,7 @@ class QpHtml {
   /**
    * Return an element if the HMTL that it contains matches a search needle.
    *
-   * @param \QueryPath $qp
+   * @param object
    *   A QueryPath object.
    * @param string $selector
    *   The selector to look into.
@@ -580,7 +580,7 @@ class QpHtml {
    * @return mixed
    *   The matched QueryPath element or FALSE.
    */
-  public static function matchHtml(QueryPath $qp, $selector, $needle) {
+  public static function matchHtml($qp, $selector, $needle) {
     return QpHtml::match($qp, $selector, $needle, "html");
   }
 
