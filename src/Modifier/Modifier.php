@@ -11,6 +11,7 @@ use Drupal\migration_tools\Message;
  */
 abstract class Modifier {
   public $modifiers = [];
+  public $preModifiers = [];
   public $queryPath;
 
   /**
@@ -46,12 +47,38 @@ abstract class Modifier {
   }
 
   /**
-   * Runs the modifiers and reports which were successful.
+   * Add a new method to be called during pre modifier processing.
+   *
+   * @param string $method_name
+   *   The name of the method to call.
+   * @param array $arguments
+   *   (optional) An array of arguments to be passed to the $method. Defaults
+   *   to an empty array.
+   *
+   * @return Modifier
+   *   Returns $this to allow chaining.
    */
-  public function run() {
+  public function addPreModifier($method_name, array $arguments = []) {
+    // @todo Maybe we should validate the method names here?
+    $this->preModifiers[] = [
+      'method_name' => $method_name,
+      'arguments' => $arguments,
+    ];
+
+    return $this;
+  }
+
+  /**
+   * Runs the modifiers and reports which were successful.
+   *
+   * @param bool $pre
+   *   If TRUE, runs before jobs.
+   */
+  public function run($pre = FALSE) {
+    $modifiers = $pre ? $this->preModifiers : $this->modifiers;
     $alter_log = [];
-    $total_requested = count($this->modifiers);
-    foreach ($this->modifiers as $key => $modifier) {
+    $total_requested = count($modifiers);
+    foreach ($modifiers as $key => $modifier) {
       if (!method_exists($this, $modifier['method_name'])) {
         Message::make('The modifier method @method does not exist and was skipped.', ['@method' => $modifier['method_name']], Message::DEBUG);
       }

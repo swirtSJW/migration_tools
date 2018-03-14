@@ -2,7 +2,9 @@
 
 namespace Drupal\migration_tools\Modifier;
 
+use Drupal\migration_tools\QpHtml;
 use Drupal\migration_tools\StringTools;
+use Drupal\migration_tools\Url;
 
 /**
  * The ModifyHtml defining removers, and changers.
@@ -154,6 +156,101 @@ class ModifyHtml extends Modifier {
     }
 
     return $count;
+  }
+
+  /**
+   * Like match, but removes all matching elements.
+   *
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $function
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   A parameter to be passed into the defined $function.
+   */
+  public function matchRemoveAll($selector, $needle, $function, $parameter = NULL) {
+    $matches = QpHtml::matchAll($this->queryPath, $selector, $needle, $function, $parameter);
+    foreach ($matches as $match) {
+      $match->remove();
+    }
+  }
+
+  /**
+   * Examine all img longdesc attr in qp and remove any that point to images.
+   */
+  protected function removeFaultyImgLongdesc() {
+    QpHtml::removeFaultyImgLongdesc($this->queryPath);
+  }
+
+  /**
+   * Empty anchors without name attribute will be stripped by ckEditor.
+   */
+  protected function fixNamedAnchors() {
+    QpHtml::fixNamedAnchors($this->queryPath);
+  }
+
+  /**
+   * Removes all html comments from querypath document.
+   */
+  protected function removeComments() {
+    QpHtml::removeComments($this->queryPath);
+  }
+
+  /**
+   * Removes elements matching CSS selectors.
+   *
+   * @param array $selectors
+   *   An array of selectors to remove.
+   */
+  protected function removeElements(array $selectors) {
+    QpHtml::removeElements($this->queryPath, $selectors);
+  }
+
+  /**
+   * Removes a wrapping element, leaving child elements intact.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   */
+  protected function removeWrapperElements($selectors) {
+    QpHtml::removeWrapperElements($this->queryPath, $selectors);
+  }
+
+  /**
+   * Removes elements matching CSS selectors.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   */
+  protected function rewrapElements($selectors) {
+    foreach ($selectors as $element => $new_wrapper) {
+      // Make sure the array key is not just an array index.
+      if (is_string($element)  && !is_numeric($element)) {
+        QpHtml::rewrapElements($this->queryPath, [$element], $new_wrapper);
+      }
+    }
+  }
+
+  /**
+   * Convert all Relative HREFs in queryPath to Absolute.
+   *
+   * @param string $url
+   *   Base URL
+   * @param string $destination_base_url
+   *   Destination Base URL
+   */
+  public function convertLinksAbsoluteSimple($url, $destination_base_url) {
+    $url_pieces = parse_url($url);
+    $path = $url_pieces['path'];
+
+    $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
+    Url::rewriteImageHrefsOnPage($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteScriptSourcePaths($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToPages($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
   }
 
 }

@@ -6,8 +6,10 @@ use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate_plus\Event\MigrateEvents;
 use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
 use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\SourceParser\Node;
+use Drupal\migration_tools\Url;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -73,18 +75,29 @@ class PrepareRow implements EventSubscriberInterface {
       $url_pieces = parse_url($url);
       $path = ltrim($url_pieces['path'], '/');
 
+
       // @todo Using Node parser by default. Should be decided by config.
       $source_parser = new Node($path, $html, $row);
 
-      // Set HTML Element manipulations from config.
-      $html_elements_to_remove = $row->getSourceProperty('html_elements_to_remove') ? $row->getSourceProperty('html_elements_to_remove') : [];
-      $source_parser->setHtmlElementsToRemove($html_elements_to_remove);
-
-      $html_elements_to_unwrap = $row->getSourceProperty('html_elements_to_unwrap') ? $row->getSourceProperty('html_elements_to_unwrap') : [];
-      $source_parser->setHtmlElementsToUnWrap($html_elements_to_unwrap);
-
-      $html_elements_to_rewrap = $row->getSourceProperty('html_elements_to_rewrap') ? $row->getSourceProperty('html_elements_to_rewrap') : [];
-      $source_parser->setHtmlElementsToReWrap($html_elements_to_rewrap);
+      // Add Modifiers.
+      $config_modifiers = $row->getSourceProperty('modifiers');
+      if ($config_modifiers) {
+        $source_parser_modifier = $source_parser->getModifier();
+        foreach ($config_modifiers as $config_modifier) {
+          $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
+          foreach ($arguments as &$argument) {
+            // @todo Figure out a way to use dynamic variables better.
+            if ($argument == 'field_containing_url') {
+              $argument = $url;
+            }
+            if ($argument == 'destination_base_url') {
+              $argument = $row->getSourceProperty('destination_base_url');
+            }
+          }
+          $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
+        }
+        $source_parser_modifier->run(TRUE);
+      }
 
       // Construct Jobs.
       $config_fields = $row->getSourceProperty('fields');
@@ -99,16 +112,6 @@ class PrepareRow implements EventSubscriberInterface {
               $source_parser->addObtainerJob($job);
             }
           }
-        }
-      }
-
-      // Add Modifiers.
-      $config_modifiers = $row->getSourceProperty('modifiers');
-      if ($config_modifiers) {
-        foreach ($config_modifiers as $config_modifier) {
-          $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
-          $source_parser_modifier = $source_parser->getModifier();
-          $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
         }
       }
 
