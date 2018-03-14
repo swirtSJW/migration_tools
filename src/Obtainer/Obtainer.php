@@ -8,6 +8,10 @@ use Drupal\migration_tools\StringTools;
 
 /**
  * Obtainer Abstract Class.
+ *
+ * The Obtainer serves to find a target string within DOM markup. It will
+ * iterate over a stack of finder methods until it finds the string that it is
+ * looking for, at which point it returns the string.
  */
 abstract class Obtainer {
 

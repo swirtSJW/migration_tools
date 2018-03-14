@@ -6,7 +6,10 @@ use Drupal\migration_tools\Message;
 use Drupal\migration_tools\StringTools;
 
 /**
- * {@inheritdoc}
+ * Class ObtainTitle
+ *
+ * Contains a collection of stackable finders that can be arranged
+ * as needed to obtain a title/heading and possible subtitle/subheading.
  */
 class ObtainTitle extends ObtainHtml {
 

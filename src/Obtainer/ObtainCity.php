@@ -5,7 +5,10 @@ namespace Drupal\migration_tools\Obtainer;
 use Drupal\migration_tools\StringTools;
 
 /**
- * {@inheritdoc}
+ * Class ObtainCity
+ *
+ * Contains logic for cleaning and validation a city.
+ * as needed to obtain a city.
  */
 class ObtainCity extends ObtainHtml {
 

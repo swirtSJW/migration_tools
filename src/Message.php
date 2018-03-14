@@ -9,6 +9,8 @@ use Drupal\Component\Render\FormattableMarkup;
 /**
  * Class Message.
  *
+ * Helper class to manage watchdog and commandline messaging of migrations.
+ *
  * @package Drupal\migration_tools
  */
 class Message {

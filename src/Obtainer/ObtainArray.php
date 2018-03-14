@@ -3,7 +3,10 @@
 namespace Drupal\migration_tools\Obtainer;
 
 /**
- * {@inheritdoc}
+ * Class ObtainArray
+ *
+ * Contains logic for cleaning, validation and custom finders for gathering
+ * multiples and returns arrays rather than strings.
  */
 class ObtainArray extends ObtainHtml {
 

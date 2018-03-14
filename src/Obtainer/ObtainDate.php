@@ -7,7 +7,10 @@ use Drupal\migration_tools\StringTools;
 use Drupal\migration_tools\Message;
 
 /**
- * {@inheritdoc}
+ * Class ObtainDate
+ *
+ * Contains a collection of stackable finders that can be arranged
+ * as needed to obtain a date content.
  */
 class ObtainDate extends ObtainHtml {
 

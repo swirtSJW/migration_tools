@@ -8,6 +8,8 @@ use Drupal\migration_tools\Obtainer\Job;
 /**
  * Class SourceParser\Node.
  *
+ * Includes Node class, parses static HTML files via queryPath.
+ *
  * @package migration_tools
  */
 class Node extends HtmlBase {

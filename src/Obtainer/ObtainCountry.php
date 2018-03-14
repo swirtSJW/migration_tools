@@ -5,7 +5,10 @@ namespace Drupal\migration_tools\Obtainer;
 use Drupal\migration_tools\StringTools;
 
 /**
- * {@inheritdoc}
+ * Class ObtainCountry
+ *
+ * Contains logic for cleaning and validation a country.
+ * as needed to obtain a country.
  */
 class ObtainCountry extends ObtainHtml {
 

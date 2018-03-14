@@ -5,6 +5,8 @@ namespace Drupal\migration_tools;
 /**
  * Class CheckFor.
  *
+ * Contains static methods for checking on elements of a migration document.
+ *
  * @package Drupal\migration_tools
  */
 class CheckFor {

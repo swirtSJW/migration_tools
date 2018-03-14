@@ -5,7 +5,10 @@ namespace Drupal\migration_tools\Obtainer;
 use Drupal\migration_tools\StringTools;
 
 /**
- * {@inheritdoc}
+ * Class ObtainLocation
+ *
+ * Contains a collection of stackable finders and plucker that can be arranged
+ * as needed to obtain a location suitable for geoLocating.
  */
 class ObtainLocation extends ObtainHtml {
 

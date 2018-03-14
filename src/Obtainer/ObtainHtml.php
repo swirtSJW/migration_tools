@@ -6,6 +6,10 @@ use Drupal\migration_tools\StringTools;
 
 /**
  * Obtains HTML using and stack of finder methods.
+ *
+ * A finder finds the item but does not remove if from the QueryPath DOM.
+ * A plucker finds the item and removes it from the QueryPath DOM if it
+ * validates.
  */
 class ObtainHtml extends Obtainer {
 

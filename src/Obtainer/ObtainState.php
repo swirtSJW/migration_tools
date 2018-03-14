@@ -5,7 +5,10 @@ namespace Drupal\migration_tools\Obtainer;
 use Drupal\migration_tools\StringTools;
 
 /**
- * {@inheritdoc}
+ * Class ObtainState
+ *
+ * Contains logic for cleaning and validation a state.
+ * as needed to obtain a state.
  */
 class ObtainState extends ObtainHtml {
 

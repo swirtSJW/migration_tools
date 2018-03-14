@@ -14,6 +14,8 @@ use Drupal\migrate\Row;
 /**
  * Class SourceParser\Base.
  *
+ * Defines SourceParser\Base class, that parses static HTML files via queryPath.
+ *
  * @package migration_tools
  */
 abstract class HtmlBase {

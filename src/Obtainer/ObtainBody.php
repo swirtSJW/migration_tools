@@ -5,7 +5,8 @@ namespace Drupal\migration_tools\Obtainer;
 /**
  * Class ObtainBody.
  *
- * Obtains the HTML body.
+ * Contains a collection of stackable finders that can be arranged
+ * as needed to obtain a body or other long html content.
  */
 class ObtainBody extends ObtainHtml {
 
