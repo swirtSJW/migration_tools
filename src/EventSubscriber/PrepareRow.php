@@ -92,7 +92,8 @@ class PrepareRow implements EventSubscriberInterface {
         foreach ($config_fields as $config_field) {
           $config_jobs = $config_field['jobs'];
           if ($config_jobs) {
-            $job = new Job($config_field['name'], $config_field['obtainer']);
+            $after_modify = isset($config_field['after_modify']) ? $config_field['after_modify'] : FALSE;
+            $job = new Job($config_field['name'], $config_field['obtainer'], $after_modify);
             foreach ($config_jobs as $config_job) {
               $job->{$config_job['job']}($config_job['method'], $config_job['arguments']);
               $source_parser->addObtainerJob($job);
@@ -102,12 +103,12 @@ class PrepareRow implements EventSubscriberInterface {
       }
 
       // Add Modifiers.
-      $modifiers = $row->getSourceProperty('modifiers');
-      if ($modifiers) {
-        foreach ($modifiers as $modifier) {
-          $arguments = $modifier['arguments'] ? $modifier['arguments'] : [];
-          $source_parser->getModifier()
-            ->addModifier($modifier['method'], $arguments);
+      $config_modifiers = $row->getSourceProperty('modifiers');
+      if ($config_modifiers) {
+        foreach ($config_modifiers as $config_modifier) {
+          $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
+          $source_parser_modifier = $source_parser->getModifier();
+          $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
         }
       }
 
