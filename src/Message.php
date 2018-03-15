@@ -73,7 +73,7 @@ class Message {
       \Drupal::logger($type)->$log_function($parsed_message);
     }
     // Check to see if this is run by drush and output is desired.
-    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('migration_tools_drush_debug')) {
+    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
       $type = (!empty($type)) ? "{$type}: " : '';
       // Drush does not print all Watchdog messages to terminal only
       // WATCHDOG_ERROR and worse.
@@ -81,7 +81,7 @@ class Message {
         // Watchdog didn't output it, so output it directly.
         drush_print($type . $parsed_message, $indent);
       }
-      if ((\Drupal::config('migration_tools.settings')->get('migration_tools_drush_stop_on_error')) && ($severity <= self::ERROR) && $severity !== FALSE) {
+      if ((\Drupal::config('migration_tools.settings')->get('drush_stop_on_error')) && ($severity <= self::ERROR) && $severity !== FALSE) {
         throw new MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
       }
     }
@@ -131,7 +131,7 @@ class Message {
    */
   public static function makeSummary(array $completed, $total_requested, $operation) {
     $count = count($completed);
-    $long = \Drupal::config('migration_tools.settings')->get('migration_tools_drush_debug');
+    $long = \Drupal::config('migration_tools.settings')->get('drush_debug');
     if ((int) $long >= 2) {
       // Long output requested.
       $completed_string = self::improveArrayOutput($completed);
@@ -236,7 +236,7 @@ class Message {
    */
   public static function varDumpToDrush($var, $var_id = 'VAR DUMPs') {
     // Check to see if this is run by drush and output is desired.
-    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('migration_tools_drush_debug')) {
+    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
       drush_print("{$var_id}: \n", 0);
       if (!empty($var)) {
         drush_print_r($var);
