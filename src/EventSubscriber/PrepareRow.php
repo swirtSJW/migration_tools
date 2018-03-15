@@ -93,7 +93,6 @@ class PrepareRow implements EventSubscriberInterface {
           }
           $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
         }
-        $source_parser_modifier->run(TRUE);
       }
 
       // Construct Jobs.

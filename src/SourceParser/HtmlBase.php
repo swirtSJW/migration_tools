@@ -187,6 +187,9 @@ abstract class HtmlBase {
    * This should be called after all obtainer jobs have been added.
    */
   public function parse() {
+    // Run pre modifiers.
+    $this->modifier->run(TRUE);
+
     // Run all Obtainer jobs.
     if (isset($this->obtainerJobs) && is_array($this->obtainerJobs)) {
       // Since all other items are picked out of the body, body must run last.
@@ -198,7 +201,7 @@ abstract class HtmlBase {
         }
       }
       // Run modifiers.
-      $this->modifier->run();
+      $this->modifier->run(FALSE);
 
       // Run any jobs that do require cleaning.
       foreach ($this->obtainerJobs as $job) {
