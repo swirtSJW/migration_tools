@@ -47,6 +47,10 @@ class PrepareRow implements EventSubscriberInterface {
     // If field_containing_url is set, then we know it should do job processing.
     // @todo Needs better logic to determine when to run the parsing.
     if (!empty($field_containing_url)) {
+      if ($row->getIdMap() && !$row->needsUpdate()) {
+        // Row is already imported, don't run any more logic.
+        return;
+      }
       $url = $row->getSourceProperty($field_containing_url);
 
       if (!empty($field_containing_html)) {
