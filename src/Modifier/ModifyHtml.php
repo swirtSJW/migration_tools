@@ -235,6 +235,46 @@ class ModifyHtml extends Modifier {
   }
 
   /**
+   * Convert all relative links to absolute if base href if set.
+   */
+  public function convertBaseHrefLinks() {
+    // Get base href URL.
+    $base = $this->queryPath->top('head')->find('base');
+    if ($base) {
+      $base_href = $base->attr('href');
+
+      // Attributes to check for relative URLs.
+      $attributes = [
+        'href' => 'a[href], area[href]',
+        'longdesc' => 'img[longdesc]',
+        'src' => 'img[src], script[src], embed[src]',
+        'value' => 'param[value]',
+
+      ];
+      foreach ($attributes as $attribute => $selector) {
+
+        $file_links = $this->queryPath->top($selector);
+        foreach ($file_links as $file_link) {
+          $href = trim($file_link->attr($attribute));
+          $href_pieces = parse_url($href);
+          if (count($href_pieces) && empty($href_pieces['scheme'])) {
+            // No scheme set, must be a relative internal URL.
+
+            $new_href = $base_href;
+            $new_href .= (!empty($href_pieces['path'])) ? ltrim($href_pieces['path'], '/') : '';
+            $new_href .= (!empty($href_pieces['query'])) ? '?' . $href_pieces['query'] : '';
+            $new_href .= (!empty($href_pieces['fragment'])) ? '#' . $href_pieces['fragment'] : '';
+            // Remove the base_href to make link relative to root.
+            $new_href = str_ireplace(rtrim($base_href, '/'), '', $new_href);
+
+            $file_link->attr($attribute, $new_href);
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Convert all Relative HREFs in queryPath to Absolute.
    *
    * @param string $url
@@ -245,8 +285,8 @@ class ModifyHtml extends Modifier {
   public function convertLinksAbsoluteSimple($url, $destination_base_url) {
     $url_pieces = parse_url($url);
     $path = $url_pieces['path'];
-
     $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
+
     Url::rewriteImageHrefsOnPage($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
     Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
     Url::rewriteScriptSourcePaths($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
