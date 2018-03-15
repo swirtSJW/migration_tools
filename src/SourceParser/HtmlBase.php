@@ -273,7 +273,7 @@ abstract class HtmlBase {
       $searches = $job->getSearches();
       if (!empty($searches)) {
         // There are methods to run, so run them.
-        Message::make("Obtaining @key via @obtainer_class", ['@key' => $property, '@obtainer_class' => $class]);
+        Message::make("Obtaining @key via @obtainer_class", ['@key' => $property, '@obtainer_class' => $class], Message::DEBUG);
 
         $text = $job->run($this->queryPath);
         $length = (is_array($text)) ? count($text) : strlen($text);

@@ -135,7 +135,7 @@ abstract class Obtainer {
         $method['method_name'] = $this->getCurrentFindMethod();
         $type = (is_array($found_string)) ? 'array' : 'string';
 
-        Message::make('@method found a @type.', ['@method' => $method['method_name'], '@type' => $type], Message::ERROR, 2);
+        Message::make('@method found a @type.', ['@method' => $method['method_name'], '@type' => $type], Message::DEBUG, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();

@@ -61,6 +61,7 @@ class Message {
     $type = 'unknown';
     self::determineType($type, $trace);
     $parsed_message = new FormattableMarkup($message, $variables);
+    $debug_level = \Drupal::config('migration_tools.settings')->get('debug_level');
 
     if ($severity !== FALSE) {
       $type = (!empty($type)) ? $type : 'migration_tools';
@@ -70,14 +71,18 @@ class Message {
 
       // Use lowercase version of label for method call.
       $log_function = strtolower($log_function_markup->__toString());
-      \Drupal::logger($type)->$log_function($parsed_message);
+      if (\Drupal::config('migration_tools.settings')->get('debug')) {
+        if ($severity <= $debug_level) {
+          \Drupal::logger($type)->$log_function($parsed_message);
+        }
+      }
     }
     // Check to see if this is run by drush and output is desired.
     if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
       $type = (!empty($type)) ? "{$type}: " : '';
       // Drush does not print all Watchdog messages to terminal only
       // WATCHDOG_ERROR and worse.
-      if ($severity > self::ERROR || $severity === FALSE) {
+      if ($severity <= $debug_level || $severity === FALSE) {
         // Watchdog didn't output it, so output it directly.
         drush_print($type . $parsed_message, $indent);
       }
