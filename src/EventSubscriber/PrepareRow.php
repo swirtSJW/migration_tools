@@ -62,8 +62,8 @@ class PrepareRow implements EventSubscriberInterface {
         curl_close($handle);
 
         if (!in_array($http_response_code, [200, 301])) {
-          $message = 'Was unable to load !url';
-          $variables = ['!url' => $url];
+          $message = 'Was unable to load @url';
+          $variables = ['@url' => $url];
           Message::make($message, $variables, Message::ERROR);
           throw new MigrateSkipRowException();
         }
