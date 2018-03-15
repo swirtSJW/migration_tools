@@ -382,7 +382,7 @@ class Url {
     ];
 
     // Absolute URL is ready.
-    return self::reassembleURL($absolute);
+    return self::reassembleURL($absolute, $destination_base_url);
   }
 
   /**
@@ -662,29 +662,6 @@ class Url {
   }
 
   /**
-   * Returns the defined site host.
-   *
-   * @return string
-   *   The site host for this site example: 'mysite.com'.
-   *
-   * @throws MigrateException
-   *   If the base domain has not been defined in /admin/config/migration_tools.
-   */
-  public static function getSiteHost() {
-    // Obtain the designated url of the site.
-    $base_url = \Drupal::config('migration_tools.settings')->get('base_domain');
-    $site_host = parse_url($base_url, PHP_URL_HOST);
-    if (!empty($site_host)) {
-      return $site_host;
-    }
-    else {
-      // There is no site host defined.
-      $message = "The base domain is needed, but has not been set. Visit /admin/config/migration_tools \n";
-      throw new MigrateException($message);
-    }
-  }
-
-  /**
    * Given a URL or URI return the path and nothing but the path.
    *
    * @param string $href
@@ -740,41 +717,6 @@ class Url {
   }
 
   /**
-   * Examines an url to see if it is internal to this site.
-   *
-   * @param string $url
-   *   A URL. Ex:
-   *   https://www.newsite.com/somepage,
-   *   https://www.oldsite.com/.
-   * @param array $allowed_hosts
-   *   Optional:  A flat array of allowed domains. Uses base url admin setting.
-   *   ex:array('www.newsite.com', 'newsite.com').
-   *
-   * @return bool
-   *   TRUE if the host is within the site.
-   *   TRUE if there is no host (relative link).
-   *   FALSE if the domain is not with this site.
-   *
-   * @throws \Drupal\migrate\MigrateException
-   */
-  public static function isInternalUrl($url, array $allowed_hosts = []) {
-    if (empty($allowed_hosts)) {
-      // Use the defined site host.
-      $site_host = self::getSiteHost();
-      $allowed_hosts = [$site_host];
-    }
-
-    if (!empty($allowed_hosts)) {
-      return self::isAllowedDomain($url, $allowed_hosts);
-    }
-    else {
-      // There is insufficient information to determine whether host is allowed.
-      $message = "Unable to determine if this is internal link as no allowed hosts are specified.\n";
-      throw new MigrateException($message);
-    }
-  }
-
-  /**
    * Normalize the path to make sure paths are consistent.
    *
    * @param string $uri
@@ -801,6 +743,8 @@ class Url {
    *
    * @param array $parsed_url
    *   An array in the format delivered by php php parse_url().
+   * @param string $destination_base_url
+   *   Destination base URL.
    * @param bool $return_url
    *   Toggles return of full url if TRUE, or uri if FALSE (defaults: TRUE)
    *
@@ -809,16 +753,13 @@ class Url {
    *
    * @throws \Exception
    */
-  public static function reassembleURL(array $parsed_url, $return_url = TRUE) {
+  public static function reassembleURL(array $parsed_url, $destination_base_url, $return_url = TRUE) {
     $url = '';
 
     if ($return_url) {
       // It is going to need the scheme and host if there is one.
-      $default_base = \Drupal::config('migration_tools.settings')
-        ->get('base_domain');
-
-      $default_scheme = parse_url($default_base, PHP_URL_SCHEME);
-      $default_host = parse_url($default_base, PHP_URL_HOST);
+      $default_scheme = parse_url($destination_base_url, PHP_URL_SCHEME);
+      $default_host = parse_url($destination_base_url, PHP_URL_HOST);
 
       $scheme = (!empty($parsed_url['scheme'])) ? $parsed_url['scheme'] : $default_scheme;
       $scheme = (!empty($scheme)) ? $scheme . '://' : '';
@@ -1412,7 +1353,7 @@ class Url {
     ];
     $script_path_count = 0;
     $report = [];
-    self::rewriteFlashSourcePaths($query_path, $url_base_alters, $file_path, $base_for_relative);
+    self::rewriteFlashSourcePaths($query_path, $url_base_alters, $file_path, $base_for_relative, $destination_base_url);
     foreach ($attributes as $attribute => $selector) {
       // Find all the selector on the page.
       $links_to_pages = $query_path->top($selector);
@@ -1421,7 +1362,7 @@ class Url {
       // Loop through them all looking for src or value path to alter.
       foreach ($links_to_pages as $link) {
         $href = trim($link->attr($attribute));
-        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative);
+        $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative, $destination_base_url);
         // Set the new href.
         $link->attr($attribute, $new_href);
 
@@ -1463,8 +1404,10 @@ class Url {
    *   Ex: https://www.oldsite.com/section  - if it needs to point to the source
    *   server.
    *   redirect-oldsite/section - if the links should be made internal.
+   * @param string $destination_base_url
+   *   Destination base URL.
    */
-  public static function rewriteFlashSourcePaths($query_path, array $url_base_alters, $file_path, $base_for_relative) {
+  public static function rewriteFlashSourcePaths($query_path, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     $scripts = $query_path->top('script[type="text/javascript"]');
     foreach ($scripts as $script) {
       $needles = [
@@ -1483,7 +1426,7 @@ class Url {
           $old_path = substr($script_content, $start_loc, $target_length);
           if (!empty($old_path)) {
             // Process the path.
-            $new_path = self::rewritePageHref($old_path, $url_base_alters, $file_path, $base_for_relative);
+            $new_path = self::rewritePageHref($old_path, $url_base_alters, $file_path, $base_for_relative, $destination_base_url);
             // Replace.
             $script_content = str_replace("'$old_path'", "'$new_path'", $script_content);
             if ($old_path !== $new_path) {
@@ -1643,6 +1586,8 @@ class Url {
    *
    * @param string $url
    *   The URL to be tested.
+   * @param string $destination_base_url
+   *   Destination base URL.
    * @param array $candidates
    *   A list of potential document names that could be indexes.
    *   Defaults to "default" and "index".
@@ -1651,7 +1596,7 @@ class Url {
    *   string - The base path if a matching document is found.
    *   bool - FALSE if no matching document is found.
    */
-  public static function getRedirectIfIndex($url, array $candidates = ["default", "index"]) {
+  public static function getRedirectIfIndex($url, $destination_base_url, array $candidates = ["default", "index"]) {
     // Filter through parse_url to separate out querystrings and etc.
     $path = parse_url($url, PHP_URL_PATH);
 
@@ -1667,7 +1612,7 @@ class Url {
         'path' => $root_path,
         'query' => parse_url($url, PHP_URL_QUERY),
         'fragment' => parse_url($url, PHP_URL_FRAGMENT),
-      ], FALSE);
+      ], $destination_base_url, FALSE);
 
       return $new_url;
     }
