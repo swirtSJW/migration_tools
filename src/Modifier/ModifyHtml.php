@@ -228,7 +228,7 @@ class ModifyHtml extends Modifier {
   protected function rewrapElements(array $selectors) {
     foreach ($selectors as $element => $new_wrapper) {
       // Make sure the array key is not just an array index.
-      if (is_string($element)  && !is_numeric($element)) {
+      if (is_string($element) && !is_numeric($element)) {
         QpHtml::rewrapElements($this->queryPath, [$element], $new_wrapper);
       }
     }
@@ -291,6 +291,50 @@ class ModifyHtml extends Modifier {
     Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
     Url::rewriteScriptSourcePaths($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
     Url::rewriteAnchorHrefsToPages($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+  }
+
+  /**
+   * Clean extra tags from beginning/end/both of selector contents.
+   *
+   * @param array $tags
+   *   Tags to search for.
+   * @param string $selector
+   *   Selector to clean.
+   * @param string $where
+   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   */
+  public function cleanExtraTags(array $tags, $selector, $where = 'both') {
+    $element = $this->queryPath->find($selector);
+    $html = $element->innerHTML();
+    $html = StringTools::superTrim($html);
+
+    if ($where == 'both' || $where == 'leading') {
+      $html = preg_replace('#^' . implode('|^', $tags) . '#i', '', $html);
+    }
+    if ($where == 'both' || $where == 'trailing') {
+      $html = preg_replace('#' . implode('$|', $tags) . '$#i', '', $html);
+    }
+    $element->html($html);
+  }
+
+  /**
+   * Clean extra BR tags from beginning/end/both of selector contents.
+   *
+   * @param string $selector
+   *   Selector to clean.
+   * @param string $where
+   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   */
+  public function cleanExtraBrTags($selector, $where = 'both') {
+    // Normalize variations of the br tag.
+    // @codingStandardsIgnoreStart
+    $search = [
+      '<br>',
+      '<br />',
+      '<br/>',
+    ];
+    // @codingStandardsIgnoreEnd
+    self::cleanExtraTags($search, $selector, $where);
   }
 
 }
