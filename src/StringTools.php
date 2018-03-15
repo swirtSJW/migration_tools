@@ -29,10 +29,10 @@ class StringTools {
     $type_detect = [
       'JIS',
       'EUC-JP',
+      'ISO-8859-1',
       'sjis-win',
       'UTF-8',
       'ASCII',
-      'ISO-8859-1',
       'ISO-8859-2',
       'ISO-8859-3',
       'ISO-8859-4',
@@ -464,6 +464,7 @@ class StringTools {
       'ת' => 't',
       '™' => 'tm',
       '°' => 'degree',
+      '' => '\'',
     ];
 
     return $convert_table;
