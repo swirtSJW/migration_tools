@@ -84,10 +84,10 @@ class PrepareRow implements EventSubscriberInterface {
           $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
           foreach ($arguments as &$argument) {
             // @todo Figure out a way to use dynamic variables better.
-            if ($argument == 'field_containing_url') {
+            if ($argument == '@field_containing_url') {
               $argument = $url;
             }
-            if ($argument == 'destination_base_url') {
+            if ($argument == '@destination_base_url') {
               $argument = $row->getSourceProperty('destination_base_url');
             }
           }
