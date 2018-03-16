@@ -1,18 +1,19 @@
 <?php
 
+namespace Drupal\migration_tools\SourceParser;
+
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Obtainer\Job;
+
 /**
- * @file
+ * Class SourceParser\Node.
+ *
  * Includes Node class, parses static HTML files via queryPath.
- */
-
-namespace MigrationTools\SourceParser;
-
-/**
- * Class SourceParser\Node
  *
  * @package migration_tools
  */
 class Node extends HtmlBase {
+
   /**
    * {@inheritdoc}
    */
@@ -26,16 +27,15 @@ class Node extends HtmlBase {
    */
   protected function validateParse() {
     // An empty title should throw an error.
-    if (empty($this->row->title)) {
-      \MigrationTools\Message::make("The title for @fileid is empty.", array("@fileid" => $this->fileId), \WATCHDOG_ALERT);
+    if (empty($this->row->getSourceProperty('title'))) {
+      Message::make("The title for @fileid is empty.", ["@fileid" => $this->fileId], Message::ALERT);
     }
 
     // A body is not required, but should be cause for alarm.
-    if (empty($this->row->body)) {
-      \MigrationTools\Message::make("The body for @fileid is empty.", array("@fileid" => $this->fileId), \WATCHDOG_ALERT);
+    if (empty($this->row->getSourceProperty('body'))) {
+      Message::make("The body for @fileid is empty.", ["@fileid" => $this->fileId], Message::ALERT);
     }
   }
-
 
   /**
    * {@inheritdoc}
@@ -43,12 +43,14 @@ class Node extends HtmlBase {
   protected function setDefaultObtainerJobs() {
     // Basic nodes will only have a title and a body.  Other SourceParsers can
     // extend this and additional Searches can be added in prepareRow.
-    $title = new \MigrationTools\Obtainer\Job('title', 'ObtainTitle');
-    $title->addSearch('pluckSelector', array("h1", 1));
-    $title->addSearch('pluckSelector', array("title", 1));
+    $title = new Job('title', 'ObtainTitle');
+    $title->addSearch('pluckSelector', ["h1", 1]);
+    $title->addSearch('pluckSelector', ["title", 1]);
     $this->addObtainerJob($title);
 
-    $body = new \MigrationTools\Obtainer\Job('body', 'ObtainBody', TRUE);
+    $body = new Job('body', 'ObtainBody', TRUE);
+    $body->addSearch('findTopBodyHtml');
     $this->addObtainerJob($body);
   }
+
 }

@@ -1,21 +1,15 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
+
 /**
- * @file
- * Class ObtainHtml
- *
- * Contains a collection of stackable searchers that can be arranged
- * as needed to obtain html content.
+ * Obtains HTML using and stack of finder methods.
  *
  * A finder finds the item but does not remove if from the QueryPath DOM.
  * A plucker finds the item and removes it from the QueryPath DOM if it
  * validates.
- */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * Obtains HTML using and stack of finder methods.
  */
 class ObtainHtml extends Obtainer {
 
@@ -37,7 +31,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $text = $element->$method();
           $this->setCurrentFindMethod("findSelector($selector, " . ++$n . ')');
@@ -67,7 +61,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->$method();
@@ -132,7 +126,6 @@ class ObtainHtml extends Obtainer {
     // If it made it this far, nothing was found.
     return '';
   }
-
 
   /**
    * Plucker crawls $selector elements until valid starting at bottom going up.
@@ -199,7 +192,7 @@ class ObtainHtml extends Obtainer {
     $elements = $this->queryPath->find($selector);
     $this->setElementToRemove($elements);
     $this->setCurrentFindMethod("pluckAndConcatAnySelector($selector)");
-    $to_concat = array();
+    $to_concat = [];
     foreach ($elements as $key => $em) {
       $to_concat[] = $em->text();
     }
@@ -220,7 +213,7 @@ class ObtainHtml extends Obtainer {
     $text = '';
     if (!empty($selector)) {
       $breadcrumb = $this->queryPath->find($selector);
-      $text = $breadcrumb->find(a)->last()->text();
+      $text = $breadcrumb->find('a')->last()->text();
       // This element makes up a bigger whole, so it is not set to be removed.
       $this->setCurrentFindMethod("findBreadcrumbLastAnchor($selector)");
     }
@@ -242,7 +235,7 @@ class ObtainHtml extends Obtainer {
       $breadcrumb = $this->queryPath->find($selector);
       // Clone the breadcrumb so the next operations are non-destructive.
       $clone = clone $breadcrumb;
-      $clone->find(a)->remove();
+      $clone->find('a')->remove();
       $text = $clone->first()->text();
       // This element makes up a bigger whole, so it is not set to be removed.
       $this->setCurrentFindMethod("findBreadcrumbLastNonAnchor($selector)");
@@ -257,7 +250,7 @@ class ObtainHtml extends Obtainer {
    *   The selector to find.
    * @param string $attribute
    *   The attribute to find on the selector. Example: alt, title, etc.
-   * @param string $depth
+   * @param int $depth
    *   (optional) The depth to find.
    *
    * @return string
@@ -266,7 +259,7 @@ class ObtainHtml extends Obtainer {
   protected function findSelectorAttribute($selector, $attribute, $depth = 1) {
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         $i++;
         if ($i == $depth) {
           $this->setCurrentFindMethod("findSelectorAttribute($selector, $attribute, " . $i . ')');
@@ -274,6 +267,7 @@ class ObtainHtml extends Obtainer {
         }
       }
     }
+    return NULL;
   }
 
   /**
@@ -302,7 +296,7 @@ class ObtainHtml extends Obtainer {
     if (!empty($selector) && !empty($separator)) {
       $n = ($n > 0) ? $n - 1 : 0;
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $string = $element->$method();
           $arr = explode($separator, $string);
@@ -341,7 +335,7 @@ class ObtainHtml extends Obtainer {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($xpath)) {
       $elements = $this->queryPath->xpath($xpath);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $this->setElementToRemove($element);
           $text = $element->text();
@@ -362,7 +356,9 @@ class ObtainHtml extends Obtainer {
    * @param int $row
    *   The row number.
    * @param int $col
-   *   The column number
+   *   The column number.
+   * @param string $method
+   *   Method to use, text or html.
    *
    * @return string
    *   The found text.
@@ -378,8 +374,8 @@ class ObtainHtml extends Obtainer {
       }
       $current_table++;
     }
+    return NULL;
   }
-
 
   /**
    * Extract td contents from a table, and lines it up to be removed.
@@ -416,7 +412,6 @@ class ObtainHtml extends Obtainer {
     return "";
   }
 
-
   /**
    * Pluck something based on sibling relationship.
    *
@@ -426,7 +421,7 @@ class ObtainHtml extends Obtainer {
    * @param string $selector
    *   The css selector of the item to search for (the parent item)
    * @param string $needle
-   *   The text to search for
+   *   The text to search for.
    * @param int $delta
    *   The index of the sibling (nth-child)
    *
@@ -437,12 +432,13 @@ class ObtainHtml extends Obtainer {
     $matched_items = $this->queryPath->find($selector);
 
     foreach ($matched_items as $item) {
-      $candidateText = $item->get(0, TRUE)->textContent;
+      $candidate_text = $item->get(0, TRUE)->textContent;
 
-      if (strpos($candidateText, $needle) !== FALSE) {
+      if (strpos($candidate_text, $needle) !== FALSE) {
         return $item->children()->get($delta, TRUE)->textContent;
       }
     }
+    return NULL;
   }
 
   /**
@@ -458,18 +454,17 @@ class ObtainHtml extends Obtainer {
 
     // Normalize variations of the br tag.
     // @codingStandardsIgnoreStart
-    $search = array(
+    $search = [
       '<br>',
       '<br />',
       '<br/>',
-    );
+    ];
     $html = str_ireplace($search, '<br>', $html);
     $lines = explode('<br>', $html);
     // @codingStandardsIgnoreEnd
 
     return $lines;
   }
-
 
   /**
    * Splits text on variations of the newline character.
@@ -481,10 +476,10 @@ class ObtainHtml extends Obtainer {
    *   Array containing the results of splitting on \n.
    */
   public static function splitOnNewline($text) {
-    $search = array(
+    $search = [
       "\r\n",
       "\r",
-    );
+    ];
     $text = str_ireplace($search, "\n", $text);
     $lines = explode("\n", $text);
 
@@ -543,7 +538,7 @@ class ObtainHtml extends Obtainer {
     $processed_text = $this->cleanString($trimmed);
     // Evaluate string.
     $valid = $this->validateString($processed_text);
-    $length = drupal_strlen($processed_text);
+    $length = StringTools::strlen($processed_text);
     if ($valid && ($max_length == 0 || $max_length >= $length)) {
       // It was valid so strip out each line.
       foreach ($texts as $line_num => $line) {
@@ -574,17 +569,17 @@ class ObtainHtml extends Obtainer {
    */
   public static function truncateThisWithoutHTML($text = '', $length = 255, $min_word_length = 2) {
     $text = strip_tags($text);
-    $trunc_text = truncate_utf8($text, $length, TRUE, FALSE, $min_word_length);
+    $trunc_text = StringTools::truncate($text, $length, TRUE, FALSE, $min_word_length);
     // Check to see if any truncation is made.
     if (strcmp($text, $trunc_text) != 0) {
       // There was truncation, so process it differently.
       // Grab the remaining text by removing $trunc_test.
       $remaining_text = str_replace($trunc_text, '', $text);
     }
-    $return = array(
+    $return = [
       'truncated' => $trunc_text,
       'remaining' => (!empty($remaining_text)) ? $remaining_text : '',
-    );
+    ];
 
     return $return;
   }
@@ -600,7 +595,7 @@ class ObtainHtml extends Obtainer {
   protected function extractAndPutBack($string, $qp_element) {
     // Clean string.
     $processed_text = $this->cleanString($string);
-    $valid = $this->validateStrong($processed_text);
+    $valid = $this->validateString($processed_text);
     if ($valid) {
       // The string checks out, remove the original string from the element.
       $full_source = $qp_element->html();
@@ -608,4 +603,5 @@ class ObtainHtml extends Obtainer {
       $qp_element->html($new_source);
     }
   }
+
 }

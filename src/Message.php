@@ -1,12 +1,29 @@
 <?php
+
+namespace Drupal\migration_tools;
+
+use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\migrate\MigrateException;
+use Drupal\Component\Render\FormattableMarkup;
+
 /**
- * @file
+ * Class Message.
+ *
  * Helper class to manage watchdog and commandline messaging of migrations.
+ *
+ * @package Drupal\migration_tools
  */
-
-namespace MigrationTools;
-
 class Message {
+  // Provide RFC equiv constants so method calls on Message don't require RFC.
+  const EMERGENCY = RfcLogLevel::EMERGENCY;
+  const ALERT = RfcLogLevel::ALERT;
+  const CRITICAL = RfcLogLevel::CRITICAL;
+  const ERROR = RfcLogLevel::ERROR;
+  const WARNING = RfcLogLevel::WARNING;
+  const NOTICE = RfcLogLevel::NOTICE;
+  const INFO = RfcLogLevel::INFO;
+  const DEBUG = RfcLogLevel::DEBUG;
+
   /**
    * Logs a system message and outputs it to drush terminal if run from drush.
    *
@@ -22,43 +39,55 @@ class Message {
    *   translate.
    * @param int $severity
    *   The severity of the message; one of the following values as defined in
-   *   - WATCHDOG_EMERGENCY: Emergency, system is unusable.
-   *   - WATCHDOG_ALERT: Alert, action must be taken immediately.
-   *   - WATCHDOG_CRITICAL: Critical conditions.
-   *   - WATCHDOG_ERROR: Error conditions.
-   *   - WATCHDOG_WARNING: Warning conditions.
-   *   - WATCHDOG_NOTICE: (default) Normal but significant conditions.
-   *   - WATCHDOG_INFO: Informational messages.
-   *   - WATCHDOG_DEBUG: Debug-level messages.
+   *   - Message::EMERGENCY: Emergency, system is unusable.
+   *   - Message::ALERT: Alert, action must be taken immediately.
+   *   - Message::CRITICAL: Critical conditions.
+   *   - Message::ERROR: Error conditions.
+   *   - Message::WARNING: Warning conditions.
+   *   - Message::NOTICE: (default) Normal but significant conditions.
+   *   - Message::INFO: Informational messages.
+   *   - Message::DEBUG: Debug-level messages.
    *   - FALSE: Outputs the message to drush without calling Watchdog.
-   *
    * @param int $indent
    *   (optional). Sets indentation for drush output. Defaults to 1.
    *
    * @link http://www.faqs.org/rfcs/rfc3164.html RFC 3164: @endlink
+   *
+   * @throws MigrateException
    */
-  public static function make($message, $variables = array(), $severity = WATCHDOG_NOTICE, $indent = 1) {
+  public static function make($message, array $variables = [], $severity = self::NOTICE, $indent = 1) {
     // Determine what instantiated this message.
     $trace = debug_backtrace();
     $type = 'unknown';
     self::determineType($type, $trace);
+    $parsed_message = new FormattableMarkup($message, $variables);
+    $debug_level = \Drupal::config('migration_tools.settings')->get('debug_level');
 
     if ($severity !== FALSE) {
-      $type = (!empty($type)) ? $type : 'Migration';
-      watchdog($type, $message, $variables, $severity);
+      $type = (!empty($type)) ? $type : 'migration_tools';
+      $log_levels = RfcLogLevel::getLevels();
+      /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $log_function_markup */
+      $log_function_markup = $log_levels[$severity];
+
+      // Use lowercase version of label for method call.
+      $log_function = strtolower($log_function_markup->__toString());
+      if (\Drupal::config('migration_tools.settings')->get('debug')) {
+        if ($severity <= $debug_level) {
+          \Drupal::logger($type)->$log_function($parsed_message);
+        }
+      }
     }
     // Check to see if this is run by drush and output is desired.
-    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
+    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
       $type = (!empty($type)) ? "{$type}: " : '';
-      $formatted_message = format_string($message, $variables);
       // Drush does not print all Watchdog messages to terminal only
       // WATCHDOG_ERROR and worse.
-      if ($severity > WATCHDOG_ERROR || $severity === FALSE) {
+      if ($severity <= $debug_level || $severity === FALSE) {
         // Watchdog didn't output it, so output it directly.
-        drush_print($type . $formatted_message, $indent);
+        drush_print($type . $parsed_message, $indent);
       }
-      if ((variable_get('migration_tools_drush_stop_on_error', FALSE)) && ($severity <= WATCHDOG_ERROR) && $severity !== FALSE) {
-        throw new \MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
+      if ((\Drupal::config('migration_tools.settings')->get('drush_stop_on_error')) && ($severity <= self::ERROR) && $severity !== FALSE) {
+        throw new MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush config-set migration_tools.settings drush_stop_on_error 0\" to disable auto-stop.");
       }
     }
   }
@@ -67,7 +96,7 @@ class Message {
    * Outputs a visual separator using the message system.
    */
   public static function makeSeparator() {
-    self::make("------------------------------------------------------", array(), FALSE, 0);
+    self::make("------------------------------------------------------", [], FALSE, 0);
   }
 
   /**
@@ -83,12 +112,12 @@ class Message {
    * @return bool
    *   FALSE.
    */
-  public static function makeSkip($reason, $row_id, $watchdog_level = \WATCHDOG_INFO) {
+  public static function makeSkip($reason, $row_id, $watchdog_level = self::INFO) {
     // Reason is included directly in the message because it needs translation.
     $message = "SKIPPED->{$reason}: @row_id";
-    $variables = array(
+    $variables = [
       '@row_id' => $row_id,
-    );
+    ];
     self::make($message, $variables, $watchdog_level, 1);
 
     return FALSE;
@@ -103,39 +132,34 @@ class Message {
    *   The number to be processed.
    * @param string $operation
    *   The name of the operation being sumaraized.
-   *   Ex: Rewrite image src
-   *
-   * @return string
-   *   The report of what was completed.
+   *   Ex: Rewrite image src.
    */
-  public static function makeSummary($completed, $total_requested, $operation) {
-    $t = get_t();
+  public static function makeSummary(array $completed, $total_requested, $operation) {
     $count = count($completed);
-    $long = variable_get('migration_tools_drush_debug', FALSE);
+    $long = \Drupal::config('migration_tools.settings')->get('drush_debug');
     if ((int) $long >= 2) {
       // Long output requested.
       $completed_string = self::improveArrayOutput($completed);
-      $vars = array(
+      $vars = [
         '@count' => $count,
         '!completed' => $completed_string,
         '@total' => $total_requested,
         '@operation' => $operation,
-      );
+      ];
       $message = "Summary: @operation @count/@total.  Completed:\n !completed";
     }
     else {
       // Default short output.
-      $vars = array(
+      $vars = [
         '@count' => $count,
         '@total' => $total_requested,
         '@operation' => $operation,
-      );
+      ];
       $message = "Summary: @operation @count/@total.";
     }
 
     self::make($message, $vars, FALSE, 2);
   }
-
 
   /**
    * Stringify and clean up the output of an array for messaging.
@@ -146,9 +170,17 @@ class Message {
    * @return string
    *   The stringified array.
    */
-  public static function improveArrayOutput($array_items) {
+  public static function improveArrayOutput(array $array_items) {
+    // Remove any objects from the debug output.
+    foreach ($array_items as $key => &$array_item) {
+      foreach ($array_item as $sub_key => $sub_array_item) {
+        if (is_object($sub_array_item)) {
+          unset($array_item[$sub_key]);
+        }
+      }
+    }
     $string = print_r($array_items, TRUE);
-    $remove = array("Array", "(\n", ")\n");
+    $remove = ["Array", "(\n", ")\n"];
     $string = str_replace($remove, '', $string);
     // Adjust for misaligned second line.
     $string = str_replace('             [', '     [', $string);
@@ -164,7 +196,7 @@ class Message {
    * @param array $trace
    *   The stack trace as returned by debug_backtrace.
    */
-  private static function determineType(&$type, $trace) {
+  private static function determineType(&$type, array $trace) {
     if (isset($trace[1])) {
       // $trace[1] is the thing that instantiated this message.
       if (!empty($trace[1]['class'])) {
@@ -186,16 +218,16 @@ class Message {
    */
   private static function reduceTypeNoise(&$type) {
     // A list of types to blank out, to reduce deceptive noise.
-    $noise_filter = array(
-      'MigrationTools\Message',
-    );
+    $noise_filter = [
+      'Drupal\migration_tools\Message',
+    ];
     $type = ((in_array($type, $noise_filter))) ? '' : $type;
 
     // A list of types to increase readability and reduce noise.
-    $noise_shorten = array(
-      'MigrationTools\Obtainer' => 'MT',
-      'MigrationTools' => 'MT',
-    );
+    $noise_shorten = [
+      'Drupal\migration_tools\Obtainer' => 'MT',
+      'Drupal\migration_tools' => 'MT',
+    ];
     $type = str_replace(array_keys($noise_shorten), array_values($noise_shorten), $type);
   }
 
@@ -209,7 +241,7 @@ class Message {
    */
   public static function varDumpToDrush($var, $var_id = 'VAR DUMPs') {
     // Check to see if this is run by drush and output is desired.
-    if (drupal_is_cli() && variable_get('migration_tools_drush_debug', FALSE)) {
+    if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
       drush_print("{$var_id}: \n", 0);
       if (!empty($var)) {
         drush_print_r($var);
@@ -219,4 +251,5 @@ class Message {
       }
     }
   }
+
 }

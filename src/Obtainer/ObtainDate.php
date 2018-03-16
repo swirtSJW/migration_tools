@@ -1,31 +1,28 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\QpHtml;
+use Drupal\migration_tools\StringTools;
+use Drupal\migration_tools\Message;
+
 /**
- * @file
  * Class ObtainDate
  *
  * Contains a collection of stackable finders that can be arranged
  * as needed to obtain a date content.
  */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * {@inheritdoc}
- */
 class ObtainDate extends ObtainHtml {
-
 
   /**
    * Finder method to find dates by its accompanying text.
    *
    * @param mixed $selectors
-   *   string - single selector to find.
-   *   array - an array of selectors to look for.
-   *
+   *   String - single selector to find.
+   *   Array - an array of selectors to look for.
    * @param mixed $search_strings
-   *   string - single string to search for.
-   *   array - array of strings to search for.
+   *   String - single string to search for.
+   *   Array - array of strings to search for.
    *   The search string(s) would be adjacent to the date.
    *
    * @return string
@@ -41,7 +38,7 @@ class ObtainDate extends ObtainHtml {
       // Loop through the search strings.
       foreach ($search_strings as $search_string) {
         // Search for the string.
-        $element = HtmlCleanUp::matchText($this->queryPath, $selector, $search_string);
+        $element = QpHtml::matchText($this->queryPath, $selector, $search_string);
 
         if (!empty($element)) {
           $text = $element->text();
@@ -53,7 +50,7 @@ class ObtainDate extends ObtainHtml {
 
           if ($valid) {
             $this->setElementToRemove($element);
-            \MigrationTools\Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", array('@selector' => $selector, '@search_string' => $search_string), FALSE, 2);
+            Message::make("pluckDateFromSelectorWithSearchStrings| selector: @selector  search string: @search_string", ['@selector' => $selector, '@search_string' => $search_string], FALSE, 2);
 
             return $text;
           }
@@ -76,12 +73,12 @@ class ObtainDate extends ObtainHtml {
   protected function findAndFilterForwardDate($selector) {
     $elements = $this->queryPath->find($selector);
     foreach ($elements as $element) {
-      $date_formats = array(
+      $date_formats = [
         // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
         "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
-      );
+      ];
       foreach ($date_formats as $date_format) {
-        $matches = array();
+        $matches = [];
         $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
         if ($hit) {
           foreach ($matches[0] as $key => $match) {
@@ -89,7 +86,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
 
             if ($valid) {
-              \MigrationTools\Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("findAndFilterForwardDate| selector: @selector found a date at @key.", ['@selector' => $selector, '@key' => $key], FALSE, 2);
 
               return $text;
             }
@@ -97,6 +94,7 @@ class ObtainDate extends ObtainHtml {
         }
       }
     }
+    return '';
   }
 
   /**
@@ -112,12 +110,12 @@ class ObtainDate extends ObtainHtml {
     $elements = $this->queryPath->find($selector);
 
     foreach ($elements as $element) {
-      $date_formats = array(
+      $date_formats = [
         // Covers ##/##/##, ##/##/####, ##-##-##, ##-##-####.
         "/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/m",
-      );
+      ];
       foreach ($date_formats as $date_format) {
-        $matches = array();
+        $matches = [];
         $hit = preg_match_all($date_format, $element->text(), $matches, PREG_PATTERN_ORDER);
         if ($hit) {
           foreach ($matches[0] as $key => $match) {
@@ -125,7 +123,7 @@ class ObtainDate extends ObtainHtml {
             $valid = $this->validateString($text);
             if ($valid) {
               $this->setElementToRemove($element);
-              \MigrationTools\Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", array('@selector' => $selector, '@key' => $key), FALSE, 2);
+              Message::make("pluckAndFilterForwardDate| selector: @selector found a date at @key.", ['@selector' => $selector, '@key' => $key], FALSE, 2);
 
               return $text;
             }
@@ -133,6 +131,7 @@ class ObtainDate extends ObtainHtml {
         }
       }
     }
+    return '';
   }
 
   /**
@@ -147,22 +146,21 @@ class ObtainDate extends ObtainHtml {
   public static function cleanString($text) {
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
+    $text = StringTools::convertNonASCIItoASCII($text);
 
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($text, 'UTF-8');
 
     if (!$is_utf8) {
-      $text = \MigrationTools\StringTools::fixEncoding($text);
+      $text = StringTools::fixEncoding($text);
     }
 
     // Remove some strings that often accompany dates.
-    $remove = array(
+    $remove = [
       'FOR',
       'IMMEDIATE',
       'RELEASE',
@@ -185,30 +183,30 @@ class ObtainDate extends ObtainHtml {
       'thurday',
       'wendsday',
       'firday',
-    );
+    ];
     // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
 
-    $remove = array(
+    $remove = [
       '.',
       ',',
       "\n",
-    );
+    ];
     // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
 
     // Fix mispellings and abbreviations.
-    $replace = array(
+    $replace = [
       'septmber' => 'september',
       'arpil' => 'april',
       'febraury' => 'february',
-    );
+    ];
     $text = str_ireplace(array_keys($replace), array_values($replace), $text);
 
     // Remove multiple spaces.
     $text = preg_replace('/\s{2,}/u', ' ', $text);
     // Remove any text following the 4 digit year.
-    $years = range(1995, 2015);
+    $years = range(1995, 2050);
     foreach ($years as $year) {
       $pos = strpos($text, (string) $year);
       if ($pos !== FALSE) {
@@ -218,7 +216,7 @@ class ObtainDate extends ObtainHtml {
     }
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
 
     return $text;
   }
@@ -230,7 +228,7 @@ class ObtainDate extends ObtainHtml {
    *   One entry for each month name.
    */
   public static function returnMonthNames() {
-    return array(
+    return [
       'January',
       'February',
       'March',
@@ -243,7 +241,7 @@ class ObtainDate extends ObtainHtml {
       'October',
       'November',
       'December',
-    );
+    ];
   }
 
   /**

@@ -1,11 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains example Obtainer class.
- */
-
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * Obtainer for title property for /atr pages.
@@ -14,6 +9,7 @@ namespace MigrationTools\Obtainer;
  * @subpackage atr
  */
 class ObtainExample extends ObtainHtml {
+
   /**
    * {@inheritdoc}
    */
@@ -44,4 +40,5 @@ class ObtainExample extends ObtainHtml {
 
     return $element->text();
   }
+
 }

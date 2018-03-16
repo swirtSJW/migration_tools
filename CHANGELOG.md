@@ -1,5 +1,13 @@
-migration_tools 7.x-2.x  ** - ** - ****
+migration_tools 8.x-1.x  MM-DD-YYYY
 -----------------------------------------------
+
+
+migration_tools 8.x-1.x  03-15-2018
+-----------------------------------------------
+
+*  Issue #2952547: Initial port to Drupal 8.  Obtainers, Modifiers and string
+   cleanup as well as an html source parser has been ported to work with a yml
+   migration file.
 
 migration_tools 7.x-2.8  November 2, 2017
 -----------------------------------------------

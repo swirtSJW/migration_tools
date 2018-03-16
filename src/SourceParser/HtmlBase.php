@@ -1,28 +1,35 @@
 <?php
 
-/**
- * @file
- * Defines SourceParser\Base class, that parses static HTML files via queryPath.
- */
+namespace Drupal\migration_tools\SourceParser;
 
-namespace MigrationTools\SourceParser;
+use Drupal\migrate\MigrateException;
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Modifier\Modifier;
+use Drupal\migration_tools\Modifier\ModifyHtml;
+use Drupal\migration_tools\Obtainer\Job;
+use Drupal\migration_tools\StringTools;
+use Drupal\migrate\Row;
 
 /**
  * Class SourceParser\Base.
+ *
+ * Defines SourceParser\Base class, that parses static HTML files via queryPath.
  *
  * @package migration_tools
  */
 abstract class HtmlBase {
 
-  public $obtainerJobs = array();
+  public $obtainerJobs = [];
   public $fileId;
   protected $html;
+
+  /** @var \Drupal\migrate\Row $row */
   public $row;
   public $queryPath;
-  public $htmlElementsToRemove = array();
-  public $htmlElementsToUnWrap = array();
-  public $htmlElementsToReWrap = array();
-  public $modifier;
+  protected $htmlElementsToRemove = [];
+  protected $htmlElementsToUnWrap = [];
+  protected $htmlElementsToReWrap = [];
+  protected $modifier;
 
   /**
    * A source parser class should set a useful set of obtainer jobs.
@@ -44,25 +51,25 @@ abstract class HtmlBase {
    * Constructor.
    *
    * @param string $file_id
-   *   The file id, e.g. careers/legal/pm7205.html
+   *   The file id, e.g. careers/legal/pm7205.html.
    * @param string $html
    *   The full HTML data as loaded from the file.
-   * @param object $row
-   *   Migrate row to be altered by reference.
+   * @param \Drupal\migrate\Row $row
+   *   Migrate row to be altered.
    */
-  public function __construct($file_id, $html, &$row) {
+  public function __construct($file_id, $html, Row $row) {
     $this->fileId = $file_id;
     $this->row = $row;
 
-    $html = \MigrationTools\StringTools::fixEncoding($html);
-    $html = \MigrationTools\StringTools::stripWindowsCRChars($html);
-    $html = \MigrationTools\StringTools::fixWindowSpecificChars($html);
-    $html = \MigrationTools\StringTools::removePhp($html);
+    $html = StringTools::fixEncoding($html);
+    $html = StringTools::stripWindowsCRChars($html);
+    $html = StringTools::fixWindowSpecificChars($html);
+    $html = StringTools::removePhp($html);
 
     // Have to repair these in order  from innermost to outermost tags.
-    $html = \MigrationTools\StringTools::fixBodyTag($html);
-    $html = \MigrationTools\StringTools::fixHeadTag($html);
-    $html = \MigrationTools\StringTools::fixHtmlTag($html);
+    $html = StringTools::fixBodyTag($html);
+    $html = StringTools::fixHeadTag($html);
+    $html = StringTools::fixHtmlTag($html);
 
     $this->html = $html;
     $this->initQueryPath();
@@ -71,18 +78,104 @@ abstract class HtmlBase {
 
     // Instantiate this here but could be instantiated with an extended modifier
     // from in another sourceparser.
-    $this->modifier = new \MigrationTools\Modifier\ModifyHtml($this->queryPath);
+    $this->modifier = new ModifyHtml($this->queryPath);
+  }
+
+  /**
+   * Get HTML elements to remove.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToRemove() {
+    return $this->htmlElementsToRemove;
+  }
+
+  /**
+   * Set HTML elements to remove.
+   *
+   * @param array $html_elements
+   *   Array of elements.
+   */
+  public function setHtmlElementsToRemove(array $html_elements) {
+    $this->htmlElementsToRemove = $html_elements;
+  }
+
+  /**
+   * Get HTML elements to unwrap.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToUnWrap() {
+    return $this->htmlElementsToUnWrap;
+  }
+
+  /**
+   * Set HTML elements to unwrap.
+   *
+   * @param array $html_elements
+   *   Array of elements.
+   */
+  public function setHtmlElementsToUnWrap(array $html_elements) {
+    $this->htmlElementsToUnWrap = $html_elements;
+  }
+
+  /**
+   * Get HTML elements to rewrap.
+   *
+   * @return array
+   *   Array of elements
+   */
+  public function getHtmlElementsToReWrap() {
+    return $this->htmlElementsToReWrap;
+  }
+
+  /**
+   * Set HTML elements to rewrap.
+   *
+   * @param array $html_elements
+   *   Array of elements.
+   */
+  public function setHtmlElementsToReWrap(array $html_elements) {
+    $this->htmlElementsToReWrap = $html_elements;
+  }
+
+  /**
+   * Get Modifier.
+   *
+   * @return \Drupal\migration_tools\Modifier\Modifier
+   *   Modifier
+   */
+  public function getModifier() {
+    return $this->modifier;
+  }
+
+  /**
+   * Set Modifier.
+   *
+   * @param \Drupal\migration_tools\Modifier\Modifier $modifier
+   *   Modifier.
+   */
+  public function setModifier(Modifier $modifier) {
+    $this->modifier = $modifier;
   }
 
   /**
    * Add obtainer job for this source parser to run.
+   *
+   * @param \Drupal\migration_tools\Obtainer\Job $job
+   *   Job to add.
    */
-  public function addObtainerJob(\MigrationTools\Obtainer\Job $job) {
+  public function addObtainerJob(Job $job) {
     $this->obtainerJobs[$job->getProperty()] = $job;
   }
 
   /**
-   * Getter.
+   * Get Obtainer Jobs.
+   *
+   * @return array
+   *   Array of jobs.
    */
   public function getObtainerJobs() {
     return $this->obtainerJobs;
@@ -94,6 +187,9 @@ abstract class HtmlBase {
    * This should be called after all obtainer jobs have been added.
    */
   public function parse() {
+    // Run pre modifiers.
+    $this->modifier->run(TRUE);
+
     // Run all Obtainer jobs.
     if (isset($this->obtainerJobs) && is_array($this->obtainerJobs)) {
       // Since all other items are picked out of the body, body must run last.
@@ -101,22 +197,22 @@ abstract class HtmlBase {
       foreach ($this->obtainerJobs as $job) {
         $property = $job->getProperty();
         if (!$job->afterClean && ($property !== 'body')) {
-          $this->row->{$property} = $this->getProperty($property);
+          $this->row->setSourceProperty($property, $this->getProperty($property));
         }
       }
-      // Clean the html for any obtainerJobs that require clean html.
-      $this->cleanQueryPathHtml();
+      // Run modifiers.
+      $this->modifier->run(FALSE);
 
       // Run any jobs that do require cleaning.
       foreach ($this->obtainerJobs as $job) {
         $property = $job->getProperty();
         if ($job->afterClean && ($property !== 'body')) {
-          $this->row->{$property} = $this->getProperty($property);
+          $this->row->setSourceProperty($property, $this->getProperty($property));
         }
       }
       // Now that everything else has been run.  Grab what's left for the body.
       if (!empty($this->obtainerJobs['body'])) {
-        $this->row->body = $this->getProperty('body');
+        $this->row->setSourceProperty('body', $this->getProperty('body'));
       }
 
       $this->validateParse();
@@ -125,6 +221,9 @@ abstract class HtmlBase {
 
   /**
    * Get information/properties from html by running the obtainers.
+   *
+   * @param string $property
+   *   Property to get.
    */
   protected function getProperty($property) {
     if (!isset($this->{$property})) {
@@ -138,6 +237,9 @@ abstract class HtmlBase {
 
   /**
    * Set a property.
+   *
+   * @param string $property
+   *   Property to set.
    */
   protected function setProperty($property) {
     // Make sure our QueryPath object has been initialized.
@@ -148,13 +250,21 @@ abstract class HtmlBase {
 
   /**
    * Use the obtainers mechanism to extract text from the html.
+   *
+   * @param string $property
+   *   Property to get.
+   *
+   * @return string
+   *   Property text.
+   *
+   * @throws \Exception
    */
   protected function obtainProperty($property) {
     $text = '';
     $job = (empty($this->obtainerJobs[$property])) ? '' : $this->obtainerJobs[$property];
 
     if (empty($job)) {
-      $message = t("@class does not have a Job defined for the  property: @property", array('@property' => $property, '@class' => 'SourceParser\HtmlBase'));
+      $message = t("@class does not have a Job defined for the  property: @property", ['@property' => $property, '@class' => 'SourceParser\HtmlBase']);
       throw new \Exception($message);
     }
 
@@ -163,40 +273,40 @@ abstract class HtmlBase {
       $searches = $job->getSearches();
       if (!empty($searches)) {
         // There are methods to run, so run them.
-        \MigrationTools\Message::make("Obtaining @key via @obtainer_class", array('@key' => $property, '@obtainer_class' => $class));
+        Message::make("Obtaining @key via @obtainer_class", ['@key' => $property, '@obtainer_class' => $class], Message::DEBUG);
 
         $text = $job->run($this->queryPath);
         $length = (is_array($text)) ? count($text) : strlen($text);
 
         if (!$length) {
           // Nothing was obtained.
-          \MigrationTools\Message::make('@property NOT found', array('@property' => $property), \WATCHDOG_DEBUG, 2);
+          Message::make('@property NOT found', ['@property' => $property], Message::DEBUG, 2);
         }
         elseif (is_array($text)) {
-          // This must have come from ObtainArray().
-          \MigrationTools\Message::make('@property found --> !array', array('@property' => $property, '!array' => \MigrationTools\Message::improveArrayOutput($text)), \WATCHDOG_DEBUG, 2);
+          // This must have come from Obtain[].
+          Message::make('@property found --> @array', ['@property' => $property, '@array' => Message::improveArrayOutput($text)], Message::DEBUG, 2);
         }
         elseif ($length < 256) {
           // It is short enough to be helpful in debug output.
-          \MigrationTools\Message::make('@property found --> @text', array('@property' => $property, '@text' => $text), \WATCHDOG_DEBUG, 2);
+          Message::make('@property found --> @text', ['@property' => $property, '@text' => $text], Message::DEBUG, 2);
         }
         else {
           // It's too long to be helpful in output so just show the length.
-          \MigrationTools\Message::make('@property found --> Length: @length', array('@property' => $property, '@length' => $length), \WATCHDOG_DEBUG, 2);
+          Message::make('@property found --> Length: @length', ['@property' => $property, '@length' => $length], Message::DEBUG, 2);
         }
       }
       else {
         // There were no methods to run so message.
-        \MigrationTools\Message::make("There were no searches to run for @key via @obtainer_class so it was not executed", array('@key' => $property, '@obtainer_class' => $class));
+        Message::make("There were no searches to run for @key via @obtainer_class so it was not executed", ['@key' => $property, '@obtainer_class' => $class]);
       }
 
     }
-    catch (Exception $e) {
-      \MigrationTools\Message::make("@file_id Failed to set @key, Exception: @error_message", array(
+    catch (\Exception $e) {
+      Message::make("@file_id Failed to set @key, Exception: @error_message", [
         '@file_id' => $this->fileId,
         '@key' => $property,
         '@error_message' => $e->getMessage(),
-      ), \WATCHDOG_ERROR);
+      ], Message::DEBUG);
     }
 
     return $text;
@@ -212,7 +322,7 @@ abstract class HtmlBase {
     }
     else {
       // Initialize the QueryPath.
-      $type_detect = array(
+      $type_detect = [
         'UTF-8',
         'ASCII',
         'ISO-8859-1',
@@ -232,18 +342,18 @@ abstract class HtmlBase {
         'Windows-1251',
         'Windows-1252',
         'Windows-1254',
-      );
+      ];
       $convert_from = mb_detect_encoding($this->html, $type_detect);
       if ($convert_from != 'UTF-8') {
         // This was not UTF-8 so report the anomaly.
         $message = "Converted from: @convert_from";
-        \MigrationTools\Message::make($message, array('@convert_from' => $convert_from), \WATCHDOG_INFO, 1);
+        Message::make($message, ['@convert_from' => $convert_from], Message::INFO, 1);
       }
 
-      $qp_options = array(
+      $qp_options = [
         'convert_to_encoding' => 'UTF-8',
         'convert_from_encoding' => $convert_from,
-      );
+      ];
 
       // Create query path object.
       try {
@@ -260,25 +370,24 @@ abstract class HtmlBase {
             // QueryPath qp is less tolerant of badly formed html so it must
             // have failed.
             // Use htmlqp which is more detructive but will fix bad html.
-            \MigrationTools\Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with !file, Exception: @error_message', array('@error_message' => $e->getMessage(), '!file' => $this->fileId), FALSE);
+            Message::make('Failed to instantiate QueryPath using qp, attempting qphtml with @file, Exception: @error_message', ['@error_message' => $e->getMessage(), '@file' => $this->fileId], Message::WARNING);
             $this->queryPath = htmlqp($this->html, NULL, $qp_options);
           }
         }
         else {
           $message = "QueryPath is required for html source parsing.  Please install the querypath module or add the library.";
-          throw new \MigrateException($message);
+          throw new MigrateException($message);
         }
       }
       catch (\Exception $e) {
-        \MigrationTools\Message::make('Failed to instantiate QueryPath for HTML, Exception: @error_message', array('@error_message' => $e->getMessage()), \WATCHDOG_ERROR);
+        Message::make('Failed to instantiate QueryPath for HTML, Exception: @error_message', ['@error_message' => $e->getMessage()], Message::ERROR);
       }
       // Sometimes queryPath fails.  So one last check.
       if (!is_object($this->queryPath)) {
-        throw new \MigrateException("{$this->fileId} failed to initialize QueryPath");
+        throw new MigrateException("{$this->fileId} failed to initialize QueryPath");
       }
     }
   }
-
 
   /**
    * Clean and alter $this->html right before it QueryPath is instantiated.
@@ -288,34 +397,4 @@ abstract class HtmlBase {
     // it to QueryPath.
   }
 
-
-  /**
-   * Clean and alter the html within $this->queryPath.
-   */
-  protected function cleanQueryPathHtml() {
-    try {
-      \MigrationTools\QpHtml::removeFaultyImgLongdesc($this->queryPath);
-      // Empty anchors without name attribute will be stripped by ckEditor.
-      \MigrationTools\QpHtml::fixNamedAnchors($this->queryPath);
-
-      \MigrationTools\QpHtml::removeElements($this->queryPath, $this->htmlElementsToRemove);
-
-      \MigrationTools\QpHtml::removeWrapperElements($this->queryPath, $this->htmlElementsToUnWrap);
-
-      foreach ($this->htmlElementsToReWrap as $element => $new_wrapper) {
-        // Make sure the array key is not just an array index.
-        if (is_string($element)  && !is_numeric($element)) {
-          \MigrationTools\QpHtml::rewrapElements($this->queryPath, array($element), $new_wrapper);
-        }
-      }
-
-      \MigrationTools\QpHtml::removeComments($this->queryPath);
-
-      $this->modifier->run();
-
-    }
-    catch (Exception $e) {
-      \MigrationTools\Message::make('@file_id Failed to clean the html, Exception: @error_message', array('@file_id' => $this->fileId, '@error_message' => $e->getMessage()), \WATCHDOG_ERROR);
-    }
-  }
 }

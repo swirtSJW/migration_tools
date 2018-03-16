@@ -140,55 +140,19 @@ your settings.local.php
 * Enable this module
 
 ## Configuration
-* Set $conf['migration_tools_base_dir'] correctly for your local machine.  This
-is the location for your migration source files. (parallel to docroot)
+
+_incomplete documentation_
 
 ## Requirements
  * Migrate
- * Pathauto
- * Redirect
-
-
+ * Migrate_plus
+ * Pathauto (todo)
+ * Redirect (todo)
 
 ##Migration Development
 
 _incomplete documentation_
 
-
-
-
-## Look through the source files to see if there is garbage to exclude.
-There is no real science here, just poke around and look for things like /old or /original or header.html or footer.html  or test.html.   If they are in a path like /old, they can be removed from the array of source directories in the migration class.
-
-    // Define source directories.
-    $source_dirs = array(
-      0 => 'subdirectory/corruption/mango',
-      1 => 'subdirectory/corruption',
-      2 => 'subdirectory/thing/corruption/then',
-      3 => 'subdirectory/thing/corruption/now',
-      4 => 'subdirectory/thing/old',  // Just delete this from this array if it should not be migrated.
-    );
-
-
-### Excluding pages
-Sometimes there are pages that should not be migrated
-They can be skipped in prepareRow  within the migration class like this:
-
-````
- /**
-   * {@inheritdoc}
-   */
-  public function prepareRow($row) {
-    $skip_these = array(
-      '/subdirectory/must/must_index.html',
-      '/subdirectory/ski/ski_index.html',
-    );
-
-    if (mt_migration_skip_file($row->fileId, $skip_these) || (parent::prepareRow($row) === FALSE)) {
-      return FALSE;
-    }
-  }
-````
 
 
 Additionally you can make the migration stop on lack of title or date by setting the value
@@ -370,6 +334,7 @@ improve the experience:
 --------------
 
 * Steve Wirt (swirt) - https://drupal.org/user/138230
+* Kristian Ducharme (kducharm) - https://drupal.org/user/3072643
 
 This repo is present on https://www.drupal.org/project/migration_tools as well
 as https://github.com/swirtSJW/migration_tools

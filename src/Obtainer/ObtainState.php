@@ -1,17 +1,14 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
+
 /**
- * @file
  * Class ObtainState
  *
  * Contains logic for cleaning and validation a state.
  * as needed to obtain a state.
- */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * {@inheritdoc}
  */
 class ObtainState extends ObtainHtml {
 
@@ -21,8 +18,8 @@ class ObtainState extends ObtainHtml {
    * @return array
    *   An array of all 50 states.
    */
-  static public function getStates() {
-    return array(
+  public static function getStates() {
+    return [
       'Alabama' => 'AL',
       'Alaska' => 'AK',
       'Arizona' => 'AZ',
@@ -73,11 +70,8 @@ class ObtainState extends ObtainHtml {
       'West Virginia' => 'WV',
       'Wisconsin' => 'WI',
       'Wyoming' => 'WY',
-    );
+    ];
   }
-
-
-  // ***************** Helpers ***********************************************.
 
   /**
    * {@inheritdoc}
@@ -88,11 +82,10 @@ class ObtainState extends ObtainHtml {
     $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
+    $string = StringTools::decodehtmlentitynumeric($string);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\StringTools::superTrim($string);
+    $string = StringTools::superTrim($string);
     // Remove multiple spaces.
     $string = preg_replace('!\s+!', ' ', $string);
 

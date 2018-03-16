@@ -1,21 +1,14 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
 /**
- * @file
  * Class ObtainArray
  *
  * Contains logic for cleaning, validation and custom finders for gathering
  * multiples and returns arrays rather than strings.
  */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * {@inheritdoc}
- */
 class ObtainArray extends ObtainHtml {
-
-  // ***************** Helpers ***********************************************.
 
   /**
    * Cleans array and returns it prior to validation.
@@ -23,21 +16,20 @@ class ObtainArray extends ObtainHtml {
    * This method is misleadingly named since it is processing an array, but
    * must override the string based cleanString.
    *
-   * @param array $found
+   * @param mixed $found
    *   Text to clean and return.
    *
    * @return array
    *   The cleaned array.
    */
   public static function cleanString($found) {
-    $found = (empty($found)) ? array() : $found;
+    $found = (empty($found)) ? [] : $found;
     // Make sure it is an array, just in case someone uses a string finder.
-    $found = (is_array($found)) ? $found : array($found);
-    $found = array_map('\MigrationTools\StringTools::superTrim', $found);
+    $found = (is_array($found)) ? $found : [$found];
+    $found = array_map('\Drupal\migration_tools\StringTools::superTrim', $found);
 
     return $found;
   }
-
 
   /**
    * Evaluates $found array and if it checks out, returns TRUE.
@@ -45,7 +37,7 @@ class ObtainArray extends ObtainHtml {
    * This method is misleadingly named since it is processing an array, but
    * must override the string based validateString.
    *
-   * @param array $found
+   * @param mixed $found
    *   The array to validate.
    *
    * @return bool
@@ -54,7 +46,6 @@ class ObtainArray extends ObtainHtml {
   protected function validateString($found) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($found):
@@ -101,10 +92,10 @@ class ObtainArray extends ObtainHtml {
    *   The array of elements found.
    */
   protected function arrayPluckSelector($selector, $method = 'text', $pluck = TRUE) {
-    $found = array();
+    $found = [];
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $found[] = $element->$method();
         $this->setCurrentFindMethod("arrayPluckSelector($selector" . ')');
       }
@@ -115,4 +106,5 @@ class ObtainArray extends ObtainHtml {
 
     return $found;
   }
+
 }

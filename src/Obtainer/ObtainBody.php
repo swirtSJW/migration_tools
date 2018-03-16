@@ -1,19 +1,12 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
 /**
- * @file
- * Class ObtainBody
+ * Class ObtainBody.
  *
  * Contains a collection of stackable finders that can be arranged
  * as needed to obtain a body or other long html content.
- */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * Class ObtainBody
- *
- * Obtains the HTML body.
  */
 class ObtainBody extends ObtainHtml {
 
@@ -27,4 +20,24 @@ class ObtainBody extends ObtainHtml {
     $element = $this->queryPath->top()->find('body');
     return $element->innerHtml();
   }
+
+  /**
+   * Cleans $text and returns it prior to validation.
+   *
+   * @param string $string
+   *   Text to clean and return.
+   *
+   * @return string
+   *   The cleaned text.
+   */
+  public static function cleanString($string) {
+    $string = parent::cleanString($string);
+    $remove = [
+      "\t",
+    ];
+    // Replace these with spaces.
+    $string = str_ireplace($remove, '', $string);
+    return $string;
+  }
+
 }

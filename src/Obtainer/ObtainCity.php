@@ -1,21 +1,16 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\StringTools;
+
 /**
- * @file
  * Class ObtainCity
  *
  * Contains logic for cleaning and validation a city.
  * as needed to obtain a city.
  */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * {@inheritdoc}
- */
 class ObtainCity extends ObtainHtml {
-
-  // ***************** Helpers ***********************************************.
 
   /**
    * {@inheritdoc}
@@ -26,11 +21,10 @@ class ObtainCity extends ObtainHtml {
     $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
+    $string = StringTools::decodehtmlentitynumeric($string);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\StringTools::superTrim($string);
+    $string = StringTools::superTrim($string);
     // Remove multiple spaces.
     $string = preg_replace('!\s+!', ' ', $string);
 
@@ -49,7 +43,6 @@ class ObtainCity extends ObtainHtml {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case !parent::validateString($string):

@@ -1,11 +1,10 @@
 <?php
+
+namespace Drupal\migration_tools\Obtainer;
+
 /**
- * @file
- * ObtainSubTitle.
+ * {@inheritdoc}
  */
-
-namespace MigrationTools\Obtainer;
-
 class ObtainSubTitle extends ObtainTitle {
 
   /**
@@ -14,4 +13,5 @@ class ObtainSubTitle extends ObtainTitle {
   protected function truncateThisPossibleText() {
     // This should do nothing because no truncation is needed on subtitles.
   }
+
 }

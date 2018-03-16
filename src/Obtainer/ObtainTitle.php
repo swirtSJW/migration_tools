@@ -1,17 +1,15 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\StringTools;
+
 /**
- * @file
  * Class ObtainTitle
  *
  * Contains a collection of stackable finders that can be arranged
  * as needed to obtain a title/heading and possible subtitle/subheading.
- */
-
-namespace MigrationTools\Obtainer;
-
-/**
- * {@inheritdoc}
  */
 class ObtainTitle extends ObtainHtml {
 
@@ -25,21 +23,21 @@ class ObtainTitle extends ObtainHtml {
   /**
    * Truncates and sets the discarded if there is a remainder.
    */
-  protected function truncateString($string) {
-    $split = $this->truncateThisWithoutHTML($string, 255, 2);
+  public static function truncateString($string) {
+    $split = self::truncateThisWithoutHTML($string, 255, 2);
 
     // If something got trimmed off, message it.
     if (!empty($split['remaining'])) {
       $message = "The title was shortened and lost: @remainder";
-      \MigrationTools\Message::make($message, array('@remainder' => $split['remaining']), WATCHDOG_ERROR, 2);
+      Message::make($message, ['@remainder' => $split['remaining']], Message::ERROR, 2);
     }
 
     return $split['truncated'];
   }
 
-
   /**
    * Finder method to find the content sub-banner alt.
+   *
    * @return string
    *   The text found.
    */
@@ -49,6 +47,7 @@ class ObtainTitle extends ObtainHtml {
 
   /**
    * Finder method to find the content sub-banner title.
+   *
    * @return string
    *   The text found.
    */
@@ -58,6 +57,7 @@ class ObtainTitle extends ObtainHtml {
 
   /**
    * Grab method to find the content sub-banner attribute.
+   *
    * @return string
    *   The text found.
    */
@@ -66,11 +66,11 @@ class ObtainTitle extends ObtainHtml {
     // Remove the text 'banner'.
     $title = str_ireplace('banner', '', $title);
     // Check to see if alt is just placeholder to discard.
-    $placeholder_texts = array(
+    $placeholder_texts = [
       'placeholder',
       'place-holder',
       'place_holder',
-    );
+    ];
     foreach ($placeholder_texts as $needle) {
       if (stristr($title, $needle)) {
         // Just placeholder text, so ignore this text.
@@ -85,7 +85,6 @@ class ObtainTitle extends ObtainHtml {
    * Get subbanner image.
    */
   protected function findSubBannerString($attribute = 'alt') {
-    $subbanner = NULL;
     $images = $this->queryPath->find('img');
     foreach ($images as $image) {
       $src = $image->attr('src');
@@ -96,14 +95,13 @@ class ObtainTitle extends ObtainHtml {
     return '';
   }
 
-
   /**
    * {@inheritdoc}
    */
   public static function cleanString($text) {
     // Breaks need to be converted to spaces to avoid lines running together.
     // @codingStandardsIgnoreStart
-    $break_tags = array('<br>', '<br/>', '<br />', '</br>');
+    $break_tags = ['<br>', '<br/>', '<br />', '</br>'];
     // @codingStandardsIgnoreEnd
     $text = str_ireplace($break_tags, ' ', $text);
     $text = strip_tags($text);
@@ -111,25 +109,25 @@ class ObtainTitle extends ObtainHtml {
     $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
     // There are also numeric html special chars, let's change those.
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
+    $text = StringTools::convertNonASCIItoASCII($text);
     // Remove undesirable chars and strings.
-    $remove = array(
+    $remove = [
       '&raquo;',
       '&nbsp;',
       '»',
-      // Weird space character.'
+      // Weird space character.'.
       ' ',
-    );
+    ];
     $text = str_ireplace($remove, ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
     // Remove multiple spaces.
-    $text = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $text);
+    $text = preg_replace(['/\s{2,}/', '/[\t\n]/'], ' ', $text);
 
     // Convert to ucwords If the entire thing is caps. Otherwise leave it alone
     // for preservation of acronyms.
@@ -140,8 +138,9 @@ class ObtainTitle extends ObtainHtml {
       // Nearly the entire thing is caps.
       $text = strtolower($text);
     }
-    $text = \MigrationTools\StringTools::makeWordsFirstCapital($text);
+    $text = StringTools::makeWordsFirstCapital($text);
 
     return $text;
   }
+
 }

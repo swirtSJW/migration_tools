@@ -1,11 +1,10 @@
 <?php
+
+namespace Drupal\migration_tools\Obtainer;
+
 /**
- * @file
- * ObtainTitlePressRelease.
+ * {@inheritdoc}
  */
-
-namespace MigrationTools\Obtainer;
-
 class ObtainDateSpanish extends ObtainDate {
 
   /**
@@ -26,7 +25,7 @@ class ObtainDateSpanish extends ObtainDate {
    * Converts es date text of the form w m d y to numerical Y-M-D.
    *
    * @param string $date_string
-   *   Should look like miércoles, 28 de febrero de 2014
+   *   Should look like miércoles, 28 de febrero de 2014.
    *
    * @return string
    *   Date in the form of 2014-02-21
@@ -51,7 +50,7 @@ class ObtainDateSpanish extends ObtainDate {
     $year = preg_replace('/[^0-9]/', '', trim($date_array[1]));
     unset($date_array[1]);
     // Convert spanish months to numeric.
-    $months = array(
+    $months = [
       'enero' => '01',
       'febrero' => '02',
       'marzo' => '03',
@@ -64,10 +63,10 @@ class ObtainDateSpanish extends ObtainDate {
       'octubre' => '10',
       'noviembre' => '11',
       'diciembre' => '12',
-    );
+    ];
     $month = '';
     // With any items that remain, see if we have a month.
-    foreach (is_array($date_array) ? $date_array : array() as $value) {
+    foreach (is_array($date_array) ? $date_array : [] as $value) {
       // If the spanish month name is present in the array, use the number.
       if (!empty($months[$value])) {
         $month = $months[$value];
@@ -81,4 +80,5 @@ class ObtainDateSpanish extends ObtainDate {
 
     return $processed_date;
   }
+
 }

@@ -1,0 +1,68 @@
+# This migration demonstrates importing from an HTML file using obtainers / modifier jobs.
+id: migration_tools_example_drupal_import
+label: Migration Tools Drupal Import Example
+migration_group: migration_tools_example
+source:
+  plugin: url_list
+
+  # Field from source plugin that will contain the URL to fetch.
+  field_containing_url: url
+
+  # Optional, field from source plugin that will contain the HTML already fetched.
+  #field_containing_url: html
+
+  # Lis of URLs to process
+  urls:
+    - https://www.drupal.org/about
+    - https://www.drupal.org/community
+  # Use the URL as the key unique migration identifier.
+  keys:
+    - url
+  # Fields runs jobs to process the URL DOM.
+  fields:
+    -
+      # Finds the title by plucking the .page-subtitle field.
+      name: title
+      label: 'Title'
+      obtainer: ObtainTitle
+      # Run Obtainer before modifiers are run.
+      after_modify: FALSE
+      jobs:
+        # Any number of jobs can be configured using find, or pluck to remove it from the DOM.
+        - { job: 'addSearch', method: 'pluckSelector', arguments: [ '.page-subtitle', 1 ] }
+    -
+      # Finds the body by plucking the .field-name-body field.
+      name: body
+      label: 'Body'
+      obtainer: ObtainBody
+      # Run Obtainer after modifiers are run.
+      after_modify: TRUE
+      jobs:
+        - { job: 'addSearch', method: 'pluckSelector', arguments: [ '.field-name-body', 1 ] }
+
+  # Modifiers allow for addPreModifier or addModifier.
+  # Methods are in ModifyHtml class
+  modifiers:
+    - { modifier: addPreModifier, method: convertBaseHrefLinks }
+    - { modifier: addPreModifier, method: fixNamedAnchors }
+    - { modifier: addPreModifier, method: removeFaultyImgLongdesc }
+    - { modifier: addModifier, method: removeSelectorAll, arguments: [ '.topnavlinks' ] }
+    - { modifier: addModifier, method: removeEmptyTables }
+    - { modifier: addModifier, method: removeElements, arguments: [ '.pagedate', 'head' ] }
+
+process:
+  id: url
+  title: title
+  field_press_release_body/value: body
+  field_press_release_body/format:
+    plugin: default_value
+    default_value: rich_text
+
+destination:
+  plugin: 'entity:node'
+
+migration_dependencies: {}
+dependencies:
+  enforced:
+    module:
+      - migration_tools_example

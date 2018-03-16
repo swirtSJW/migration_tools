@@ -1,53 +1,58 @@
 <?php
 
+namespace Drupal\migration_tools\Obtainer;
+
+use QueryPath;
+use Drupal\migration_tools\Message;
+use Drupal\migration_tools\StringTools;
+
 /**
- * @file
- * Class Obtainer
+ * Obtainer Abstract Class.
  *
  * The Obtainer serves to find a target string within DOM markup. It will
  * iterate over a stack of finder methods until it finds the string that it is
  * looking for, at which point it returns the string.
  */
-
-namespace MigrationTools\Obtainer;
-
 abstract class Obtainer {
 
   /**
+   * The QueryPath element to be tested.
+   *
    * @var object
-   *   The QueryPath element to be tested.
    */
   private $element;
 
   /**
-   * @var currentFindMethod
-   *   The find method that is currently being run.
+   * The find method that is currently being run.
+   *
+   * @var string
    */
   protected $currentFindMethod;
 
 
   /**
-   * @var QueryPath
-   *   QueryPath object passed in at instantiation.
+   * QueryPath object passed in at instantiation.
+   *
+   * @var object
    */
   protected $queryPath;
 
   /**
+   * Array of find methods to call, in order. Passed in at instantiation.
+   *
    * @var array
-   *   Array of find methods to call, in order. Passed in at instantiation.
    */
-  private $methodStack = array();
+  private $methodStack = [];
 
   /**
    * Constructor for the Obtainer.
    *
    * @param object $query_path
    *   The query path object to use as the source of possible content.
-   *
    * @param array $method_stack
    *   (optional). Array of find methods to run through.
    */
-  public function __construct($query_path, $method_stack = array()) {
+  public function __construct($query_path, array $method_stack = []) {
     $this->queryPath = $query_path;
     $this->setMethodStack($method_stack);
   }
@@ -58,11 +63,11 @@ abstract class Obtainer {
    * @param array $method_stack
    *   The stack of methods to be run.
    */
-  public function setMethodStack($method_stack) {
+  public function setMethodStack(array $method_stack) {
     foreach ($method_stack as $key => $method) {
       if (!method_exists($this, $method['method_name'])) {
         unset($method_stack[$key]);
-        \MigrationTools\Message::make('The target method @method does not exist and was skipped.', array('@method' => $method['method_name']), WATCHDOG_DEBUG);
+        Message::make('The target method @method does not exist and was skipped.', ['@method' => $method['method_name']], Message::DEBUG);
       }
     }
     $this->methodStack = $method_stack;
@@ -119,7 +124,7 @@ abstract class Obtainer {
       $this->setCurrentFindMethod($method['method_name']);
       // Reset QueryPath pointer to top of document.
       $this->queryPath->top();
-      $found_string  = call_user_func_array(array($this, $method['method_name']), $method['arguments']);
+      $found_string = call_user_func_array([$this, $method['method_name']], $method['arguments']);
       $found_string = $this->cleanString($found_string);
       if ($this->validateString($found_string)) {
         // Give child classes opportunity to process the string before return.
@@ -130,7 +135,7 @@ abstract class Obtainer {
         $method['method_name'] = $this->getCurrentFindMethod();
         $type = (is_array($found_string)) ? 'array' : 'string';
 
-        \MigrationTools\Message::make('@method found a @type.', array('@method' => $method['method_name'], '@type' => $type), WATCHDOG_DEBUG, 2);
+        Message::make('@method found a @type.', ['@method' => $method['method_name'], '@type' => $type], Message::DEBUG, 2);
 
         // Remove the element from the DOM and exit loop.
         $this->removeElement();
@@ -139,7 +144,8 @@ abstract class Obtainer {
       }
     }
 
-    \MigrationTools\Message::make('NO MATCHES FOUND', array(), WATCHDOG_DEBUG, 2);
+    Message::make('NO MATCHES FOUND', [], Message::DEBUG, 2);
+    return '';
   }
 
   /**
@@ -153,18 +159,17 @@ abstract class Obtainer {
    */
   public static function cleanString($string) {
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $string = \MigrationTools\StringTools::decodehtmlentitynumeric($string);
+    $string = StringTools::decodehtmlentitynumeric($string);
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($string, 'UTF-8');
 
     if (!$is_utf8) {
-      $string = \MigrationTools\StringTools::fixEncoding($string);
+      $string = StringTools::fixEncoding($string);
     }
 
-    $string = \MigrationTools\StringTools::stripCmsLegacyMarkup($string);
+    $string = StringTools::stripCmsLegacyMarkup($string);
     // Remove white space-like things from the ends and decodes html entities.
-    $string = \MigrationTools\StringTools::superTrim($string);
+    $string = StringTools::superTrim($string);
 
     return $string;
   }
@@ -181,7 +186,6 @@ abstract class Obtainer {
   protected function validateString($string) {
     // Run through any evaluations. If it makes it to the end, it is good.
     // Case race, first to evaluate TRUE aborts the text.
-
     switch (TRUE) {
       // List any cases below that would cause it to fail validation.
       case empty($string):
@@ -206,4 +210,5 @@ abstract class Obtainer {
   protected function processString($string) {
     return $string;
   }
+
 }

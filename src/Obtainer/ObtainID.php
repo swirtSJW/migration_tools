@@ -1,11 +1,8 @@
 <?php
 
-/**
- * @file
- * Class ObtainID
- */
+namespace Drupal\migration_tools\Obtainer;
 
-namespace MigrationTools\Obtainer;
+use Drupal\migration_tools\StringTools;
 
 /**
  * {@inheritdoc}
@@ -23,41 +20,39 @@ class ObtainID extends ObtainHtml {
    */
   public static function cleanString($text) {
     // There are also numeric html special chars, let's change those.
-    module_load_include('inc', 'migration_tools', 'includes/migration_tools');
-    $text = \MigrationTools\StringTools::decodehtmlentitynumeric($text);
+    $text = StringTools::decodehtmlentitynumeric($text);
 
     // We want out titles to be only digits and ascii chars so we can produce
     // clean aliases.
-    $text = \MigrationTools\StringTools::convertNonASCIItoASCII($text);
+    $text = StringTools::convertNonASCIItoASCII($text);
 
     // Checking again in case another process rendered it non UTF-8.
     $is_utf8 = mb_check_encoding($text, 'UTF-8');
 
     if (!$is_utf8) {
-      $text = \MigrationTools\StringTools::fixEncoding($text);
+      $text = StringTools::fixEncoding($text);
     }
 
     // Remove some strings that often accompany id numbers.
-    $remove = array(
+    $remove = [
       'id:',
       'ID',
-    );
+    ];
     // Replace these with nothing.
     $text = str_ireplace($remove, '', $text);
-    $remove = array(
+    $remove = [
       "\n",
-    );
+    ];
     // Replace these with spaces.
     $text = str_ireplace($remove, ' ', $text);
     // Remove multiple spaces.
     $text = preg_replace('/\s{2,}/u', ' ', $text);
 
     // Remove white space-like things from the ends and decodes html entities.
-    $text = \MigrationTools\StringTools::superTrim($text);
+    $text = StringTools::superTrim($text);
 
     return $text;
   }
-
 
   /**
    * Evaluates $string and if it checks out, returns TRUE.
@@ -89,4 +84,5 @@ class ObtainID extends ObtainHtml {
         return TRUE;
     }
   }
+
 }

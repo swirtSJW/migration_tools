@@ -1,11 +1,6 @@
 <?php
 
-/**
- * @file
- * Defines Obtainer\Job class.
- */
-
-namespace MigrationTools\Obtainer;
+namespace Drupal\migration_tools\Obtainer;
 
 /**
  * Information about which property we are dealing with.
@@ -16,7 +11,7 @@ class Job {
   public $afterClean;
   private $obtainerClassName;
   private $rowProperty;
-  public $searches = array();
+  public $searches = [];
 
   /**
    * Constructor.
@@ -44,9 +39,9 @@ class Job {
       // This passed in with a full correct namespace.
       $this->obtainerClassName = $obtainer_class_name;
     }
-    elseif (class_exists("\\MigrationTools\\Obtainer\\{$obtainer_class_name}")) {
+    elseif (class_exists("\\Drupal\\migration_tools\\Obtainer\\{$obtainer_class_name}")) {
       // This is in the obtainer namespace.
-      $this->obtainerClassName = "\\MigrationTools\\Obtainer\\{$obtainer_class_name}";
+      $this->obtainerClassName = "\\Drupal\\migration_tools\\Obtainer\\{$obtainer_class_name}";
     }
     elseif (class_exists("\\{$obtainer_class_name}")) {
       // This was in its own namespace.
@@ -54,7 +49,7 @@ class Job {
     }
     else {
       // The class does not exist.
-      $message = t("The class @class does not exist.", array('@class' => $obtainer_class_name));
+      $message = t("The class @class does not exist.", ['@class' => $obtainer_class_name]);
       throw new \Exception($message);
     }
   }
@@ -73,7 +68,6 @@ class Job {
     return $this->obtainerClassName;
   }
 
-
   /**
    * Shortens the name of the Obtainer class for output.
    *
@@ -82,7 +76,7 @@ class Job {
    */
   public function getClassShortName() {
     $name = $this->getClass();
-    $name = str_replace('\MigrationTools\Obtainer\\', '', $name);
+    $name = str_replace('\Drupal\migration_tools\Obtainer\\', '', $name);
 
     return $name;
   }
@@ -92,7 +86,6 @@ class Job {
    *
    * @param string $method_name
    *   The name of the method to call.
-   *
    * @param array $arguments
    *   (optional) An array of arguments to be passed to the $method. Defaults
    *   to an empty array.
@@ -100,12 +93,12 @@ class Job {
    * @return Job
    *   Returns $this to allow chaining.
    */
-  public function addSearch($method_name, $arguments = array()) {
+  public function addSearch($method_name, array $arguments = []) {
     // @todo Maybe we should validate the method names here?
-    $this->searches[] = array(
+    $this->searches[] = [
       'method_name' => $method_name,
       'arguments' => $arguments,
-    );
+    ];
 
     return $this;
   }
@@ -117,12 +110,14 @@ class Job {
     return $this->searches;
   }
 
-
   /**
    * Runs the obtainer job.
    *
    * @param object $query_path
    *   The query path object by reference.
+   *
+   * @return string
+   *   Obtain string.
    */
   public function run(&$query_path) {
     $obtainer_class = $this->getClass();
@@ -130,4 +125,5 @@ class Job {
 
     return $obtainer->obtain();
   }
+
 }

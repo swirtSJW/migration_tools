@@ -1,11 +1,10 @@
 <?php
 
-/**
- * @file
- * Defines Modifier\ModifyHtml class.
- */
+namespace Drupal\migration_tools\Modifier;
 
-namespace MigrationTools\Modifier;
+use Drupal\migration_tools\QpHtml;
+use Drupal\migration_tools\StringTools;
+use Drupal\migration_tools\Url;
 
 /**
  * The ModifyHtml defining removers, and changers.
@@ -37,7 +36,7 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($original_classname)) {
       $elements = $this->queryPath->find(".{$original_classname}");
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         if (empty($new_classname)) {
           $element->removeAttr('class');
         }
@@ -55,7 +54,7 @@ class ModifyHtml extends Modifier {
   /**
    * Remove a class from a class from all elements.
    *
-   * @param string  $classname
+   * @param string $classname
    *   The classname to remove.
    *
    * @return int
@@ -74,10 +73,10 @@ class ModifyHtml extends Modifier {
   protected function removeEmptyTables() {
     $count = 0;
     $tables = $this->queryPath->find('table');
-    foreach ((is_object($tables)) ? $tables : array() as $table) {
+    foreach ((is_object($tables)) ? $tables : [] as $table) {
       $table_contents = $table->text();
       // Remove whitespace in order to evaluate if it is empty.
-      $table_contents = \MigrationTools\StringTools::superTrim($table_contents);
+      $table_contents = StringTools::superTrim($table_contents);
 
       if (empty($table_contents)) {
         $table->remove();
@@ -101,7 +100,7 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $element->remove();
         $count++;
       }
@@ -125,7 +124,7 @@ class ModifyHtml extends Modifier {
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $i => $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
           $element->remove();
 
@@ -150,12 +149,192 @@ class ModifyHtml extends Modifier {
     $count = 0;
     if (!empty($selector)) {
       $elements = $this->queryPath->find($selector);
-      foreach ((is_object($elements)) ? $elements : array() as $element) {
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
         $element->removeAttr('style');
         $count++;
       }
     }
-    
+
     return $count;
   }
+
+  /**
+   * Like match, but removes all matching elements.
+   *
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $function
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   A parameter to be passed into the defined $function.
+   */
+  public function matchRemoveAll($selector, $needle, $function, $parameter = NULL) {
+    $matches = QpHtml::matchAll($this->queryPath, $selector, $needle, $function, $parameter);
+    foreach ($matches as $match) {
+      $match->remove();
+    }
+  }
+
+  /**
+   * Examine all img longdesc attr in qp and remove any that point to images.
+   */
+  protected function removeFaultyImgLongdesc() {
+    QpHtml::removeFaultyImgLongdesc($this->queryPath);
+  }
+
+  /**
+   * Empty anchors without name attribute will be stripped by ckEditor.
+   */
+  protected function fixNamedAnchors() {
+    QpHtml::fixNamedAnchors($this->queryPath);
+  }
+
+  /**
+   * Removes all html comments from querypath document.
+   */
+  protected function removeComments() {
+    QpHtml::removeComments($this->queryPath);
+  }
+
+  /**
+   * Removes elements matching CSS selectors.
+   *
+   * @param array $selectors
+   *   An array of selectors to remove.
+   */
+  protected function removeElements(array $selectors) {
+    QpHtml::removeElements($this->queryPath, $selectors);
+  }
+
+  /**
+   * Removes a wrapping element, leaving child elements intact.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   */
+  protected function removeWrapperElements(array $selectors) {
+    QpHtml::removeWrapperElements($this->queryPath, $selectors);
+  }
+
+  /**
+   * Removes elements matching CSS selectors.
+   *
+   * @param array $selectors
+   *   An array of selectors for the wrapping element(s).
+   */
+  protected function rewrapElements(array $selectors) {
+    foreach ($selectors as $element => $new_wrapper) {
+      // Make sure the array key is not just an array index.
+      if (is_string($element) && !is_numeric($element)) {
+        QpHtml::rewrapElements($this->queryPath, [$element], $new_wrapper);
+      }
+    }
+  }
+
+  /**
+   * Convert all relative links to absolute if base href if set.
+   */
+  public function convertBaseHrefLinks() {
+    // Get base href URL.
+    $base = $this->queryPath->top('head')->find('base');
+    if ($base) {
+      $base_href = $base->attr('href');
+
+      // Attributes to check for relative URLs.
+      $attributes = [
+        'href' => 'a[href], area[href]',
+        'longdesc' => 'img[longdesc]',
+        'src' => 'img[src], script[src], embed[src]',
+        'value' => 'param[value]',
+
+      ];
+      foreach ($attributes as $attribute => $selector) {
+
+        $file_links = $this->queryPath->top($selector);
+        foreach ($file_links as $file_link) {
+          $href = trim($file_link->attr($attribute));
+          $href_pieces = parse_url($href);
+          if (count($href_pieces) && empty($href_pieces['scheme'])) {
+            // No scheme set, must be a relative internal URL.
+
+            $new_href = $base_href;
+            $new_href .= (!empty($href_pieces['path'])) ? ltrim($href_pieces['path'], '/') : '';
+            $new_href .= (!empty($href_pieces['query'])) ? '?' . $href_pieces['query'] : '';
+            $new_href .= (!empty($href_pieces['fragment'])) ? '#' . $href_pieces['fragment'] : '';
+            // Remove the base_href to make link relative to root.
+            $new_href = str_ireplace(rtrim($base_href, '/'), '', $new_href);
+
+            $file_link->attr($attribute, $new_href);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Convert all Relative HREFs in queryPath to Absolute.
+   *
+   * @param string $url
+   *   Base URL.
+   * @param string $destination_base_url
+   *   Destination Base URL.
+   */
+  public function convertLinksAbsoluteSimple($url, $destination_base_url) {
+    $url_pieces = parse_url($url);
+    $path = $url_pieces['path'];
+    $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
+
+    Url::rewriteImageHrefsOnPage($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteScriptSourcePaths($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToPages($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+  }
+
+  /**
+   * Clean extra tags from beginning/end/both of selector contents.
+   *
+   * @param array $tags
+   *   Tags to search for.
+   * @param string $selector
+   *   Selector to clean.
+   * @param string $where
+   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   */
+  public function cleanExtraTags(array $tags, $selector, $where = 'both') {
+    $element = $this->queryPath->find($selector);
+    $html = $element->innerHTML();
+    $html = StringTools::superTrim($html);
+
+    if ($where == 'both' || $where == 'leading') {
+      $html = preg_replace('#^' . implode('|^', $tags) . '#i', '', $html);
+    }
+    if ($where == 'both' || $where == 'trailing') {
+      $html = preg_replace('#' . implode('$|', $tags) . '$#i', '', $html);
+    }
+    $element->html($html);
+  }
+
+  /**
+   * Clean extra BR tags from beginning/end/both of selector contents.
+   *
+   * @param string $selector
+   *   Selector to clean.
+   * @param string $where
+   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   */
+  public function cleanExtraBrTags($selector, $where = 'both') {
+    // Normalize variations of the br tag.
+    // @codingStandardsIgnoreStart
+    $search = [
+      '<br>',
+      '<br />',
+      '<br/>',
+    ];
+    // @codingStandardsIgnoreEnd
+    self::cleanExtraTags($search, $selector, $where);
+  }
+
 }
