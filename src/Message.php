@@ -87,7 +87,7 @@ class Message {
         drush_print($type . $parsed_message, $indent);
       }
       if ((\Drupal::config('migration_tools.settings')->get('drush_stop_on_error')) && ($severity <= self::ERROR) && $severity !== FALSE) {
-        throw new MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush vset migration_tools_drush_stop_on_error FALSE\" to disable auto-stop.");
+        throw new MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush config-set migration_tools.settings drush_stop_on_error 0\" to disable auto-stop.");
       }
     }
   }
