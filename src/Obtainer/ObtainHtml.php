@@ -363,6 +363,37 @@ class ObtainHtml extends Obtainer {
    * @return string
    *   The found text.
    */
+  protected function pluckTableCellContentsFromSelector($selector, $table_num, $row, $col, $method = 'text') {
+    $tables = $this->queryPath->find($selector)->find("table");
+    $current_table = 1;
+
+    foreach ($tables as $table) {
+      if ($current_table == $table_num) {
+        $string = $this->extractFromTable($table, $row, $col, $method);
+        $this->setCurrentFindMethod("pluckTableContents($table_num, $row, $col)");
+        return $string;
+      }
+      $current_table++;
+    }
+    return NULL;
+  }
+
+  /**
+   * Pluck the text in a specific row and column in a specific table.
+   *
+   * @param int $table_num
+   *   The value of n where the table is the nth table on the page. E.g., 2 for
+   *   the second table on a page.
+   * @param int $row
+   *   The row number.
+   * @param int $col
+   *   The column number.
+   * @param string $method
+   *   Method to use, text or html.
+   *
+   * @return string
+   *   The found text.
+   */
   protected function pluckTableCellContents($table_num, $row, $col, $method = 'text') {
     $tables = $this->queryPath->find("table");
     $current_table = 1;
