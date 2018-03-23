@@ -9,7 +9,7 @@ namespace Drupal\migration_tools\Obtainer;
  */
 class ObtainTable extends ObtainArray {
   /**
-   * Extract contents from a table into an array.
+   * Find contents from a table and place into an array.
    *
    * @param string $selector
    *   The css selector of the item to search for (the parent item)
@@ -22,7 +22,27 @@ class ObtainTable extends ObtainArray {
    * @return array
    *   The table array.
    */
-  protected function extractTable($selector, $table_num, $method = 'text') {
+  protected function arrayFindTable($selector, $table_num, $method = 'text') {
+    return $this->arrayPluckTable($selector, $table_num, $method, FALSE);
+  }
+
+  /**
+   * Pluck contents from a table into an array.
+   *
+   * @param string $selector
+   *   The css selector of the item to search for (the parent item)
+   * @param int $table_num
+   *   The value of n where the table is the nth table on the page. E.g., 2 for
+   *   the second table on a page.
+   * @param string $method
+   *   What to build array with QP->text() or QP->html().
+   * @param bool $pluck
+   *   (optional) Used internally to declare if the items should be removed.
+   *
+   * @return array
+   *   The table array.
+   */
+  protected function arrayPluckTable($selector, $table_num, $method = 'text', $pluck = TRUE) {
     $trcount = 0;
     $table_array = [];
     $tables = $this->queryPath->find($selector)->find("table");
@@ -37,6 +57,10 @@ class ObtainTable extends ObtainArray {
           }
           $trcount++;
         }
+        if ($pluck) {
+          $this->setElementToRemove($table);
+        }
+        break;
       }
       $current_table++;
     }
