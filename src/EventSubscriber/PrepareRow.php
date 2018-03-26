@@ -7,6 +7,7 @@ use Drupal\migrate_plus\Event\MigrateEvents;
 use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
 use Drupal\migration_tools\Message;
 use Drupal\migration_tools\Obtainer\Job;
+use Drupal\migration_tools\SourceParser\HtmlBase;
 use Drupal\migration_tools\SourceParser\Node;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -78,7 +79,7 @@ class PrepareRow implements EventSubscriberInterface {
       $path = ltrim($url_pieces['path'], '/');
 
       // @todo Using Node parser by default. Should be decided by config.
-      $source_parser = new Node($path, $html, $row);
+      $source_parser = new Node($path, '', $row);
 
       // Add Modifiers.
       $config_modifiers = $row->getSourceProperty('modifiers');
@@ -86,15 +87,7 @@ class PrepareRow implements EventSubscriberInterface {
         $source_parser_modifier = $source_parser->getModifier();
         foreach ($config_modifiers as $config_modifier) {
           $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
-          foreach ($arguments as &$argument) {
-            // @todo Figure out a way to use dynamic variables better.
-            if ($argument == '@field_containing_url') {
-              $argument = $url;
-            }
-            if ($argument == '@destination_base_url') {
-              $argument = $row->getSourceProperty('destination_base_url');
-            }
-          }
+          HtmlBase::parseDynamicArguments($arguments, $row->getSource());
           $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
         }
       }
@@ -108,12 +101,15 @@ class PrepareRow implements EventSubscriberInterface {
             $after_modify = isset($config_field['after_modify']) ? $config_field['after_modify'] : FALSE;
             $job = new Job($config_field['name'], $config_field['obtainer'], $after_modify);
             foreach ($config_jobs as $config_job) {
+              HtmlBase::parseDynamicArguments($config_job['arguments'], $row->getSource());
               $job->{$config_job['job']}($config_job['method'], $config_job['arguments']);
               $source_parser->addObtainerJob($job);
             }
           }
         }
       }
+      // Set HTML content here, after modifiers are set up.
+      $source_parser->setHtml($html);
 
       $source_parser->parse();
     }
