@@ -337,4 +337,28 @@ class ModifyHtml extends Modifier {
     self::cleanExtraTags($search, $selector, $where);
   }
 
+  /**
+   * Replace string in HTML.
+   *
+   * @param string $search
+   *   Search pattern
+   * @param string $replace
+   *   Replacement pattern
+   * @param bool $case_insensitive
+   *   If TRUE, uses case-insensitive replacement. Ignored if regex = TRUE
+   * @param bool $regex
+   *   If TRUE, uses regex with preg_replace.
+   */
+  public function replaceString($search, $replace, $case_insensitive = FALSE, $regex = FALSE) {
+    if ($regex) {
+      $this->html = preg_replace($search, $replace, $this->html);
+    }
+    elseif ($case_insensitive) {
+      $this->html = str_ireplace($search, $replace, $this->html);
+    }
+    else {
+      $this->html = str_replace($search, $replace, $this->html);
+    }
+  }
+
 }
