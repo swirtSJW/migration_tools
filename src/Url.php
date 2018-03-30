@@ -1299,7 +1299,7 @@ class Url {
       // Loop through them all looking for href to alter.
       foreach ($binary_file_links as $link) {
         $href = trim($link->attr($attribute));
-        if (Checkfor::isFile($href)) {
+        if (CheckFor::isFile($href)) {
           $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative, $destination_base_url);
           // Set the new href.
           $link->attr($attribute, $new_href);
@@ -1485,7 +1485,7 @@ class Url {
       // Loop through them all looking for href to alter.
       foreach ($links_to_pages as $link) {
         $href = trim($link->attr('href'));
-        if (Checkfor::isPage($href)) {
+        if (CheckFor::isPage($href)) {
           $new_href = self::rewritePageHref($href, $url_base_alters, $file_path, $base_for_relative, $destination_base_url);
           // Set the new href.
           $link->attr($attribute, $new_href);
