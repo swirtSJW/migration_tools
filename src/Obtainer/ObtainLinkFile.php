@@ -74,6 +74,7 @@ class ObtainLinkFile extends ObtainLink {
     if ($links) {
       foreach ($links as $key => $link) {
         $extension = strtolower(pathinfo($link['href'], PATHINFO_EXTENSION));
+        $extension = preg_replace('/#.*/', '', $extension);
         $link_domain = strtolower(parse_url($link['base_uri'], PHP_URL_HOST));
         if (!in_array($extension, $file_extensions)) {
           unset($links[$key]);
