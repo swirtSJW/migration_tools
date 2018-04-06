@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\migration_tools\Obtainer;
+use Drupal\migration_tools\StringTools;
 
 /**
  * Class ObtainArray
@@ -26,7 +27,18 @@ class ObtainArray extends ObtainHtml {
     $found = (empty($found)) ? [] : $found;
     // Make sure it is an array, just in case someone uses a string finder.
     $found = (is_array($found)) ? $found : [$found];
-    $found = array_map('\Drupal\migration_tools\StringTools::superTrim', $found);
+
+    // Only run if the value is not an array.
+    $found = array_map(
+      function ($value) {
+        if (!is_array($value)) {
+          return StringTools::superTrim($value);
+        }
+        else {
+          return $value;
+        }
+      }, $found
+    );
 
     return $found;
   }
