@@ -3,6 +3,7 @@
 namespace Drupal\migration_tools\Modifier;
 
 use Drupal\migration_tools\Message;
+use Drupal\migration_tools\StringTools;
 
 /**
  * SourceModifierHtml class.
@@ -51,5 +52,20 @@ class SourceModifierHtml extends SourceModifier {
     else {
       $this->content = str_replace($search, $replace, $this->content);
     }
+  }
+
+  /**
+   * Performs basic cleaning of HTML for encoding, chars, invalid HTML etc.
+   */
+  public function basicCleanup() {
+    $this->content = StringTools::fixEncoding($this->content);
+    $this->content = StringTools::stripWindowsCRChars($this->content);
+    $this->content = StringTools::fixWindowSpecificChars($this->content);
+    $this->content = StringTools::removePhp($this->content);
+
+    // Have to repair these in order from innermost to outermost tags.
+    $this->content = StringTools::fixBodyTag($this->content);
+    $this->content = StringTools::fixHeadTag($this->content);
+    $this->content = StringTools::fixHtmlTag($this->content);
   }
 }
