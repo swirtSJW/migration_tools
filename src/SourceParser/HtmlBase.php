@@ -4,10 +4,7 @@ namespace Drupal\migration_tools\SourceParser;
 
 use Drupal\migrate\MigrateException;
 use Drupal\migration_tools\Message;
-use Drupal\migration_tools\Modifier\Modifier;
-use Drupal\migration_tools\Modifier\ModifyHtml;
 use Drupal\migration_tools\Obtainer\Job;
-use Drupal\migration_tools\StringTools;
 use Drupal\migrate\Row;
 
 /**
@@ -17,7 +14,7 @@ use Drupal\migrate\Row;
  *
  * @package migration_tools
  */
-abstract class HtmlBase {
+class HtmlBase {
 
   public $obtainerJobs = [];
   public $fileId;
@@ -26,10 +23,6 @@ abstract class HtmlBase {
   /** @var \Drupal\migrate\Row $row */
   public $row;
   public $queryPath;
-  protected $htmlElementsToRemove = [];
-  protected $htmlElementsToUnWrap = [];
-  protected $htmlElementsToReWrap = [];
-  protected $modifier;
 
   /**
    * A source parser class should set a useful set of obtainer jobs.
@@ -37,7 +30,9 @@ abstract class HtmlBase {
    * These should be the basics for a given content type.  More searches can be
    * added to the source parser before parse() is called.
    */
-  abstract protected function setDefaultObtainerJobs();
+  protected function setDefaultObtainerJobs() {
+    // @todo New architecture may not need default jobs.
+  }
 
   /**
    * A source parser class should perform any checks on required properties.
@@ -45,7 +40,9 @@ abstract class HtmlBase {
    * Appropriate messages should be output.
    * This will be called at the end of parse().
    */
-  abstract protected function validateParse();
+  protected function validateParse() {
+    // @todo May not be necessary when validators are moved to new class.
+  }
 
   /**
    * Constructor.
@@ -60,105 +57,10 @@ abstract class HtmlBase {
   public function __construct($file_id, $html, Row $row) {
     $this->fileId = $file_id;
     $this->row = $row;
-
-    $html = StringTools::fixEncoding($html);
-    $html = StringTools::stripWindowsCRChars($html);
-    $html = StringTools::fixWindowSpecificChars($html);
-    $html = StringTools::removePhp($html);
-
-    // Have to repair these in order  from innermost to outermost tags.
-    $html = StringTools::fixBodyTag($html);
-    $html = StringTools::fixHeadTag($html);
-    $html = StringTools::fixHtmlTag($html);
-
     $this->html = $html;
+
     $this->initQueryPath();
-
     $this->setDefaultObtainerJobs();
-
-    // Instantiate this here but could be instantiated with an extended modifier
-    // from in another sourceparser.
-    $this->modifier = new ModifyHtml($this->queryPath);
-  }
-
-  /**
-   * Get HTML elements to remove.
-   *
-   * @return array
-   *   Array of elements
-   */
-  public function getHtmlElementsToRemove() {
-    return $this->htmlElementsToRemove;
-  }
-
-  /**
-   * Set HTML elements to remove.
-   *
-   * @param array $html_elements
-   *   Array of elements.
-   */
-  public function setHtmlElementsToRemove(array $html_elements) {
-    $this->htmlElementsToRemove = $html_elements;
-  }
-
-  /**
-   * Get HTML elements to unwrap.
-   *
-   * @return array
-   *   Array of elements
-   */
-  public function getHtmlElementsToUnWrap() {
-    return $this->htmlElementsToUnWrap;
-  }
-
-  /**
-   * Set HTML elements to unwrap.
-   *
-   * @param array $html_elements
-   *   Array of elements.
-   */
-  public function setHtmlElementsToUnWrap(array $html_elements) {
-    $this->htmlElementsToUnWrap = $html_elements;
-  }
-
-  /**
-   * Get HTML elements to rewrap.
-   *
-   * @return array
-   *   Array of elements
-   */
-  public function getHtmlElementsToReWrap() {
-    return $this->htmlElementsToReWrap;
-  }
-
-  /**
-   * Set HTML elements to rewrap.
-   *
-   * @param array $html_elements
-   *   Array of elements.
-   */
-  public function setHtmlElementsToReWrap(array $html_elements) {
-    $this->htmlElementsToReWrap = $html_elements;
-  }
-
-  /**
-   * Get Modifier.
-   *
-   * @return \Drupal\migration_tools\Modifier\Modifier
-   *   Modifier
-   */
-  public function getModifier() {
-    return $this->modifier;
-  }
-
-  /**
-   * Set Modifier.
-   *
-   * @param \Drupal\migration_tools\Modifier\Modifier $modifier
-   *   Modifier.
-   */
-  public function setModifier(Modifier $modifier) {
-    $this->modifier = $modifier;
   }
 
   /**
@@ -187,34 +89,12 @@ abstract class HtmlBase {
    * This should be called after all obtainer jobs have been added.
    */
   public function parse() {
-    // Run pre modifiers.
-    $this->modifier->run(TRUE);
-
     // Run all Obtainer jobs.
     if (isset($this->obtainerJobs) && is_array($this->obtainerJobs)) {
-      // Since all other items are picked out of the body, body must run last.
-      // Run any jobs that do not require cleaning that are not body.
       foreach ($this->obtainerJobs as $job) {
         $property = $job->getProperty();
-        if (!$job->afterClean && ($property !== 'body')) {
-          $this->row->setSourceProperty($property, $this->getProperty($property));
-        }
+        $this->row->setSourceProperty($property, $this->getProperty($property));
       }
-      // Run modifiers.
-      $this->modifier->run(FALSE);
-
-      // Run any jobs that do require cleaning.
-      foreach ($this->obtainerJobs as $job) {
-        $property = $job->getProperty();
-        if ($job->afterClean && ($property !== 'body')) {
-          $this->row->setSourceProperty($property, $this->getProperty($property));
-        }
-      }
-      // Now that everything else has been run.  Grab what's left for the body.
-      if (!empty($this->obtainerJobs['body'])) {
-        $this->row->setSourceProperty('body', $this->getProperty('body'));
-      }
-
       $this->validateParse();
     }
   }
@@ -363,7 +243,6 @@ abstract class HtmlBase {
         // querypath module or as a library.
         if (function_exists('qp')) {
           try {
-            $this->cleanHtmlBeforeQueryPath();
             // The QueryPath qp is less destructive than htmlqp so try it first.
             $this->queryPath = qp($this->html, NULL, $qp_options);
           }
@@ -388,14 +267,6 @@ abstract class HtmlBase {
         throw new MigrateException("{$this->fileId} failed to initialize QueryPath");
       }
     }
-  }
-
-  /**
-   * Clean and alter $this->html right before it QueryPath is instantiated.
-   */
-  protected function cleanHtmlBeforeQueryPath() {
-    // Extend this to do any alterations to $this->html needed prior to feeding
-    // it to QueryPath.
   }
 
   /**
