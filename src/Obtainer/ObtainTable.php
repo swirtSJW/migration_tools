@@ -52,7 +52,12 @@ class ObtainTable extends ObtainArray {
         foreach ($table->find("tr") as $tr) {
           $tdcount = 0;
           foreach ($tr->find("td") as $td) {
-            $table_array[$trcount][$tdcount] = $td->$method();
+            if ($method == '') {
+              $table_array[$trcount][$tdcount] = clone $td;
+            }
+            else {
+              $table_array[$trcount][$tdcount] = $td->$method();
+            }
             $tdcount++;
           }
           $trcount++;
