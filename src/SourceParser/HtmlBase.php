@@ -246,6 +246,7 @@ abstract class HtmlBase {
     $this->initQueryPath();
     // Obtain the property using obtainers.
     $this->{$property} = $this->obtainProperty($property);
+    $this->updateJobsArguments();
   }
 
   /**
@@ -395,6 +396,40 @@ abstract class HtmlBase {
   protected function cleanHtmlBeforeQueryPath() {
     // Extend this to do any alterations to $this->html needed prior to feeding
     // it to QueryPath.
+  }
+
+  /**
+   * Update Jobs Argument dynamic variables.
+   */
+  protected function updateJobsArguments() {
+    $dynamic_args = get_object_vars($this);
+    foreach ($this->obtainerJobs as $job_key => &$job) {
+      foreach ($job->searches as &$search) {
+        self::parseDynamicArguments($search['arguments'], $dynamic_args);
+      }
+    }
+  }
+
+  /**
+   * Parse Dynamic Arguments.
+   *
+   * @param array $arguments
+   *   Arguments to parse for dynamic arguments (start with '@').
+   * @param array $dynamic_args
+   *   Array of dynamic args to replace from.
+   */
+  public static function parseDynamicArguments(&$arguments, $dynamic_args) {
+    foreach ($arguments as &$argument) {
+      if (!is_array($argument)) {
+        $matches = [];
+        if (preg_match('/@(\w*)/', $argument, $matches)) {
+          $dynamic_arg_name = $matches[1];
+          if (isset($dynamic_args[$dynamic_arg_name])) {
+            $argument = preg_replace('/@\w*/', $dynamic_args[$dynamic_arg_name], $argument);
+          }
+        }
+      }
+    }
   }
 
 }
