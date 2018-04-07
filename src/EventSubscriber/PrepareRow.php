@@ -2,12 +2,15 @@
 
 namespace Drupal\migration_tools\EventSubscriber;
 
+use Drupal\migrate\MigrateException;
 use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate_plus\Event\MigrateEvents;
 use Drupal\migrate_plus\Event\MigratePrepareRowEvent;
 use Drupal\migration_tools\Message;
+use Drupal\migration_tools\Modifier\DomModifier;
+use Drupal\migration_tools\Modifier\SourceModifierHtml;
 use Drupal\migration_tools\Obtainer\Job;
-use Drupal\migration_tools\SourceParser\Node;
+use Drupal\migration_tools\SourceParser\HtmlBase;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -36,86 +39,126 @@ class PrepareRow implements EventSubscriberInterface {
    * @param \Drupal\migrate_plus\Event\MigratePrepareRowEvent $event
    *   The prepare row event.
    *
-   * @throws \Drupal\migrate\MigrateSkipRowException
+   * @throws \Drupal\migrate\MigrateSkipRowException|\Drupal\migrate\MigrateException
    */
   public function onMigratePrepareRow(MigratePrepareRowEvent $event) {
     $row = $event->getRow();
 
-    $field_containing_url = $row->getSourceProperty('field_containing_url');
-    $field_containing_html = $row->getSourceProperty('field_containing_html');
+    $migration_tools_settings = $row->getSourceProperty('migration_tools');
 
-    // If field_containing_url is set, then we know it should do job processing.
-    // @todo Needs better logic to determine when to run the parsing.
-    if (!empty($field_containing_url)) {
-      if ($row->getIdMap() && !$row->needsUpdate()) {
-        // Row is already imported, don't run any more logic.
-        return;
-      }
-      $url = $row->getSourceProperty($field_containing_url);
+    // Begin processing migration tools settings.
+    if (!empty($migration_tools_settings)) {
+      $path = '';
 
-      if (!empty($field_containing_html)) {
-        $html = $row->getSourceProperty($field_containing_html);
-      }
-      else {
-        // @todo Improve URL fetching.
-        $handle = curl_init($url);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
-
-        $html = curl_exec($handle);
-        $http_response_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        curl_close($handle);
-
-        if (!in_array($http_response_code, [200, 301])) {
-          $message = sprintf('Was unable to load %s, response code: %d', $url, $http_response_code);
-          Message::make($message, [], Message::ERROR);
-
-          throw new MigrateSkipRowException($message);
+      foreach ($migration_tools_settings as $migration_tools_setting) {
+        if ($row->getIdMap() && !$row->needsUpdate()) {
+          // Row is already imported, don't run any more logic.
+          return;
         }
 
-      }
+        $source = $migration_tools_setting['source'];
+        $source_type = $migration_tools_setting['source_type'];
 
-      $url_pieces = parse_url($url);
-      $path = ltrim($url_pieces['path'], '/');
+        switch ($source_type) {
+          case 'url':
+            $url = $row->getSourceProperty($source);
 
-      // @todo Using Node parser by default. Should be decided by config.
-      $source_parser = new Node($path, $html, $row);
+            // @todo Improve URL fetching.
+            $handle = curl_init($url);
+            curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
 
-      // Add Modifiers.
-      $config_modifiers = $row->getSourceProperty('modifiers');
-      if ($config_modifiers) {
-        $source_parser_modifier = $source_parser->getModifier();
-        foreach ($config_modifiers as $config_modifier) {
-          $arguments = $config_modifier['arguments'] ? $config_modifier['arguments'] : [];
-          foreach ($arguments as &$argument) {
-            // @todo Figure out a way to use dynamic variables better.
-            if ($argument == '@field_containing_url') {
-              $argument = $url;
+            $html = curl_exec($handle);
+            $http_response_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+            curl_close($handle);
+
+            if (!in_array($http_response_code, [200, 301])) {
+              $message = sprintf('Was unable to load %s, response code: %d', $url, $http_response_code);
+              Message::make($message, [], Message::ERROR);
+
+              throw new MigrateSkipRowException($message);
             }
-            if ($argument == '@destination_base_url') {
-              $argument = $row->getSourceProperty('destination_base_url');
-            }
+            $url_pieces = parse_url($url);
+            $path = ltrim($url_pieces['path'], '/');
+
+            break;
+
+          case 'html':
+            $html = $row->getSourceProperty($source);
+            break;
+
+          default:
+            throw new MigrateException('Invalid source_type specified');
+        }
+
+        // Perform Source Operations.
+        $source_operations = $migration_tools_setting['source_operations'];
+        if ($source_operations) {
+          $source_modifier_html = new SourceModifierHtml($html);
+          foreach ($source_operations as $source_operation) {
+            $arguments = $source_operation['arguments'] ? $source_operation['arguments'] : [];
+            HtmlBase::parseDynamicArguments($arguments, $row->getSource());
+            $source_modifier_html->runModifier($source_operation['modifier'], $arguments);
           }
-          $source_parser_modifier->{$config_modifier['modifier']}($config_modifier['method'], $arguments);
+          $html = $source_modifier_html->getContent();
         }
-      }
 
-      // Construct Jobs.
-      $config_fields = $row->getSourceProperty('fields');
-      if ($config_fields) {
-        foreach ($config_fields as $config_field) {
-          $config_jobs = $config_field['jobs'];
-          if ($config_jobs) {
-            $after_modify = isset($config_field['after_modify']) ? $config_field['after_modify'] : FALSE;
-            $job = new Job($config_field['name'], $config_field['obtainer'], $after_modify);
-            foreach ($config_jobs as $config_job) {
-              $job->{$config_job['job']}($config_job['method'], $config_job['arguments']);
-              $source_parser->addObtainerJob($job);
-            }
+        // Construct Jobs.
+        $config_fields = $migration_tools_setting['fields'];
+
+        // Perform DOM Operations.
+        $dom_operations = $migration_tools_setting['dom_operations'];
+
+        if (empty($dom_operations)) {
+          throw new MigrateException('No dom_operations specified');
+        }
+
+        $source_parser = new HtmlBase($path, $html, $row);
+
+        foreach ($dom_operations as $dom_operation) {
+          switch ($dom_operation['operation']) {
+            case 'get_field':
+              // Run Obtainer Jobs on field.
+              if ($config_fields) {
+                $field_found = FALSE;
+                foreach ($config_fields as $field_name => $config_field) {
+                  if ($field_name == $dom_operation['field']) {
+                    $config_jobs = $config_field['jobs'];
+                    if ($config_jobs) {
+                      $job = new Job($field_name, $config_field['obtainer']);
+                      foreach ($config_jobs as $config_job) {
+                        HtmlBase::parseDynamicArguments($config_job['arguments'], $row->getSource());
+                        $job->{$config_job['job']}($config_job['method'], $config_job['arguments']);
+                        $source_parser->addObtainerJob($job);
+                      }
+                    }
+                    else {
+                      throw new MigrateException(t('No jobs specified for field @field', ['@field' => $field_name]));
+                    }
+                    $source_parser->parse();
+                    $field_found = TRUE;
+                    break;
+                  }
+                }
+                if (!$field_found) {
+                  throw new MigrateException(t('Field @field not configured referenced in dom_operations', ['@field' => $dom_operation['field']]));
+                }
+              }
+              break;
+
+            case 'modifier':
+              // Run DOM Modifier on queryPath.
+              $dom_modifier = new DomModifier($source_parser->queryPath);
+              $arguments = $dom_operation['arguments'] ? $dom_operation['arguments'] : [];
+              HtmlBase::parseDynamicArguments($arguments, $row->getSource());
+
+              $dom_modifier->runModifier($dom_operation['modifier'], $arguments);
+              break;
+
+            default:
+              throw new MigrateException(t('Invalid or empty operation @operation', ['@operation' => $dom_operation['operation']]));
           }
         }
       }
-
-      $source_parser->parse();
     }
   }
 
