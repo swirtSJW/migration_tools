@@ -63,6 +63,41 @@ class ObtainLink extends ObtainHtml {
   }
 
   /**
+   * Find links in contents of the selector and return their hrefs.
+   *
+   * @param string $selector
+   *   The selector to find.
+   *
+   * @return array
+   *   The array of hrefs found
+   */
+  protected function findLinksHref($selector) {
+    return $this->pluckLinksHref($selector, FALSE);
+  }
+
+  /**
+   * Pluck links in contents of the selector and return their hrefs.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param bool $pluck
+   *   (optional) Used internally to declare if the items should be removed.
+   *
+   * @return array
+   *   The array of hrefs found
+   */
+  protected function pluckLinksHref($selector, $pluck = TRUE) {
+    $links = $this->pluckLinks($selector, $pluck);
+    $hrefs = [];
+    if ($links) {
+      foreach ($links as $link) {
+        $hrefs[$link['href']] = $link['href'];
+      }
+    }
+    return array_keys($hrefs);
+  }
+
+  /**
    * Validate links array.
    *
    * @param array $links

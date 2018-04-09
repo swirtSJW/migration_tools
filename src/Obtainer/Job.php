@@ -8,7 +8,6 @@ namespace Drupal\migration_tools\Obtainer;
  * Including the class and methods to be called within that obtainer.
  */
 class Job {
-  public $afterClean;
   private $obtainerClassName;
   private $rowProperty;
   public $searches = [];
@@ -21,14 +20,10 @@ class Job {
    *   job is run.
    * @param string $obtainer_class_name
    *   The name of the Obtainer class to run.
-   * @param bool $after_clean
-   *   (optional) Flag to indicate if this job should run after the QueryPath
-   *   html has been cleaned. Default: FALSE.
    */
-  public function __construct($row_property, $obtainer_class_name, $after_clean = FALSE) {
+  public function __construct($row_property, $obtainer_class_name) {
     $this->rowProperty = $row_property;
     $this->setClass($obtainer_class_name);
-    $this->afterClean = $after_clean;
   }
 
   /**

@@ -173,9 +173,11 @@ class Message {
   public static function improveArrayOutput(array $array_items) {
     // Remove any objects from the debug output.
     foreach ($array_items as $key => &$array_item) {
-      foreach ($array_item as $sub_key => $sub_array_item) {
-        if (is_object($sub_array_item)) {
-          unset($array_item[$sub_key]);
+      if (is_array($array_item)) {
+        foreach ($array_item as $sub_key => $sub_array_item) {
+          if (is_object($sub_array_item)) {
+            unset($array_item[$sub_key]);
+          }
         }
       }
     }

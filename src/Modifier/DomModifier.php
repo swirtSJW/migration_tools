@@ -7,7 +7,7 @@ use Drupal\migration_tools\StringTools;
 use Drupal\migration_tools\Url;
 
 /**
- * The ModifyHtml defining removers, and changers.
+ * The DomModifier defining removers, and changers.
  *
  * Removers must:
  *   Be protected functions that remove elements from the QueryPath object.
@@ -19,7 +19,37 @@ use Drupal\migration_tools\Url;
  *   Return a count of the items changed.
  *   Follow the naming patten changeDescriptionOfChange().
  */
-class ModifyHtml extends Modifier {
+class DomModifier extends Modifier {
+  protected $queryPath;
+
+  /**
+   * Constructor.
+   *
+   * @param object $query_path
+   *   The query path object by reference.
+   */
+  public function __construct(&$query_path = NULL) {
+    $this->queryPath = $query_path;
+  }
+
+  /**
+   * Set Query Path.
+   *
+   * @param object $query_path
+   *   Query Path.
+   */
+  public function setQueryPath(&$query_path) {
+    $this->queryPath = $query_path;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function runModifier($method_name, array $arguments = []) {
+    // Reset QueryPath pointer to top of document.
+    $this->queryPath->top();
+    return parent::runModifier($method_name, $arguments);
+  }
 
   /**
    * Change any HTML class from one to a new classname.
