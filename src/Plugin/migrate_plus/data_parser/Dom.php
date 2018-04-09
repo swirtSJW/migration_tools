@@ -67,7 +67,20 @@ class Dom extends DataParserPluginBase implements ContainerFactoryPluginInterfac
         throw new MigrateException($this->t('No item_selector, or field @item_selector not found!', [ '@item_selector' => $this->itemSelector ]));
       }
 
-      return $data[$this->itemSelector];
+      // Make sub-array elements available directly.
+      // IDs don't support array elements.
+      // @todo This may cause some key conflicts.
+      $iterator_array = [];
+      foreach ($data[$this->itemSelector] as $key => $item) {
+        if (is_array($item)) {
+          $iterator_array[] = array_merge([$this->itemSelector => $item], $item);
+        }
+        else {
+          $iterator_array[] = [$this->itemSelector => $item];
+        }
+      }
+
+      return $iterator_array;
     }
     catch (RequestException $e) {
       throw new MigrateException($e->getMessage(), $e->getCode(), $e);
