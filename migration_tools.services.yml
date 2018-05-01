@@ -5,6 +5,6 @@ services:
       - { name: event_subscriber }
   migration_tools.post_row_save:
     class: Drupal\migration_tools\EventSubscriber\PostRowSave
-    arguments: [ '@entity_type.manager' ]
+    arguments: [ '@entity_type.manager', '@redirect.repository' ]
     tags:
       - { name: event_subscriber }
