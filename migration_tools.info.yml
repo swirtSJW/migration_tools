@@ -6,3 +6,4 @@ package: 'Migration'
 dependencies:
   - drupal:migrate_plus
   - drupal:migrate
+  - drupal:redirect

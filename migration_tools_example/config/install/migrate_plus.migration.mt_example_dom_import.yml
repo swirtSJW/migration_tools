@@ -45,6 +45,13 @@ source:
           -
             operation: get_field
             field: url
+        # Creates Drupal redirects from source URL to new node ID (default false).
+        redirect_create: true
+        # Will create redirects w/query string params if true (default false).
+        redirect_preserve_query_params: false
+        # Creates namespaced source subfolder for redirects, such as /redirect-thissite/path_to_file
+        # Should contain no leading/trailing slashes.
+        redirect_source_namespace: 'redirect-thissite'
   migration_tools:
     -
       source: url
