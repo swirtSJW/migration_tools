@@ -72,18 +72,23 @@ class PostRowSave implements EventSubscriberInterface {
     $migration_tools_settings = $row->getSourceProperty('migration_tools');
 
     if (!empty($migration_tools_settings)) {
-      // Create redirects if enabled.
       // @todo Current only supports 1st migration_tools array entry.
-      $source_type = $migration_tools_settings[0]['source_type'];
-      $source = $migration_tools_settings[0]['source'];
-      $create_redirects = isset($migration_tools_settings[0]['create_redirects']) ? $migration_tools_settings[0]['create_redirects'] : FALSE;
+      $migration_tools_setting = $migration_tools_settings[0];
+      $source_type = $migration_tools_setting['source_type'];
+      $source = $migration_tools_setting['source'];
+      $create_redirects = isset($migration_tools_setting['create_redirects']) ? $migration_tools_setting['create_redirects'] : FALSE;
 
+      // Create redirects if enabled.
       if ($source_type == 'url' && !empty($source) && $create_redirects) {
-        $preserve_query_params = isset($migration_tools_settings[0]['redirect_preserve_query_params']) ? $migration_tools_settings[0]['redirect_preserve_query_params'] : FALSE;
+        $preserve_query_params = isset($migration_tools_setting['redirect_preserve_query_params']) ? $migration_tools_setting['redirect_preserve_query_params'] : FALSE;
         $source_url = $row->getSourceProperty($source);
         $nids = $event->getDestinationIdValues();
         $source_url_pieces = parse_url($source_url);
         $source_path = ltrim($source_url_pieces['path'], '/');
+        if (isset($migration_tools_setting['redirect_source_namespace'])) {
+          $source_namespace = ltrim(rtrim($migration_tools_setting['redirect_source_namespace'], '/'), '/');
+          $source_path = $source_namespace . '/' . $source_path;
+        }
         $source_query = [];
 
         if ($preserve_query_params) {
