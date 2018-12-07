@@ -65,7 +65,7 @@ class Operations {
         if ($source_operations) {
           $source_modifier_html = new SourceModifierHtml($html);
           foreach ($source_operations as $source_operation) {
-            $arguments = $source_operation['arguments'] ? $source_operation['arguments'] : [];
+            $arguments = isset($source_operation['arguments']) ? $source_operation['arguments'] : [];
             HtmlBase::parseDynamicArguments($arguments, $row->getSource());
             $source_modifier_html->runModifier($source_operation['modifier'], $arguments);
           }

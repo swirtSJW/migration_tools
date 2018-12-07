@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Operations: Fix notice undefined index:arguments.
+  https://www.drupal.org/project/migration_tools/issues/3012485
 * DomModifier: Add changeHtmlContents modifier.
   https://www.drupal.org/project/migration_tools/issues/3015381
 
