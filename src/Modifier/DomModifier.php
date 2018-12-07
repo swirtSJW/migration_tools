@@ -367,4 +367,29 @@ class DomModifier extends Modifier {
     self::cleanExtraTags($search, $selector, $where);
   }
 
+  /**
+   * Replace existing contents of a selector with new content.
+   *
+   * @param string $selector
+   *   Selector to replace contents of.
+   * @param string $new_content
+   *   New content for $selector.
+   *
+   * @return int
+   *   Count of elements changed.
+   */
+  protected function changeHtmlContents($selector, $new_content) {
+    $count = 0;
+    if (!empty($selector)) {
+      $elements = $this->queryPath->find($selector);
+
+      foreach ((is_object($elements)) ? $elements : [] as $element) {
+        $element->html($new_content);
+        $count++;
+      }
+    }
+
+    return $count;
+  }
+
 }

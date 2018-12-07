@@ -1,5 +1,8 @@
-migration_tools 7.x-2.x  ** - ** - ****
+migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
+
+* DomModifier: Add changeHtmlContents modifier.
+  https://www.drupal.org/project/migration_tools/issues/3015381
 
 
 migration_tools 8.x-2.0-alpha2 04-09-2018
