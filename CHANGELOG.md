@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Operations: Add process for setting curl header options.
+  https://www.drupal.org/project/migration_tools/issues/3031705
 * Operations: Fix notice undefined index:arguments.
   https://www.drupal.org/project/migration_tools/issues/3012485
 * DomModifier: Add changeHtmlContents modifier.

@@ -37,6 +37,8 @@ class Operations {
             $handle = curl_init($url);
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
 
+            self::processCurlOptions($migration_tools_setting, $handle);
+
             $html = curl_exec($handle);
             $http_response_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
             curl_close($handle);
@@ -132,4 +134,42 @@ class Operations {
       }
     }
   }
+
+  /**
+   * Applies curl options that were set in the migration yaml.
+   *
+   * @param array $migration_tools_setting
+   *   An array of yaml values for this operation.
+   *
+   * @param resource $handle
+   *   The curl handle to set the options on.
+   *
+   * @throws \Drupal\migrate\MigrateException
+   */
+  protected static function processCurlOptions($migration_tools_setting, &$handle) {
+    if (empty($migration_tools_setting['curl_options'])) {
+      return;
+    }
+    $curl_options = $migration_tools_setting['curl_options'];
+    if (!is_array($curl_options)) {
+      $curl_options = [$curl_options];
+    }
+    foreach ($curl_options as $curl_option) {
+      if (empty($curl_option['name']) || empty($curl_option['value'])) {
+        throw new MigrateException("curl_options must have name (a curl_setopt() constant) and value (the option value)");
+      }
+      // We need RETURNTRANSFER to be true, so don't let them override it.
+      if ('CURLOPT_RETURNTRANSFER' == $curl_option['name']) {
+        continue;
+      }
+      $curlopt = constant($curl_option['name']);
+      if (strpos($curl_option['name'], 'CURLOPT_') !== 0 || $curlopt == NULL || !is_int($curlopt)) {
+        $message = sprintf("%s is not a valid curl option (see https://secure.php.net/manual/en/function.curl-setopt.php)", $curl_option['name']);
+        throw new MigrateException($message);
+      }
+
+      curl_setopt($handle, $curlopt, $curl_option['value']);
+    }
+  }
+
 }
