@@ -45,13 +45,16 @@ source:
           -
             operation: get_field
             field: url
-        # Creates Drupal redirects from source URL to new node ID (default false).
-        redirect_create: true
-        # Will create redirects w/query string params if true (default false).
-        redirect_preserve_query_params: false
-        # Creates namespaced source subfolder for redirects, such as /redirect-thissite/path_to_file
-        # Should contain no leading/trailing slashes.
-        redirect_source_namespace: 'redirect-thissite'
+        redirect:
+          # Creates Drupal redirects from source URL to new node ID (default false).
+          - create: true
+          # Will create redirects w/query string params if true (default false).
+          - preserve_query_params: false
+          # Creates namespaced path for redirects, to avoid collitions when
+          # federating multiple sites. Each site should have its own namespace.
+          # ie. Request https://olddomain.com/a/page.html redirects to  https://newdomain.com/redirect-oldsite/a/page.html
+          # Then Drupal redirects that to https://newdomain.com/the/drupal/node.
+          - source_namespace: 'redirect-oldsite'
   migration_tools:
     -
       source: url

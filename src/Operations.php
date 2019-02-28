@@ -62,6 +62,8 @@ class Operations {
             throw new MigrateException('Invalid source_type specified');
         }
 
+        $row->MTRedirector = new Redirects($row);
+
         // Perform Source Operations.
         $source_operations = $migration_tools_setting['source_operations'];
         if ($source_operations) {
