@@ -13,6 +13,8 @@ use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\Operations;
 use Drupal\migration_tools\SourceParser\HtmlBase;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\redirect\RedirectRepository;
 
 /**
  * Modify raw data on import.
@@ -44,6 +46,9 @@ class PrepareRow implements EventSubscriberInterface {
     $row = $event->getRow();
 
     $migration_tools_settings = $row->getSourceProperty('migration_tools');
+    // Check for serverside and header redirects.
+    // If they exist, no need to migrate this row.
+    
     if (!empty($migration_tools_settings)) {
       Operations::process($migration_tools_settings, $row);
     }

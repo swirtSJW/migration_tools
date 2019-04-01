@@ -72,23 +72,40 @@ class PostRowSave implements EventSubscriberInterface {
     $migration_tools_settings = $row->getSourceProperty('migration_tools');
 
     if (!empty($migration_tools_settings)) {
-      // @todo Current only supports 1st migration_tools array entry.
+      // @todo Currently only supports 1st migration_tools array entry.
       $migration_tools_setting = $migration_tools_settings[0];
       $source_type = $migration_tools_setting['source_type'];
       $source = $migration_tools_setting['source'];
-      $create_redirects = isset($migration_tools_setting['create_redirects']) ? $migration_tools_setting['create_redirects'] : FALSE;
+
+      if (!isset($migration_tools_setting['redirect'])) {
+        // Uses older format. Convert them to avoid breaking older version.
+        $redirect = [
+          'create' => isset($migration_tools_setting['create_redirects']) ? $migration_tools_setting['create_redirects'] : FALSE,
+          'preserve_query_params' => isset($migration_tools_setting['redirect_preserve_query_params']) ? $migration_tools_setting['redirect_preserve_query_params'] : FALSE,
+          'source_namespace' => isset($migration_tools_setting['redirect_source_namespace']) ? trim($migration_tools_setting['redirect_source_namespace'], '/') :'',
+        ];
+        $migration_tools_setting['redirect'] = $redirect;
+      }
+      // Backfill defaults.
+      $redirect_defaults = [
+        'create' => FALSE,
+        'preserve_query_params' => FALSE,
+        'source_namespace' => '',
+      ];
+      $migration_tools_setting['redirect'] = array_merge($redirect_defaults, $migration_tools_setting['redirect']);
+      // Clean-up entries.
+      $migration_tools_setting['redirect']['source_namespace'] = (!empty($migration_tools_setting['redirect']['source_namespace'])) ? trim($migration_tools_setting['redirect']['source_namespace'], '/') . '/' : '';
+      // Save for use elsewhere;
+      $row->setSourceProperty('migration_tools', $migration_tools_setting);
+
 
       // Create redirects if enabled.
       if ($source_type == 'url' && !empty($source) && $create_redirects) {
-        $preserve_query_params = isset($migration_tools_setting['redirect_preserve_query_params']) ? $migration_tools_setting['redirect_preserve_query_params'] : FALSE;
         $source_url = $row->getSourceProperty($source);
         $nids = $event->getDestinationIdValues();
         $source_url_pieces = parse_url($source_url);
         $source_path = ltrim($source_url_pieces['path'], '/');
-        if (isset($migration_tools_setting['redirect_source_namespace'])) {
-          $source_namespace = ltrim(rtrim($migration_tools_setting['redirect_source_namespace'], '/'), '/');
-          $source_path = $source_namespace . '/' . $source_path;
-        }
+        $source_path = "{$migration_tools_setting['redirect']['source_namespace']}$source_path";
         $source_query = [];
 
         if ($preserve_query_params) {
@@ -103,6 +120,7 @@ class PostRowSave implements EventSubscriberInterface {
           /** @var Redirect $redirect */
           $redirect = $redirect_storage->create();
           $redirect->setSource($source_path, $source_query);
+          //@todo Rework assumption that this is a node.
           $redirect->setRedirect('node/' . $nid, $source_query);
           $redirect->setStatusCode(301);
           $redirect->save();
