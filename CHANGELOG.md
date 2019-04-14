@@ -1,6 +1,10 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Obtainer: Add an obtainer to handle plain text without stripping out line
+  breaks.  A basic set of finders and pluckers that default to html in order to
+  not lose the line breaks in QueryPath.
+  https://www.drupal.org/project/migration_tools/issues/3044998
 * Operations: Add process for setting curl header options.
   https://www.drupal.org/project/migration_tools/issues/3031705
 * Operations: Fix notice undefined index:arguments.
