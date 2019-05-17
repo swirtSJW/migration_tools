@@ -5,6 +5,7 @@ namespace Drupal\migration_tools;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\migrate\MigrateException;
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\migration_tools\Event\MessageEvent;
 
 /**
  * Class Message.
@@ -65,6 +66,11 @@ class Message {
 
     if ($severity !== FALSE) {
       $type = (!empty($type)) ? $type : 'migration_tools';
+
+      $event = new MessageEvent($message, $variables, $severity, $type, $parsed_message);
+      $event_dispatcher = \Drupal::service('event_dispatcher');
+      $event_dispatcher->dispatch(MessageEvent::EVENT_NAME, $event);
+
       $log_levels = RfcLogLevel::getLevels();
       /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $log_function_markup */
       $log_function_markup = $log_levels[$severity];

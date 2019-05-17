@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3048397: Create a Message event for customized error handling.
+  https://www.drupal.org/project/migration_tools/issues/3048397
 * Issue #3055283: Create new DomOperation: removeMatchAndNextSibling
   https://www.drupal.org/project/migration_tools/issues/3055283
 * Obtainer: Add an obtainer to handle plain text without stripping out line
