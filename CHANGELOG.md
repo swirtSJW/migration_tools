@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3055283: Create new DomOperation: removeMatchAndNextSibling
+  https://www.drupal.org/project/migration_tools/issues/3055283
 * Obtainer: Add an obtainer to handle plain text without stripping out line
   breaks.  A basic set of finders and pluckers that default to html in order to
   not lose the line breaks in QueryPath.

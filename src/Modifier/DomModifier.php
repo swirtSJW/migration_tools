@@ -195,16 +195,91 @@ class DomModifier extends Modifier {
    *   The CSS selector for the element to be matched.
    * @param string $needle
    *   The text string for which to search.
-   * @param string $function
+   * @param string $method
    *   The function used to get the haystack. E.g., 'attr' if searching for
    *   a specific attribute value, 'html', 'txt'.
    * @param string $parameter
    *   A parameter to be passed into the defined $function.
    */
-  public function matchRemoveAll($selector, $needle, $function, $parameter = NULL) {
-    $matches = QpHtml::matchAll($this->queryPath, $selector, $needle, $function, $parameter);
+  public function matchRemoveAll($selector, $needle, $method, $parameter = NULL) {
+    $matches = QpHtml::matchAll($this->queryPath, $selector, $needle, $method, $parameter);
     foreach ($matches as $match) {
       $match->remove();
+    }
+  }
+
+
+  /**
+   * * Removes target and the next sibling.
+   *
+   * Target is determined by a test search restricted by selector and
+   * optional index.
+   *
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $method
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   (optional) A parameter to be passed into the defined $function.
+   * @param int $index
+   *   (optional) an index to restrict the search to a specific depth of the
+   *   selector, zero-based.
+   */
+  public function removeMatchAndNextSibling($selector, $needle, $method, $parameter = NULL, $index = NULL) {
+    $elements = $this->queryPath->find($selector);
+    $counter = 0;
+    foreach ($elements as $key => $elem) {
+      // Limit the search if the index is specified, if not search them all.
+      if ($counter++ == $index || is_null($index)) {
+        $haystack = $elem->$method($parameter);
+        if (substr_count($haystack, $needle) > 0) {
+          // We have a match.  Take out the target and next sibling.
+          $target = $elem;
+          $elem->next()->remove();
+          $target->remove();
+        }
+      }
+    }
+  }
+
+  /**
+   * Removes target and the next sibling.
+   *
+   * Target is determined by a case insensitive test search restricted by
+   * selector and optional index.
+   *
+   * @param string $selector
+   *   The CSS selector for the element to be matched.
+   * @param string $needle
+   *   The text string for which to search.
+   * @param string $method
+   *   The function used to get the haystack. E.g., 'attr' if searching for
+   *   a specific attribute value, 'html', 'txt'.
+   * @param string $parameter
+   *   (optional) A parameter to be passed into the defined $function.
+   * @param int $index
+   *   (optional) an index to restrict the search to a specific depth of the
+   *   selector, zero-based.
+   */
+  public function removeInsensitiveMatchAndNextSibling($selector, $needle, $method, $parameter = NULL, $index = NULL) {
+    $needle = strtolower($needle);
+    $elements = $this->queryPath->find($selector);
+    $counter = 0;
+    foreach ($elements as $key => $elem) {
+      // Limit the search if the index is specified, if not search them all.
+      if ($counter++ == $index || is_null($index)) {
+        $haystack = $elem->$method($parameter);
+        $haystack = strtolower($haystack);
+        if (substr_count($haystack, $needle) > 0) {
+          // We have a match.  Take out the target and next sibling.
+          $target = $elem;
+          $elem->next()->remove();
+          $target->remove();
+        }
+      }
     }
   }
 
@@ -254,6 +329,11 @@ class DomModifier extends Modifier {
    *
    * @param array $selectors
    *   An array of selectors for the wrapping element(s).
+   *   pattern:  ['selector': new wrapper].
+   *   new_wrapper is a string of the leading wrapping element.
+   *   - <h2 />
+   *   - <h2 id="title" />
+   *   - <div class="friends" />.
    */
   protected function rewrapElements(array $selectors) {
     foreach ($selectors as $element => $new_wrapper) {
