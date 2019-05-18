@@ -472,6 +472,133 @@ class ObtainHtml extends Obtainer {
     return NULL;
   }
 
+
+  /**
+   * Find a sibling underneath a selector, by its sibling depth and selector.
+   *
+   * This is useful for grabbing a subtitle  if the subtitle follows something
+   * specific element but should only be plucked if it has a specific selector.
+   *
+   * Example:
+   * -
+   *  job: addSearch
+   *  method: pluckSelectorNextSiblingTarget
+   *  arguments:
+   *    - h1
+   *    - 1
+   *    - p em
+   *    - 1
+   *
+   * Pass
+   *   <h1>Title</h1>
+   *   <p><em>I'm a subtitle.</em><p>    <--- Would grab this.
+   *
+   * Fail
+   *   <h1>Title</h1>
+   *   <p>I'm <em>not</em> a subtitle.<p>    <--- Would NOT grab this.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param int $index
+   *   The index of which selector look for.
+   * @param string $siblingSelector
+   *   The selector of the sibling you are trying to grab.
+   * @param int $siblingIndex
+   *   The index of the sibling you are trying to grab.
+   * @param string $method
+   *   (optional default:text) What to return QP->text() or QP->html().
+   * @param bool $pluck
+   *   (optional default: TRUE) Determines whether this opperates as a plucker.
+   *
+   * @return string
+   *   Matching string.
+   */
+  protected function findSelectorNextSiblingTarget($selector, $index, $siblingSelector, $siblingIndex, $method = 'text') {
+    $string = $this->pluckSelectorNextTarget($selector, $index, $siblingSelector, $siblingIndex, $method,  FALSE);
+    return $string;
+  }
+
+
+  /**
+   * Pluck a sibling underneath a selector, by its sibling depth and selector.
+   *
+   * This is useful for grabbing a subtitle  if the subtitle follows something
+   * specific element but should only be plucked if it has a specific selector.
+   *
+   * Example:
+   * -
+   *  job: addSearch
+   *  method: pluckSelectorNextSiblingTarget
+   *  arguments:
+   *    - h1
+   *    - 1
+   *    - p em
+   *    - 1
+   *
+   * Pass
+   *   <h1>Title</h1>
+   *   <p><em>I'm a subtitle.</em><p>    <--- Would grab this.
+   *
+   * Fail
+   *   <h1>Title</h1>
+   *   <p>I'm <em>not</em> a subtitle.<p>    <--- Would NOT grab this.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param int $index
+   *   The index of which selector look for.
+   * @param string $siblingSelector
+   *   The selector of the sibling you are trying to grab.
+   * @param int $siblingIndex
+   *   The index of the sibling you are trying to grab.
+   * @param string $method
+   *   (optional default:text) What to return QP->text() or QP->html().
+   * @param bool $pluck
+   *   (optional default: TRUE) Determines whether this opperates as a plucker.
+   *
+   * @return string
+   *   Matching string.
+   */
+  protected function pluckSelectorNextSiblingTarget($selector, $index, $siblingSelector, $siblingIndex, $method = 'text', $pluck = TRUE) {
+    $string = '';
+    $index = ($index > 0) ? $index - 1 : 0;
+    $siblingIndex = ($siblingIndex > 0) ? $siblingIndex - 1 : 0;
+
+    $elements = $this->queryPath->find($selector);
+    foreach ((is_object($elements)) ? $elements : [] as $pointerIndex => $element) {
+      if ($pointerIndex == $index) {
+        // We have the selector at the right depth, proceed to the siblings.
+        $siblings = $element->nextAll();
+        // Loop through the siblings until we get to the right depth.
+        foreach ((is_object($siblings)) ? $siblings : [] as $pointerTargetIndex => $target) {
+          if ($pointerTargetIndex == $siblingIndex) {
+            // We are now have the target based on sibling count.
+            $stringByDepth = $target->$method();
+            // As a check, load it by sibling selector to make sure the depth
+            // and selector agree.
+            $siblingTargetString = $element->nextAll($siblingSelector)->first()->$method();
+
+            // Compare the target with what was retrieved by sibling index.
+            // Only if they match should the string be used.
+            $string = ($stringByDepth == $siblingTargetString) ? $stringByDepth : '';
+          }
+
+          if ($pluck) {
+            $this->setElementToRemove($target);
+            $this->setCurrentFindMethod("pluckSelectorNextSiblingTarget($selector, ++$pointerIndex, $siblingSelector, $siblingIndex, ++$pointerTargetIndex, $method)");
+          }
+          else {
+            $this->setCurrentFindMethod("findSelectorNextSiblingTarget($selector, ++$pointerIndex, $siblingSelector, $siblingIndex, ++$pointerTargetIndex, $method)");
+          }
+          break;
+        }
+        break;
+      }
+    }
+
+    return $string;
+  }
+
   /**
    * Splits text on variations of the br tag.
    *
