@@ -65,7 +65,7 @@ class Redirects {
           $this->addRedirectSource($this->row->getSourceProperty('source_url'));
           $sourceUrl = $this->row->getSourceProperty('source_url');
         }
-        elseif ($source_type == 'url' && !empty($this->getMigrationToolsSetting('source'))) {
+        elseif ($this->getMigrationToolsSetting('source_type') == 'url' && !empty($this->getMigrationToolsSetting('source'))) {
           // Might be able to infer one from the source location.
           $this->addRedirectSource($this->getMigrationToolsSetting('source'));
           $sourceUrl = $this->getMigrationToolsSetting('source');
@@ -275,6 +275,7 @@ class Redirects {
       if (!empty($source['fragment'])) {
         $source_options['fragment'] = $source['fragment'];
       }
+
       // Check for query parameters (after ?).
       if (!empty($source['query'])) {
         parse_str($source['query'], $query);
@@ -287,7 +288,6 @@ class Redirects {
       // Check to see if the source and destination or alias are the same.
       if (($source_path !== $destination) && ($source_path !== $alias)) {
         // The source and destination are different, so make the redirect.
-        $source_query = [];
         $matched_redirect = $this->row->redirectRepository->findMatchingRedirect($source_path, $source_options['query']);
 
         if (is_null($matched_redirect)) {

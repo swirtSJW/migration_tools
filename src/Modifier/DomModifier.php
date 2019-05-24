@@ -21,6 +21,8 @@ use Drupal\migration_tools\Url;
  */
 class DomModifier extends Modifier {
   protected $queryPath;
+  protected $row;
+  protected $migrationToolsSettings;
 
   /**
    * Constructor.
@@ -28,8 +30,25 @@ class DomModifier extends Modifier {
    * @param object $query_path
    *   The query path object by reference.
    */
-  public function __construct(&$query_path = NULL) {
-    $this->queryPath = $query_path;
+  public function __construct(&$query_path = NULL, &$row = NULL) {
+    $this->setQueryPath($query_path);
+    $this->row = $row;
+    $this->$migrationToolsSettings = $this->row->getSourceProperty('migration_tools');
+  }
+
+  /**
+   * Getter for Migration Tools Settings.
+   *
+   * @param string $propertyName
+   *   The name of the migration tool setting property to return.
+   *
+   * @return mixed
+   *   string || array: depending on what is in the property.
+   *   array: defaults to empty array if no item exists for that property.
+   *
+   */
+  protected function getMigrationToolsSetting($propertyName) {
+    return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [ ];
   }
 
   /**
@@ -392,15 +411,52 @@ class DomModifier extends Modifier {
    * @param string $destination_base_url
    *   Destination Base URL.
    */
-  public function convertLinksAbsoluteSimple($url, $destination_base_url) {
+  public function convertLinksAbsoluteSimple($url = '', $destination_base_url = '', $base_for_relative = '') {
+    if (empty($url)) {
+      // Determine the value another way.
+      // Try the base tag.
+      $base = $this->queryPath->top('head')->find('base')->attr('href');
+      if ($base) {
+        // Base is set, so use it as it is the best source of truth.
+        $url = $base;
+      }
+      elseif ($this->row->hasSourceProperty('source_url') && !empty($this->row->getSourceProperty('source_url'))) {
+        // The value comes from a specific migrate source property.
+        $url = $this->row->getSourceProperty('source_url');
+      }
+      elseif ($this->getMigrationToolsSetting('source_type') == 'url' && !empty($this->getMigrationToolsSetting('source'))) {
+        // Might be able to infer one from the MigrationTools source location.
+        $this->addRedirectSource($this->getMigrationToolsSetting('source'));
+        $sourceUrl = $this->getMigrationToolsSetting('source');
+      }
+    }
+
     $url_pieces = parse_url($url);
     $path = $url_pieces['path'];
-    $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
+    if (empty($base_for_relative)) {
+      $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
+    }
 
-    Url::rewriteImageHrefsOnPage($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
-    Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
-    Url::rewriteScriptSourcePaths($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
-    Url::rewriteAnchorHrefsToPages($this->queryPath, [], $path, $base_for_relative, $destination_base_url);
+     if (empty($destination_base_url)) {
+      // Determine the value another way.
+      // @TODO work this out to get it from settings or admin.
+    }
+
+    $mts_pathing = $this->getMigrationToolsSetting('pathing');
+    if (!empty($mts_pathing)  && !empty($mts_pathing['domain_conversion'])) {
+      $url_base_alters = $mts_pathing['domain_conversion'];
+    }
+    elseif ((!empty($url_pieces['host'])) && (!empty($destination_base_url))) {
+        $url_base_alters = [$url_pieces['host'] => $destination_base_url];
+    }
+    else {
+      $url_base_alters = [];
+    }
+
+    Url::rewriteImageHrefsOnPage($this->queryPath, $url_base_alters, $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToBinaryFiles($this->queryPath, $url_base_alters, $path, $base_for_relative, $destination_base_url);
+    Url::rewriteScriptSourcePaths($this->queryPath, $url_base_alters, $path, $base_for_relative, $destination_base_url);
+    Url::rewriteAnchorHrefsToPages($this->queryPath, $url_base_alters, $path, $base_for_relative, $destination_base_url);
   }
 
   /**
@@ -470,6 +526,32 @@ class DomModifier extends Modifier {
     }
 
     return $count;
+  }
+
+  /**
+   *  Look up an image href and see if it is a media entity.
+   *
+   * @param string $lookup_method
+   *   'redirect' to look it up by an existing redirect.
+   *   'migration' To look it up by migrate key.
+   * @param string $migration_to_lookup
+   *   (optional) Required if method is migration, the migrate machine name.
+   */
+  public function convertImageLinksToMedia(string $lookup_method, string  $migration_to_lookup = '') {
+    //@TODO flesh this out.
+  }
+
+   /**
+   *  Look up an file href and see if it is a media entity.
+   *
+   * @param string $lookup_method
+   *   'redirect' to look it up by an existing redirect.
+   *   'migration' To look it up by migrate key.
+   * @param string $migration_to_lookup
+   *   (optional) Required if method is migration, the migrate machine name.
+   */
+  public function convertBinaryFileLinksToMedia(string $lookup_method, string  $migration_to_lookup = '') {
+    //@TODO flesh this out.
   }
 
 }

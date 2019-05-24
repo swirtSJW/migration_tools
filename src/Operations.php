@@ -122,7 +122,7 @@ class Operations {
 
             case 'modifier':
               // Run DOM Modifier on queryPath.
-              $dom_modifier = new DomModifier($source_parser->queryPath);
+              $dom_modifier = new DomModifier($source_parser->queryPath, $row);
               $arguments = $dom_operation['arguments'] ? $dom_operation['arguments'] : [];
               HtmlBase::parseDynamicArguments($arguments, $row->getSource());
 

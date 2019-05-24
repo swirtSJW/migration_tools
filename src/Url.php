@@ -14,18 +14,18 @@ use Drupal\migrate\MigrateException;
  *
  * $migration->pathingLegacyDirectory  [oldsite]
  * $migration->pathingLegacyHost [https://www.oldsite.com]
- * $migration->pathingRedirectCorral [redirect-oldsite]
+ * $migration->pathingRedirectNamespace [redirect-oldsite]
  * $migration->pathingSectionSwap
  *   [array(‘oldsite/section’ => ‘swapped-section-a’)]
  * $migration->pathingSourceLocalBasePath [/var/www/migration-source]
  *
  * $row->fileId [/oldsite/section/blah/index.html]
- * $row->pathing->corralledUri [redirect-oldsite/section/blah/index.html]
+ * $row->pathing->namespacedUri [redirect-oldsite/section/blah/index.html]
  * $row->pathing->legacySection [section] or [section/sub-section]
  * $row->pathing->legacyUrl [https://www.oldsite.com/section/blah/index.html]
  * $row->pathing->destinationUriAlias [swapped-section-a/blah/title-based-thing]
  * $row->pathing->destinationUriRaw [node/123]
- * $row->pathing->redirectSources [Array of source CorralledUri's for creating
+ * $row->pathing->redirectSources [Array of source NamespacedUri's for creating
  * redirects in complete().
  * $this->pathing->redirectDestination [any valid url, drupal path, drupal uri.]
  */
@@ -44,7 +44,7 @@ class Url {
    * @param string $legacy_host
    *   The host of the source content.
    *   [https://www.oldsite.com].
-   * @param string $redirect_corral
+   * @param string $redirect_namespace
    *   The base path in Drupal to uses in the redirect source source.
    *   [redirect-oldsite].
    * @param array $section_swap
@@ -55,7 +55,7 @@ class Url {
    *   The environment base path to where the legacy files exist.
    *   [/var/www/migration-source].
    */
-  public function __construct($file_id, $legacy_migration_source_path, $legacy_host, $redirect_corral, array $section_swap, $source_local_base_path) {
+  public function __construct($file_id, $legacy_migration_source_path, $legacy_host, $redirect_namespace, array $section_swap, $source_local_base_path) {
     // Establish the incoming properties.
     $this->fileId = $file_id;
     $legacy_migration_source_path = ltrim($legacy_migration_source_path, '/');
@@ -63,13 +63,13 @@ class Url {
     $this->legacyDirectory = array_shift($directories);
     $this->legacySection = implode('/', $directories);
     $this->legacyHost = $legacy_host;
-    $this->redirectCorral = $redirect_corral;
+    $this->redirectNamespace = $redirect_namespace;
     $this->sectionSwap = self::drupalizeSwapPaths($section_swap);
     $this->sourceLocalBasePath = $source_local_base_path;
     $this->redirectSources = [];
 
     // Build the items we can build at this time.
-    $this->generateCorralledUri();
+    $this->generateNamespacedUri();
     $this->generateLegacyUrl();
     $this->destinationSection = (!empty($this->sectionSwap[$this->legacySection])) ? $this->sectionSwap[$this->legacySection] : $this->legacySection;
 
@@ -115,9 +115,9 @@ class Url {
   /**
    * Take a legacy uri, and map it to an alias.
    *
-   * @param string $coralled_legacy_uri
-   *   The coralled URI from the legacy site ideally coming from
-   *   $row->pathing->corralledUri
+   * @param string $namespaced_legacy_uri
+   *   The namespaced URI from the legacy site ideally coming from
+   *   $row->pathing->namespacedUri
    *   ex: redirect-oldsite/section/blah/index.html
    *   redirect-oldsite/section/blah/index.html?foo=bar.
    * @param string $language
@@ -127,23 +127,23 @@ class Url {
    *   The Drupal alias redirected from the legacy URI.
    *   ex: swapped-section-a/blah/title-based-thing
    */
-  public static function convertLegacyUriToAlias($coralled_legacy_uri, $language = LANGUAGE_NONE) {
+  public static function convertLegacyUriToAlias($namespaced_legacy_uri, $language = LANGUAGE_NONE) {
     // @todo D8 Refactor
     // Drupal paths never begin with a / so remove it.
-    $coralled_legacy_uri = ltrim($coralled_legacy_uri, '/');
+    $namespaced_legacy_uri = ltrim($namespaced_legacy_uri, '/');
     // Break out any query.
-    $query = parse_url($coralled_legacy_uri, PHP_URL_QUERY);
+    $query = parse_url($namespaced_legacy_uri, PHP_URL_QUERY);
     $query = (!empty($query)) ? self::convertUrlQueryToArray($query) : [];
-    $original_uri = $coralled_legacy_uri;
-    $coralled_legacy_uri = parse_url($coralled_legacy_uri, PHP_URL_PATH);
+    $original_uri = $namespaced_legacy_uri;
+    $namespaced_legacy_uri = parse_url($namespaced_legacy_uri, PHP_URL_PATH);
 
     // Most common drupal paths have no ending / so start with that.
-    $legacy_uri_no_end = rtrim($coralled_legacy_uri, '/');
+    $legacy_uri_no_end = rtrim($namespaced_legacy_uri, '/');
 
     $redirect = redirect_load_by_source($legacy_uri_no_end, $language, $query);
-    if (empty($redirect) && ($coralled_legacy_uri != $legacy_uri_no_end)) {
+    if (empty($redirect) && ($namespaced_legacy_uri != $legacy_uri_no_end)) {
       // There is no redirect found, lets try looking for one with the path /.
-      $redirect = redirect_load_by_source($coralled_legacy_uri, $language, $query);
+      $redirect = redirect_load_by_source($namespaced_legacy_uri, $language, $query);
     }
     if ($redirect) {
       $nid = str_replace('node/', '', $redirect->redirect);
@@ -279,6 +279,7 @@ class Url {
    *   https://www.this-site.com/section/subsection/index.html.
    */
   public static function convertRelativeToAbsoluteUrl($href, $base_url, $destination_base_url) {
+    $destination_base_url = trim($destination_base_url, '/');
     if ((parse_url($href, PHP_URL_SCHEME) != '') || self::isOnlyFragment($href)) {
       // $href is already a full URL or is only a fragment (onpage anchor)
       // No processing needed.
@@ -1105,17 +1106,10 @@ class Url {
    *   Destination base URL.
    *
    * @return string
-   *   The processed href.
+   *   The processed href.  Local urls will be converted to root relative.
    */
   public static function rewritePageHref($href, array $url_base_alters, $file_path, $base_for_relative, $destination_base_url) {
     if (!empty($href)) {
-      // Is this an internal path?
-      $scheme = parse_url($href, PHP_URL_SCHEME);
-      if (empty($scheme)) {
-        // It is internal, set a flag for later use.
-        $internal = TRUE;
-      }
-
       // Fix relatives Using the $base_for_relative and file_path.
       $source_file = $base_for_relative . '/' . $file_path;
       $href = self::convertRelativeToAbsoluteUrl($href, $source_file, $destination_base_url);
@@ -1126,6 +1120,17 @@ class Url {
           $href = str_ireplace($old_base, $new_base, $href);
         }
       }
+    }
+
+    // For local links, make them root relative.
+    $href_host = parse_url($href, PHP_URL_HOST);
+    $href_scheme = parse_url($href, PHP_URL_HOST);
+    $destination_host = parse_url($destination_base_url, PHP_URL_HOST);
+    if(!empty($href_scheme) && !empty($href_host) && ($destination_host == $href_host)) {
+      // This is a local url so should have the scheme and host removed.
+      $href_parsed = parse_url($href);
+      $href = self::reassembleURL($href_parsed, $destination_base_url, FALSE);
+      $href = '/' . ltrim($href, '/');
     }
     return $href;
   }

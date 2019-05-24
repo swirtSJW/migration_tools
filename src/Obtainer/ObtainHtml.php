@@ -580,7 +580,8 @@ class ObtainHtml extends Obtainer {
 
             // Compare the target with what was retrieved by sibling index.
             // Only if they match should the string be used.
-            $string = ($stringByDepth == $siblingTargetString) ? $stringByDepth : '';
+
+            $string = (strcmp($stringByDepth, $siblingTargetString) == 0) ? $stringByDepth : '';
           }
 
           if ($pluck) {

@@ -1,6 +1,10 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3056948: PortURL rewriting to D8
+  https://www.drupal.org/project/migration_tools/issues/3056948
+* Issue #3032411: D8-Port redirect creation on import.
+  https://www.drupal.org/project/migration_tools/issues/3032411
 * Issue #3055532: Obtainer: Need a finder to grab a sibling by index and selector
   https://www.drupal.org/project/migration_tools/issues/3055532
 * Issue #3048397: Create a Message event for customized error handling.
