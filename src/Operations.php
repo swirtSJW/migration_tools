@@ -27,7 +27,7 @@ class Operations {
 
       foreach ($migration_tools_settings as $migration_tools_setting) {
         $source = $migration_tools_setting['source'];
-        $source_type = $migration_tools_setting['source_type'];
+        $source_type = !empty($migration_tools_setting['source_type']) ? $migration_tools_setting['source_type'] : 'none';
 
         switch ($source_type) {
           case 'url':
@@ -58,6 +58,10 @@ class Operations {
             $html = $row->getSourceProperty($source);
             break;
 
+          case 'none':
+            $html = '';
+            break;
+
           default:
             throw new MigrateException('Invalid source_type specified');
         }
@@ -80,11 +84,7 @@ class Operations {
         $config_fields = $migration_tools_setting['fields'];
 
         // Perform DOM Operations.
-        $dom_operations = $migration_tools_setting['dom_operations'];
-
-        if (empty($dom_operations)) {
-          throw new MigrateException('No dom_operations specified');
-        }
+        $dom_operations = !empty($migration_tools_setting['dom_operations']) ? $migration_tools_setting['dom_operations'] : [];
 
         $source_parser = new HtmlBase($path, $html, $row);
 

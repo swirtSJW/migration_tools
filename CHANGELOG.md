@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3060024: Allow Migration Tools to not require source or dom operations.
+  https://www.drupal.org/project/migration_tools/issues/3060024
 * Issue #3056948: PortURL rewriting to D8
   https://www.drupal.org/project/migration_tools/issues/3056948
 * Issue #3032411: D8-Port redirect creation on import.
