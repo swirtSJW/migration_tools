@@ -2,6 +2,9 @@
 
 namespace Drupal\migration_tools;
 
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Media\MediaInterface;
 use Drupal\migrate\MigrateException;
 
 /**
@@ -340,6 +343,28 @@ class Url {
     return self::reassembleURL($absolute, $destination_base_url);
   }
 
+  /**
+   * Checks to see if an element is used as an image map.
+   *
+   * @param object $qp_element
+   *   A Query{ath element, resulting from a find.
+   *
+   * @return bool
+   *   TRUE if it is an image map.
+   *   FALSE otherwise.
+   */
+  public static function isImageMap($qp_element) {
+    $is_map = FALSE;
+    // If this attribute is present, its a server side map.
+    $ss_map = $qp_element->attr('ismap');
+    // If this attribute is present, its a client side map.
+    $use_map = $qp_element->attr('usemap');
+    if ((!empty($ss_map)) || (!empty($use_map))) {
+      $is_map = TRUE;
+    }
+
+    return $is_map;
+  }
 
   /**
    * Examines an uri and evaluates if it is an image.
@@ -357,6 +382,27 @@ class Url {
     }
     return FALSE;
   }
+
+
+  /**
+   * Deterimines if a url is relative or absolute.
+   *
+   * @param string $url
+   *   A url either relative or absolute.
+   *
+   * @return bool
+   *   TRUE if relative url.
+   *   FALSE if absolute url.
+   */
+  public static function isRelativeUrl(string $url){
+    $url_parts = parse_url($url);
+    if ((!empty($url_parts['scheme'])) && (!empty($url_parts['host']))) {
+      // It is an absolute url.
+      return FALSE;
+    }
+    return TRUE;
+  }
+
 
   /**
    * Fixes anchor links to PDFs so that they work in IE.
@@ -822,6 +868,153 @@ class Url {
     }
     // Message the report (no log).
     Message::makeSummary($report, $image_count, 'Rewrote img src');
+  }
+
+
+  /**
+   * Alter image that are relative (have no scheme or host) to media tokens.
+   *
+   * @param object $query_path
+   *   A query path object containing the page html.
+   * @param array  $entity_lookup
+   *   Contains details about what to lookup and where.bbbbbb
+   * @param array $media_parameters
+   *   The parameters to be used by default in the construction of image media.
+   * $media_parameters = [
+   *   'alt' => '',
+   *   'title' => '',
+   *   'align' => '',
+   *   'caption' => '',
+   *   'embed_button' => 'media_browser',
+   *   'embed_display' => 'media_image',
+   *   'embed_display_settings' => '',
+   *   'entity_type' => 'media',
+   *   'entity_uuid' => '',
+   * ];
+   */
+  public static function rewriteRelativeImageHrefsToMedia($query_path, array $entity_lookup, array $media_parameters) {
+    // Find all the images on the page.
+    $images = $query_path->top('img[src]');
+    // Initialize summary report information.
+    $image_count = $images->size();
+    $report = [];
+    // Loop through them all looking for src to alter.
+    foreach ($images as $image) {
+      if (self::isImageMap($image)) {
+        // This is an image map and should not be converted to a media embed.
+        // Skip and move on to the next.
+        continue;
+      }
+
+      $href = trim($image->attr('src'));
+      // Check to see if it is relative.
+      if (self::isRelativeUrl($href)) {
+        // This url may have a media element. Let's look.
+       if ($entity_lookup['method'] === 'redirect') {
+         $media_id = Media::lookupMediaByRedirect($href);
+       }
+       elseif ($entity_lookup['method'] === 'migrate_map') {
+          $media_id = self::lookupMigrateDestinationIdByKeyPath($href, $entity_lookup['migrations'], $entity_lookup['ignore_path']);
+       }
+
+       if (empty($media_id)) {
+         // Found nothing to create a media token from.  Do nothing and next.
+         continue;
+       }
+
+        $media_parameters['entity_uuid'] = Media::getMediaUuidfromMid($media_id);
+
+        //  Let's grab any attributes.
+        $alt = trim($image->attr('alt'));
+        if (!empty($alt)) {
+          $media_parameters['alt'] = $alt;
+        }
+        $title = trim($image->attr('title'));
+        if (!empty($title)) {
+          $media_parameters['title'] = $title;
+        }
+        $align = trim($image->attr('align'));
+
+        if (!empty($align) && empty($media_parameters['align'])) {
+          $media_parameters['align'] = $align;
+        }
+
+        // Grab caption from <figcaption> if it's there.
+        $caption = $image->next('figcaption')->innerHtml();
+        if (!empty($caption)) {
+          $media_parameters['caption'] = $caption;
+        }
+      }
+
+      $media_embed = Media::buildMediaEmbed($media_parameters);
+      if (!empty($media_embed)) {
+        // There is a media entity, so lets use it.
+        $image->after($media_embed);
+        $image->remove();
+        // Something was changed so add it to report.
+        $report[] = "{$href} changed to media {$media_parameters['entity_uuid']}";
+      }
+    }
+    // Message the report (no log).
+    Message::makeSummary($report, $image_count, 'Rewrote img src to Media.');
+  }
+
+
+  /**
+   * Lookup a migrate desitination ID by path.
+   *
+   * WARNING This only works if the key in the migration is the uri of the file.
+   *
+   * @param string $source_key_uri
+   *   The root relative uri for the media item on the legacy site.
+   * @param array $migrations
+   *   An array list of migration id (machine_names) to try searching within.
+   * @param string $trim_path
+   *   Any redirect namespace to remove from the uri prior to the search.
+   *
+   * @return int
+   *   The destination media id. if media was found. Empty string if none found.
+   */
+  public static function lookupMigrateDestinationIdByKeyPath (string $source_key_uri, array $migrations, string $trim_path = '') {
+    $found_id = '';
+    if (!empty($source_key_uri)) {
+      // Go search.
+      self::trimPath($source_key_uri, $trim_path);
+      foreach ($migrations as $migration) {
+        $map_table = "migrate_map_{$migration}";
+        $database = \Drupal::database();
+        $result = $database->select($map_table, 'm')
+          ->condition('m.sourceid1', "%" . $database->escapeLike($source_key_uri), 'LIKE')
+          ->fields('m', ['destid1'])
+          ->execute()
+          ->fetchAll();
+
+        // Should only have one result
+        if (count($result) === 1) {
+          // We got 1, call off the search.
+          $mapkey = reset($result);
+          $found_id = $mapkey->destid1;
+          break;
+        }
+      }
+    }
+
+    return $found_id;
+  }
+
+
+  /**
+   * Removes a trimpath (redirect namespace) from a url by reference.
+   *
+   * @param string $source_key_uri
+   *   A relative uri to be trimmed.
+   * @param string $trim_path
+   *   A path to be removed from the $source_key_uri.
+   */
+  public static function trimPath(&$source_key_uri, $trim_path) {
+    // Remove any / from the ends so we can re-apply them with more certainty.
+    $trim_path = trim($trim_path, '/');
+    $source_key_uri = str_replace("/{$trim_path}/", '/', $source_key_uri);
   }
 
   /**

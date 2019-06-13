@@ -51,6 +51,24 @@ class DomModifier extends Modifier {
     return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [ ];
   }
 
+
+  /**
+   * Getter for Migration Tools Redirect Settings.
+   *
+   * @param string $propertyName
+   *   The name of the migration tool redirect setting property to return.
+   *
+   * @return mixed
+   *   string || array: depending on what is in the property.
+   *   array: defaults to empty array if no item exists for that property.
+   *
+   */
+  protected function getMigrationToolsRedirectSetting($propertyName) {
+    $redirect_settings = $this->getMigrationToolsSetting('redirect');
+
+    return (!empty($redirect_settings[$propertyName])) ? $redirect_settings[$propertyName] : [ ];
+  }
+
   /**
    * Set Query Path.
    *
@@ -529,16 +547,25 @@ class DomModifier extends Modifier {
   }
 
   /**
-   *  Look up an image href and see if it is a media entity.
+   *  Alter images that are relative (have no scheme or host) to media tokens.
    *
    * @param string $lookup_method
    *   'redirect' to look it up by an existing redirect.
-   *   'migration' To look it up by migrate key.
-   * @param string $migration_to_lookup
+   *   'migrate_map' To look it up by migrate key.
+   * @param array $migrations_to_lookup
    *   (optional) Required if method is migration, the migrate machine name.
+   * @param array $media_parameters
+   *   parameters that can be processed by media.
    */
-  public function convertImageLinksToMedia(string $lookup_method, string  $migration_to_lookup = '') {
-    //@TODO flesh this out.
+  public function convertImageLinksToMedia(string $lookup_method, array  $migrations_to_lookup = [], array $media_parameters = []) {
+    $this->precheckLookupRequest($lookup_method, $migrations_to_lookup);
+    $ignore_path = $this->getMigrationToolsRedirectSetting('source_namespace');
+    $entity_lookup = [
+      'method' => $lookup_method,
+      'migrations' => $migrations_to_lookup,
+      'ignore_path' => (!empty($ignore_path)) ? $ignore_path : '',
+    ];
+    Url::rewriteRelativeImageHrefsToMedia($this->queryPath, $entity_lookup, $media_parameters);
   }
 
    /**
@@ -546,12 +573,49 @@ class DomModifier extends Modifier {
    *
    * @param string $lookup_method
    *   'redirect' to look it up by an existing redirect.
-   *   'migration' To look it up by migrate key.
+   *   'migrate-map' To look it up by migrate key.
    * @param string $migration_to_lookup
    *   (optional) Required if method is migration, the migrate machine name.
    */
   public function convertBinaryFileLinksToMedia(string $lookup_method, string  $migration_to_lookup = '') {
     //@TODO flesh this out.
+  }
+
+  /**
+   * Precheck the request to make sure the necessary parameters are present.
+   *
+   * @param string $lookup_method
+   *   The method to lookup.
+   * @param array $migrations_to_lookup
+   *   (optional) Required if method is migration, the migrate machine name.
+   *
+   * @throws MigrateException
+   *   Fails if the method is unknown or data is missing.
+   */
+  private function precheckLookupRequest (string &$lookup_method, array  $migrations_to_lookup = []) {
+    switch ($lookup_method) {
+      case 'redirect':
+        // Lookup in the redirect table.
+        $this->lookupEntityByRedirect($lookup_method, $migrations_to_lookup);
+
+        break;
+
+      case 'migrate-map':
+        // Wrong value but close enough.  Fix it and drop through.
+        $lookup_method = 'migrate_map';
+
+      case 'migrate_map':
+        // Try to lookup by the migration key in the migrate_map.
+        if (empty($migrations_to_lookup)) {
+          throw new MigrateException("When looking up an entity by migrate_map, a migration id must be provided.");
+        }
+
+         break;
+
+      default:
+            throw new MigrateException("Invalid entity lookup_method:$lookup_method. Only allowed values are 'redirect' and 'migration'");
+
+    }
   }
 
 }

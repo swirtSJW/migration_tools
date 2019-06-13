@@ -1,6 +1,9 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3056992: DomModifier: convert image link to media token
+  https://www.drupal.org/project/migration_tools/issues/3056992
+  Part A of this done.  Converting based on migrate_map lookup.
 * Issue #3056452 by beeyayjay: Obtainer:obtainTitleNoCaseChange needed.
   https://www.drupal.org/project/migration_tools/issues/3056452
 * Issue #3060024: Allow Migration Tools to not require source or dom operations.
