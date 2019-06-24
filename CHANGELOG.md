@@ -1,6 +1,7 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Move obtainer out of examples and in to obtainer.
 * Issue #3056992: DomModifier: convert image link to media token
   https://www.drupal.org/project/migration_tools/issues/3056992
   Part A of this done.  Converting based on migrate_map lookup.
