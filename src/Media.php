@@ -4,8 +4,8 @@ namespace Drupal\migration_tools;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Url;
 use Drupal\Media\MediaInterface;
-
 
 /**
  * Support functions related to Media.
@@ -20,7 +20,7 @@ class Media {
    *   required element.
    *
    * @return string
-   *  Either returns a media embed html or en empty string.
+   *   Either returns a media embed html or en empty string.
    */
   public static function buildMediaEmbed(array $mediaData) {
     $embedHtml = '';
@@ -95,14 +95,51 @@ class Media {
     return $uuid;
   }
 
-
-
+  /**
+   * Looks up an href in the redirect table and determines the media id.
+   *
+   * @param string $href
+   *   A uri path. that is root relative and redirect namespaced.
+   *
+   * @return int
+   *   There media entity id if found.  Empty string if not found.
+   */
   public static function lookupMediaByRedirect($href) {
+    $href = trim($href);
+    $href = ltrim($href, '/');
     $mid = '';
-    // Lookup the path in the redirect to see if one exists.
-    // if it exists, determine the mid of the destination.
+    // Lookup the path in the redirect table to see if one exists.
+    // Has to be a like query so can not use redirect methods to look it up.
+    if (!empty($href)) {
+      // Go search.
+      $database = \Drupal::database();
+      $result = $database->select('redirect', 'r')
+        ->condition('r.redirect_source__path', "%" . $database->escapeLike($href), 'LIKE')
+        ->fields('r', ['redirect_redirect__uri'])
+        ->execute()
+        ->fetchAll();
+
+      // Should only have one result.
+      if (count($result) === 1) {
+        // We got one.
+        $redirect = reset($result);
+        $path = $redirect->redirect_redirect__uri ?? '';
+        // Possible formats:
+        // internal:/media/333
+        // entity:media/333
+        // internal:/media/document/333
+        // Only those of media entities will do.
+        if (!empty($path)) {
+          $params = Url::fromUri($path);
+          if ($params instanceof Url) {
+            $route_params = $params->getRouteParameters();
+            $mid = $route_params['media'] ?? '';
+          }
+        }
+      }
+    }
 
     return $mid;
   }
 
-  }
+}

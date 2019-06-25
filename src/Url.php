@@ -910,17 +910,19 @@ class Url {
       // Check to see if it is relative.
       if (self::isRelativeUrl($href)) {
         // This url may have a media element. Let's look.
-       if ($entity_lookup['method'] === 'redirect') {
-         $media_id = Media::lookupMediaByRedirect($href);
-       }
-       elseif ($entity_lookup['method'] === 'migrate_map') {
+        if ($entity_lookup['method'] === 'migrate_map') {
           $media_id = self::lookupMigrateDestinationIdByKeyPath($href, $entity_lookup['migrations'], $entity_lookup['ignore_path']);
-       }
+        }
 
-       if (empty($media_id)) {
-         // Found nothing to create a media token from.  Do nothing and next.
-         continue;
-       }
+        //  If we have nothing, or was the requested method, look for redirect.
+        if ((empty($media_id)) && ($entity_lookup['method'] === 'redirect')) {
+          $media_id = Media::lookupMediaByRedirect($href);
+        }
+
+        if (empty($media_id)) {
+          // Found nothing to create a media token from.  Do nothing and next.
+          continue;
+        }
 
         $media_parameters['entity_uuid'] = Media::getMediaUuidfromMid($media_id);
 

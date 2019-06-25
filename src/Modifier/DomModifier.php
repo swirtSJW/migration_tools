@@ -29,6 +29,8 @@ class DomModifier extends Modifier {
    *
    * @param object $query_path
    *   The query path object by reference.
+   * @param object $row
+   *   The migrate row object by reference.
    */
   public function __construct(&$query_path = NULL, &$row = NULL) {
     $this->setQueryPath($query_path);
@@ -45,12 +47,10 @@ class DomModifier extends Modifier {
    * @return mixed
    *   string || array: depending on what is in the property.
    *   array: defaults to empty array if no item exists for that property.
-   *
    */
   protected function getMigrationToolsSetting($propertyName) {
-    return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [ ];
+    return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [];
   }
-
 
   /**
    * Getter for Migration Tools Redirect Settings.
@@ -61,12 +61,11 @@ class DomModifier extends Modifier {
    * @return mixed
    *   string || array: depending on what is in the property.
    *   array: defaults to empty array if no item exists for that property.
-   *
    */
   protected function getMigrationToolsRedirectSetting($propertyName) {
     $redirect_settings = $this->getMigrationToolsSetting('redirect');
 
-    return (!empty($redirect_settings[$propertyName])) ? $redirect_settings[$propertyName] : [ ];
+    return (!empty($redirect_settings[$propertyName])) ? $redirect_settings[$propertyName] : [];
   }
 
   /**
@@ -245,9 +244,8 @@ class DomModifier extends Modifier {
     }
   }
 
-
   /**
-   * * Removes target and the next sibling.
+   * Removes target and the next sibling.
    *
    * Target is determined by a test search restricted by selector and
    * optional index.
@@ -260,9 +258,9 @@ class DomModifier extends Modifier {
    *   The function used to get the haystack. E.g., 'attr' if searching for
    *   a specific attribute value, 'html', 'txt'.
    * @param string $parameter
-   *   (optional) A parameter to be passed into the defined $function.
+   *   A (optional) parameter to be passed into the defined $function.
    * @param int $index
-   *   (optional) an index to restrict the search to a specific depth of the
+   *   An (optional) index to restrict the search to a specific depth of the
    *   selector, zero-based.
    */
   public function removeMatchAndNextSibling($selector, $needle, $method, $parameter = NULL, $index = NULL) {
@@ -296,9 +294,9 @@ class DomModifier extends Modifier {
    *   The function used to get the haystack. E.g., 'attr' if searching for
    *   a specific attribute value, 'html', 'txt'.
    * @param string $parameter
-   *   (optional) A parameter to be passed into the defined $function.
+   *   A (optional) parameter to be passed into the defined $function.
    * @param int $index
-   *   (optional) an index to restrict the search to a specific depth of the
+   *   An (optional) index to restrict the search to a specific depth of the
    *   selector, zero-based.
    */
   public function removeInsensitiveMatchAndNextSibling($selector, $needle, $method, $parameter = NULL, $index = NULL) {
@@ -406,7 +404,6 @@ class DomModifier extends Modifier {
           $href_pieces = parse_url($href);
           if (count($href_pieces) && empty($href_pieces['scheme'])) {
             // No scheme set, must be a relative internal URL.
-
             $new_href = $base_href;
             $new_href .= (!empty($href_pieces['path'])) ? ltrim($href_pieces['path'], '/') : '';
             $new_href .= (!empty($href_pieces['query'])) ? '?' . $href_pieces['query'] : '';
@@ -428,6 +425,8 @@ class DomModifier extends Modifier {
    *   Base URL.
    * @param string $destination_base_url
    *   Destination Base URL.
+   * @param string $base_for_relative
+   *   The base url to be used for determining relative links.
    */
   public function convertLinksAbsoluteSimple($url = '', $destination_base_url = '', $base_for_relative = '') {
     if (empty($url)) {
@@ -455,7 +454,7 @@ class DomModifier extends Modifier {
       $base_for_relative = $url_pieces['scheme'] . '://' . $url_pieces['host'];
     }
 
-     if (empty($destination_base_url)) {
+    if (empty($destination_base_url)) {
       // Determine the value another way.
       // @TODO work this out to get it from settings or admin.
     }
@@ -465,7 +464,7 @@ class DomModifier extends Modifier {
       $url_base_alters = $mts_pathing['domain_conversion'];
     }
     elseif ((!empty($url_pieces['host'])) && (!empty($destination_base_url))) {
-        $url_base_alters = [$url_pieces['host'] => $destination_base_url];
+      $url_base_alters = [$url_pieces['host'] => $destination_base_url];
     }
     else {
       $url_base_alters = [];
@@ -485,7 +484,7 @@ class DomModifier extends Modifier {
    * @param string $selector
    *   Selector to clean.
    * @param string $where
-   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   *   Defaults to 'both', accepts 'leading' and 'trailing'.
    */
   public function cleanExtraTags(array $tags, $selector, $where = 'both') {
     $element = $this->queryPath->find($selector);
@@ -507,7 +506,7 @@ class DomModifier extends Modifier {
    * @param string $selector
    *   Selector to clean.
    * @param string $where
-   *   Defaults to 'both', accepts 'leading' and 'trailing'
+   *   Defaults to 'both', accepts 'leading' and 'trailing'.
    */
   public function cleanExtraBrTags($selector, $where = 'both') {
     // Normalize variations of the br tag.
@@ -547,17 +546,17 @@ class DomModifier extends Modifier {
   }
 
   /**
-   *  Alter images that are relative (have no scheme or host) to media tokens.
+   * Alter images that are relative (have no scheme or host) to media tokens.
    *
    * @param string $lookup_method
-   *   'redirect' to look it up by an existing redirect.
-   *   'migrate_map' To look it up by migrate key.
+   *   Use 'redirect' - to look it up by an existing redirect.
+   *   Use 'migrate_map' - To look it up by migrate key.
    * @param array $migrations_to_lookup
    *   (optional) Required if method is migration, the migrate machine name.
    * @param array $media_parameters
-   *   parameters that can be processed by media.
+   *   Parameters that can be processed by media.
    */
-  public function convertImageLinksToMedia(string $lookup_method, array  $migrations_to_lookup = [], array $media_parameters = []) {
+  public function convertImageLinksToMedia(string $lookup_method, array $migrations_to_lookup = [], array $media_parameters = []) {
     $this->precheckLookupRequest($lookup_method, $migrations_to_lookup);
     $ignore_path = $this->getMigrationToolsRedirectSetting('source_namespace');
     $entity_lookup = [
@@ -568,17 +567,17 @@ class DomModifier extends Modifier {
     Url::rewriteRelativeImageHrefsToMedia($this->queryPath, $entity_lookup, $media_parameters);
   }
 
-   /**
-   *  Look up an file href and see if it is a media entity.
+  /**
+   * Look up an file href and see if it is a media entity.
    *
    * @param string $lookup_method
-   *   'redirect' to look it up by an existing redirect.
-   *   'migrate-map' To look it up by migrate key.
+   *   Use 'redirect' to look it up by an existing redirect.
+   *   Use 'migrate-map' To look it up by migrate key.
    * @param string $migration_to_lookup
    *   (optional) Required if method is migration, the migrate machine name.
    */
-  public function convertBinaryFileLinksToMedia(string $lookup_method, string  $migration_to_lookup = '') {
-    //@TODO flesh this out.
+  public function convertBinaryFileLinksToMedia(string $lookup_method, string $migration_to_lookup = '') {
+    // @TODO flesh this out.
   }
 
   /**
@@ -592,12 +591,11 @@ class DomModifier extends Modifier {
    * @throws MigrateException
    *   Fails if the method is unknown or data is missing.
    */
-  private function precheckLookupRequest (string &$lookup_method, array  $migrations_to_lookup = []) {
+  private function precheckLookupRequest(string &$lookup_method, array $migrations_to_lookup = []) {
     switch ($lookup_method) {
       case 'redirect':
         // Lookup in the redirect table.
-        $this->lookupEntityByRedirect($lookup_method, $migrations_to_lookup);
-
+        // No further checks needed.
         break;
 
       case 'migrate-map':
@@ -610,10 +608,10 @@ class DomModifier extends Modifier {
           throw new MigrateException("When looking up an entity by migrate_map, a migration id must be provided.");
         }
 
-         break;
+        break;
 
       default:
-            throw new MigrateException("Invalid entity lookup_method:$lookup_method. Only allowed values are 'redirect' and 'migration'");
+        throw new MigrateException("Invalid entity lookup_method:$lookup_method. Only allowed values are 'redirect' and 'migration'");
 
     }
   }

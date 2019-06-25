@@ -10,13 +10,14 @@ use Drupal\migration_tools\Obtainer\Job;
 use Drupal\migration_tools\SourceParser\HtmlBase;
 
 class Operations {
+
   /**
    * Process Migration Tools Operations.
    *
    * @param array $migration_tools_settings
-   *   Migration Tools Settings
+   *   Migration Tools Settings.
    * @param \Drupal\migrate\Row $row
-   *   Migration Row
+   *   Migration Row.
    *
    * @throws \Drupal\migrate\MigrateException
    * @throws \Drupal\migrate\MigrateSkipRowException
@@ -142,7 +143,6 @@ class Operations {
    *
    * @param array $migration_tools_setting
    *   An array of yaml values for this operation.
-   *
    * @param resource $handle
    *   The curl handle to set the options on.
    *

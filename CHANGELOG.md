@@ -1,6 +1,9 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3056992 DomModifier: convert image link to media token via redirect
+  lookup.
+  https://www.drupal.org/project/migration_tools/issues/3056992
 * Move obtainer out of examples and in to obtainer.
 * Issue #3056992: DomModifier: convert image link to media token
   https://www.drupal.org/project/migration_tools/issues/3056992
