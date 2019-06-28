@@ -35,7 +35,7 @@ class DomModifier extends Modifier {
   public function __construct(&$query_path = NULL, &$row = NULL) {
     $this->setQueryPath($query_path);
     $this->row = $row;
-    $this->$migrationToolsSettings = $this->row->getSourceProperty('migration_tools');
+    $this->migrationToolsSettings = $this->row->getSourceProperty('migration_tools');
   }
 
   /**
@@ -49,7 +49,7 @@ class DomModifier extends Modifier {
    *   array: defaults to empty array if no item exists for that property.
    */
   protected function getMigrationToolsSetting($propertyName) {
-    return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [];
+    return (!empty($this->migrationToolsSettings[$propertyName])) ? $this->migrationToolsSettings[$propertyName] : [];
   }
 
   /**

@@ -400,6 +400,7 @@ class Redirects {
   }
 
   protected function createDestination(int $entityId) {
+    $destination_uri = '';
     // Determine the entity type.
     if ((!empty($entityId))
       && !empty($this->getRedirectSetting('destination_entity'))) {
@@ -407,11 +408,7 @@ class Redirects {
       $destination = $this->getRedirectSetting('destination_entity');
       if (!empty($destination)) {
         // We have a known entity slug.  Proceed with redirect building.
-        $slug = $slug_per_entity[$entity_type];
         $destination_uri = "{$destination}/{$entityId}";
-      }
-      else {
-        $destination_uri = '';
       }
     }
     return $destination_uri;
