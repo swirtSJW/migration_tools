@@ -1313,6 +1313,8 @@ class Url {
       foreach ($url_base_alters as $old_base => $new_base) {
         if (stripos($href, $old_base) !== FALSE) {
           $href = str_ireplace($old_base, $new_base, $href);
+          // The first replacement won, so call it quits on the replacement.
+          break;
         }
       }
     }
@@ -1321,7 +1323,7 @@ class Url {
     $href_host = parse_url($href, PHP_URL_HOST);
     $href_scheme = parse_url($href, PHP_URL_HOST);
     $destination_host = parse_url($destination_base_url, PHP_URL_HOST);
-    if(!empty($href_scheme) && !empty($href_host) && ($destination_host == $href_host)) {
+    if (!empty($href_scheme) && !empty($href_host) && ($destination_host == $href_host)) {
       // This is a local url so should have the scheme and host removed.
       $href_parsed = parse_url($href);
       $href = self::reassembleURL($href_parsed, $destination_base_url, FALSE);
