@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3067679: Add csv migration example
+  https://www.drupal.org/project/migration_tools/issues/3067679
 * Issue #3067637: Fix host rewriting of hrefs does not respect race condition.
   https://www.drupal.org/project/migration_tools/issues/3067637
 * Issue #3064623 by benjf: Minor bug fixes
