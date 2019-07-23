@@ -3,6 +3,7 @@
 namespace Drupal\migration_tools;
 
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url as DrupalUrl;
 use Drupal\file\Entity\File;
 use Drupal\Media\Entity\Media;
@@ -96,7 +97,6 @@ class Redirects {
     }
   }
 
-
   /**
    * Getter for Redirect Settings.
    *
@@ -112,7 +112,6 @@ class Redirects {
     return (!empty($this->migrationToolsSettings['redirect'][$propertyName])) ? $this->migrationToolsSettings['redirect'][$propertyName] : [ ];
   }
 
-
   /**
    * Getter for Migration Tools Settings.
    *
@@ -122,12 +121,10 @@ class Redirects {
    * @return mixed
    *   string || array: depending on what is in the property.
    *   array: defaults to empty array if no item exists for that property.
-   *
    */
   protected function getMigrationToolsSetting($propertyName) {
     return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [ ];
   }
-
 
   /**
    * Sets and default values on the redirect settings.
@@ -149,6 +146,7 @@ class Redirects {
         'create' => FALSE,
         'preserve_query_params' => FALSE,
         'source_namespace' => '',
+        'language' => \Drupal::languageManager()->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId(),
         'index_filenames' => [],
         'scan_for' => [
           'server_side_redirects' => FALSE,
@@ -292,8 +290,8 @@ class Redirects {
       // Check to see if the source and destination or alias are the same.
       if (($source_path !== $destination) && ($source_path !== $alias)) {
         // The source and destination are different, so make the redirect.
-        $matched_redirect = $this->row->redirectRepository->findMatchingRedirect($source_path, $source_options['query']);
-
+        $matched_redirect = $this->row->redirectRepository->findMatchingRedirect($source_path, $source_options['query'], $this->getRedirectSetting('language'));
+//print_r($matched_redirect);
         if (is_null($matched_redirect)) {
           // The redirect does not exists so create it.
           /** @var Redirect $redirect */
@@ -309,7 +307,7 @@ class Redirects {
             // Query params should NOT be used in the destination.
             $redirect->setRedirect($destination);
           }
-
+          $redirect->setLanguage($this->getRedirectSetting('language'));
           $redirect->setStatusCode(301);
           $redirect->save();
 
@@ -442,7 +440,7 @@ class Redirects {
       if (!empty($file_id)) {
         $file_object = File::load($file_id);
         $file_uri = $file_object->getFileUri();
-        $path = DrupalUrl::fromUri(file_create_url($file_uri))->toString();
+        $path = file_url_transform_relative(file_create_url($file_uri));
       }
     }
 

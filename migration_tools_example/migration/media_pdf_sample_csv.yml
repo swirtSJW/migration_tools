@@ -43,6 +43,10 @@ source:
       redirect:
         # Creates Drupal redirects from source URL to new node ID (default false).
         create: true
+        # Optional: Allows  the override of language on redirects.  If not
+        # provided, the default langage for the site will be used.
+        language: en
+        # Specify the entity type that the redirect is being built for.
         destination_entity: media
         # Setting this will create the redirect to the file in  the file
         # field_document.  Change this to match your filed field.
