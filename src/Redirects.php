@@ -2,11 +2,15 @@
 
 namespace Drupal\migration_tools;
 
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Url as DrupalUrl;
+use Drupal\file\Entity\File;
+use Drupal\Media\Entity\Media;
+use Drupal\Media\MediaInterface;
 use Drupal\migrate\MigrateException;
 use Drupal\migration_tools\Url;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\redirect\RedirectRepository;
-
 
 class Redirects {
 
@@ -405,14 +409,46 @@ class Redirects {
     if ((!empty($entityId))
       && !empty($this->getRedirectSetting('destination_entity'))) {
       // There is a destination so lets pick out the entity type.
-      $destination = $this->getRedirectSetting('destination_entity');
-      if (!empty($destination)) {
-        // We have a known entity slug.  Proceed with redirect building.
-        $destination_uri = "{$destination}/{$entityId}";
+      $destination_entity = $this->getRedirectSetting('destination_entity');
+      $destination_file_field = $this->getRedirectSetting('destination_file_field');
+      if (!empty($destination_entity)) {
+        if (($destination_entity === 'media') && (!empty($destination_file_field))) {
+          // The request is to build the redirect to the file.
+          $destination_uri = self::getFileUriFromMedia($entityId, $destination_file_field);
+        }
+        // If the destination has not already been set, use the entity path.
+        $destination_uri = empty($destination_uri) ? "{$destination_entity}/{$entityId}" : $destination_uri;
       }
     }
     return $destination_uri;
   }
+
+  /**
+   * Gets the path of a file that is  referenced in a media entity.
+   *
+   * @param int $entityId
+   *   The media entity id.
+   * @param string $destination_file_field
+   *   The file field in the media entity.
+   *
+   * @return string
+   *   The root relative path to a file referenced by the media field.
+   */
+  public static function getFileUriFromMedia(int $entityId, string $destination_file_field) {
+    $path = '';
+    if (!empty($entityId) && !empty($destination_file_field)) {
+      $media_entity = Media::load($entityId);
+      $file_id = $media_entity->get($destination_file_field)->target_id;
+      if (!empty($file_id)) {
+        $file_object = File::load($file_id);
+        $file_uri = $file_object->getFileUri();
+        $path = DrupalUrl::fromUri(file_create_url($file_uri))->toString();
+      }
+    }
+
+    return $path;
+  }
+
 
   /**
    * Deletes any redirects associated files attached to an entity's file field.

@@ -1,6 +1,8 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* Issue #3060323: Redirect:Media Provide option to redirect to file rather than media entity.
+  https://www.drupal.org/project/migration_tools/issues/3060323
 * Issue #3067679: Add csv migration example
   https://www.drupal.org/project/migration_tools/issues/3067679
 * Issue #3067637: Fix host rewriting of hrefs does not respect race condition.
