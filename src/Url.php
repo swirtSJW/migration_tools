@@ -114,7 +114,6 @@ class Url {
     return $new_paths;
   }
 
-
   /**
    * Take a legacy uri, and map it to an alias.
    *
@@ -326,7 +325,7 @@ class Url {
       Message::make($message, $variables, Message::ERROR, 2);
     }
 
-    // Make sure the query and fragement exist even if they are empty.
+    // Make sure the query and fragment exist even if they are empty.
     $parsed_href['query'] = (!empty($parsed_href['query'])) ? $parsed_href['query'] : '';
     $parsed_href['fragment'] = (!empty($parsed_href['fragment'])) ? $parsed_href['fragment'] : '';
 
@@ -383,9 +382,8 @@ class Url {
     return FALSE;
   }
 
-
   /**
-   * Deterimines if a url is relative or absolute.
+   * Determines if a url is relative or absolute.
    *
    * @param string $url
    *   A url either relative or absolute.
@@ -394,7 +392,7 @@ class Url {
    *   TRUE if relative url.
    *   FALSE if absolute url.
    */
-  public static function isRelativeUrl(string $url){
+  public static function isRelativeUrl(string $url) {
     $url_parts = parse_url($url);
     if ((!empty($url_parts['scheme'])) && (!empty($url_parts['host']))) {
       // It is an absolute url.
@@ -402,7 +400,6 @@ class Url {
     }
     return TRUE;
   }
-
 
   /**
    * Fixes anchor links to PDFs so that they work in IE.
@@ -430,10 +427,10 @@ class Url {
   }
 
   /**
-   * Removes the host if the url is intarnal but malformed.
+   * Removes the host if the url is internal but malformed.
    *
    * A url of 'mysite.com/path1/path2' is malformed because parse_url() will
-   * not recognise 'mysite.com' as the host without the scheme (http://) being
+   * not recognize 'mysite.com' as the host without the scheme (http://) being
    * present.  This method will remove the host if it is for this site and make
    * the url a proper root relative path.
    *
@@ -471,7 +468,7 @@ class Url {
    *   section/subsection/.
    *
    * @return string
-   *   The path not containing any filename or extenstion.
+   *   The path not containing any filename or extension.
    */
   public static function extractPath($href) {
     // Leading / can confuse parse_url() so get rid of them.
@@ -582,7 +579,6 @@ class Url {
     return $url;
   }
 
-
   /**
    * Searches for files of the same name and any type .
    *
@@ -678,7 +674,6 @@ class Url {
     return FALSE;
   }
 
-
   /**
    * Checks if a URL actually resolves to a 'page' on the internet.
    *
@@ -760,7 +755,7 @@ class Url {
 
     // Array of starts and ends to try locating.
     $wrappers = [];
-    // Provide two elements: the begining and end wrappers.
+    // Provide two elements: the beginning and end wrappers.
     $wrappers[] = ['"', '"'];
     $wrappers[] = ["'", "'"];
 
@@ -870,27 +865,26 @@ class Url {
     Message::makeSummary($report, $image_count, 'Rewrote img src');
   }
 
-
   /**
    * Alter image that are relative (have no scheme or host) to media tokens.
    *
    * @param object $query_path
    *   A query path object containing the page html.
-   * @param array  $entity_lookup
-   *   Contains details about what to lookup and where.bbbbbb
+   * @param array $entity_lookup
+   *   Contains details about what to lookup and find the image.
    * @param array $media_parameters
    *   The parameters to be used by default in the construction of image media.
-   * $media_parameters = [
-   *   'alt' => '',
-   *   'title' => '',
-   *   'align' => '',
-   *   'caption' => '',
-   *   'embed_button' => 'media_browser',
-   *   'embed_display' => 'media_image',
-   *   'embed_display_settings' => '',
-   *   'entity_type' => 'media',
-   *   'entity_uuid' => '',
-   * ];
+   *   $media_parameters = [
+   *     'alt' => '',
+   *    'title' => '',
+   *     'align' => '',
+   *     'caption' => '',
+   *     'embed_button' => 'media_browser',
+   *     'embed_display' => 'media_image',
+   *     'embed_display_settings' => '',
+   *     'entity_type' => 'media',
+   *      'entity_uuid' => '',
+   *   ];.
    */
   public static function rewriteRelativeImageHrefsToMedia($query_path, array $entity_lookup, array $media_parameters) {
     // Find all the images on the page.
@@ -914,7 +908,7 @@ class Url {
           $media_id = self::lookupMigrateDestinationIdByKeyPath($href, $entity_lookup['migrations'], $entity_lookup['ignore_path']);
         }
 
-        //  If we have nothing, or was the requested method, look for redirect.
+        // If we have nothing, or was the requested method, look for redirect.
         if ((empty($media_id)) && ($entity_lookup['method'] === 'redirect')) {
           $media_id = Media::lookupMediaByRedirect($href);
         }
@@ -926,7 +920,7 @@ class Url {
 
         $media_parameters['entity_uuid'] = Media::getMediaUuidfromMid($media_id);
 
-        //  Let's grab any attributes.
+        // Let's grab any attributes.
         $alt = trim($image->attr('alt'));
         if (!empty($alt)) {
           $media_parameters['alt'] = $alt;
@@ -961,9 +955,8 @@ class Url {
     Message::makeSummary($report, $image_count, 'Rewrote img src to Media.');
   }
 
-
   /**
-   * Lookup a migrate desitination ID by path.
+   * Lookup a migrate destination ID by path.
    *
    * WARNING This only works if the key in the migration is the uri of the file.
    *
@@ -977,7 +970,7 @@ class Url {
    * @return int
    *   The destination media id. if media was found. Empty string if none found.
    */
-  public static function lookupMigrateDestinationIdByKeyPath (string $source_key_uri, array $migrations, string $trim_path = '') {
+  public static function lookupMigrateDestinationIdByKeyPath(string $source_key_uri, array $migrations, string $trim_path = '') {
     $found_id = '';
     if (!empty($source_key_uri)) {
       // Go search.
@@ -991,7 +984,7 @@ class Url {
           ->execute()
           ->fetchAll();
 
-        // Should only have one result
+        // Should only have one result.
         if (count($result) === 1) {
           // We got 1, call off the search.
           $mapkey = reset($result);
@@ -1003,7 +996,6 @@ class Url {
 
     return $found_id;
   }
-
 
   /**
    * Removes a trimpath (redirect namespace) from a url by reference.
@@ -1336,10 +1328,10 @@ class Url {
    * Return the url query string as an associative array.
    *
    * @param string $query
-   *   The string from the query paramters of an URL.
+   *   The string from the query parameters of an URL.
    *
    * @return array
-   *   The query paramters as an associative array.
+   *   The query parameters as an associative array.
    */
   public static function convertUrlQueryToArray($query) {
     $query_parts = explode('&', $query);
@@ -1351,7 +1343,6 @@ class Url {
 
     return $params;
   }
-
 
   /**
    * Outputs the sorted contents of ->pathing to terminal for inspection.

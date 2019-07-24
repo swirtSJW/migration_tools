@@ -1,6 +1,7 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+* CS cleanup of Url and Redirect.
 * Issue #3069804: Redirect: Check is failing to find existing redirect.
   https://www.drupal.org/project/migration_tools/issues/3069804
 * Issue #3060323: Redirect:Media Provide option to redirect to file rather than media entity.

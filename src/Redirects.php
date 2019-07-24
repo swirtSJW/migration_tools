@@ -17,6 +17,7 @@ class Redirects {
 
   /**
    * The migration tools settings array as defined by the migration yml file.
+   *
    * @var array
    */
   public $migrationToolsSettings;
@@ -24,6 +25,7 @@ class Redirects {
 
   /**
    * A correctly namespaced source path for the item being redirected.
+   *
    * @var string
    */
   protected $namespacedUri;
@@ -42,20 +44,27 @@ class Redirects {
 
   /**
    * The path of the source.
+   *
    * @var string
    */
   protected $sourcePath;
 
   /**
-   *  Drupal migrate row object.
+   * Drupal migrate row object.
    *
    * @var object
    */
   protected $row;
 
+  /**
+   * Constructor for class.
+   *
+   * @param object $row
+   *   The migrate row object.
+   */
   public function __construct(&$row) {
     $migration_tools_settings = $row->getSourceProperty('migration_tools');
-    // See if redirects should be procesed.
+    // See if redirects should be processed.
     if (!empty($migration_tools_settings)) {
       // @TODO rework assumption that there is only one migration tools array.
       $this->migrationToolsSettings = $migration_tools_settings[0];
@@ -63,7 +72,7 @@ class Redirects {
       $this->backfillDefaults();
       if ($this->getRedirectSetting('create')) {
         // We should create redirects, so begin construction.
-        $this->redirectSources = [ ];
+        $this->redirectSources = [];
         // We are supposed to create a redirect, lets see if we have an url.
         if ($this->row->hasSourceProperty('source_url') && !empty($this->row->getSourceProperty('source_url'))) {
           // One is defined directly in the row so use that.
@@ -80,7 +89,7 @@ class Redirects {
           $this->addRedirectIfIndex($sourceUrl, $this->getRedirectSetting('base_url'));
         }
 
-        // @TODO restore procceding for sensing redirects using
+        // @TODO restore processing for sensing redirects using
         // hasValidRedirect().
       }
     }
@@ -88,10 +97,12 @@ class Redirects {
 
   /**
    * Adds a unique redirect source url to the $redirect_sources array.
+   *
    * @param string $source
+   *   The source path to create a redirect.
    */
   public function addRedirectSource(string $source) {
-    if (!empty($source) && !in_array($source, $this->redirectSources,TRUE)) {
+    if (!empty($source) && !in_array($source, $this->redirectSources, TRUE)) {
       // The source has not been added yet, so add it.
       $this->redirectSources[] = $source;
     }
@@ -106,10 +117,9 @@ class Redirects {
    * @return mixed
    *   string || array: depending on what is in the property.
    *   array: defaults to empty array if no item exists for that property.
-   *
    */
   protected function getRedirectSetting($propertyName) {
-    return (!empty($this->migrationToolsSettings['redirect'][$propertyName])) ? $this->migrationToolsSettings['redirect'][$propertyName] : [ ];
+    return (!empty($this->migrationToolsSettings['redirect'][$propertyName])) ? $this->migrationToolsSettings['redirect'][$propertyName] : [];
   }
 
   /**
@@ -123,7 +133,7 @@ class Redirects {
    *   array: defaults to empty array if no item exists for that property.
    */
   protected function getMigrationToolsSetting($propertyName) {
-    return (!empty($this->$migrationToolsSettings[$propertyName])) ? $this->$migrationToolsSettings[$propertyName] : [ ];
+    return (!empty($this->migrationToolsSettings[$propertyName])) ? $this->migrationToolsSettings[$propertyName] : [];
   }
 
   /**
@@ -137,31 +147,31 @@ class Redirects {
       $redirect = [
         'create' => !empty($this->getMigrationToolsSetting['create_redirects']) ? $this->getMigrationToolsSetting['create_redirects'] : FALSE,
         'preserve_query_params' => !empty($this->getMigrationToolsSetting['redirect_preserve_query_params']) ? $this->getMigrationToolsSetting['redirect_preserve_query_params'] : FALSE,
-        'source_namespace' => !empty($this->getMigrationToolsSetting['redirect_source_namespace']) ? trim($this->getMigrationToolsSetting['redirect_source_namespace'], '/') :'',
+        'source_namespace' => !empty($this->getMigrationToolsSetting['redirect_source_namespace']) ? trim($this->getMigrationToolsSetting['redirect_source_namespace'], '/') : '',
       ];
       $this->migrationToolsSettings['redirect'] = $redirect;
     }
-      // Backfill defaults.
-      $redirect_defaults = [
-        'create' => FALSE,
-        'preserve_query_params' => FALSE,
-        'source_namespace' => '',
-        'language' => \Drupal::languageManager()->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId(),
-        'index_filenames' => [],
-        'scan_for' => [
-          'server_side_redirects' => FALSE,
-          'header_redirects'  => FALSE,
-          'js_redirects' => FALSE,
-          'fake_redirects' => FALSE,
-        ]
-      ];
+    // Backfill defaults.
+    $redirect_defaults = [
+      'create' => FALSE,
+      'preserve_query_params' => FALSE,
+      'source_namespace' => '',
+      'language' => \Drupal::languageManager()->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId(),
+      'index_filenames' => [],
+      'scan_for' => [
+        'server_side_redirects' => FALSE,
+        'header_redirects'  => FALSE,
+        'js_redirects' => FALSE,
+        'fake_redirects' => FALSE,
+      ],
+    ];
 
-      $this->migrationToolsSettings['redirect'] = array_merge($redirect_defaults, $this->migrationToolsSettings['redirect']);
+    $this->migrationToolsSettings['redirect'] = array_merge($redirect_defaults, $this->migrationToolsSettings['redirect']);
 
-      // Clean-up entries.
-      $this->migrationToolsSettings['redirect']['source_namespace'] = (!empty($this->getRedirectSetting('source_namespace'))) ? trim($this->getRedirectSetting('source_namespace'), '/') . '/' : '';
-      // Save for use elsewhere;
-      $this->row->setSourceProperty('migration_tools', $this->migrationToolsSettings);
+    // Clean-up entries.
+    $this->migrationToolsSettings['redirect']['source_namespace'] = (!empty($this->getRedirectSetting('source_namespace'))) ? trim($this->getRedirectSetting('source_namespace'), '/') . '/' : '';
+    // Save for use elsewhere.
+    $this->row->setSourceProperty('migration_tools', $this->migrationToolsSettings);
   }
 
   /**
@@ -187,7 +197,6 @@ class Redirects {
       ->execute()
       ->fetchCol();
   }
-
 
   /**
    * Generates a drupal-centric URI based in the redirect namespace.
@@ -221,8 +230,6 @@ class Redirects {
       $this->namespacedUri = $uri;
     }
   }
-
-
 
   /**
    * Creates a redirect from a legacy path if one does not exist.
@@ -266,7 +273,7 @@ class Redirects {
       $source_path = Url::fixSchemelessInternalUrl($source_path, $destination_base_url);
       $source = parse_url($source_path);
       $source_path = (!empty($source['path'])) ? $source['path'] : '';
-      // A path should not have a preceeding /.
+      // A path should not have a preceding /.
       $this->sourcePath = ltrim($source['path'], '/');
       // Namespace this source path.
       $this->generateNamespacedUri();
@@ -291,10 +298,9 @@ class Redirects {
       if (($source_path !== $destination) && ($source_path !== $alias)) {
         // The source and destination are different, so make the redirect.
         $matched_redirect = $this->row->redirectRepository->findMatchingRedirect($source_path, $source_options['query'], $this->getRedirectSetting('language'));
-//print_r($matched_redirect);
+
         if (is_null($matched_redirect)) {
           // The redirect does not exists so create it.
-          /** @var Redirect $redirect */
           $redirect_storage = $this->row->entityTypeManager->getStorage('redirect');
           $redirect = $redirect_storage->create();
           $redirect->setSource($source_path, $source_options['query']);
@@ -330,7 +336,7 @@ class Redirects {
       }
       else {
         // The source and destination are the same. So no redirect needed.
-        $message = 'The redirect of @source have idential source and destination. No redirect created.';
+        $message = 'The redirect of @source have identical source and destination. No redirect created.';
         $variables = [
           '@source' => $source_path,
         ];
@@ -376,14 +382,13 @@ class Redirects {
     }
   }
 
-
   /**
    * Triggers the saving of all accumulated redirects the entity.
    *
-   * Sould be called in PostRowSave or we need an entity id.
+   * Should be called in PostRowSave or we need an entity id.
    *
    * @param int $entityID
-   *   The Drupal enitity id assign as the redirect destination.
+   *   The Drupal entity id assign as the redirect destination.
    */
   public function saveRedirects(int $entityID) {
     if (!empty($entityID)) {
@@ -401,6 +406,15 @@ class Redirects {
     }
   }
 
+  /**
+   * Determines and makes the destination URL of an entity.
+   *
+   * @param int $entityId
+   *   The entity id of the item that was migrated.
+   *
+   * @return string
+   *   An entity path (node/123) or a file path (/sites/default/files/samp.pdf).
+   */
   protected function createDestination(int $entityId) {
     $destination_uri = '';
     // Determine the entity type.
@@ -446,7 +460,6 @@ class Redirects {
 
     return $path;
   }
-
 
   /**
    * Deletes any redirects associated files attached to an entity's file field.
@@ -525,7 +538,7 @@ class Redirects {
    * @param object $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (Optional) array of human readable strings that preceed a link to the
+   *   (Optional) array of human readable strings that precede a link to the
    *   New location of the page ex: "this page has move to".
    *
    * @return mixed
@@ -562,7 +575,7 @@ class Redirects {
    * @param object $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (Optional) array of human readable strings that preceed a link to the
+   *   (Optional) array of human readable strings that precede a link to the
    *   New location of the page ex: "this page has move to".
    *
    * @return mixed
@@ -608,7 +621,7 @@ class Redirects {
    *   https://www.oldsite.com/section/blah/.
    *
    * @return mixed
-   *   string Url of the final desitnation if there was a redirect.
+   *   string Url of the final destination if there was a redirect.
    *   bool FALSE if there was no redirect.
    */
   public function hasServerSideRedirects($url) {
@@ -623,16 +636,15 @@ class Redirects {
     }
   }
 
-
   /**
-   * Retrieves redirects from the html of the page (meta, javascrip, text).
+   * Retrieves redirects from the html of the page (meta, javascript, text).
    *
    * @param object $row
    *   A row object as delivered by migrate.
    * @param object $query_path
    *   The current QueryPath object.
    * @param array $redirect_texts
-   *   (Optional) array of human readable strings that preceed a link to the
+   *   (Optional) array of human readable strings that precede a link to the
    *   New location of the page ex: "this page has move to".
    *
    * @return mixed
@@ -691,7 +703,7 @@ class Redirects {
     foreach (is_array($redirect_texts) ? $redirect_texts : [] as $i => $redirect_text) {
       // Array of starts and ends to try locating.
       $wrappers = [];
-      // Provide two elements: the begining and end wrappers.
+      // Provide two elements: the beginning and end wrappers.
       $wrappers[] = ['"', '"'];
       $wrappers[] = ["'", "'"];
       foreach ($wrappers as $wrapper) {
@@ -720,10 +732,10 @@ class Redirects {
    *   bool - FALSE if no matching document is found.
    */
   public function addRedirectIfIndex($url, $destination_base_url, array $candidates = []) {
-    $candidates = (empty($candidates)) ? $this->getRedirectSetting('index_filenames') :  $candidates;
+    $candidates = (empty($candidates)) ? $this->getRedirectSetting('index_filenames') : $candidates;
     if (!empty($candidates)) {
-      //Process this to see if it is an index.
-      // Filter through parse_url to separate out querystrings and etc.
+      // Process this to see if it is an index.
+      // Filter through parse_url to separate out query strings and etc.
       $path = parse_url($url, PHP_URL_PATH);
 
       // Pull apart components of the file and path that we'll need to compare.
@@ -747,4 +759,5 @@ class Redirects {
     // Default to returning FALSE if we haven't exited already.
     return FALSE;
   }
+
 }
