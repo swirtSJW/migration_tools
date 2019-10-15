@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Media\MediaInterface;
 use Drupal\migrate\MigrateException;
+use Drupal\node\Entity\Node;
 
 /**
  * Class Url.
@@ -151,7 +152,7 @@ class Url {
       $nid = str_replace('node/', '', $redirect->redirect);
       // Make sure we are left with a numeric id.
       if (is_int($nid) || ctype_digit($nid)) {
-        $node = node_load($nid);
+        $node = Node::load($nid);
         if ((!empty($node)) && (!empty($node->path)) && (!empty($node->path['alias']))) {
           return $node->path['alias'];
         }

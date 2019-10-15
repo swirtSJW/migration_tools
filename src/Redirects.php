@@ -476,7 +476,7 @@ class Redirects {
     $field = $entity->$field_name;
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
-        $file = file_load($item['fid']);
+        $file = File::load($item['fid']);
         $url = file_create_url($file->uri);
         $parsed_url = parse_url($url);
         $destination = ltrim($parsed_url['path'], '/');

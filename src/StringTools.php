@@ -842,13 +842,7 @@ class StringTools {
    *   The length of the string.
    */
   public static function strlen($text) {
-    // @todo This is Drupal-specific code, should find alternative.
-    if (class_exists("\\Drupal\\Component\\Utility\\Unicode")) {
-      return Unicode::strlen($text);
-    }
-    else {
-      return strlen($text);
-    }
+    return mb_strlen($text);
   }
 
   /**
