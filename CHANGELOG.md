@@ -1,6 +1,10 @@
 migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
+
+
+migration_tools 8.x-2.1 10-15-2019
+-----------------------------------------------
 * Issue #3082237: Cleanup depricated functions.
   https://www.drupal.org/project/migration_tools/issues/3082237
 * CS cleanup of Url and Redirect.
