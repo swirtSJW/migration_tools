@@ -2,6 +2,11 @@ migration_tools 8.x-2.x  ** - ** - ****
 -----------------------------------------------
 
 
+migration_tools 8.x-2.2 11-20-2019
+-----------------------------------------------
+* Issue #3095810 Redirect: Replace %20 with space on source.
+https://www.drupal.org/project/migration_tools/issues/3095810
+
 
 migration_tools 8.x-2.1 10-15-2019
 -----------------------------------------------

@@ -75,9 +75,14 @@ class Redirects {
         $this->redirectSources = [];
         // We are supposed to create a redirect, lets see if we have an url.
         if ($this->row->hasSourceProperty('source_url') && !empty($this->row->getSourceProperty('source_url'))) {
+          // An array of incompatible strings in redirect source URLs.
+          $strings_to_replace = [
+            "%20" => " ",
+          ];
+          // Replace bad stings in URL.
+          $sourceUrl = str_replace(array_keys($strings_to_replace), array_values($strings_to_replace), $this->row->getSourceProperty('source_url'));
           // One is defined directly in the row so use that.
-          $this->addRedirectSource($this->row->getSourceProperty('source_url'));
-          $sourceUrl = $this->row->getSourceProperty('source_url');
+          $this->addRedirectSource($sourceUrl);
         }
         elseif ($this->getMigrationToolsSetting('source_type') == 'url' && !empty($this->getMigrationToolsSetting('source'))) {
           // Might be able to infer one from the source location.
