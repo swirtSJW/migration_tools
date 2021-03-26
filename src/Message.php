@@ -90,8 +90,10 @@ class Message {
       // WATCHDOG_ERROR and worse.
       if ($severity <= $debug_level || $severity === FALSE) {
         // Watchdog didn't output it, so output it directly.
-        drush_print($type . $parsed_message, $indent);
-      }
+        if (function_exists('drush_print')) {
+          drush_print($type . $parsed_message, $indent);
+        }
+			}
       if ((\Drupal::config('migration_tools.settings')->get('drush_stop_on_error')) && ($severity <= self::ERROR) && $severity !== FALSE) {
         throw new MigrateException("{$type}Stopped for debug.\n -- Run \"drush mi {migration being run}\" to try again. \n -- Run \"drush config-set migration_tools.settings drush_stop_on_error 0\" to disable auto-stop.");
       }
@@ -250,12 +252,18 @@ class Message {
   public static function varDumpToDrush($var, $var_id = 'VAR DUMPs') {
     // Check to see if this is run by drush and output is desired.
     if (PHP_SAPI === 'cli' && \Drupal::config('migration_tools.settings')->get('drush_debug')) {
-      drush_print("{$var_id}: \n", 0);
+      if (function_exists('drush_print')) {
+        drush_print("{$var_id}: \n", 0);
+      }
       if (!empty($var)) {
-        drush_print_r($var);
+        if (function_exists('drush_print_r')) {
+          drush_print_r($var);
+        }
       }
       else {
-        drush_print("This variable was EMPTY. \n", 1);
+        if (function_exists('drush_print')) {
+          drush_print("This variable was EMPTY. \n", 1);
+        }
       }
     }
   }
