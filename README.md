@@ -21,6 +21,10 @@ the tools can be utilized.
 
 ## Features
 
+  * Process plugins:
+    * skip_on_subst - Can skip a process or row based on a substring being present,
+      or not present.  Can be case sensitive.
+      [See plugin docblock for implementation.](https://git.drupalcode.org/project/migration_tools/-/tree/8.x-2.x/src/Plugin/migrate/process/SkipOnSubstr.php)
   * CheckFor: Common checks that can be implemented in prepareRow to evaluate
     and report on the results.
   * Html: Methods for sanitizing or cleaning up html pages or body
@@ -147,7 +151,7 @@ _incomplete documentation_
  * Migrate
  * Migrate_plus
  * Pathauto (todo)
- * Redirect (todo)
+ * Redirect (optonal)
 
 ##Migration Development
 
