@@ -326,18 +326,22 @@ class ObtainHtml extends Obtainer {
    *   The selector to find.
    * @param int $n
    *   (optional) The depth to find.  Default: first item n=1.
+   * @param bool $pluck
+   *   (optional) Used internally to declare if the items should be removed.
    *
    * @return string
    *   The text found.
    */
-  protected function pluckXpath($xpath, $n = 1) {
+  protected function pluckXpath($xpath, $n = 1, $pluck = TRUE) {
     $text = '';
     $n = ($n > 0) ? $n - 1 : 0;
     if (!empty($xpath)) {
       $elements = $this->queryPath->xpath($xpath);
       foreach ((is_object($elements)) ? $elements : [] as $i => $element) {
         if ($i == $n) {
-          $this->setElementToRemove($element);
+          if ($pluck) {
+            $this->setElementToRemove($element);
+          }
           $text = $element->text();
           $this->setCurrentFindMethod("pluckXpath($xpath, " . ++$n . ')');
           break;
@@ -348,8 +352,25 @@ class ObtainHtml extends Obtainer {
   }
 
   /**
+   * Finder for nth xpath on the page.
+   *
+   * @param string $xpath
+   *   The selector to find.
+   * @param int $n
+   *   (optional) The depth to find.  Default: first item n=1.
+   *
+   * @return string
+   *   The text found.
+   */
+  protected function findXpath($xpath, $n = 1) {
+    return $this->pluckXpath($xpath, $n, FALSE);
+  }
+
+  /**
    * Pluck the text in a specific row and column in a specific table.
    *
+   * @param string $selector
+   *   The selector to find.
    * @param int $table_num
    *   The value of n where the table is the nth table on the page. E.g., 2 for
    *   the second table on a page.
@@ -472,7 +493,6 @@ class ObtainHtml extends Obtainer {
     return NULL;
   }
 
-
   /**
    * Find a sibling underneath a selector, by its sibling depth and selector.
    *
@@ -507,17 +527,14 @@ class ObtainHtml extends Obtainer {
    *   The index of the sibling you are trying to grab.
    * @param string $method
    *   (optional default:text) What to return QP->text() or QP->html().
-   * @param bool $pluck
-   *   (optional default: TRUE) Determines whether this opperates as a plucker.
    *
    * @return string
    *   Matching string.
    */
   protected function findSelectorNextSiblingTarget($selector, $index, $siblingSelector, $siblingIndex, $method = 'text') {
-    $string = $this->pluckSelectorNextTarget($selector, $index, $siblingSelector, $siblingIndex, $method,  FALSE);
+    $string = $this->pluckSelectorNextSiblingTarget($selector, $index, $siblingSelector, $siblingIndex, $method, FALSE);
     return $string;
   }
-
 
   /**
    * Pluck a sibling underneath a selector, by its sibling depth and selector.
@@ -580,7 +597,6 @@ class ObtainHtml extends Obtainer {
 
             // Compare the target with what was retrieved by sibling index.
             // Only if they match should the string be used.
-
             $string = (strcmp($stringByDepth, $siblingTargetString) == 0) ? $stringByDepth : '';
           }
 
