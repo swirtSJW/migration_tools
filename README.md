@@ -22,6 +22,9 @@ the tools can be utilized.
 ## Features
 
   * Process plugins:
+    * create_default_paragraph_revision - Can create default paragraph entity
+    reference revisions.
+    [See plugin docblock for implementation.](https://git.drupalcode.org/project/migration_tools/-/tree/8.x-2.x/src/Plugin/migrate/process/CreateDefaultParagraphRevision.php)
     * skip_on_subst - Can skip a process or row based on a substring being present,
       or not present.  Can be case sensitive.
       [See plugin docblock for implementation.](https://git.drupalcode.org/project/migration_tools/-/tree/8.x-2.x/src/Plugin/migrate/process/SkipOnSubstr.php)
