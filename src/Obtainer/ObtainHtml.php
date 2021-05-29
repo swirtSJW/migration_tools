@@ -184,20 +184,53 @@ class ObtainHtml extends Obtainer {
    *
    * @param string $selector
    *   The selector to find.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
+   * @param string $qp_method
+   *   (optional) The QueryPath method to use.
+   * @param string $separator
+   *   (optional)  The separator to use between the concatenation.
    *
    * @return string
-   *   Concatination of all selector elements' text.
+   *   Concatenation of all selector elements' text.
    */
-  protected function pluckAndConcatAnySelector($selector) {
-    $elements = $this->queryPath->find($selector);
-    $this->setElementToRemove($elements);
-    $this->setCurrentFindMethod("pluckAndConcatAnySelector($selector)");
-    $to_concat = [];
-    foreach ($elements as $key => $em) {
-      $to_concat[] = $em->text();
+  protected function findAndConcatAnySelector($selector, $method = 'text', $qp_method = 'find', $separator = ' ') {
+    return $this->pluckAndConcatAnySelector($selector, $method = 'text', $qp_method = 'find', $separator = ' ', FALSE);
+  }
+
+  /**
+   * Plucker crawls $selector elements and concats them as it goes.
+   *
+   * @param string $selector
+   *   The selector to find.
+   * @param string $method
+   *   (optional) The method to use on the element, text or html. Default: text.
+   * @param string $qp_method
+   *   (optional) The QueryPath method to use.
+   * @param string $separator
+   *   (optional)  The separator to use between the concatenation.
+   * @param bool $pluck
+   *   Whether to pluck.
+   *
+   * @return string
+   *   Concatenation of all selector elements' text.
+   */
+  protected function pluckAndConcatAnySelector($selector, $method = 'text', $qp_method = 'find', $separator = ' ', $pluck = TRUE) {
+    $elements = $this->queryPath->{$qp_method}($selector);
+    if ($pluck) {
+      $this->setElementToRemove($elements);
+      $this->setCurrentFindMethod("pluckAndConcatAnySelector($selector)");
+    }
+    else {
+      $this->setCurrentFindMethod("findAndConcatAnySelector($selector)");
     }
 
-    return implode(' ', $to_concat);
+    $to_concat = [];
+    foreach ($elements as $key => $em) {
+      $to_concat[] = $em->{$method}();
+    }
+
+    return implode($separator, $to_concat);
   }
 
   /**
