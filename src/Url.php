@@ -942,6 +942,7 @@ class Url {
           $media_parameters['caption'] = $caption;
         }
       }
+      $media_parameters['embed_display'] = 'entity_reference:media_full';
 
       $media_embed = Media::buildMediaEmbed($media_parameters);
       if (!empty($media_embed)) {
