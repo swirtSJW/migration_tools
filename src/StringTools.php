@@ -556,10 +556,10 @@ class StringTools {
     $markup = preg_replace("/<span[^>]*color[^>]*>(?:\W|&nbsp;)*<\/span>/i", "", $markup);
 
     // Remove empty p tags. We are not removing p tags containing &nbsp;.
-    $markup = preg_replace("/<p[^>]*>(?:\W)*<\/p>/i", "", $markup);
+    $markup = preg_replace("/<p[^>]*>(?:\W)*<\/p>/iu", "", $markup);
 
     // Remove empty strong tags. We are not removing p tags containing &nbsp;.
-    $markup = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/i", "", $markup);
+    $markup = preg_replace("/<strong[^>]*>(?:\W)*<\/strong>/iu", "", $markup);
 
     // Replace <p> tags containing styling with non-descript p tags.
     $markup = preg_replace("/<p class=\"Mso[^>]*\" style=\"[^>]*\">/i", "<p>", $markup);
