@@ -459,7 +459,7 @@ class Redirects {
       if (!empty($file_id)) {
         $file_object = File::load($file_id);
         $file_uri = $file_object->getFileUri();
-        $path = file_url_transform_relative(file_create_url($file_uri));
+        $path = \Drupal::service('file_url_generator')->generateString($file_uri);
       }
     }
 
@@ -482,7 +482,7 @@ class Redirects {
     if (!empty($field[$language])) {
       foreach ($field[$language] as $delta => $item) {
         $file = File::load($item['fid']);
-        $url = file_create_url($file->uri);
+        $url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->uri);
         $parsed_url = parse_url($url);
         $destination = ltrim($parsed_url['path'], '/');
         redirect_delete_by_path($destination);

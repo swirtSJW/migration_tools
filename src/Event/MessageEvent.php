@@ -2,8 +2,8 @@
 
 namespace Drupal\migration_tools\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use Drupal\Component\Render\FormattableMarkup;
-use Symfony\Component\EventDispatcher\Event;
 
 class MessageEvent extends Event {
 
