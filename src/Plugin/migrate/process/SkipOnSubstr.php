@@ -70,20 +70,21 @@ class SkipOnSubstr extends ProcessPluginBase {
     if (empty($this->configuration['value']) && !array_key_exists('value', $this->configuration)) {
       throw new MigrateException('Skip on value plugin is missing value configuration.');
     }
+    $case_sensitive = $this->configuration['case_sensitive'] ?? FALSE;
 
     if (is_array($this->configuration['value'])) {
       $value_in_array = FALSE;
       $not_equals = isset($this->configuration['not_equals']);
 
       foreach ($this->configuration['value'] as $skipValue) {
-        $value_in_array |= $this->compareValue($value, $skipValue, $this->configuration['case_sensitive']);
+        $value_in_array |= $this->compareValue($value, $skipValue, $case_sensitive);
       }
 
       if (($not_equals && !$value_in_array) || (!$not_equals && $value_in_array)) {
         throw new MigrateSkipRowException();
       }
     }
-    elseif ($this->compareValue($value, $this->configuration['value'], $this->configuration['case_sensitive'], !isset($this->configuration['not_equals']))) {
+    elseif ($this->compareValue($value, $this->configuration['value'], $case_sensitive, !isset($this->configuration['not_equals']))) {
       throw new MigrateSkipRowException();
     }
 
@@ -97,20 +98,21 @@ class SkipOnSubstr extends ProcessPluginBase {
     if (empty($this->configuration['value']) && !array_key_exists('value', $this->configuration)) {
       throw new MigrateException('Skip on value plugin is missing value configuration.');
     }
+    $case_sensitive = $this->configuration['case_sensitive'] ?? FALSE;
 
     if (is_array($this->configuration['value'])) {
       $value_in_array = FALSE;
       $not_equals = isset($this->configuration['not_equals']);
 
       foreach ($this->configuration['value'] as $skipValue) {
-        $value_in_array |= $this->compareValue($value, $skipValue, $this->configuration['case_sensitive']);
+        $value_in_array |= $this->compareValue($value, $skipValue, $case_sensitive);
       }
 
       if (($not_equals && !$value_in_array) || (!$not_equals && $value_in_array)) {
         throw new MigrateSkipProcessException();
       }
     }
-    elseif ($this->compareValue($value, $this->configuration['value'], $this->configuration['case_sensitive'], !isset($this->configuration['not_equals']))) {
+    elseif ($this->compareValue($value, $this->configuration['value'], $case_sensitive, !isset($this->configuration['not_equals']))) {
       throw new MigrateSkipProcessException();
     }
 
@@ -135,25 +137,19 @@ class SkipOnSubstr extends ProcessPluginBase {
   protected function compareValue($value, $skipValue, $caseValue, $equal = TRUE) {
 
     if ($caseValue === TRUE) {
-      $value_search = strpos((string) $value, (string) $skipValue);
+      $string_found = (strpos((string) $value, (string) $skipValue) !== FALSE);
     }
     else {
-      $value_search = stripos((string) $value, (string) $skipValue);
+      $string_found = (stripos((string) $value, (string) $skipValue) !== FALSE);
     }
 
     if ($equal) {
-      if ($value_search !== FALSE) {
-        return TRUE;
-      }
-      else {
-        return $value_search;
-      }
+      return $string_found;
     }
-
-    if ($value_search !== FALSE) {
-      return FALSE;
+    else {
+      // We are looking for not equal so return the opposite.
+      return !$string_found;
     }
-
   }
 
 }
