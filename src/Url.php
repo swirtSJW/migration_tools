@@ -227,37 +227,38 @@ class Url {
    *   Created property: The location where the legacy page exists.
    *   ex: new-section/2015-banner-year-corn-crop
    */
-  public function generateDestinationUriAlias($pathing_section_swap, $title) {
-    // @todo D8 Refactor
-    // Allow the parameter to override the property if provided.
-    $pathing_section_swap = (!empty($pathing_section_swap)) ? $pathing_section_swap : $this->sectionSwap;
+  // public function generateDestinationUriAlias($pathing_section_swap, $title) {
+  //   // @todo D8 Refactor
+  //   // Allow the parameter to override the property if provided.
+  //   $pathing_section_swap = (!empty($pathing_section_swap)) ? $pathing_section_swap : $this->sectionSwap;
 
-    $directories = self::extractPath($this->fileId);
-    $directories = ltrim($directories, '/');
-    // Swap any sections as requested.
-    $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
+  //   $directories = self::extractPath($this->fileId);
+  //   $directories = ltrim($directories, '/');
+  //   // Swap any sections as requested.
+  //   $directories = str_replace(array_keys($pathing_section_swap), array_values($pathing_section_swap), $directories);
 
-    // Remove the legacy directory if it is still present.
-    $directories = explode('/', $directories);
-    if ($directories[0] === $this->legacyDirectory) {
-      array_shift($directories);
-    }
-    $directories = implode('/', $directories);
-
-    // Attempt to process the title.
-    if (module_load_include('inc', 'pathauto')) {
-      $path_title = pathauto_cleanstring($title);
-      $this->destinationUriAlias = "{$directories}/{$path_title}";
-      $this->destinationUriAlias = pathauto_clean_alias($this->destinationUriAlias);
-      // The property has been set, but return it in case assignment is desired.
-      return $this->destinationUriAlias;
-    }
-    else {
-      // Fail migration because the title can not be processed.
-      Message::make('The module @module was not available to process the title.', ['@module' => 'pathauto'], Message::ERROR);
-      throw new MigrateException();
-    }
-  }
+  //   // Remove the legacy directory if it is still present.
+  //   $directories = explode('/', $directories);
+  //   if ($directories[0] === $this->legacyDirectory) {
+  //     array_shift($directories);
+  //   }
+  //   $directories = implode('/', $directories);
+  //   // @todo pathauto_cleanstring no longer exists. so this will have to be
+  //   // reworked. https://www.drupal.org/project/migration_tools/issues/3359268
+  //   // Attempt to process the title.
+  //   if (module_load_include('inc', 'pathauto')) {
+  //     $path_title = pathauto_cleanstring($title);
+  //     $this->destinationUriAlias = "{$directories}/{$path_title}";
+  //     $this->destinationUriAlias = pathauto_clean_alias($this->destinationUriAlias);
+  //     // The property has been set, but return it in case assignment is desired.
+  //     return $this->destinationUriAlias;
+  //   }
+  //   else {
+  //     // Fail migration because the title can not be processed.
+  //     Message::make('The module @module was not available to process the title.', ['@module' => 'pathauto'], Message::ERROR);
+  //     throw new MigrateException();
+  //   }
+  // }
 
   /**
    * Convert a relative URI from a page to an absolute URL.

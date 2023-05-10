@@ -27,6 +27,13 @@ class LoadTest extends BrowserTestBase {
   protected $user;
 
   /**
+   * For tests relying on no markup at all or at least no core markup.
+   *
+   * @var string
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
